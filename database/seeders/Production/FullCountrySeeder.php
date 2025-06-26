@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Production;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CountryTableSeeder extends Seeder
+class FullCountrySeeder extends Seeder
 {
     public function run()
     {

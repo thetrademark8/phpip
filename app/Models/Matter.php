@@ -4,13 +4,14 @@ namespace App\Models;
 
 use App\Traits\HasActorsFromRole;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Matter extends Model
 {
-    use HasActorsFromRole;
+    use HasFactory, HasActorsFromRole;
 
     protected $table = 'matter';
 

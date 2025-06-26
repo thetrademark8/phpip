@@ -5,7 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Database\Seeders\TranslatedAttributesSeeder;
 
 return new class extends Migration {
     /**
@@ -47,6 +46,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        // Skip this migration for SQLite in testing
+        if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
+            return;
+        }
+        
         $activeAttributes = array_filter($this->translatableAttributes);
         $defaultLocale = 'en';
         $isMariaDB = str_contains(DB::selectOne('select version() as v')->v ?? '', 'MariaDB');
@@ -133,7 +137,7 @@ return new class extends Migration {
         }
 
         Log::info("Running TranslatedAttributesSeeder");
-        (new TranslatedAttributesSeeder())->run();
+        (new \Database\Seeders\Production\TranslatedAttributesSeeder())->run();
     }
 
     /**
@@ -141,6 +145,11 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        // Skip this migration for SQLite in testing
+        if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
+            return;
+        }
+        
         $activeAttributes = array_filter($this->translatableAttributes);
         if (empty($activeAttributes)) return;
 

@@ -10,6 +10,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip this migration for SQLite in testing
+        if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
+            return;
+        }
+        
         // Drop the existing users view
         DB::statement('DROP VIEW IF EXISTS users');
         
@@ -42,6 +47,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Skip this migration for SQLite in testing
+        if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
+            return;
+        }
+        
         // Drop the updated view
         DB::statement('DROP VIEW IF EXISTS users');
         

@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasTableComments;
 
 class Actor extends Model
 {
-    use HasTableComments;
+    use HasFactory, HasTableComments;
     
     protected $table = 'actor';
 

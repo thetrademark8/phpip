@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Production;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ActorTableSeeder extends Seeder
+class DefaultActorsSeeder extends Seeder
 {
     public function run()
     {

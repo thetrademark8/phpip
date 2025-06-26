@@ -15,11 +15,16 @@
 	  	  "spatie/laravel-translatable": "^6.11"
 	  },
     "require-dev": {
+	  	  "doctrine/dbal": "^4.2",
+	  	  "fakerphp/faker": "^1.24",
 	  	  "laravel/pint": "^1.17",
 	  	  "laravel/tinker": "^2.9",
 	  	  "laravel/ui": "^4.2",
 	  	  "mockery/mockery": "^1.6",
 	  	  "nunomaduro/collision": "^8.1",
+	  	  "pestphp/pest": "^3.0",
+	  	  "pestphp/pest-plugin-drift": "^3.0",
+	  	  "pestphp/pest-plugin-laravel": "^3.0",
 	  	  "phpunit/phpunit": "^11.0.1"
 	  },
     "config": {
@@ -61,6 +66,28 @@
       ],
       "post-create-project-cmd": [
         "@php artisan key:generate --ansi"
+      ],
+      "test": "pest",
+      "test:unit": "pest --group=unit",
+      "test:feature": "pest --group=feature",
+      "test:arch": "pest --group=arch",
+      "test:coverage": "pest --coverage",
+      "format": "pint",
+      "format:test": "pint --test",
+      "analyse": "phpstan analyse",
+      "fresh": [
+        "@php artisan migrate:fresh --seed",
+        "@php artisan cache:clear",
+        "@php artisan config:clear",
+        "@php artisan route:clear",
+        "@php artisan view:clear"
+      ],
+      "clear": [
+        "@php artisan cache:clear",
+        "@php artisan config:clear",
+        "@php artisan route:clear",
+        "@php artisan view:clear",
+        "@php artisan queue:clear"
       ]
 	},
 	"authors" : [{

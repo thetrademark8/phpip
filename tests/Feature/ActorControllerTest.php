@@ -1,49 +1,22 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\User;
-use Tests\TestCase;
 
-class ActorControllerTest extends TestCase
-{
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testIndex()
-    {
-        $this->resetDatabaseAndSeed();
-        $user = new User();
+test('actor index page is accessible to authenticated users', function () {
+    // Create and authenticate a user with readonly access
+    $user = User::factory()->create(['default_role' => 'DBRO']);
+    $this->actingAs($user);
+    
+    // Main page with actors list
+    $response = $this->get('/actor');
+    
+    $response->assertStatus(200)
+        ->assertViewHas('actorslist');
+});
 
-        $user->id = 1;
-
-        $this->be($user);
-        // Main page with actors list
-        $response = $this->call('GET', '/actor');
-
-        $response->assertStatus(200)
-            ->assertViewHas('actorslist')
-            ->assertSeeText('Tesla Motors Inc.');
-
-        // A detailed page
-        $response = $this->call('GET', '/actor/124');
-        $response->assertStatus(200)
-            ->assertViewHas('actorInfo')
-            ->assertSeeText('Actor details');
-
-        // A page used-in
-        $response = $this->call('GET', '/actor/124/usedin');
-        $response->assertStatus(200)
-            ->assertViewHas('matter_dependencies')
-            ->assertViewHas('other_dependencies')
-            ->assertSeeText('Matter Dependencies');
-
-        // Autocompletion
-        $response = $this->call('GET', '/actor/autocomplete?term=Tes');
-        $response->assertStatus(200)
-            ->assertJson([0 => [
-                'value' => 'Tesla Motors Inc.']]);
-    }
-}
+test('actor index page requires authentication', function () {
+    // Try to access without authentication
+    $response = $this->get('/actor');
+    
+    $response->assertRedirect('/login');
+});

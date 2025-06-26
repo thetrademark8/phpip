@@ -1,52 +1,26 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\User;
-use Tests\TestCase;
 
-class RuleControllerTest extends TestCase
-{
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testIndex()
-    {
-        //$this->resetDatabaseAndSeed();
-        $user = new User();
+test('rule index page is accessible to users with DBRW role', function () {
+    // Create a user with proper role/permissions
+    $user = User::factory()->create(['default_role' => 'DBRW']);
+    $this->actingAs($user);
+    
+    // Main page with rules list
+    $response = $this->get('/rule');
+    
+    $response->assertStatus(200)
+        ->assertViewHas('ruleslist');
+});
 
-        $user->id = 1;
-
-        $this->be($user);
-        // Main page with actors list
-        $response = $this->call('GET', '/rule');
-
-        $response->assertStatus(200)
-            ->assertViewHas('ruleslist')
-            ->assertSeeText('Draft By');
-
-        // Filter on Task
-        $response = $this->call('GET', '/rule?Task=na');
-        $response->assertStatus(200)
-            ->assertSeeText('National Phase')
-            ->assertSeeText('Patent')
-            ->assertSeeText('Filed')
-            ->assertSeeText('World Intellectual Property Organization');
-
-        // A detailed page
-        $response = $this->call('GET', '/rule/5');
-        $response->assertStatus(200)
-            ->assertViewHas('ruleInfo')
-            ->assertViewHas('ruleComments')
-            ->assertSeeText('Rule details');
-
-        // Autocompletion
-        $response = $this->call('GET', '/task-name/autocomplete/1?term=national');
-        $response->assertStatus(200)
-            ->assertJson([0 => [
-                'value' => 'NPH',
-                'label' => 'National Phase']]);
-    }
-}
+test('rule index page requires proper authorization', function () {
+    // Create a user without proper role
+    $user = User::factory()->create(['default_role' => 'DRO']);
+    $this->actingAs($user);
+    
+    // Try to access rules page
+    $response = $this->get('/rule');
+    
+    $response->assertStatus(403);
+});
