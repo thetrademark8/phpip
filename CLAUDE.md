@@ -542,3 +542,62 @@ See TODO.md for details.
 4. App name text will be hidden in navbar when logo is present
 
 This completes Phase 2 of the refactoring plan. The UI/UX improvements are now implemented with date standardization, skipped case preservation (pending clarification), and static company branding with intelligent logo/text display.
+
+## UI Refactoring: Laravel Blade to Inertia.js + Vue.js + shadcn-vue
+
+### Phase 1: Foundation Setup ✅
+
+Successfully implemented the foundation for the UI refactoring from Laravel Blade templates to a modern SPA using Inertia.js, Vue.js 3, and shadcn-vue.
+
+#### 1.1 Core Dependencies Installed ✅
+- **Inertia.js server-side**: `composer require inertiajs/inertia-laravel`
+- **Inertia.js client-side**: `npm install @inertiajs/vue3`
+- **Vue 3 and build tools**: `npm install vue@3 @vitejs/plugin-vue`
+- **Tailwind CSS v4**: `npm install tailwindcss @tailwindcss/vite`
+- **shadcn-vue dependencies**: 
+  - Utilities: `@vueuse/core class-variance-authority clsx tailwind-merge`
+  - Core: `radix-vue vee-validate @vee-validate/zod zod`
+  - Icons: `lucide-vue-next`
+  - Animations: `tw-animate-css`
+  - Types: `@types/node`
+
+#### 1.2 Inertia.js Configuration ✅
+- **Middleware**: Created and configured `HandleInertiaRequests` middleware
+  - Added shared data for auth user, flash messages, and app config
+  - Registered in `bootstrap/app.php`
+- **Root template**: Created `resources/views/app.blade.php` with Inertia directives
+- **Vue entry point**: Set up `resources/js/app.js` with Inertia app initialization
+- **Ziggy integration**: Installed for JavaScript route handling
+
+#### 1.3 Tailwind CSS v4 & shadcn-vue Setup ✅
+- **Tailwind v4 approach**: No config file needed - everything is CSS-based
+- **CSS configuration**: Set up with `@import "tailwindcss"` and CSS variables
+- **Theme setup**: Configured design tokens using `:root` CSS variables
+- **shadcn-vue config**: Created `components.json` with proper paths
+- **Utilities**: Created `cn()` utility function in `lib/utils.js`
+
+#### 1.4 Base Layout Components ✅
+- **MainLayout.vue**: Main layout wrapper with navigation and footer
+- **Navigation.vue**: Top navbar with logo/text logic and auth status
+- **Footer.vue**: Simple footer component
+- **Test page**: Created `Test.vue` to verify setup
+
+### Key Technical Decisions:
+
+1. **Tailwind CSS v4**: Using the new CSS-based configuration approach with `@theme` directive
+2. **Component structure**: Organized with `/Pages`, `/Components`, `/Layouts` directories
+3. **State management**: Using Inertia's shared data for global state
+4. **Styling approach**: CSS variables for theming, supporting light/dark modes
+5. **Build setup**: Vite configured with Vue and Tailwind plugins
+
+### Verification:
+- Build successful: `npm run build` completes without errors
+- Test route created: `/test-inertia` to verify Inertia rendering
+- All dependencies properly installed and configured
+
+### Next Steps:
+Continue with Phase 2 (Component Library Development) to:
+1. Replace the custom DatePicker with shadcn-vue DatePicker
+2. Create reusable components (MatterCard, ActorList, etc.)
+3. Build form components with Zod validation
+4. Start migrating actual pages from Blade to Vue

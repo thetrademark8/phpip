@@ -32,6 +32,11 @@ Auth::routes(['register' => false]);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
+    // Test route for Inertia setup
+    Route::get('/test-inertia', function () {
+        return inertia('Test');
+    })->name('test.inertia');
+    
     // Matter routes group
     Route::controller(MatterController::class)->prefix('matter')->name('matter.')->group(function () {
         Route::get('autocomplete', [AutocompleteController::class, 'matter'])->name('autocomplete');
