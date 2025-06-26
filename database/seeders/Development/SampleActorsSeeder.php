@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Development;
 
-use Illuminate\Database\Seeder;
 use App\Models\Actor;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class SampleActorsSeeder extends Seeder
@@ -14,7 +14,7 @@ class SampleActorsSeeder extends Seeder
     public function run()
     {
         $this->command->info('Creating sample actors...');
-        
+
         // Create sample companies
         $techCorp = Actor::updateOrCreate(
             ['display_name' => 'TechCorp'],
@@ -29,7 +29,7 @@ class SampleActorsSeeder extends Seeder
                 ]
             )
         );
-        
+
         $euroTech = Actor::updateOrCreate(
             ['display_name' => 'EuroTech'],
             array_merge(
@@ -43,7 +43,7 @@ class SampleActorsSeeder extends Seeder
                 ]
             )
         );
-        
+
         $fashionHouse = Actor::updateOrCreate(
             ['display_name' => 'Fashion House'],
             array_merge(
@@ -57,7 +57,7 @@ class SampleActorsSeeder extends Seeder
                 ]
             )
         );
-        
+
         // Create sample patent firms
         $usPatentFirm = Actor::updateOrCreate(
             ['display_name' => 'Smith & Jones'],
@@ -72,7 +72,7 @@ class SampleActorsSeeder extends Seeder
                 ]
             )
         );
-        
+
         $euPatentFirm = Actor::updateOrCreate(
             ['display_name' => 'EU IP Partners'],
             array_merge(
@@ -86,7 +86,7 @@ class SampleActorsSeeder extends Seeder
                 ]
             )
         );
-        
+
         // Create sample inventors
         $inventors = [
             Actor::updateOrCreate(
@@ -126,15 +126,15 @@ class SampleActorsSeeder extends Seeder
                 )
             ),
         ];
-        
+
         // Create sample users (who can log in)
         $this->createUserActor('jdoe', 'John', 'Doe', 'jdoe@example.com', 'password');
         $this->createUserActor('msmith', 'Mary', 'Smith', 'msmith@example.com', 'password');
         $this->createUserActor('pmartin', 'Pierre', 'Martin', 'pmartin@example.com', 'password', 'fr');
-        
+
         $this->command->info('Sample actors created successfully!');
     }
-    
+
     /**
      * Create a user actor (can log into the system).
      */
@@ -154,7 +154,7 @@ class SampleActorsSeeder extends Seeder
                 ]
             )
         );
-        
+
         return $actor;
     }
 }

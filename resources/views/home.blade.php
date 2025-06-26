@@ -120,7 +120,7 @@
             <div class="input-group">
               @can('readwrite')
               <button class="btn btn-light" type="button" id="clearOpenTasks">{{ __('Clear selected on') }}</button>
-              <input type="text" class="form-control me-2" name="datetaskcleardate" id="taskcleardate" value="{{ now()->isoFormat('L') }}">
+              <x-date-input name="datetaskcleardate" :value="now()" class="me-2" :inputAttributes="['id' => 'taskcleardate']" :showLabel="false" />
               @endcan
             </div>
           </div>
@@ -159,7 +159,7 @@
           <div class="col">
             <div class="input-group">
               <button class="btn btn-light" type="button" id="clearRenewals">{{ __('Clear selected on') }}</button>
-              <input type="text" class="form-control me-2" name="renewalcleardate" id="renewalcleardate" value="{{ now()->isoFormat('L') }}">
+              <x-date-input name="renewalcleardate" :value="now()" class="me-2" :inputAttributes="['id' => 'renewalcleardate']" :showLabel="false" />
             </div>
           </div>
           @endcan

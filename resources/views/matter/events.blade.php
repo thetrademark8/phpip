@@ -26,7 +26,7 @@
           <div class="input-group">
             <input type="hidden" name="code">
             <input type="text" class="form-control form-control-sm" name="eventName" placeholder="{{ __('Event') }}" data-ac="/event-name/autocomplete/0?category={{ $matter->category_code }}" data-actarget="code">
-            <input type="text" class="form-control form-control-sm" name="event_date" placeholder="{{ __('Date (xx/xx/yyyy)') }}">
+            <x-date-input name="event_date" class="form-control-sm" placeholder="{{ __('Date (xx/xx/yyyy)') }}" :showLabel="false" />
             <input type="text" class="form-control form-control-sm" name="detail" placeholder="{{ __('Detail') }}">
             <input type="text" class="form-control form-control-sm" name="notes" placeholder="{{ __('Notes') }}">
             <input type="hidden" name="alt_matter_id">
@@ -61,7 +61,7 @@
             {{ $event->info->name }}
         @endif
       </td>
-      <td><input type="text" class="form-control noformat" name="event_date" value="{{ $event->event_date->isoFormat('L') }}"></td>
+      <td><x-date-input name="event_date" :value="$event->event_date" :showLabel="false" /></td>
       <td><input type="text" class="form-control noformat" size="16" name="detail" value="{{ $event->detail }}"></td>
       <td><input type="text" class="form-control noformat" name="notes" value="{{ $event->notes }}"></td>
       <td><input type="text" class="form-control noformat" size="10" name="alt_matter_id" data-ac="/matter/autocomplete" value="{{ $event->altMatter ? $event->altMatter->uid : '' }}"></td>

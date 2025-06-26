@@ -20,9 +20,9 @@
       </tr>
       <tr>
         <td><label for="use_before" title="{{ $tableComments['use_before'] }}"><b>{{ __('Use before') }}</b></label></td>
-        <td><input type="date" class="form-control form-control-sm" name="use_before"></td>
+        <td><x-date-input name="use_before" class="form-control-sm" /></td>
         <td><label for="use_after" title="{{ $tableComments['use_after'] }}"><b>{{ __('Use after') }}</b></label></td>
-        <td><input type="date" class="form-control form-control-sm" name="use_after"></td>
+        <td><x-date-input name="use_after" class="form-control-sm" /></td>
       </tr>
       <tr>
         <td><label for="qt" title="{{ $tableComments['qt'] }}"><b>{{ __('Qt') }}</b></label> {{ __('From') }}:</td>

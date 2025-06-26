@@ -4,31 +4,31 @@ use App\Services\DateService;
 use Carbon\Carbon;
 
 beforeEach(function () {
-    $this->dateService = new DateService();
+    $this->dateService = new DateService;
 });
 
 test('converts carbon date to ISO format', function () {
     $carbon = Carbon::create(2025, 6, 26);
     $result = $this->dateService->toIso($carbon);
-    
+
     expect($result)->toBe('2025-06-26');
 });
 
 test('converts string date to ISO format', function () {
     $result = $this->dateService->toIso('2025-06-26');
-    
+
     expect($result)->toBe('2025-06-26');
 });
 
 test('returns null for null date', function () {
     $result = $this->dateService->toIso(null);
-    
+
     expect($result)->toBeNull();
 });
 
 test('parses ISO date to Carbon', function () {
     $result = $this->dateService->parseIso('2025-06-26');
-    
+
     expect($result)->toBeInstanceOf(Carbon::class)
         ->and($result->format('Y-m-d'))->toBe('2025-06-26');
 });
@@ -52,7 +52,7 @@ test('normalizes various date formats to ISO', function () {
 
 test('returns todays date in ISO format', function () {
     $today = $this->dateService->today();
-    
+
     expect($today)->toBeIsoDate()
         ->and($today)->toBe(Carbon::today()->format('Y-m-d'));
 });
@@ -60,14 +60,14 @@ test('returns todays date in ISO format', function () {
 test('adds days to date and returns ISO format', function () {
     $date = '2025-06-26';
     $result = $this->dateService->addDays($date, 7);
-    
+
     expect($result)->toBe('2025-07-03');
 });
 
 test('formats datetime with time', function () {
     $carbon = Carbon::create(2025, 6, 26, 14, 30, 45);
     $result = $this->dateService->toIsoDateTime($carbon);
-    
+
     expect($result)->toBe('2025-06-26 14:30:45');
 });
 

@@ -14,7 +14,7 @@ class EventFactory extends Factory
     {
         // Common event codes - these should exist in event_name table
         $eventCodes = ['FIL', 'PUB', 'GRT', 'REM', 'ALL', 'REQ', 'EXA', 'REP'];
-        
+
         return [
             'code' => $this->faker->randomElement($eventCodes),
             'matter_id' => Matter::factory(),

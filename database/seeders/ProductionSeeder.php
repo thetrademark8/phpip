@@ -3,13 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Database\Seeders\Production\EssentialCountrySeeder;
-use Database\Seeders\Production\EssentialRoleSeeder;
-use Database\Seeders\Production\EssentialCategorySeeder;
-use Database\Seeders\Production\EssentialEventSeeder;
-use Database\Seeders\Production\EssentialClassifierTypeSeeder;
-use Database\Seeders\Production\EssentialMatterTypeSeeder;
-use Database\Seeders\Production\AdminUserSeeder;
 
 class ProductionSeeder extends Seeder
 {
@@ -20,7 +13,7 @@ class ProductionSeeder extends Seeder
     public function run()
     {
         $this->command->info('Starting production seeding with essential data only...');
-        
+
         // Essential reference data
         $this->call(Production\EssentialCountrySeeder::class);
         $this->call(Production\FullCountrySeeder::class); // Full country list
@@ -29,17 +22,17 @@ class ProductionSeeder extends Seeder
         $this->call(Production\EssentialEventSeeder::class);
         $this->call(Production\EssentialClassifierTypeSeeder::class);
         $this->call(Production\EssentialMatterTypeSeeder::class);
-        
+
         // Additional production data
         $this->call(Production\DefaultActorsSeeder::class); // Default system actors
         $this->call(Production\FeesTableSeeder::class); // Fee schedules
         $this->call(Production\TemplateClassesTableSeeder::class); // Document templates
         $this->call(Production\TemplateMembersTableSeeder::class); // Template components
         $this->call(Production\TranslatedAttributesSeeder::class); // Translations
-        
+
         // Admin user
         $this->call(Production\AdminUserSeeder::class);
-        
+
         $this->command->info('Production seeding completed successfully!');
     }
 }

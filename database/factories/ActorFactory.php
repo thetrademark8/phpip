@@ -12,7 +12,7 @@ class ActorFactory extends Factory
     public function definition()
     {
         $isCompany = $this->faker->boolean(60); // 60% companies, 40% persons
-        
+
         return [
             'name' => $isCompany ? $this->faker->company : $this->faker->lastName,
             'first_name' => $isCompany ? null : $this->faker->firstName,
@@ -24,11 +24,11 @@ class ActorFactory extends Factory
             'parent_id' => null,
             'company_id' => null,
             'site_id' => null,
-            'phy_person' => !$isCompany,
+            'phy_person' => ! $isCompany,
             'nationality' => $this->faker->randomElement(['US', 'FR', 'DE', 'GB', 'JP', 'CN', 'CA', 'IT', 'ES']),
             'language' => $this->faker->randomElement(['en', 'fr', 'de']),
             'small_entity' => $this->faker->boolean(20), // 20% small entities
-            'address' => $this->faker->streetAddress . ', ' . $this->faker->postcode . ' ' . $this->faker->city,
+            'address' => $this->faker->streetAddress.', '.$this->faker->postcode.' '.$this->faker->city,
             'country' => $this->faker->randomElement(['US', 'FR', 'DE', 'GB', 'JP', 'CN', 'CA', 'IT', 'ES']),
             'address_mailing' => null,
             'country_mailing' => null,

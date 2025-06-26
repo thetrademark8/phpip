@@ -9,39 +9,39 @@ DROP TABLE IF EXISTS `actor`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `actor` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Family name or company name',
-  `first_name` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'plus middle names, if required',
-  `display_name` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'The name displayed in the interface, if not null',
-  `login` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Database user login if not null.',
-  `password` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `default_role` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Link to actor_role table. A same actor can have different roles - this is the default role of the actor. CAUTION: for database users, this sets the user ACLs.',
-  `function` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Family name or company name',
+  `first_name` varchar(60) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'plus middle names, if required',
+  `display_name` varchar(30) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'The name displayed in the interface, if not null',
+  `login` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Database user login if not null.',
+  `password` varchar(60) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `default_role` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Link to actor_role table. A same actor can have different roles - this is the default role of the actor. CAUTION: for database users, this sets the user ACLs.',
+  `function` varchar(45) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `parent_id` int unsigned DEFAULT NULL COMMENT 'Parent company of this company (another actor), where applicable. Useful for linking several companies owned by a same corporation',
   `company_id` int unsigned DEFAULT NULL COMMENT 'Mainly for inventors and contacts. ID of the actor''s company or employer (another record in the actors table)',
   `site_id` int unsigned DEFAULT NULL COMMENT 'Mainly for inventors and contacts. ID of the actor''s company site (another record in the actors table), if the company has several sites that we want to differentiate',
   `phy_person` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Physical person or not',
-  `nationality` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `language` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nationality` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `language` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `small_entity` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Small entity status used in a few countries (FR, US)',
-  `address` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Main address: street, zip and city',
-  `country` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Country in address',
-  `address_mailing` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Mailing address: street, zip and city',
-  `country_mailing` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address_billing` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Billing address: street, zip and city',
-  `country_billing` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `legal_form` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `registration_no` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(256) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Main address: street, zip and city',
+  `country` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Country in address',
+  `address_mailing` varchar(256) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Mailing address: street, zip and city',
+  `country_mailing` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `address_billing` varchar(256) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Billing address: street, zip and city',
+  `country_billing` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `email` varchar(45) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `phone` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `legal_form` varchar(60) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `registration_no` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `warn` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'The actor will be displayed in red in the matter view when set',
   `ren_discount` double(8,2) NOT NULL,
-  `notes` text COLLATE utf8mb4_unicode_ci,
-  `VAT_number` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_0900_ai_ci,
+  `VAT_number` varchar(45) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uqdisplay_name` (`display_name`),
   UNIQUE KEY `uqlogin` (`login`),
@@ -62,28 +62,28 @@ CREATE TABLE `actor` (
   CONSTRAINT `actor_nationality_foreign` FOREIGN KEY (`nationality`) REFERENCES `country` (`iso`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `actor_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `actor` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `actor_site_id_foreign` FOREIGN KEY (`site_id`) REFERENCES `actor` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `actor_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `actor_role` (
-  `code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(45) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `display_order` tinyint(1) DEFAULT '127' COMMENT 'Order of display in interface',
   `shareable` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates whether actors listed with this role are shareable for all matters of the same family',
   `show_ref` tinyint(1) NOT NULL DEFAULT '0',
   `show_company` tinyint(1) NOT NULL DEFAULT '0',
   `show_rate` tinyint(1) NOT NULL DEFAULT '0',
   `show_date` tinyint(1) NOT NULL DEFAULT '0',
-  `notes` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` varchar(160) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`code`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `classifier`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -91,15 +91,15 @@ DROP TABLE IF EXISTS `classifier`;
 CREATE TABLE `classifier` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `matter_id` int unsigned NOT NULL,
-  `type_code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Link to ''classifier_types''',
-  `value` text COLLATE utf8mb4_unicode_ci COMMENT 'A free-text value used when classifier_values has no record linked to the classifier_types record',
+  `type_code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Link to ''classifier_types''',
+  `value` text COLLATE utf8mb4_0900_ai_ci COMMENT 'A free-text value used when classifier_values has no record linked to the classifier_types record',
   `img` mediumblob,
-  `url` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Display value as a link to the URL defined here',
+  `url` varchar(256) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Display value as a link to the URL defined here',
   `value_id` int unsigned DEFAULT NULL COMMENT 'Links to the classifier_values table if it has a link to classifier_types',
   `display_order` tinyint(1) NOT NULL DEFAULT '1',
   `lnk_matter_id` int unsigned DEFAULT NULL COMMENT 'Matter this case is linked to',
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -114,14 +114,14 @@ CREATE TABLE `classifier` (
   CONSTRAINT `classifier_matter_id_foreign` FOREIGN KEY (`matter_id`) REFERENCES `matter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `classifier_type_code_foreign` FOREIGN KEY (`type_code`) REFERENCES `classifier_type` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `classifier_value_id_foreign` FOREIGN KEY (`value_id`) REFERENCES `classifier_value` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -141,59 +141,59 @@ DROP TABLE IF EXISTS `classifier_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `classifier_type` (
-  `code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `type` varchar(45) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `main_display` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates whether to display as main information',
-  `for_category` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'For showing in the pick-lists of only the selected category',
+  `for_category` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'For showing in the pick-lists of only the selected category',
   `display_order` tinyint(1) DEFAULT '127',
-  `notes` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` varchar(160) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`code`),
   UNIQUE KEY `for_category` (`for_category`,`code`),
   CONSTRAINT `classifier_type_for_category_foreign` FOREIGN KEY (`for_category`) REFERENCES `matter_category` (`code`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `classifier_value`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `classifier_value` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `value` varchar(160) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type_code` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Restrict this classifier name to the classifier type identified here',
-  `notes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `value` varchar(160) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `type_code` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Restrict this classifier name to the classifier type identified here',
+  `notes` varchar(255) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uqclvalue` (`value`,`type_code`),
   KEY `value_type` (`type_code`),
   CONSTRAINT `classifier_value_type_code_foreign` FOREIGN KEY (`type_code`) REFERENCES `classifier_type` (`code`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `country`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `country` (
   `numcode` smallint DEFAULT NULL,
-  `iso` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `iso3` char(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name_DE` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name_FR` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `iso` char(2) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `iso3` char(3) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `name_DE` varchar(80) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `name` varchar(80) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name_FR` varchar(80) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `ep` tinyint(1) DEFAULT '0' COMMENT 'Flag default countries for EP ratifications',
   `wo` tinyint(1) DEFAULT '0' COMMENT 'Flag default countries for PCT national phase',
   `em` tinyint(1) DEFAULT '0' COMMENT 'Flag default countries for EU trade mark',
   `oa` tinyint(1) DEFAULT '0' COMMENT 'Flag default countries for OA national phase',
   `renewal_first` tinyint DEFAULT '2' COMMENT 'The first year a renewal is due in this country from renewal_base. When negative, the date is calculated from renewal_start',
-  `renewal_base` char(5) COLLATE utf8mb4_unicode_ci DEFAULT 'FIL' COMMENT 'The base event for calculating renewal deadlines',
-  `renewal_start` char(5) COLLATE utf8mb4_unicode_ci DEFAULT 'FIL' COMMENT 'The event from which renewals become due',
+  `renewal_base` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT 'FIL' COMMENT 'The base event for calculating renewal deadlines',
+  `renewal_start` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT 'FIL' COMMENT 'The event from which renewals become due',
   `checked_on` date DEFAULT NULL,
   PRIMARY KEY (`iso`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `default_actor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -201,9 +201,9 @@ DROP TABLE IF EXISTS `default_actor`;
 CREATE TABLE `default_actor` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `actor_id` int unsigned NOT NULL,
-  `role` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `for_category` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `for_country` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `role` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `for_category` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `for_country` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `for_client` int unsigned DEFAULT NULL,
   `shared` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -217,21 +217,21 @@ CREATE TABLE `default_actor` (
   CONSTRAINT `default_actor_for_client_foreign` FOREIGN KEY (`for_client`) REFERENCES `actor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `default_actor_for_country_foreign` FOREIGN KEY (`for_country`) REFERENCES `country` (`iso`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `default_actor_role_foreign` FOREIGN KEY (`role`) REFERENCES `actor_role` (`code`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `event` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Link to event_names table',
+  `code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Link to event_names table',
   `matter_id` int unsigned NOT NULL,
   `event_date` date DEFAULT NULL,
   `alt_matter_id` int unsigned DEFAULT NULL COMMENT 'Essentially for priority claims. ID of prior patent this event refers to',
-  `detail` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Numbers or short comments',
-  `notes` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `detail` varchar(45) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Numbers or short comments',
+  `notes` varchar(150) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -243,14 +243,14 @@ CREATE TABLE `event` (
   CONSTRAINT `event_alt_matter_id_foreign` FOREIGN KEY (`alt_matter_id`) REFERENCES `matter` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `event_code_foreign` FOREIGN KEY (`code`) REFERENCES `event_name` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `event_matter_id_foreign` FOREIGN KEY (`matter_id`) REFERENCES `matter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -275,7 +275,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -433,7 +433,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -455,7 +455,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -556,7 +556,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -583,7 +583,7 @@ DROP TABLE IF EXISTS `event_class_lnk`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `event_class_lnk` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `event_name_code` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_name_code` varchar(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `template_class_id` int unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -592,7 +592,7 @@ CREATE TABLE `event_class_lnk` (
   KEY `event_class_lnk_event_name_code_foreign` (`event_name_code`),
   CONSTRAINT `event_class_lnk_event_name_code_foreign` FOREIGN KEY (`event_name_code`) REFERENCES `event_name` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `event_class_lnk_template_class_id_foreign` FOREIGN KEY (`template_class_id`) REFERENCES `template_classes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `event_lnk_list`;
 /*!50001 DROP VIEW IF EXISTS `event_lnk_list`*/;
@@ -610,32 +610,32 @@ DROP TABLE IF EXISTS `event_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `event_name` (
-  `code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Category to which this event is specific',
-  `country` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Country to which the event is specific. If NULL, any country may use the event',
+  `code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `name` varchar(45) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `category` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Category to which this event is specific',
+  `country` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Country to which the event is specific. If NULL, any country may use the event',
   `is_task` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates whether the event is a task',
   `status_event` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates whether the event should be displayed as a status',
-  `default_responsible` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Login of the user who is systematically responsible for this type of task',
+  `default_responsible` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Login of the user who is systematically responsible for this type of task',
   `use_matter_resp` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Set if the matter responsible should also be set as responsible for the task. Overridden if default_responsible is set',
   `unique` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Only one such event can exist',
   `killer` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates whether this event kills the patent (set patent.dead to 1)',
-  `notes` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` varchar(160) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`code`),
   KEY `fk_responsible` (`default_responsible`),
   CONSTRAINT `event_name_default_responsible_foreign` FOREIGN KEY (`default_responsible`) REFERENCES `actor` (`login`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -655,22 +655,22 @@ DROP TABLE IF EXISTS `failed_jobs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `failed_jobs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `fees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fees` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `for_category` char(5) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'PAT' COMMENT 'Category to which this rule applies.',
-  `for_country` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Country where rule is applicable. If NULL, applies to all countries',
-  `for_origin` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `for_category` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'PAT' COMMENT 'Category to which this rule applies.',
+  `for_country` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Country where rule is applicable. If NULL, applies to all countries',
+  `for_origin` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `qt` int NOT NULL DEFAULT '0' COMMENT 'For which renewal',
   `use_before` date DEFAULT NULL COMMENT 'will be used only if the due date is before this date',
   `use_after` date DEFAULT NULL COMMENT 'will be used only if the due date is after this date',
@@ -682,40 +682,40 @@ CREATE TABLE `fees` (
   `fee_sup` decimal(6,2) DEFAULT NULL,
   `cost_sup_reduced` decimal(6,2) DEFAULT NULL,
   `fee_sup_reduced` decimal(6,2) DEFAULT NULL,
-  `currency` char(3) COLLATE utf8mb4_unicode_ci DEFAULT 'EUR',
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `currency` char(3) COLLATE utf8mb4_0900_ai_ci DEFAULT 'EUR',
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_category` (`for_category`),
   KEY `for_country` (`for_country`),
   KEY `for_origin` (`for_origin`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `matter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `matter` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `category_code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `caseref` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Case reference for the database user. The references for the other actors (client, agent, etc.) are in the actor link table.',
-  `country` char(2) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Country where the matter is filed',
-  `origin` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Code of the regional system the patent originates from (mainly EP or WO)',
-  `type_code` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `category_code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `caseref` varchar(30) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Case reference for the database user. The references for the other actors (client, agent, etc.) are in the actor link table.',
+  `country` char(2) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Country where the matter is filed',
+  `origin` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Code of the regional system the patent originates from (mainly EP or WO)',
+  `type_code` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `idx` tinyint(1) DEFAULT NULL COMMENT 'Increment this to differentiate multiple patents filed in the same country in the same family',
-  `suffix` varchar(16) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (concat_ws(_utf8mb4'',concat_ws(_utf8mb4'-',concat_ws(_utf8mb4'/',`country`,`origin`),`type_code`),`idx`)) VIRTUAL,
-  `uid` varchar(45) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (concat(`caseref`,`suffix`)) VIRTUAL,
+  `suffix` varchar(16) COLLATE utf8mb4_0900_ai_ci GENERATED ALWAYS AS (concat_ws(_utf8mb4'',concat_ws(_utf8mb4'-',concat_ws(_utf8mb4'/',`country`,`origin`),`type_code`),`idx`)) VIRTUAL,
+  `uid` varchar(45) COLLATE utf8mb4_0900_ai_ci GENERATED ALWAYS AS (concat(`caseref`,`suffix`)) VIRTUAL,
   `parent_id` int unsigned DEFAULT NULL COMMENT 'Link to parent patent. Used to create a hierarchy',
   `container_id` int unsigned DEFAULT NULL COMMENT 'Identifies the container matter from which this matter gathers its shared data. If null, this matter is a container',
-  `responsible` char(16) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Database user responsible for the patent',
+  `responsible` char(16) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Database user responsible for the patent',
   `dead` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Indicates that the case is no longer supervised. Automatically set by "killer events" like "Abandoned"',
-  `notes` text COLLATE utf8mb4_unicode_ci,
+  `notes` text COLLATE utf8mb4_0900_ai_ci,
   `expire_date` date DEFAULT NULL,
   `term_adjust` smallint NOT NULL DEFAULT '0' COMMENT 'Patent term adjustment in days. Essentially for US patents.',
-  `alt_ref` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Alternate reference',
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'User who created the record',
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'User who last modified the record',
+  `alt_ref` varchar(30) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Alternate reference',
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'User who created the record',
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'User who last modified the record',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -736,14 +736,14 @@ CREATE TABLE `matter` (
   CONSTRAINT `matter_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `matter` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `matter_responsible_foreign` FOREIGN KEY (`responsible`) REFERENCES `actor` (`login`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `matter_type_code_foreign` FOREIGN KEY (`type_code`) REFERENCES `matter_type` (`code`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -769,7 +769,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -788,7 +788,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -811,14 +811,14 @@ CREATE TABLE `matter_actor_lnk` (
   `matter_id` int unsigned NOT NULL,
   `actor_id` int unsigned NOT NULL,
   `display_order` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Order in which the actor should be displayed in a list of same type actors',
-  `role` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `shared` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Copied from the actor_role.shareable field. Indicates that this information, stored in the "container", is shared among members of the same family',
-  `actor_ref` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Actor''s reference',
+  `actor_ref` varchar(45) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Actor''s reference',
   `company_id` int unsigned DEFAULT NULL COMMENT 'A copy of the actor''s company ID, if applicable, at the time the link was created.',
   `rate` decimal(5,2) DEFAULT '100.00' COMMENT 'For co-owners - rate of ownership, or inventors',
   `date` date DEFAULT NULL COMMENT 'A date field that can, for instance, contain the date of ownership acquisition',
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -831,14 +831,14 @@ CREATE TABLE `matter_actor_lnk` (
   CONSTRAINT `matter_actor_lnk_company_id_foreign` FOREIGN KEY (`company_id`) REFERENCES `actor` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `matter_actor_lnk_matter_id_foreign` FOREIGN KEY (`matter_id`) REFERENCES `matter` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `matter_actor_lnk_role_foreign` FOREIGN KEY (`role`) REFERENCES `actor_role` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -864,7 +864,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -917,18 +917,18 @@ DROP TABLE IF EXISTS `matter_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `matter_category` (
-  `code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ref_prefix` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Used to build the case reference',
-  `category` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `display_with` char(5) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'PAT' COMMENT 'Display with the indicated category in the interface',
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ref_prefix` varchar(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Used to build the case reference',
+  `category` varchar(45) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `display_with` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'PAT' COMMENT 'Display with the indicated category in the interface',
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`code`),
   KEY `display_with` (`display_with`),
   CONSTRAINT `matter_category_display_with_foreign` FOREIGN KEY (`display_with`) REFERENCES `matter_category` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `matter_classifiers`;
 /*!50001 DROP VIEW IF EXISTS `matter_classifiers`*/;
@@ -949,34 +949,34 @@ DROP TABLE IF EXISTS `matter_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `matter_type` (
-  `code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `type` varchar(45) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `migrations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `password_resets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `password_resets` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   KEY `password_resets_email_index` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `renewal_list`;
 /*!50001 DROP VIEW IF EXISTS `renewal_list`*/;
@@ -1037,12 +1037,12 @@ CREATE TABLE `renewals_logs` (
   `to_invoice` tinyint DEFAULT NULL COMMENT 'Invoice state after the job',
   `from_done` tinyint DEFAULT NULL COMMENT 'Done state before the job',
   `to_done` tinyint DEFAULT NULL COMMENT 'Done state after the job',
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `renewals_logs_task_id_index` (`task_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1050,23 +1050,23 @@ DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `trigger_id` int unsigned NOT NULL COMMENT 'Link to generating event',
-  `code` char(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Task code. Link to event_names table',
+  `code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Task code. Link to event_names table',
   `due_date` date NOT NULL,
-  `assigned_to` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'User responsible for the task (if not the user responsible for the case)',
-  `detail` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Numbers or short comments',
+  `assigned_to` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'User responsible for the task (if not the user responsible for the case)',
+  `detail` varchar(45) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Numbers or short comments',
   `done` tinyint(1) DEFAULT '0' COMMENT 'Set to 1 when task done',
   `done_date` date DEFAULT NULL COMMENT 'Optional task completion date',
   `rule_used` int unsigned DEFAULT NULL COMMENT 'ID of the rule that was used to set this task',
   `time_spent` time DEFAULT NULL COMMENT 'Time spent by attorney on task',
-  `notes` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` varchar(150) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `cost` decimal(6,2) DEFAULT NULL COMMENT 'The estimated or invoiced fee amount',
   `fee` decimal(6,2) DEFAULT NULL,
-  `currency` char(3) COLLATE utf8mb4_unicode_ci DEFAULT 'EUR',
+  `currency` char(3) COLLATE utf8mb4_0900_ai_ci DEFAULT 'EUR',
   `step` tinyint NOT NULL DEFAULT '0',
   `invoice_step` tinyint NOT NULL DEFAULT '0',
   `grace_period` tinyint NOT NULL DEFAULT '0',
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1080,14 +1080,14 @@ CREATE TABLE `task` (
   CONSTRAINT `task_code_foreign` FOREIGN KEY (`code`) REFERENCES `event_name` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `task_rule_used_foreign` FOREIGN KEY (`rule_used`) REFERENCES `task_rules` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `task_trigger_id_foreign` FOREIGN KEY (`trigger_id`) REFERENCES `event` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1116,7 +1116,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1172,35 +1172,35 @@ DROP TABLE IF EXISTS `task_rules`;
 CREATE TABLE `task_rules` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Indicates whether the rule should be used',
-  `task` char(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Code of task that is created (or cleared)',
-  `trigger_event` char(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Event that generates this task',
+  `task` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Code of task that is created (or cleared)',
+  `trigger_event` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Event that generates this task',
   `clear_task` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Identifies an open task in the matter that is cleared when this one is created',
   `delete_task` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Identifies a task type to be deleted from the matter when this one is created',
-  `for_category` char(5) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'PAT' COMMENT 'Category to which this rule applies.',
-  `for_country` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Country where rule is applicable. If NULL, applies to all countries',
-  `for_origin` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `for_type` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Type to which rule is applicable. If null, rule applies to all types',
-  `detail` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Additional information on task',
+  `for_category` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'PAT' COMMENT 'Category to which this rule applies.',
+  `for_country` char(2) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Country where rule is applicable. If NULL, applies to all countries',
+  `for_origin` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `for_type` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Type to which rule is applicable. If null, rule applies to all types',
+  `detail` varchar(45) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Additional information on task',
   `days` int NOT NULL DEFAULT '0' COMMENT 'For task deadline calculation',
   `months` int NOT NULL DEFAULT '0' COMMENT 'For task deadline calculation',
   `years` int NOT NULL DEFAULT '0' COMMENT 'For task deadline calculation',
   `recurring` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'If non zero, indicates the recurring period in months. Mainly for annuities',
   `end_of_month` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'The deadline is at the end of the month. Mainly for annuities',
-  `abort_on` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Task won''t be created if this event exists',
-  `condition_event` char(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Task will only be created if this event exists',
+  `abort_on` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Task won''t be created if this event exists',
+  `condition_event` char(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Task will only be created if this event exists',
   `use_priority` tinyint(1) NOT NULL DEFAULT '0',
   `use_before` date DEFAULT NULL COMMENT 'Task will be created only if the base event is before this date',
   `use_after` date DEFAULT NULL COMMENT 'Task will be created only if the base event is after this date',
   `cost` decimal(6,2) DEFAULT NULL,
   `fee` decimal(6,2) DEFAULT NULL,
-  `currency` char(3) COLLATE utf8mb4_unicode_ci DEFAULT 'EUR',
-  `responsible` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'The person (login) responsible for this task. If 0, insert the matter responsible.',
-  `notes` text COLLATE utf8mb4_unicode_ci,
-  `creator` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `updater` char(16) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `currency` char(3) COLLATE utf8mb4_0900_ai_ci DEFAULT 'EUR',
+  `responsible` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'The person (login) responsible for this task. If 0, insert the matter responsible.',
+  `notes` text COLLATE utf8mb4_0900_ai_ci,
+  `creator` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updater` char(16) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `uid` varchar(32) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS (md5(concat(`task`,`trigger_event`,`clear_task`,`delete_task`,`for_category`,ifnull(`for_country`,_utf8mb4'c'),ifnull(`for_origin`,_utf8mb4'o'),ifnull(`for_type`,_utf8mb4't'),`days`,`months`,`years`,`recurring`,ifnull(`abort_on`,_utf8mb4'a'),ifnull(`condition_event`,_utf8mb4'c'),`use_priority`,ifnull(`detail`,_utf8mb4'd')))) VIRTUAL,
+  `uid` varchar(32) COLLATE utf8mb4_0900_ai_ci GENERATED ALWAYS AS (md5(concat(`task`,`trigger_event`,`clear_task`,`delete_task`,`for_category`,ifnull(`for_country`,_utf8mb4'c'),ifnull(`for_origin`,_utf8mb4'o'),ifnull(`for_type`,_utf8mb4't'),`days`,`months`,`years`,`recurring`,ifnull(`abort_on`,_utf8mb4'a'),ifnull(`condition_event`,_utf8mb4'c'),`use_priority`,ifnull(`detail`,_utf8mb4'd')))) VIRTUAL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `task_rules_uid_unique` (`uid`),
   KEY `trigger_event` (`trigger_event`,`for_country`),
@@ -1217,14 +1217,14 @@ CREATE TABLE `task_rules` (
   CONSTRAINT `task_rules_for_origin_foreign` FOREIGN KEY (`for_origin`) REFERENCES `country` (`iso`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `task_rules_task_foreign` FOREIGN KEY (`task`) REFERENCES `event_name` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `task_rules_trigger_event_foreign` FOREIGN KEY (`trigger_event`) REFERENCES `event_name` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1243,18 +1243,18 @@ DROP TABLE IF EXISTS `template_classes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `template_classes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(55) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `default_role` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Role of actor who is the receiver of the document',
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `updater` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(55) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `notes` varchar(255) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `default_role` varchar(5) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Role of actor who is the receiver of the document',
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `updater` varchar(20) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `template_classes_name_unique` (`name`),
   KEY `template_classes_default_role_foreign` (`default_role`),
   CONSTRAINT `template_classes_default_role_foreign` FOREIGN KEY (`default_role`) REFERENCES `actor_role` (`code`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `template_members`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1262,21 +1262,21 @@ DROP TABLE IF EXISTS `template_members`;
 CREATE TABLE `template_members` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `class_id` int unsigned NOT NULL COMMENT 'The class which allow to link the template to an event or a task',
-  `language` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Code of the language for the document',
-  `style` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Help to distinguish documents in a same class. Free text',
-  `category` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Help to classify documents. Free text',
-  `format` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `summary` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'The label of the document as displayed in lists',
-  `subject` varchar(160) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'It can content fields to merge at creation time',
-  `body` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'It can content fields to merge at creation time, and HTML tags when this format is chosen',
-  `creator` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `updater` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `language` varchar(2) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Code of the language for the document',
+  `style` varchar(30) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Help to distinguish documents in a same class. Free text',
+  `category` varchar(30) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Help to classify documents. Free text',
+  `format` varchar(4) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `summary` varchar(255) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'The label of the document as displayed in lists',
+  `subject` varchar(160) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'It can content fields to merge at creation time',
+  `body` text COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'It can content fields to merge at creation time, and HTML tags when this format is chosen',
+  `creator` varchar(20) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `updater` varchar(20) COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `template_members_class_id_foreign` (`class_id`),
   CONSTRAINT `template_members_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `template_classes` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `users`;
 /*!50001 DROP VIEW IF EXISTS `users`*/;
@@ -1304,7 +1304,7 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1327,7 +1327,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1356,7 +1356,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1380,7 +1380,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1435,7 +1435,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1498,7 +1498,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1581,7 +1581,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1752,7 +1752,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -1786,7 +1786,7 @@ DELIMITER ;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /* View definition */
 /*!50001 VIEW `event_lnk_list` AS select `event`.`id` AS `id`,`event`.`code` AS `code`,`event`.`matter_id` AS `matter_id`,if((`event`.`alt_matter_id` is null),`event`.`event_date`,`lnk`.`event_date`) AS `event_date`,if((`event`.`alt_matter_id` is null),`event`.`detail`,`lnk`.`detail`) AS `detail`,`matter`.`country` AS `country` from ((`event` left join `event` `lnk` on(((`event`.`alt_matter_id` = `lnk`.`matter_id`) and (`lnk`.`code` = 'FIL')))) left join `matter` on((`event`.`alt_matter_id` = `matter`.`id`))) */;
@@ -1799,7 +1799,7 @@ DELIMITER ;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /* View definition */
 /*!50001 VIEW `matter_actors` AS select `pivot`.`id` AS `id`,`actor`.`id` AS `actor_id`,ifnull(`actor`.`display_name`,`actor`.`name`) AS `display_name`,`actor`.`name` AS `name`,`actor`.`first_name` AS `first_name`,`actor`.`email` AS `email`,`pivot`.`display_order` AS `display_order`,`pivot`.`role` AS `role_code`,`actor_role`.`name` AS `role_name`,`actor_role`.`shareable` AS `shareable`,`actor_role`.`show_ref` AS `show_ref`,`actor_role`.`show_company` AS `show_company`,`actor_role`.`show_rate` AS `show_rate`,`actor_role`.`show_date` AS `show_date`,`matter`.`id` AS `matter_id`,`actor`.`warn` AS `warn`,`pivot`.`actor_ref` AS `actor_ref`,`pivot`.`date` AS `date`,`pivot`.`rate` AS `rate`,`pivot`.`shared` AS `shared`,`co`.`name` AS `company`,if((`pivot`.`matter_id` = `matter`.`container_id`),1,0) AS `inherited` from ((((`matter_actor_lnk` `pivot` join `matter` on(((`pivot`.`matter_id` = `matter`.`id`) or ((`pivot`.`shared` = 1) and (`pivot`.`matter_id` = `matter`.`container_id`))))) join `actor` on((`pivot`.`actor_id` = `actor`.`id`))) left join `actor` `co` on((`co`.`id` = `pivot`.`company_id`))) join `actor_role` on((`pivot`.`role` = `actor_role`.`code`))) order by `actor_role`.`display_order`,`pivot`.`display_order` */;
@@ -1812,7 +1812,7 @@ DELIMITER ;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /* View definition */
 /*!50001 VIEW `matter_classifiers` AS select `classifier`.`id` AS `id`,`matter`.`id` AS `matter_id`,`classifier`.`type_code` AS `type_code`,`classifier_type`.`type` AS `type_name`,`classifier_type`.`main_display` AS `main_display`,if((`classifier`.`value_id` is null),`classifier`.`value`,`classifier_value`.`value`) AS `value`,`classifier`.`url` AS `url`,`classifier`.`lnk_matter_id` AS `lnk_matter_id`,`classifier`.`display_order` AS `display_order` from (((`classifier` join `classifier_type` on((`classifier`.`type_code` = `classifier_type`.`code`))) join `matter` on((ifnull(`matter`.`container_id`,`matter`.`id`) = `classifier`.`matter_id`))) left join `classifier_value` on((`classifier_value`.`id` = `classifier`.`value_id`))) order by `classifier_type`.`display_order`,`classifier`.`display_order` */;
@@ -1825,7 +1825,7 @@ DELIMITER ;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /* View definition */
 /*!50001 VIEW `renewal_list` AS select `task`.`id` AS `id`,`task`.`detail` AS `detail`,`task`.`due_date` AS `due_date`,`task`.`done` AS `done`,`task`.`done_date` AS `done_date`,`event`.`matter_id` AS `matter_id`,`fees`.`cost` AS `cost`,`fees`.`fee` AS `fee`,`fees`.`cost_reduced` AS `cost_reduced`,`fees`.`fee_reduced` AS `fee_reduced`,`fees`.`cost_sup` AS `cost_sup`,`fees`.`fee_sup` AS `fee_sup`,`fees`.`fee_sup_reduced` AS `fee_sup_reduced`,`fees`.`cost_sup_reduced` AS `cost_sup_reduced`,`task`.`trigger_id` AS `trigger_id`,`matter`.`category_code` AS `category`,`matter`.`caseref` AS `caseref`,`matter`.`suffix` AS `suffix`,`matter`.`country` AS `country`,`mcountry`.`name_FR` AS `country_FR`,`matter`.`origin` AS `origin`,`matter`.`type_code` AS `type_code`,`matter`.`idx` AS `idx`,(select 1 from `classifier` `sme` where ((`matter`.`id` = `sme`.`matter_id`) and (`sme`.`type_code` = 'SME'))) AS `sme_status`,`event`.`code` AS `event_name`,`event`.`event_date` AS `event_date`,`event`.`detail` AS `number`,group_concat(`pa_app`.`display_name` separator ',') AS `applicant_dn`,`pa_cli`.`display_name` AS `client_dn`,`pa_cli`.`ren_discount` AS `discount`,`pmal_cli`.`actor_id` AS `client_id`,`pa_cli`.`email` AS `email`,ifnull(`task`.`assigned_to`,`matter`.`responsible`) AS `responsible`,`cla`.`value` AS `title`,`ev`.`detail` AS `pub_num`,`task`.`step` AS `step`,`task`.`grace_period` AS `grace_period`,`task`.`invoice_step` AS `invoice_step` from ((((((((((`matter` left join `matter_actor_lnk` `pmal_app` on(((ifnull(`matter`.`container_id`,`matter`.`id`) = `pmal_app`.`matter_id`) and (`pmal_app`.`role` = 'APP')))) left join `actor` `pa_app` on((`pa_app`.`id` = `pmal_app`.`actor_id`))) left join `matter_actor_lnk` `pmal_cli` on(((ifnull(`matter`.`container_id`,`matter`.`id`) = `pmal_cli`.`matter_id`) and (`pmal_cli`.`role` = 'CLI')))) left join `country` `mcountry` on((`mcountry`.`iso` = `matter`.`country`))) left join `actor` `pa_cli` on((`pa_cli`.`id` = `pmal_cli`.`actor_id`))) join `event` on((`matter`.`id` = `event`.`matter_id`))) left join `event` `ev` on(((`matter`.`id` = `ev`.`matter_id`) and (`ev`.`code` = 'PUB')))) join `task` on((`task`.`trigger_id` = `event`.`id`))) left join `classifier` `cla` on(((ifnull(`matter`.`container_id`,`matter`.`id`) = `cla`.`matter_id`) and (`cla`.`type_code` = 'TITOF')))) left join `fees` on(((`fees`.`for_country` = `matter`.`country`) and (`fees`.`for_category` = `matter`.`category_code`) and (`fees`.`qt` = `task`.`detail`)))) where ((`task`.`code` = 'REN') and (`matter`.`dead` = 0)) group by `task`.`id` */;
@@ -1838,7 +1838,7 @@ DELIMITER ;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /* View definition */
 /*!50001 VIEW `task_list` AS select `task`.`id` AS `id`,`task`.`code` AS `code`,`event_name`.`name` AS `name`,`task`.`detail` AS `detail`,`task`.`due_date` AS `due_date`,`task`.`done` AS `done`,`task`.`done_date` AS `done_date`,`event`.`matter_id` AS `matter_id`,`task`.`cost` AS `cost`,`task`.`fee` AS `fee`,`task`.`trigger_id` AS `trigger_id`,`matter`.`category_code` AS `category`,`matter`.`caseref` AS `caseref`,`matter`.`country` AS `country`,`matter`.`origin` AS `origin`,`matter`.`type_code` AS `type_code`,`matter`.`idx` AS `idx`,ifnull(`task`.`assigned_to`,`matter`.`responsible`) AS `responsible`,`actor`.`login` AS `delegate`,`task`.`rule_used` AS `rule_used`,`matter`.`dead` AS `dead` from (((((`matter` left join `matter_actor_lnk` on(((ifnull(`matter`.`container_id`,`matter`.`id`) = `matter_actor_lnk`.`matter_id`) and (`matter_actor_lnk`.`role` = 'DEL')))) left join `actor` on((`actor`.`id` = `matter_actor_lnk`.`actor_id`))) join `event` on((`matter`.`id` = `event`.`matter_id`))) join `task` on((`task`.`trigger_id` = `event`.`id`))) join `event_name` on((`task`.`code` = `event_name`.`code`))) */;
@@ -1851,7 +1851,7 @@ DELIMITER ;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /* View definition */
 /*!50001 VIEW `users` AS select `actor`.`id` AS `id`,`actor`.`name` AS `name`,`actor`.`login` AS `login`,`actor`.`password` AS `password`,`actor`.`default_role` AS `default_role`,`actor`.`company_id` AS `company_id`,`actor`.`email` AS `email`,`actor`.`phone` AS `phone`,`actor`.`notes` AS `notes`,`actor`.`creator` AS `creator`,`actor`.`created_at` AS `created_at`,`actor`.`updated_at` AS `updated_at`,`actor`.`updater` AS `updater`,`actor`.`remember_token` AS `remember_token` from `actor` where (`actor`.`login` is not null) */;

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
@@ -17,9 +16,7 @@ class EventController extends Controller
             'matter_id' => 'required|numeric',
             'event_date' => 'required_without:alt_matter_id',
         ]);
-        if ($request->filled('event_date')) {
-            $request->merge(['event_date' => Carbon::createFromLocaleIsoFormat('L', app()->getLocale(), $request->event_date)]);
-        }
+        // Date conversion removed - ValidateDateFields middleware now provides ISO format dates
         $request->merge(['creator' => Auth::user()->login]);
 
         return Event::create($request->except(['_token', '_method', 'eventName']));
@@ -36,9 +33,7 @@ class EventController extends Controller
             'alt_matter_id' => 'nullable|numeric',
             'event_date' => 'sometimes|required_without:alt_matter_id',
         ]);
-        if ($request->filled('event_date')) {
-            $request->merge(['event_date' => Carbon::createFromLocaleIsoFormat('L', app()->getLocale(), $request->event_date)]);
-        }
+        // Date conversion removed - ValidateDateFields middleware now provides ISO format dates
         $request->merge(['updater' => Auth::user()->login]);
         $event->update($request->except(['_token', '_method']));
 

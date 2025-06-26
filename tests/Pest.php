@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 /*
@@ -64,6 +63,7 @@ function actingAs(?User $user = null): User
 {
     $user = $user ?? User::factory()->create();
     test()->actingAs($user);
+
     return $user;
 }
 
@@ -74,6 +74,7 @@ function actingAsRole(string $role): User
 {
     $user = User::factory()->create(['default_role' => $role]);
     test()->actingAs($user);
+
     return $user;
 }
 

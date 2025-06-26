@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Development;
 
-use Illuminate\Database\Seeder;
 use App\Models\Event;
 use App\Models\Task;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class SampleTasksSeeder extends Seeder
 {
@@ -15,19 +15,19 @@ class SampleTasksSeeder extends Seeder
     public function run()
     {
         $this->command->info('Creating sample tasks...');
-        
+
         // Create renewal tasks for granted patents
         $this->createRenewalTasks();
-        
+
         // Create deadline tasks for pending matters
         $this->createDeadlineTasks();
-        
+
         // Create some completed tasks for history
         $this->createCompletedTasks();
-        
+
         $this->command->info('Sample tasks created successfully!');
     }
-    
+
     /**
      * Create renewal tasks for granted patents.
      */
@@ -42,24 +42,24 @@ class SampleTasksSeeder extends Seeder
                 $grantDate = Carbon::parse($grantEvent->event_date);
                 $currentYear = Carbon::now()->year;
                 $grantYear = $grantDate->year;
-                
+
                 // Create renewal tasks for past and upcoming years
                 for ($year = 3; $year <= min(20, $currentYear - $grantYear + 2); $year++) {
                     $dueDate = $grantDate->copy()->addYears($year)->endOfMonth();
-                    
+
                     $task = Task::factory()->renewal()->create([
                         'trigger_id' => $grantEvent->id,
                         'due_date' => $dueDate->format('Y-m-d'),
                         'detail' => json_encode(['RYear' => $year]),
                         'done' => $dueDate->isPast() && rand(0, 100) > 20, // 80% of past renewals are done
-                        'done_date' => $dueDate->isPast() && rand(0, 100) > 20 
-                            ? $dueDate->copy()->subDays(rand(10, 30))->format('Y-m-d') 
+                        'done_date' => $dueDate->isPast() && rand(0, 100) > 20
+                            ? $dueDate->copy()->subDays(rand(10, 30))->format('Y-m-d')
                             : null,
                     ]);
                 }
             });
     }
-    
+
     /**
      * Create deadline tasks for pending matters.
      */
@@ -68,7 +68,7 @@ class SampleTasksSeeder extends Seeder
         // Response deadlines for examination reports
         Event::where('code', 'EXA')->get()->each(function ($examEvent) {
             $dueDate = Carbon::parse($examEvent->event_date)->addMonths(rand(2, 4));
-            
+
             Task::factory()->response()->create([
                 'trigger_id' => $examEvent->id,
                 'due_date' => $dueDate->format('Y-m-d'),
@@ -76,7 +76,7 @@ class SampleTasksSeeder extends Seeder
                 'assigned_to' => rand(0, 100) > 50 ? 'jdoe' : null,
             ]);
         });
-        
+
         // Priority deadlines
         Event::where('code', 'FIL')
             ->whereHas('matter', function ($q) {
@@ -85,7 +85,7 @@ class SampleTasksSeeder extends Seeder
             ->get()
             ->each(function ($filingEvent) {
                 $dueDate = Carbon::parse($filingEvent->event_date)->addYear();
-                
+
                 if ($dueDate->isFuture() || $dueDate->isToday()) {
                     Task::factory()->priorityDeadline()->create([
                         'trigger_id' => $filingEvent->id,
@@ -95,7 +95,7 @@ class SampleTasksSeeder extends Seeder
                 }
             });
     }
-    
+
     /**
      * Create some completed tasks for history.
      */
@@ -114,7 +114,7 @@ class SampleTasksSeeder extends Seeder
                 'fee' => rand(200, 500),
             ]);
         });
-        
+
         // Create some completed reminder tasks
         Event::where('code', 'PUB')->limit(5)->get()->each(function ($event) {
             Task::factory()->create([

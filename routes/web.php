@@ -11,18 +11,17 @@
   |
  */
 
+use App\Http\Controllers\AutocompleteController;
+use App\Http\Controllers\ClassifierController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MatterController;
+use App\Http\Controllers\MatterSearchController;
+use App\Http\Controllers\RenewalController;
 use App\Models\Matter;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\MatterController;
-use App\Http\Controllers\RenewalController;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\AutocompleteController;
-use App\Http\Controllers\MatterSearchController;
-use App\Http\Controllers\ClassifierController;
 
 Route::get('/', function () {
     return view('welcome');

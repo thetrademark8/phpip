@@ -11,9 +11,9 @@ class UpdateTaskDetailRenewalJson extends Migration
         if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
             return;
         }
-        
+
         // Update procedures to wrap RYear in JSON
-        DB::statement("DROP PROCEDURE IF EXISTS insert_recurring_renewals");
+        DB::statement('DROP PROCEDURE IF EXISTS insert_recurring_renewals');
         DB::statement("
         CREATE PROCEDURE insert_recurring_renewals(
             IN P_trigger_id INT,
@@ -70,9 +70,9 @@ class UpdateTaskDetailRenewalJson extends Migration
         if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
             return;
         }
-        
+
         // Restore original procedure
-        DB::statement("DROP PROCEDURE IF EXISTS insert_recurring_renewals");
+        DB::statement('DROP PROCEDURE IF EXISTS insert_recurring_renewals');
         DB::statement("
         CREATE PROCEDURE insert_recurring_renewals(
             IN P_trigger_id INT,

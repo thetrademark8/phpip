@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Collection;
-
 class MatterExportService
 {
     /**
@@ -12,7 +10,7 @@ class MatterExportService
      * This method exports the provided matters array to a CSV file and returns
      * a streamed response for downloading the file.
      *
-     * @param array $matters The array of matters to be exported.
+     * @param  array  $matters  The array of matters to be exported.
      * @return \Symfony\Component\HttpFoundation\StreamedResponse The streamed response for the CSV file download.
      */
     public function export(array $matters): \Symfony\Component\HttpFoundation\StreamedResponse
@@ -66,7 +64,7 @@ class MatterExportService
         rewind($export_csv);
 
         // Generate the filename for the CSV file.
-        $filename = Now()->isoFormat('YMMDDHHmmss') . '_matters.csv';
+        $filename = Now()->isoFormat('YMMDDHHmmss').'_matters.csv';
 
         // Return a streamed response for downloading the CSV file.
         return response()->stream(
@@ -74,7 +72,7 @@ class MatterExportService
                 fpassthru($export_csv);
             },
             200,
-            ['Content-Type' => 'application/csv', 'Content-Disposition' => 'attachment; filename=' . $filename]
+            ['Content-Type' => 'application/csv', 'Content-Disposition' => 'attachment; filename='.$filename]
         );
     }
 }

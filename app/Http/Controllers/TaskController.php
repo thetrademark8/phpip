@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Database\Eloquent\Builder;
 
 class TaskController extends Controller
 {
@@ -23,7 +22,7 @@ class TaskController extends Controller
         }
 
         if ($request->what_tasks > 1) {
-            $tasks->whereHas('matter.client', function (Builder $q) use ($request) { 
+            $tasks->whereHas('matter.client', function (Builder $q) use ($request) {
                 $q->where('actor_id', $request->what_tasks);
             });
         }
@@ -73,10 +72,7 @@ class TaskController extends Controller
             'cost' => 'nullable|numeric',
             'fee' => 'nullable|numeric',
         ]);
-        $request->merge(['due_date' => Carbon::createFromLocaleIsoFormat('L', app()->getLocale(), $request->due_date)]);
-        if ($request->filled('done_date')) {
-            $request->merge(['done_date' => Carbon::createFromLocaleIsoFormat('L', app()->getLocale(), $request->done_date)]);
-        }
+        // Date conversion removed - ValidateDateFields middleware now provides ISO format dates
         $request->merge(['creator' => Auth::user()->login]);
 
         return Task::create($request->except(['_token', '_method']));
@@ -97,13 +93,11 @@ class TaskController extends Controller
             'detail' => 'nullable|string',
         ]);
         $request->merge(['updater' => Auth::user()->login]);
-        if ($request->filled('done_date')) {
-            $request->merge(['done_date' => Carbon::createFromLocaleIsoFormat('L', app()->getLocale(), $request->done_date)]);
-        }
-        
+        // Date conversion removed - ValidateDateFields middleware now provides ISO format dates
+
         // Handle detail field
         if ($request->has('detail')) {
-            if (!$task->getTranslation('detail', 'en', false)) {
+            if (! $task->getTranslation('detail', 'en', false)) {
                 // If setting a non-empty value and there was no previous English translation,
                 // ensure it's set for both current locale and fallback
                 $task->setTranslation('detail', 'en', $request->detail);
@@ -111,7 +105,7 @@ class TaskController extends Controller
         }
         // Remove task rule when due date is manually changed
         if ($request->filled('due_date')) {
-            $request->merge(['due_date' => Carbon::createFromLocaleIsoFormat('L', app()->getLocale(), $request->due_date)]);
+            // Date conversion removed - ValidateDateFields middleware now provides ISO format dates
             $request->merge(['rule_used' => null]);
         }
         // Remove renewal from renewal management pipeline

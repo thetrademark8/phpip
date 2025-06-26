@@ -150,8 +150,8 @@
                     </th>
                     <td class="col-2">
                         <div class="input-group">
-                            <input type="date" class="form-control form-control-sm px-0" name="Fromdate" id="Fromdate" title="{{ __('From selected date') }}" value="{{ Request::get('Fromdate') }}">
-                            <input type="date" class="form-control form-control-sm px-0" name="Untildate" id="Untildate" title="{{ __('Until selected date') }}" value="{{ Request::get('Untildate') }}">
+                            <x-date-input name="Fromdate" :value="Request::get('Fromdate')" class="form-control-sm px-0" :inputAttributes="['id' => 'Fromdate', 'title' => __('From selected date')]" :showLabel="false" />
+                            <x-date-input name="Untildate" :value="Request::get('Untildate')" class="form-control-sm px-0" :inputAttributes="['id' => 'Untildate', 'title' => __('Until selected date')]" :showLabel="false" />
                         </div>
                     </td>
                     <td class="col-1 text-center">

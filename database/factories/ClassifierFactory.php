@@ -14,7 +14,7 @@ class ClassifierFactory extends Factory
     {
         // Common classifier types
         $types = ['TITOF', 'TIT', 'DESCR', 'TITEN', 'LOGO', 'IMG', 'IPC', 'NICE'];
-        
+
         return [
             'matter_id' => Matter::factory(),
             'type_code' => $this->faker->randomElement($types),
@@ -77,7 +77,7 @@ class ClassifierFactory extends Factory
     public function nice(): static
     {
         $niceClasses = range(1, 45);
-        
+
         return $this->state(fn (array $attributes) => [
             'type_code' => 'NICE',
             'value' => $this->faker->randomElement($niceClasses),

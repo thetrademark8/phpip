@@ -75,7 +75,7 @@
       </tr>
       <tr>
         <td><label for="use_before" title="{{ $ruleComments['use_before'] }}">{{ __('Use before') }}</label></td>
-        <td><input type="date" class="form-control form-control-sm" name="use_before"></td>
+        <td><x-date-input name="use_before" class="form-control-sm" /></td>
         <td><label title="{{ $ruleComments['clear_task'] }}">{{ __('Clear task') }}</label> </td>
         <td>
           <div class="form-check form-check-inline">
@@ -90,7 +90,7 @@
       </tr>
       <tr>
         <td><label for="use_after" title="{{ $ruleComments['use_after'] }}">{{ __('Use after') }}</label></td>
-        <td><input type="date" class="form-control form-control-sm " name="use_after"></td>
+        <td><x-date-input name="use_after" class="form-control-sm" /></td>
         <td><label title="{{ $ruleComments['delete_task'] }}">{{ __('Delete task') }}</label> </td>
         <td>
           <div class="form-check form-check-inline">

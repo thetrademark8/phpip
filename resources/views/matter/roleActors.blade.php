@@ -20,7 +20,7 @@
       <td><input type="text" class="form-control noformat {{ $actor_item->inherited ? 'fst-italic' : '' }}" name="actor_id" data-ac="/actor/autocomplete" placeholder="{{ $actor_item->display_name }}"></td>
       <td><input type="text" class="form-control noformat" name="actor_ref" value="{{ $actor_item->actor_ref }}"></td>
       <td><input type="text" class="form-control noformat" name="company_id" data-ac="/actor/autocomplete" value="{{ $actor_item->company }}"></td>
-      <td><input type="date" class="form-control noformat" name="date" value="{{ $actor_item->date }}"></td>
+      <td><x-date-input name="date" :value="$actor_item->date" :showLabel="false" /></td>
       <td><input type="text" class="form-control noformat" size="6" name="rate" value="{{ $actor_item->rate }}"></td>
       <td><input type="checkbox" class="noformat" name="shared" {{ $actor_item->shared ? 'checked' : '' }}></td>
       <td><input type="text" class="form-control noformat" size="2" name="display_order" value="{{ $actor_item->display_order }}"></td>

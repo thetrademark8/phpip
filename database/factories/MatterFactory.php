@@ -14,7 +14,7 @@ class MatterFactory extends Factory
     {
         $categories = ['PAT', 'TM', 'DES', 'DOM', 'COP'];
         $category = $this->faker->randomElement($categories);
-        
+
         return [
             'category_code' => $category,
             'caseref' => strtoupper($this->faker->bothify('??###')),
@@ -136,9 +136,9 @@ class MatterFactory extends Factory
     public function withSequentialCaseref(string $prefix = 'TEST'): static
     {
         static $sequence = 1;
-        
+
         return $this->state(fn (array $attributes) => [
-            'caseref' => $prefix . str_pad($sequence++, 4, '0', STR_PAD_LEFT),
+            'caseref' => $prefix.str_pad($sequence++, 4, '0', STR_PAD_LEFT),
         ]);
     }
 }

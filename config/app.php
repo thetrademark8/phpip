@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Facade;
-
 return [
 
     /*
@@ -16,6 +14,19 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Company Branding
+    |--------------------------------------------------------------------------
+    |
+    | These values are used for company-specific branding throughout the
+    | application, including logos and company names.
+    |
+    */
+
+    'company_name' => env('COMPANY_NAME', 'My Company'),
+    'company_logo' => env('COMPANY_LOGO', ''),
 
     /*
     |--------------------------------------------------------------------------

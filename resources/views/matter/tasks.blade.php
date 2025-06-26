@@ -70,9 +70,9 @@
         <span class="ms-2">{{ $task->info->name }}</span>
         <span data-name="detail" contenteditable>{{ $task->detail ?: '--' }}</span>
       </td>
-      <td><input type="text" class="form-control noformat  {{ $task->done ? 'text-success' : 'text-danger' }}" name="due_date" value="{{ $task->due_date->isoFormat('L') }}"></td>
+      <td><x-date-input name="due_date" :value="$task->due_date" :class="$task->done ? 'text-success' : 'text-danger'" :showLabel="false" /></td>
       <td><input type="checkbox" class="noformat" name="done" {{ $task->done ? 'checked' : '' }}></td>
-      <td><input type="text" class="form-control noformat text-success" name="done_date" value="{{ empty($task->done_date) ? '' : $task->done_date->isoFormat('L') }}"></td>
+      <td><x-date-input name="done_date" :value="$task->done_date" class="text-success" :showLabel="false" /></td>
       @can('readonly')
       @if($is_renewals)
       <td><input type="text" class="form-control noformat" name="cost" value="{{ $task->cost }}"></td>
@@ -115,7 +115,7 @@
           <input type="hidden" name="code">
           <input type="text" class="form-control form-control-sm" placeholder="{{ __('Task') }}" data-ac="/event-name/autocomplete/1?category={{ $matter->category_code }}" data-actarget="code">
           <input type="text" class="form-control form-control-sm" name="detail" placeholder="{{ __('Detail') }}">
-          <input type="text" class="form-control form-control-sm" placeholder="{{ __('Due date (xx/xx/yyyy)') }}" name="due_date">
+          <x-date-input name="due_date" class="form-control-sm" placeholder="{{ __('Due date (xx/xx/yyyy)') }}" :showLabel="false" />
           <input type="hidden" name="assigned_to">
           <input type="text" class="form-control form-control-sm" placeholder="{{ __('Assigned to') }}" data-ac="/user/autocomplete" data-actarget="assigned_to">
           <input type="text" class="form-control form-control-sm" name="notes" placeholder="{{ __('Notes') }}">

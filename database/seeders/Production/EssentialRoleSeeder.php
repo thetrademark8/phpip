@@ -27,11 +27,11 @@ class EssentialRoleSeeder extends Seeder
             ['code' => 'OWN', 'name' => '{"en": "Owner", "fr": "Propriétaire"}', 'display_order' => 2, 'shareable' => 1, 'show_ref' => 0, 'show_company' => 1, 'show_rate' => 0, 'show_date' => 1],
             ['code' => 'PAY', 'name' => '{"en": "Payor", "fr": "Payeur"}', 'display_order' => 3, 'shareable' => 1, 'show_ref' => 1, 'show_company' => 0, 'show_rate' => 1, 'show_date' => 0],
             ['code' => 'WRT', 'name' => '{"en": "Writer", "fr": "Rédacteur"}', 'display_order' => 4, 'shareable' => 1, 'show_ref' => 0, 'show_company' => 0, 'show_rate' => 1, 'show_date' => 0],
-            
+
             // System roles
             ['code' => 'DBA', 'name' => '{"en": "DB Admin", "fr": "Admin BD"}', 'display_order' => 127, 'shareable' => 0, 'show_ref' => 0, 'show_company' => 0, 'show_rate' => 0, 'show_date' => 0],
         ];
-        
+
         DB::table('actor_role')->insertOrIgnore($roles);
     }
 }

@@ -96,7 +96,13 @@
   <div id="app">
     <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm mb-1">
       <div class="container">
-        <a class="navbar-brand" href="{{ url('/') }}">
+        <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+          @if(config('app.company_logo'))
+            <img src="{{ asset(config('app.company_logo')) }}" 
+                 alt="{{ config('app.company_name', config('app.name')) }}" 
+                 class="me-2"
+                 style="max-height: 40px; max-width: 150px; height: auto;">
+          @endif
           {{ config('app.name', 'phpIP') }}
         </a>
         @auth

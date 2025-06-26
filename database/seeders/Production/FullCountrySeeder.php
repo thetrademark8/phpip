@@ -164,7 +164,7 @@ class FullCountrySeeder extends Seeder
                 'renewal_start' => 'FIL',
                 'checked_on' => '2020-02-24',
             ],
-                                             
+
             [
                 'numcode' => 0,
                 'iso' => 'AP',

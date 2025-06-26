@@ -19,7 +19,7 @@ class EssentialCountrySeeder extends Seeder
             ['iso' => 'EP', 'iso3' => 'EPO', 'name' => 'European Patent Office', 'name_FR' => 'Office européen des brevets', 'name_DE' => 'Europäisches Patentamt'],
             ['iso' => 'WO', 'iso3' => 'WO', 'name' => 'WIPO', 'name_FR' => 'OMPI', 'name_DE' => 'WIPO'],
             ['iso' => 'EM', 'iso3' => 'EM', 'name' => 'EUIPO', 'name_FR' => 'EUIPO', 'name_DE' => 'EUIPO'],
-            
+
             // European countries
             ['iso' => 'FR', 'iso3' => 'FRA', 'name' => 'France', 'name_FR' => 'France', 'name_DE' => 'Frankreich'],
             ['iso' => 'DE', 'iso3' => 'DEU', 'name' => 'Germany', 'name_FR' => 'Allemagne', 'name_DE' => 'Deutschland'],
@@ -31,20 +31,20 @@ class EssentialCountrySeeder extends Seeder
             ['iso' => 'CH', 'iso3' => 'CHE', 'name' => 'Switzerland', 'name_FR' => 'Suisse', 'name_DE' => 'Schweiz'],
             ['iso' => 'AT', 'iso3' => 'AUT', 'name' => 'Austria', 'name_FR' => 'Autriche', 'name_DE' => 'Österreich'],
             ['iso' => 'SE', 'iso3' => 'SWE', 'name' => 'Sweden', 'name_FR' => 'Suède', 'name_DE' => 'Schweden'],
-            
+
             // Major Asian markets
             ['iso' => 'JP', 'iso3' => 'JPN', 'name' => 'Japan', 'name_FR' => 'Japon', 'name_DE' => 'Japan'],
             ['iso' => 'CN', 'iso3' => 'CHN', 'name' => 'China', 'name_FR' => 'Chine', 'name_DE' => 'China'],
             ['iso' => 'KR', 'iso3' => 'KOR', 'name' => 'South Korea', 'name_FR' => 'Corée du Sud', 'name_DE' => 'Südkorea'],
             ['iso' => 'IN', 'iso3' => 'IND', 'name' => 'India', 'name_FR' => 'Inde', 'name_DE' => 'Indien'],
-            
+
             // Other major markets
             ['iso' => 'CA', 'iso3' => 'CAN', 'name' => 'Canada', 'name_FR' => 'Canada', 'name_DE' => 'Kanada'],
             ['iso' => 'AU', 'iso3' => 'AUS', 'name' => 'Australia', 'name_FR' => 'Australie', 'name_DE' => 'Australien'],
             ['iso' => 'BR', 'iso3' => 'BRA', 'name' => 'Brazil', 'name_FR' => 'Brésil', 'name_DE' => 'Brasilien'],
             ['iso' => 'MX', 'iso3' => 'MEX', 'name' => 'Mexico', 'name_FR' => 'Mexique', 'name_DE' => 'Mexiko'],
         ];
-        
+
         DB::table('country')->insertOrIgnore($countries);
     }
 }

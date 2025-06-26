@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Database\Seeders\Testing\MinimalDataSeeder;
+use Illuminate\Database\Seeder;
 
 class TestSeeder extends Seeder
 {
@@ -15,10 +15,10 @@ class TestSeeder extends Seeder
     public function run()
     {
         $this->command->info('Starting test seeding with minimal data...');
-        
+
         // Only seed the absolute minimum required for tests
         $this->call(MinimalDataSeeder::class);
-        
+
         $this->command->info('Test seeding completed successfully!');
     }
 }

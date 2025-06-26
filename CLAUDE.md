@@ -380,3 +380,159 @@ Task::factory()
 
 ### Recent Additions (2025-05-27)
 - **Design Patents**: Display registration date and number in "granted/reg'd" and "number" columns
+
+## Phase 2.1 Completion Status - Interactive Calendar with Date Standardization
+
+### ✅ Completed in Phase 2.1:
+
+1. **Date Picker Implementation**
+   - Installed Flatpickr (`npm install flatpickr`)
+   - Created `DatePickerComponent.js` with AJAX-aware auto-initialization
+   - Implemented MutationObserver for dynamic content support
+   - Added French locale support with proper error handling
+   - Fixed timezone issues with custom ISO formatting
+
+2. **Service Layer for Date Handling**
+   - Created `DatePickerServiceInterface` following SOLID principles
+   - Implemented `DatePickerService` with flexible date parsing
+   - Supports multiple input formats: DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY, ISO
+   - Added strict validation to prevent invalid date auto-correction
+
+3. **Middleware for Automatic Date Conversion**
+   - Created `ValidateDateFields` middleware
+   - Automatically converts all date fields to ISO format before validation
+   - Handles both AJAX and traditional form submissions
+   - Returns proper validation errors with original format
+
+4. **Blade Component System**
+   - Created reusable `DateInput` component
+   - Dual input system: visible formatted input + hidden ISO input
+   - Optional label display with `showLabel` parameter
+   - Integrated with existing form change handlers
+
+5. **Views Updated (16 date fields across 9 views)**
+   - matter/events.blade.php (event_date)
+   - matter/tasks.blade.php (due_date, done_date)
+   - matter/roleActors.blade.php (date)
+   - rule/create.blade.php (active_from, active_to)
+   - rule/show.blade.php (active_from, active_to)
+   - fee/create.blade.php (from, to)
+   - renewals/index.blade.php (start_date, end_date)
+   - renewals/logs.blade.php (from_date, to_date)
+   - home.blade.php (expire_date)
+
+6. **Controller Updates**
+   - Removed locale-specific date parsing from EventController, TaskController, HomeController
+   - Simplified to use Carbon::parse() or createFromFormat('Y-m-d')
+   - Middleware now handles all format conversions
+
+### Key Technical Decisions:
+
+1. **Timezone-Neutral Date Handling**
+   ```javascript
+   // Avoid using toISOString() which converts to UTC
+   formatDateToIso(date) {
+       if (!date) return '';
+       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+   }
+   ```
+
+2. **AJAX Compatibility**
+   - MutationObserver watches for DOM changes
+   - Automatic reinitialization of date pickers
+   - Proper cleanup to prevent memory leaks
+
+3. **Integration with Existing Systems**
+   - Preserved existing noformat change handlers
+   - Synthetic event triggering for compatibility
+   - Maintained all existing save functionality
+
+### Testing:
+- Created comprehensive Pest tests for DatePickerService
+- 45 tests with 113 assertions covering all edge cases
+- Tests for flexible parsing, validation, and conversion
+
+### Important Commands:
+```bash
+# Run tests for date functionality
+./vendor/bin/pest --filter=DatePickerService
+
+# Rebuild assets after Flatpickr installation
+npm run build
+
+# Check for any date-related issues
+php artisan pint
+```
+
+### Lessons Learned:
+1. **Timezone Bug**: JavaScript's toISOString() converts to UTC, causing date shifts. Always use timezone-neutral formatting for date-only fields.
+2. **AJAX Integration**: MutationObserver is essential for dynamic content. Always destroy existing instances before reinitializing.
+3. **Locale Support**: Import specific locales explicitly to avoid console errors.
+4. **Event Handling**: Synthetic events must be dispatched after programmatic value changes for existing handlers to work.
+
+## Phase 2.2 Status - Case Preservation
+
+**Status**: SKIPPED - Pending client clarification
+**Date**: 2025-06-26
+
+This phase was skipped because the database collation was previously changed to ensure uniform case handling across the system. Before implementing case preservation for matter titles, clarification is needed from the client regarding:
+- The specific collation requirements
+- Whether the current lowercase conversion is intentional for search/sorting purposes
+- The desired behavior for case preservation vs. case-insensitive searching
+
+See TODO.md for details.
+
+## Phase 2.3 Completion Status - Company Branding (Static Logo)
+
+### ✅ Completed in Phase 2.3:
+
+1. **Static Logo Configuration**
+   - Added `COMPANY_LOGO` environment variable to `.env.example`
+   - Added logo configuration to `config/app.php`
+   - Each IP firm instance can configure their own logo path
+
+2. **Logo Storage Structure**
+   - Created `/public/images/logos/` directory
+   - Added README.md with usage instructions
+   - Created sample SVG logo for testing
+
+3. **UI Implementation**
+   - Updated navbar in `layouts/app.blade.php`:
+     - Logo displays before app name
+     - Responsive sizing (max 40px height, 150px width)
+     - Only shows if configured
+   - Updated login page:
+     - Logo centered above login form
+     - Larger size for better visibility (max 80px height, 250px width)
+
+4. **Testing**
+   - Created `CompanyLogoTest` with comprehensive coverage
+   - Tests configuration access, login page display, and navbar display
+   - All 4 tests passing
+
+### Key Design Decisions:
+
+1. **Static Configuration Approach**
+   - Used environment variables instead of database storage
+   - Each IP firm has one instance with a fixed logo
+   - Simple `.env` configuration: `COMPANY_LOGO=images/logos/company-logo.png`
+
+2. **Flexible Implementation**
+   - Logo display is conditional - works without configuration
+   - Supports PNG, JPG, and SVG formats
+   - Uses Bootstrap classes for responsive behavior
+
+3. **Accessibility**
+   - Alt text uses company name from configuration
+   - Maintains visual hierarchy with proper sizing
+
+### Usage Instructions:
+
+1. Place your company logo in `/public/images/logos/`
+2. Update your `.env` file:
+   ```
+   COMPANY_LOGO=images/logos/your-logo.png
+   ```
+3. Logo will automatically appear in navbar and login page
+
+This completes Phase 2 of the refactoring plan. The UI/UX improvements are now implemented with date standardization, skipped case preservation (pending clarification), and static company branding.

@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Task;
 use App\Models\Event;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -13,9 +13,9 @@ class TaskFactory extends Factory
 
     public function definition()
     {
-        // Common task codes
-        $taskCodes = ['REN', 'PRID', 'REP', 'PAY', 'REM', 'EXAM', 'NPHA'];
-        
+        // Task codes that exist in event_name table
+        $taskCodes = ['REN', 'REP', 'PAY', 'REM', 'PRI', 'REQ', 'EXA'];
+
         return [
             'trigger_id' => Event::factory(),
             'code' => $this->faker->randomElement($taskCodes),
@@ -55,7 +55,7 @@ class TaskFactory extends Factory
     public function priorityDeadline(): static
     {
         return $this->state(fn (array $attributes) => [
-            'code' => 'PRID',
+            'code' => 'PRI',
             'due_date' => $this->faker->dateTimeBetween('+11 months', '+12 months'),
         ]);
     }

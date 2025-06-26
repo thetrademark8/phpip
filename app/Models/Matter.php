@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use App\Traits\HasActorsFromRole;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Matter extends Model
 {
-    use HasFactory, HasActorsFromRole;
+    use HasActorsFromRole, HasFactory;
 
     protected $table = 'matter';
 
@@ -74,8 +74,6 @@ class Matter extends Model
      * This relation is very useful as it allows us, using the pivot model, to access the role of the actor in the matter and filter any actor following our needs
      * It doesn't replace the belongs to many relation, but allow us to return a relation with only one item instead of an Actor
      * By doing that, we can eager-load the relation
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function actorPivot(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
@@ -133,6 +131,7 @@ class Matter extends Model
     public function getApplicantNameAttribute()
     {
         $names = $this->applicants->pluck('name')->toArray();
+
         return implode('; ', $names);
     }
 
@@ -166,6 +165,7 @@ class Matter extends Model
     public function getOwnerNameAttribute()
     {
         $names = $this->owners->pluck('name')->toArray();
+
         return implode('; ', $names);
     }
 
@@ -222,8 +222,6 @@ class Matter extends Model
     /**
      * Get the responsible actor for the matter.
      * We must name the method "responsibleActor" to avoid conflicts with the "responsible" attribute.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function responsibleActor(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
@@ -379,8 +377,8 @@ class Matter extends Model
             'fil.detail AS FilNo',
             'pub.event_date AS Published',
             'pub.detail AS PubNo',
-            DB::raw("COALESCE(grt.event_date, reg.event_date) AS Granted"),
-            DB::raw("COALESCE(grt.detail, reg.detail) AS GrtNo"),
+            DB::raw('COALESCE(grt.event_date, reg.event_date) AS Granted'),
+            DB::raw('COALESCE(grt.detail, reg.detail) AS GrtNo'),
             'matter.id',
             'matter.container_id',
             'matter.parent_id',
@@ -535,7 +533,7 @@ class Matter extends Model
             );
         }
 
-        if (!empty($multi_filter)) {
+        if (! empty($multi_filter)) {
             // When no filters are set, sorting is done by descending matter id's to see the most recent matters first.
             // As soon as a filter is set, sorting is done by default by caseref instead of by id, ascending.
             if ($sortkey == 'id') {
@@ -606,9 +604,9 @@ class Matter extends Model
                                 ->orWhereLike('reg.detail', "$value%");
                             break;
                         case 'responsible':
-                            $query->where(function($q) use ($value) {
+                            $query->where(function ($q) use ($value) {
                                 $q->where('matter.responsible', $value)
-                                  ->orWhere('del.login', $value);
+                                    ->orWhere('del.login', $value);
                             });
                             break;
                         case 'Ctnr':
@@ -625,7 +623,7 @@ class Matter extends Model
         }
 
         // Do not display dead families unless desired
-        if (!$include_dead) {
+        if (! $include_dead) {
             $query->whereRaw('(select count(1) from matter m where m.caseref = matter.caseref and m.dead = 0) > 0');
         }
 
@@ -645,25 +643,25 @@ class Matter extends Model
 
     public static function getCategoryMatterCount()
     {
-        return Category::withCount(['matters as total' => function($query) {
+        return Category::withCount(['matters as total' => function ($query) {
             if (request()->input('what_tasks') == 1) {
                 $query->where('responsible', Auth::user()->login);
             }
             if (request()->input('what_tasks') > 1) {
-                $query->whereHas('client', function($aq) {
+                $query->whereHas('client', function ($aq) {
                     $aq->where('actor_id', request()->input('what_tasks'));
                 });
             }
             if (Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role)) {
-                $query->whereHas('client', function($aq) {
+                $query->whereHas('client', function ($aq) {
                     $aq->where('actor_id', Auth::id());
                 });
             }
         }])
-            ->when(Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role), 
-                function($query) {
-                    $query->whereHas('matters', function($q) {
-                        $q->whereHas('client', function($aq) {
+            ->when(Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role),
+                function ($query) {
+                    $query->whereHas('matters', function ($q) {
+                        $q->whereHas('client', function ($aq) {
                             $aq->where('actor_id', Auth::id());
                         });
                     });
@@ -674,17 +672,17 @@ class Matter extends Model
     public function getDescription($lang = 'en')
     {
         $description = [];
-        //$matter = Matter::find($id);
+        // $matter = Matter::find($id);
         $filed_date = Carbon::parse($this->filing->event_date);
         // "grant" includes registration (for trademarks)
         $granted_date = Carbon::parse($this->grant->event_date);
         $published_date = Carbon::parse($this->publication->event_date);
         $title = $this->titles->where('type_code', 'TITOF')->first()->value
             ?? $this->titles->first()->value
-            ?? "";
+            ?? '';
         $title_EN = $this->titles->where('type_code', 'TITEN')->first()->value
             ?? $this->titles->first()->value
-            ?? "";
+            ?? '';
         if ($lang == 'fr') {
             $description[] = "N/réf : {$this->uid}";
             if ($this->client->actor_ref) {
@@ -746,6 +744,7 @@ class Matter extends Model
                 $description[] = "In name of: {$this->applicants->pluck('name')->join(', ')}";
             }
         }
+
         return $description;
     }
 
@@ -784,8 +783,6 @@ class Matter extends Model
     /**
      * Get the name of the owner or applicant of the current matter
      * Used for the document merge
-     *
-     * @return string|null
      */
     public function getOwnerName(): ?string
     {

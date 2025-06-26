@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Testing;
 
+use App\Models\Actor;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
-use App\Models\Actor;
 use Illuminate\Support\Facades\Hash;
 
 class MinimalDataSeeder extends Seeder
@@ -18,23 +18,23 @@ class MinimalDataSeeder extends Seeder
     {
         // Essential countries for tests
         $this->seedEssentialCountries();
-        
+
         // Essential roles
         $this->seedEssentialRoles();
-        
+
         // Essential categories
         $this->seedEssentialCategories();
-        
+
         // Essential events
         $this->seedEssentialEvents();
-        
+
         // Essential classifier types
         $this->seedEssentialClassifierTypes();
-        
+
         // Test user
         $this->seedTestUser();
     }
-    
+
     /**
      * Seed only the most essential countries for testing.
      */
@@ -48,10 +48,10 @@ class MinimalDataSeeder extends Seeder
             ['iso' => 'WO', 'iso3' => 'WO', 'name' => 'WIPO', 'name_FR' => 'OMPI', 'name_DE' => 'WIPO'],
             ['iso' => 'EM', 'iso3' => 'EM', 'name' => 'EUIPO', 'name_FR' => 'EUIPO', 'name_DE' => 'EUIPO'],
         ];
-        
+
         DB::table('country')->insertOrIgnore($countries);
     }
-    
+
     /**
      * Seed only the most essential roles for testing.
      */
@@ -64,10 +64,10 @@ class MinimalDataSeeder extends Seeder
             ['code' => 'INV', 'name' => '{"en": "Inventor", "fr": "Inventeur"}', 'display_order' => 1, 'shareable' => 1, 'show_ref' => 0, 'show_company' => 0, 'show_rate' => 0, 'show_date' => 0],
             ['code' => 'OWN', 'name' => '{"en": "Owner", "fr": "Propriétaire"}', 'display_order' => 2, 'shareable' => 1, 'show_ref' => 0, 'show_company' => 1, 'show_rate' => 0, 'show_date' => 1],
         ];
-        
+
         DB::table('actor_role')->insertOrIgnore($roles);
     }
-    
+
     /**
      * Seed only the most essential categories for testing.
      */
@@ -78,10 +78,10 @@ class MinimalDataSeeder extends Seeder
             ['code' => 'TM', 'ref_prefix' => 'T', 'category' => '{"en": "Trademark", "fr": "Marque"}', 'display_with' => 'TM'],
             ['code' => 'DES', 'ref_prefix' => 'D', 'category' => '{"en": "Design", "fr": "Dessin et modèle"}', 'display_with' => 'PAT'],
         ];
-        
+
         DB::table('matter_category')->insertOrIgnore($categories);
     }
-    
+
     /**
      * Seed only the most essential events for testing.
      */
@@ -96,10 +96,10 @@ class MinimalDataSeeder extends Seeder
             ['code' => 'REN', 'name' => '{"en": "Renewal", "fr": "Annuité"}', 'is_task' => 1, 'status_event' => 0, 'use_matter_resp' => 0, 'unique' => 0],
             ['code' => 'PRI', 'name' => '{"en": "Priority Claimed", "fr": "Priorité revendiquée"}', 'is_task' => 0, 'status_event' => 0, 'use_matter_resp' => 0, 'unique' => 0],
         ];
-        
+
         DB::table('event_name')->insertOrIgnore($events);
     }
-    
+
     /**
      * Seed only the most essential classifier types for testing.
      */
@@ -111,10 +111,10 @@ class MinimalDataSeeder extends Seeder
             ['code' => 'IPC', 'type' => '{"en": "IPC", "fr": "CIB"}', 'main_display' => 0, 'for_category' => 'PAT', 'display_order' => 20],
             ['code' => 'NICE', 'type' => '{"en": "Nice Class", "fr": "Classe de Nice"}', 'main_display' => 0, 'for_category' => 'TM', 'display_order' => 30],
         ];
-        
+
         DB::table('classifier_type')->insertOrIgnore($classifierTypes);
     }
-    
+
     /**
      * Create a test user for authentication tests.
      */

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders\Development;
 
-use Illuminate\Database\Seeder;
-use App\Models\Matter;
 use App\Models\Classifier;
+use App\Models\Matter;
+use Illuminate\Database\Seeder;
 
 class SampleClassifiersSeeder extends Seeder
 {
@@ -14,15 +14,15 @@ class SampleClassifiersSeeder extends Seeder
     public function run()
     {
         $this->command->info('Creating sample classifiers...');
-        
+
         // Add classifiers to all matters
         Matter::all()->each(function ($matter) {
             $this->addClassifiersToMatter($matter);
         });
-        
+
         $this->command->info('Sample classifiers created successfully!');
     }
-    
+
     /**
      * Add appropriate classifiers to a matter based on its type.
      */
@@ -30,7 +30,7 @@ class SampleClassifiersSeeder extends Seeder
     {
         // Add titles to all matters
         $this->addTitles($matter);
-        
+
         // Add category-specific classifiers
         switch ($matter->category_code) {
             case 'PAT':
@@ -44,7 +44,7 @@ class SampleClassifiersSeeder extends Seeder
                 break;
         }
     }
-    
+
     /**
      * Add title classifiers.
      */
@@ -89,10 +89,10 @@ class SampleClassifiersSeeder extends Seeder
                 'Furniture Design',
             ],
         ];
-        
+
         $category = $matter->category_code;
         $title = $titles[$category][array_rand($titles[$category])];
-        
+
         // For family members, use the same title
         if ($matter->parent_id) {
             $parentTitle = $matter->parent->titles()->where('type_code', 'TIT')->first();
@@ -100,12 +100,12 @@ class SampleClassifiersSeeder extends Seeder
                 $title = $parentTitle->value;
             }
         }
-        
+
         Classifier::factory()->title()->create([
             'matter_id' => $matter->id,
             'value' => $title,
         ]);
-        
+
         // Add official title (slightly different)
         if (rand(0, 100) > 50) {
             Classifier::factory()->officialTitle()->create([
@@ -113,16 +113,16 @@ class SampleClassifiersSeeder extends Seeder
                 'value' => strtoupper($title),
             ]);
         }
-        
+
         // Add English title for non-English matters
         if ($matter->country !== 'US' && $matter->country !== 'GB' && rand(0, 100) > 30) {
             Classifier::factory()->create([
                 'matter_id' => $matter->id,
                 'type_code' => 'TITEN',
-                'value' => $title . ' (English Translation)',
+                'value' => $title.' (English Translation)',
             ]);
         }
-        
+
         // Add description/abstract
         if ($matter->category_code === 'PAT' && rand(0, 100) > 40) {
             Classifier::factory()->description()->create([
@@ -130,7 +130,7 @@ class SampleClassifiersSeeder extends Seeder
             ]);
         }
     }
-    
+
     /**
      * Add patent-specific classifiers.
      */
@@ -144,14 +144,14 @@ class SampleClassifiersSeeder extends Seeder
             'C08L 23/00', 'A61K 47/00', 'B32B 27/00', // Materials
             'G05D 1/00', 'B60W 30/00', 'G08G 1/00', // Autonomous vehicles
         ];
-        
+
         // Add 1-3 IPC classifications
         $numClasses = rand(1, 3);
         $selectedClasses = array_rand(array_flip($ipcClasses), $numClasses);
-        if (!is_array($selectedClasses)) {
+        if (! is_array($selectedClasses)) {
             $selectedClasses = [$selectedClasses];
         }
-        
+
         foreach ($selectedClasses as $index => $ipcClass) {
             Classifier::factory()->ipc()->create([
                 'matter_id' => $matter->id,
@@ -160,7 +160,7 @@ class SampleClassifiersSeeder extends Seeder
             ]);
         }
     }
-    
+
     /**
      * Add trademark-specific classifiers.
      */
@@ -174,23 +174,23 @@ class SampleClassifiersSeeder extends Seeder
             'medical' => [5, 10, 44], // Medical and pharmaceutical
             'education' => [16, 41], // Education and entertainment
         ];
-        
+
         // Select a group and use 1-3 classes from it
         $group = array_rand($niceClassGroups);
         $classes = $niceClassGroups[$group];
         $numClasses = rand(1, min(3, count($classes)));
         $selectedClasses = array_rand(array_flip($classes), $numClasses);
-        if (!is_array($selectedClasses)) {
+        if (! is_array($selectedClasses)) {
             $selectedClasses = [$selectedClasses];
         }
-        
+
         foreach ($selectedClasses as $index => $niceClass) {
             Classifier::factory()->nice()->create([
                 'matter_id' => $matter->id,
                 'value' => (string) $niceClass,
                 'display_order' => $index + 1,
             ]);
-            
+
             // Add goods/services description
             Classifier::factory()->create([
                 'matter_id' => $matter->id,
@@ -199,7 +199,7 @@ class SampleClassifiersSeeder extends Seeder
                 'display_order' => $index + 1,
             ]);
         }
-        
+
         // Add logo for some trademarks
         if (rand(0, 100) > 60) {
             Classifier::factory()->logo()->create([
@@ -207,7 +207,7 @@ class SampleClassifiersSeeder extends Seeder
             ]);
         }
     }
-    
+
     /**
      * Add design-specific classifiers.
      */
@@ -226,16 +226,16 @@ class SampleClassifiersSeeder extends Seeder
             '09-05' => 'Packaging',
             '06-03' => 'Tables and desks',
         ];
-        
+
         $selectedClass = array_rand($locarnoClasses);
-        
+
         Classifier::factory()->create([
             'matter_id' => $matter->id,
             'type_code' => 'LOCARNO',
             'value' => $selectedClass,
         ]);
     }
-    
+
     /**
      * Get goods/services description for a Nice class.
      */
@@ -261,7 +261,7 @@ class SampleClassifiersSeeder extends Seeder
             43 => 'Restaurant services; catering; temporary accommodation',
             44 => 'Medical services; veterinary services; beauty care',
         ];
-        
-        return $descriptions[$niceClass] ?? 'Various goods and services in class ' . $niceClass;
+
+        return $descriptions[$niceClass] ?? 'Various goods and services in class '.$niceClass;
     }
 }

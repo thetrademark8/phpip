@@ -8,6 +8,14 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+                    @if(config('app.company_logo'))
+                        <div class="text-center mb-4">
+                            <img src="{{ asset(config('app.company_logo')) }}" 
+                                 alt="{{ config('app.company_name', config('app.name')) }}" 
+                                 class="img-fluid"
+                                 style="max-height: 80px; max-width: 250px;">
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 

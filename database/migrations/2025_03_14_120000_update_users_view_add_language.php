@@ -14,12 +14,12 @@ return new class extends Migration
         if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
             return;
         }
-        
+
         // Drop the existing users view
         DB::statement('DROP VIEW IF EXISTS users');
-        
+
         // Create the updated users view with the language field
-        DB::statement("
+        DB::statement('
             CREATE VIEW users AS 
             SELECT 
                 actor.id,
@@ -39,7 +39,7 @@ return new class extends Migration
                 actor.remember_token
             FROM actor 
             WHERE actor.login IS NOT NULL
-        ");
+        ');
     }
 
     /**
@@ -51,12 +51,12 @@ return new class extends Migration
         if (DB::connection()->getDriverName() === 'sqlite' && app()->environment('testing')) {
             return;
         }
-        
+
         // Drop the updated view
         DB::statement('DROP VIEW IF EXISTS users');
-        
+
         // Recreate the original view without the language field
-        DB::statement("
+        DB::statement('
             CREATE VIEW users AS 
             SELECT 
                 actor.id,
@@ -75,6 +75,6 @@ return new class extends Migration
                 actor.remember_token
             FROM actor 
             WHERE actor.login IS NOT NULL
-        ");
+        ');
     }
 };
