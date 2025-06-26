@@ -526,6 +526,11 @@ See TODO.md for details.
    - Alt text uses company name from configuration
    - Maintains visual hierarchy with proper sizing
 
+4. **Logo/Text Display Logic**
+   - When logo is configured: Only logo displays in navbar (text is hidden)
+   - When no logo configured: App name displays as text
+   - Provides cleaner branding when logo is available
+
 ### Usage Instructions:
 
 1. Place your company logo in `/public/images/logos/`
@@ -534,5 +539,6 @@ See TODO.md for details.
    COMPANY_LOGO=images/logos/your-logo.png
    ```
 3. Logo will automatically appear in navbar and login page
+4. App name text will be hidden in navbar when logo is present
 
-This completes Phase 2 of the refactoring plan. The UI/UX improvements are now implemented with date standardization, skipped case preservation (pending clarification), and static company branding.
+This completes Phase 2 of the refactoring plan. The UI/UX improvements are now implemented with date standardization, skipped case preservation (pending clarification), and static company branding with intelligent logo/text display.

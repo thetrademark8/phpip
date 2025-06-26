@@ -100,10 +100,10 @@
           @if(config('app.company_logo'))
             <img src="{{ asset(config('app.company_logo')) }}" 
                  alt="{{ config('app.company_name', config('app.name')) }}" 
-                 class="me-2"
                  style="max-height: 40px; max-width: 150px; height: auto;">
+          @else
+            {{ config('app.name', 'phpIP') }}
           @endif
-          {{ config('app.name', 'phpIP') }}
         </a>
         @auth
         <form method="POST" action="/matter/search">

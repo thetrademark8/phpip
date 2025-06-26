@@ -51,4 +51,31 @@ class CompanyLogoTest extends TestCase
         expect($testView)->toContain('images/logos/sample-logo.svg');
         expect($testView)->toContain('Test IP Firm');
     }
+    
+    public function test_navbar_hides_app_name_when_logo_configured(): void
+    {
+        config(['app.company_logo' => 'images/logos/sample-logo.svg']);
+        config(['app.name' => 'MyTestApp']);
+        
+        $testView = view('layouts.app')->render();
+        
+        // Should have the logo
+        expect($testView)->toContain('images/logos/sample-logo.svg');
+        // The navbar should not contain the app name as visible text
+        // Using a unique app name to avoid matching the title tag
+        expect($testView)->not->toMatch('/<a[^>]*navbar-brand[^>]*>.*MyTestApp.*<\/a>/s');
+    }
+    
+    public function test_navbar_shows_app_name_when_no_logo(): void
+    {
+        config(['app.company_logo' => '']);
+        config(['app.name' => 'phpIP']);
+        
+        $testView = view('layouts.app')->render();
+        
+        // Should display the app name
+        expect($testView)->toContain('>phpIP<');
+        // Should not have an img tag
+        expect($testView)->not->toContain('<img src=');
+    }
 }
