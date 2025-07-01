@@ -2,9 +2,9 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent class="max-w-2xl">
       <DialogHeader>
-        <DialogTitle>Manage Status Information</DialogTitle>
+        <DialogTitle>{{ $t('Manage Status Information') }}</DialogTitle>
         <DialogDescription>
-          Update status-related dates and numbers for this matter
+          {{ $t('Update status-related dates and numbers for this matter') }}
         </DialogDescription>
       </DialogHeader>
       
@@ -12,7 +12,7 @@
         <!-- Status Events Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Status Events</CardTitle>
+            <CardTitle class="text-base">{{ $t('Status Events') }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-4">
             <div v-for="event in statusEvents" :key="event.id" class="flex items-center gap-4">
@@ -23,12 +23,12 @@
                 <DatePicker
                   :id="`event-${event.id}`"
                   v-model="eventDates[event.id]"
-                  placeholder="Select date"
+                  :placeholder="$t('Select date')"
                 />
               </div>
             </div>
             <div v-if="statusEvents.length === 0" class="text-muted-foreground text-sm">
-              No status events configured for this matter type
+              {{ $t('No status events configured for this matter type') }}
             </div>
           </CardContent>
         </Card>
@@ -36,36 +36,36 @@
         <!-- Status Numbers Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Status Numbers</CardTitle>
+            <CardTitle class="text-base">{{ $t('Status Numbers') }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-4">
             <FormField
-              label="Filing Number"
+              :label="$t('Filing Number')"
               name="filing_num"
             >
               <Input
                 v-model="form.filing_num"
-                placeholder="Enter filing number"
+                :placeholder="$t('Enter filing number')"
               />
             </FormField>
 
             <FormField
-              label="Publication Number"
+              :label="$t('Publication Number')"
               name="pub_num"
             >
               <Input
                 v-model="form.pub_num"
-                placeholder="Enter publication number"
+                :placeholder="$t('Enter publication number')"
               />
             </FormField>
 
             <FormField
-              label="Registration/Grant Number"
+              :label="$t('Registration/Grant Number')"
               name="reg_num"
             >
               <Input
                 v-model="form.reg_num"
-                placeholder="Enter registration number"
+                :placeholder="$t('Enter registration number')"
               />
             </FormField>
           </CardContent>
@@ -74,39 +74,39 @@
         <!-- Additional Information -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Additional Information</CardTitle>
+            <CardTitle class="text-base">{{ $t('Additional Information') }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-4">
             <FormField
-              label="Expiry Date"
+              :label="$t('Expiry Date')"
               name="expire_date"
             >
               <DatePicker
                 v-model="form.expire_date"
-                placeholder="Select expiry date"
+                :placeholder="$t('Select expiry date')"
               />
             </FormField>
 
             <FormField
-              label="Term Adjustment"
+              :label="$t('Term Adjustment')"
               name="term_adjust"
-              help-text="Days to add/subtract from the standard term"
+              :help-text="$t('Days to add/subtract from the standard term')"
             >
               <Input
                 v-model.number="form.term_adjust"
                 type="number"
-                placeholder="0"
+                :placeholder="'0'"
               />
             </FormField>
 
-            <FormField label="Status">
+            <FormField :label="$t('Status')">
               <div class="flex items-center space-x-2">
                 <Checkbox
                   id="dead"
                   v-model="form.dead"
                 />
                 <Label htmlFor="dead" class="font-normal">
-                  Mark as inactive/dead
+                  {{ $t('Mark as inactive/dead') }}
                 </Label>
               </div>
             </FormField>
@@ -115,11 +115,11 @@
 
         <DialogFooter>
           <Button type="button" variant="outline" @click="$emit('update:open', false)">
-            Cancel
+            {{ $t('Cancel') }}
           </Button>
           <Button type="submit" :disabled="form.processing">
             <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
-            Save Changes
+            {{ $t('Save Changes') }}
           </Button>
         </DialogFooter>
       </form>

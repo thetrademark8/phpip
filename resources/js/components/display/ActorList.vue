@@ -6,7 +6,7 @@
       class="border rounded-lg p-4"
     >
       <h3 class="font-semibold text-sm text-muted-foreground mb-3">
-        {{ roleNames[role] || role }}
+        {{ getRoleName(role) }}
       </h3>
       
       <div class="space-y-2">
@@ -35,7 +35,7 @@
                 @saved="emit('update', { ...actor, display_name: $event })"
               />
               <span v-else :class="{ 'italic text-muted-foreground': actor.inherited }">
-                {{ actor.display_name || actor.name }}
+                {{ actor.display_name || actor.name }}{{ actor.rate && actor.rate != 100 ? ` (${actor.rate}%)` : '' }}
               </span>
             </div>
             <div v-if="actor.company_name" class="text-sm text-muted-foreground">
@@ -111,7 +111,7 @@
         @click="emit('add', role)"
       >
         <Plus class="h-4 w-4 mr-2" />
-        Add {{ roleNames[role] || role }}
+        Add {{ getRoleName(role) }}
       </Button>
     </div>
   </div>
@@ -124,6 +124,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/Components/ui/button'
 import InlineEdit from '@/Components/ui/InlineEdit.vue'
 import EditableField from '@/Components/ui/EditableField.vue'
+import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({
   actors: {
@@ -167,6 +168,8 @@ const props = defineProps({
 
 const emit = defineEmits(['edit', 'remove', 'add', 'click', 'reorder', 'update'])
 
+const { translated } = useTranslatedField()
+
 // Group actors by role
 const groupedActors = computed(() => {
   const groups = {}
@@ -204,5 +207,17 @@ const handleDrop = (event, newRole) => {
 
 const handleActorClick = (actor) => {
   emit('click', actor)
+}
+
+// Get role name with translation support
+const getRoleName = (role) => {
+  // First, check if we have a translatable role_name from the first actor in this role group
+  const firstActor = groupedActors.value[role]?.[0]
+  if (firstActor?.role_name) {
+    return translated(firstActor.role_name)
+  }
+  
+  // Fallback to roleNames prop
+  return props.roleNames[role] || role
 }
 </script>

@@ -28,7 +28,7 @@
           >
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <h4 class="font-semibold">{{ event.info?.name || event.code }}</h4>
+                <h4 class="font-semibold">{{ event.info?.name ? translated(event.info.name) : event.code }}</h4>
                 <p class="text-sm text-muted-foreground mt-1">
                   <EditableField
                     v-if="enableInlineEdit"
@@ -64,7 +64,7 @@
                     :key="task.id"
                     class="flex items-center justify-between text-sm pl-4 border-l-2"
                   >
-                    <span>{{ task.info?.name || task.code }}</span>
+                    <span>{{ task.info?.name ? translated(task.info.name) : task.code }}</span>
                     <StatusBadge
                       :status="task.done ? 'done' : 'pending'"
                       type="task"
@@ -110,6 +110,7 @@ import { Button } from '@/Components/ui/button'
 import StatusBadge from './StatusBadge.vue'
 import InlineEdit from '@/Components/ui/InlineEdit.vue'
 import EditableField from '@/Components/ui/EditableField.vue'
+import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({
   events: {
@@ -139,6 +140,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['click', 'edit', 'remove', 'update'])
+
+const { translated } = useTranslatedField()
 
 // Sort events by date (newest first)
 const sortedEvents = computed(() => {

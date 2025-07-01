@@ -1,17 +1,17 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent>
+    <DialogContent class="sm:max-w-lg">
       <DialogHeader>
-        <DialogTitle>{{ mode === 'create' ? 'Add Event' : 'Edit Event' }}</DialogTitle>
+        <DialogTitle>{{ mode === 'create' ? t('Add Event') : t('Edit Event') }}</DialogTitle>
       </DialogHeader>
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div class="space-y-2">
-          <Label htmlFor="code">Event Type</Label>
+          <Label htmlFor="code">{{ t('Event Type') }}</Label>
           <AutocompleteInput
             id="code"
             v-model="form.code"
             v-model:display-model-value="eventDisplay"
-            placeholder="Select event type..."
+            :placeholder="t('Select event type...')"
             endpoint="/event-name/autocomplete/0"
             value-key="key"
             label-key="value"
@@ -21,37 +21,37 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="event_date">Event Date</Label>
+          <Label htmlFor="event_date">{{ t('Event Date') }}</Label>
           <DatePicker
             id="event_date"
             v-model="form.event_date"
-            placeholder="Select date..."
+            :placeholder="t('Select date...')"
             required
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="detail">Detail</Label>
+          <Label htmlFor="detail">{{ t('Detail') }}</Label>
           <Input
             id="detail"
             v-model="form.detail"
-            placeholder="Event details..."
+            :placeholder="t('Event details...')"
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="notes">Notes</Label>
+          <Label htmlFor="notes">{{ t('Notes') }}</Label>
           <Textarea
             id="notes"
             v-model="form.notes"
-            placeholder="Additional notes..."
+            :placeholder="t('Additional notes...')"
             rows="3"
           />
         </div>
         <DialogFooter>
           <Button type="button" variant="outline" @click="$emit('update:open', false)">
-            Cancel
+            {{ t('Cancel') }}
           </Button>
           <Button type="submit" :disabled="form.processing">
-            {{ mode === 'create' ? 'Add Event' : 'Update Event' }}
+            {{ mode === 'create' ? t('Add Event') : t('Update Event') }}
           </Button>
         </DialogFooter>
       </form>
@@ -62,6 +62,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import {
   Dialog,
   DialogContent,
@@ -96,6 +97,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:open', 'success'])
+
+const { t } = useI18n()
 
 const eventDisplay = ref('')
 

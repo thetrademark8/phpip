@@ -1,10 +1,10 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-4xl">
+    <DialogContent class="max-w-3xl">
       <DialogHeader>
-        <DialogTitle>Manage Classifiers</DialogTitle>
+        <DialogTitle>{{ $t('Manage Classifiers') }}</DialogTitle>
         <DialogDescription>
-          Manage all classifiers including titles, classes, and images for this matter
+          {{ $t('Manage all classifiers including titles, classes, and images for this matter') }}
         </DialogDescription>
       </DialogHeader>
       
@@ -12,13 +12,13 @@
         <!-- Add Classifier Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Add Classifier</CardTitle>
+            <CardTitle class="text-base">{{ $t('Add Classifier') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <form @submit.prevent="handleAddClassifier" class="space-y-4">
               <div class="grid grid-cols-2 gap-4">
                 <FormField
-                  label="Type"
+                  :label="$t('Type')"
                   name="type_code"
                   :error="addForm.errors.type_code"
                   required
@@ -27,7 +27,7 @@
                     v-model="addForm.type_code"
                     v-model:display-model-value="typeDisplay"
                     endpoint="/classifier-type/autocomplete/0"
-                    placeholder="Select type"
+                    :placeholder="$t('Select type')"
                     :min-length="0"
                     value-key="code"
                     label-key="type"
@@ -37,20 +37,20 @@
 
                 <FormField
                   v-if="!isImageType"
-                  label="Value"
+                  :label="$t('Value')"
                   name="value"
                   :error="addForm.errors.value"
                   required
                 >
                   <Input
                     v-model="addForm.value"
-                    placeholder="Enter value"
+                    :placeholder="$t('Enter value')"
                   />
                 </FormField>
 
                 <FormField
                   v-if="isImageType"
-                  label="Image"
+                  :label="$t('Image')"
                   name="image"
                   :error="addForm.errors.image"
                   required
@@ -65,31 +65,31 @@
 
               <FormField
                 v-if="showLinkedMatter"
-                label="Linked Matter"
+                :label="$t('Linked Matter')"
                 name="lnk_matter_id"
                 :error="addForm.errors.lnk_matter_id"
               >
                 <Input
                   v-model="addForm.lnk_matter_id"
-                  placeholder="Enter linked matter ID"
+                  :placeholder="$t('Enter linked matter ID')"
                 />
               </FormField>
 
               <FormField
-                label="Display Order"
+                :label="$t('Display Order')"
                 name="display_order"
                 :error="addForm.errors.display_order"
               >
                 <Input
                   v-model.number="addForm.display_order"
                   type="number"
-                  placeholder="0"
+                  :placeholder="'0'"
                 />
               </FormField>
 
               <Button type="submit" :disabled="addForm.processing">
                 <Plus class="mr-2 h-4 w-4" />
-                Add Classifier
+                {{ $t('Add Classifier') }}
               </Button>
             </form>
           </CardContent>
@@ -98,7 +98,7 @@
         <!-- Current Classifiers Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Current Classifiers</CardTitle>
+            <CardTitle class="text-base">{{ $t('Current Classifiers') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div v-if="groupedClassifiers && Object.keys(groupedClassifiers).length > 0" class="space-y-4">
@@ -115,7 +115,7 @@
                         <img 
                           :src="`/classifier/${classifier.id}/img`" 
                           class="h-12 w-12 object-contain border rounded"
-                          alt="Classifier image"
+                          :alt="$t('Classifier image')"
                         />
                         <span class="text-sm text-muted-foreground">{{ classifier.value }}</span>
                       </div>
@@ -172,7 +172,7 @@
               </div>
             </div>
             <div v-else class="text-center py-8 text-muted-foreground">
-              No classifiers assigned to this matter
+              {{ $t('No classifiers assigned to this matter') }}
             </div>
           </CardContent>
         </Card>
@@ -180,7 +180,7 @@
 
       <DialogFooter>
         <Button variant="outline" @click="$emit('update:open', false)">
-          Close
+          {{ $t('Close') }}
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -191,6 +191,7 @@
 import { ref, computed } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { Plus, Trash2, Pencil, Check, X } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
 import {
   Dialog,
   DialogContent,
@@ -221,6 +222,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:open', 'success'])
+
+const { t } = useI18n()
 
 // State
 const typeDisplay = ref('')
@@ -322,7 +325,7 @@ function saveEdit(classifier) {
 }
 
 function handleRemoveClassifier(classifier) {
-  if (confirm(`Remove classifier "${classifier.value}"?`)) {
+  if (confirm(t('Remove classifier "{value}"?', { value: classifier.value }))) {
     removingClassifierId.value = classifier.id
     
     router.delete(`/classifier/${classifier.id}`, {

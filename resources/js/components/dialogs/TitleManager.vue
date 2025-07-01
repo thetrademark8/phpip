@@ -2,9 +2,9 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent class="max-w-3xl">
       <DialogHeader>
-        <DialogTitle>Manage Titles</DialogTitle>
+        <DialogTitle>{{ $t('Manage Titles') }}</DialogTitle>
         <DialogDescription>
-          Add, edit, or remove titles for this matter
+          {{ $t('Add, edit, or remove titles for this matter') }}
         </DialogDescription>
       </DialogHeader>
       
@@ -12,13 +12,13 @@
         <!-- Add Title Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Add Title</CardTitle>
+            <CardTitle class="text-base">{{ $t('Add Title') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <form @submit.prevent="handleAddTitle" class="space-y-4">
               <div class="grid grid-cols-2 gap-4">
                 <FormField
-                  label="Type"
+                  :label="$t('Type')"
                   name="type_code"
                   :error="addForm.errors.type_code"
                   required
@@ -27,7 +27,7 @@
                     v-model="addForm.type_code"
                     v-model:display-model-value="typeDisplay"
                     endpoint="/classifier-type/autocomplete/1"
-                    placeholder="Select type"
+                    :placeholder="$t('Select type')"
                     :min-length="0"
                     value-key="code"
                     label-key="type"
@@ -35,21 +35,21 @@
                 </FormField>
 
                 <FormField
-                  label="Title"
+                  :label="$t('Title')"
                   name="value"
                   :error="addForm.errors.value"
                   required
                 >
                   <Input
                     v-model="addForm.value"
-                    placeholder="Enter title"
+                    :placeholder="$t('Enter title')"
                   />
                 </FormField>
               </div>
 
               <Button type="submit" :disabled="addForm.processing">
                 <Plus class="mr-2 h-4 w-4" />
-                Add Title
+                {{ $t('Add Title') }}
               </Button>
             </form>
           </CardContent>
@@ -58,7 +58,7 @@
         <!-- Current Titles Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Current Titles</CardTitle>
+            <CardTitle class="text-base">{{ $t('Current Titles') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div v-if="groupedTitles && Object.keys(groupedTitles).length > 0" class="space-y-4">
@@ -123,7 +123,7 @@
               </div>
             </div>
             <div v-else class="text-center py-8 text-muted-foreground">
-              No titles assigned to this matter
+              {{ $t('No titles assigned to this matter') }}
             </div>
           </CardContent>
         </Card>
@@ -131,7 +131,7 @@
 
       <DialogFooter>
         <Button variant="outline" @click="$emit('update:open', false)">
-          Close
+          {{ $t('Close') }}
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -142,6 +142,7 @@
 import { ref, computed } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { Plus, Trash2, Pencil, Check, X } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
 import {
   Dialog,
   DialogContent,
@@ -172,6 +173,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:open', 'success'])
+
+const { t } = useI18n()
 
 // State
 const typeDisplay = ref('')
@@ -228,7 +231,7 @@ function saveEdit(title) {
 }
 
 function handleRemoveTitle(title) {
-  if (confirm(`Remove title "${title.value}"?`)) {
+  if (confirm(t('Remove title "{title}"?', { title: title.value }))) {
     removingTitleId.value = title.id
     
     router.delete(`/classifier/${title.id}`, {
