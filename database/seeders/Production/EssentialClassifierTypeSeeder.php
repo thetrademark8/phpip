@@ -14,8 +14,8 @@ class EssentialClassifierTypeSeeder extends Seeder
     {
         $classifierTypes = [
             // Title classifiers
-            ['code' => 'TIT', 'type' => '{"en": "Title", "fr": "Titre"}', 'main_display' => 1, 'for_category' => null, 'display_order' => 1],
-            ['code' => 'TITOF', 'type' => '{"en": "Official Title", "fr": "Titre officiel"}', 'main_display' => 1, 'for_category' => null, 'display_order' => 2],
+            ['code' => 'TITOF', 'type' => '{"en": "Official Title", "fr": "Titre officiel"}', 'main_display' => 1, 'for_category' => null, 'display_order' => 1],
+            ['code' => 'TIT', 'type' => '{"en": "Title", "fr": "Titre"}', 'main_display' => 1, 'for_category' => null, 'display_order' => 2],
             ['code' => 'TITEN', 'type' => '{"en": "Title (English)", "fr": "Titre (anglais)"}', 'main_display' => 1, 'for_category' => null, 'display_order' => 3],
             ['code' => 'TITFR', 'type' => '{"en": "Title (French)", "fr": "Titre (français)"}', 'main_display' => 1, 'for_category' => null, 'display_order' => 4],
 

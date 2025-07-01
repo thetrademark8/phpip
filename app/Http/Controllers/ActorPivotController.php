@@ -7,6 +7,7 @@ use App\Models\ActorPivot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ActorPivotController extends Controller
 {
@@ -110,6 +111,14 @@ class ActorPivotController extends Controller
             when company_id then 'Company'
             when site_id then 'Site'
           end) as Dependency"))->where('parent_id', $actor)->orWhere('company_id', $actor)->orWhere('site_id', $actor)->get()->take(30);
+
+        // Return JSON for AJAX requests
+        if (request()->wantsJson()) {
+            return response()->json([
+                'matter_dependencies' => $matter_dependencies,
+                'other_dependencies' => $other_dependencies
+            ]);
+        }
 
         return view('actor.usedin', compact(['matter_dependencies', 'other_dependencies']));
     }

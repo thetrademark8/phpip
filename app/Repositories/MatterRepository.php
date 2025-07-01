@@ -60,12 +60,43 @@ class MatterRepository
     ): LengthAwarePaginator {
         $query = $this->buildFilterQuery($filters, $displayWith, $includeDead);
         
-        // Apply sorting
-        if ($sortKey === 'caseref') {
-            $query->orderBy('matter.caseref', $sortDir);
-        } else {
-            $query->orderBy($sortKey, $sortDir);
-        }
+        // Map sort key to actual database column
+        $actualSortKey = $this->mapSortKey($sortKey);
+        
+        // Add all GROUP BY fields needed for the aggregate functions
+        $groupByFields = [
+            'matter.id',
+            'matter.uid',
+            'matter.country',
+            'matter.category_code',
+            'matter.origin',
+            'matter.container_id',
+            'matter.parent_id',
+            'matter.type_code',
+            'matter.responsible',
+            'matter.dead',
+            'matter.alt_ref',
+            'matter.caseref',
+            'matter.suffix',
+            'del.login',
+            'tit1.value',
+            'tit2.value',
+            'tit3.value',
+            'inv.name',
+            'inv.first_name',
+            'fil.event_date',
+            'fil.detail',
+            'pub.event_date',
+            'pub.detail',
+            'grt.event_date',
+            'grt.detail',
+            'reg.event_date',
+            'reg.detail'
+        ];
+
+        // Group by the sort key and additional fields to match old implementation
+        $query->groupBy(...$groupByFields)
+              ->orderBy($actualSortKey, $sortDir);
 
         return $query->paginate($perPage);
     }
@@ -82,12 +113,43 @@ class MatterRepository
     ): Collection {
         $query = $this->buildFilterQuery($filters, $displayWith, $includeDead);
         
-        // Apply sorting
-        if ($sortKey === 'caseref') {
-            $query->orderBy('matter.caseref', $sortDir);
-        } else {
-            $query->orderBy($sortKey, $sortDir);
-        }
+        // Map sort key to actual database column
+        $actualSortKey = $this->mapSortKey($sortKey);
+        
+        // Add all GROUP BY fields needed for the aggregate functions
+        $groupByFields = [
+            'matter.id',
+            'matter.uid',
+            'matter.country',
+            'matter.category_code',
+            'matter.origin',
+            'matter.container_id',
+            'matter.parent_id',
+            'matter.type_code',
+            'matter.responsible',
+            'matter.dead',
+            'matter.alt_ref',
+            'matter.caseref',
+            'matter.suffix',
+            'del.login',
+            'tit1.value',
+            'tit2.value',
+            'tit3.value',
+            'inv.name',
+            'inv.first_name',
+            'fil.event_date',
+            'fil.detail',
+            'pub.event_date',
+            'pub.detail',
+            'grt.event_date',
+            'grt.detail',
+            'reg.event_date',
+            'reg.detail'
+        ];
+
+        // Group by the sort key and additional fields to match old implementation
+        $query->groupBy(...$groupByFields)
+              ->orderBy($actualSortKey, $sortDir);
 
         return $query->get();
     }
@@ -151,37 +213,6 @@ class MatterRepository
         if (!$includeDead) {
             $query->whereRaw('(select count(1) from matter m where m.caseref = matter.caseref and m.dead = 0) > 0');
         }
-
-        // Group by required fields
-        $query->groupBy(
-            'matter.id',
-            'matter.uid',
-            'matter.country',
-            'matter.category_code',
-            'matter.origin',
-            'matter.container_id',
-            'matter.parent_id',
-            'matter.type_code',
-            'matter.responsible',
-            'matter.dead',
-            'matter.alt_ref',
-            'matter.caseref',
-            'matter.suffix',
-            'del.login',
-            'tit1.value',
-            'tit2.value',
-            'tit3.value',
-            'inv.name',
-            'inv.first_name',
-            'fil.event_date',
-            'fil.detail',
-            'pub.event_date',
-            'pub.detail',
-            'grt.event_date',
-            'grt.detail',
-            'reg.event_date',
-            'reg.detail'
-        );
 
         return $query;
     }
@@ -310,5 +341,33 @@ class MatterRepository
                 default => $query->whereLike($key, "$value%"),
             };
         }
+    }
+
+    /**
+     * Map frontend sort keys to database columns
+     */
+    protected function mapSortKey(string $sortKey): string
+    {
+        return match ($sortKey) {
+            'id' => 'matter.id',
+            'caseref' => 'matter.caseref',
+            'Ref' => 'matter.uid',
+            'country' => 'matter.country',
+            'Cat' => 'matter.category_code',
+            'Status' => 'Status',
+            'Status_date' => 'Status_date',
+            'Client' => 'Client',
+            'Applicant' => 'Applicant',
+            'Agent' => 'Agent',
+            'Title' => 'Title',
+            'Inventor1' => 'Inventor1',
+            'Filed' => 'fil.event_date',
+            'FilNo' => 'fil.detail',
+            'Published' => 'pub.event_date',
+            'PubNo' => 'pub.detail',
+            'Granted' => 'grt.event_date',
+            'GrtNo' => 'grt.detail',
+            default => 'matter.id'
+        };
     }
 }

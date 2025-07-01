@@ -80,7 +80,14 @@ class TaskController extends Controller
         // Date conversion removed - ValidateDateFields middleware now provides ISO format dates
         $request->merge(['creator' => Auth::user()->login]);
 
-        return Task::create($request->except(['_token', '_method']));
+        $task = Task::create($request->except(['_token', '_method']));
+
+        // Return Inertia redirect for AJAX/JSON requests
+        if ($request->ajax() || $request->wantsJson() || $request->inertia()) {
+            return redirect()->back();
+        }
+
+        return $task;
     }
 
     public function show(Task $task)
@@ -119,6 +126,11 @@ class TaskController extends Controller
         }
         $task->update($request->except(['_token', '_method']));
 
+        // Return Inertia redirect for AJAX/JSON requests
+        if ($request->ajax() || $request->wantsJson() || $request->inertia()) {
+            return redirect()->back();
+        }
+
         return $task;
     }
 
@@ -126,6 +138,11 @@ class TaskController extends Controller
     {
         Gate::authorize('readwrite');
         $task->delete();
+
+        // Return Inertia redirect for AJAX/JSON requests
+        if (request()->ajax() || request()->wantsJson() || request()->inertia()) {
+            return redirect()->back();
+        }
 
         return $task;
     }

@@ -35,6 +35,26 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Get user's locale preference or fall back to app default
+        $locale = config('app.locale');
+        if ($request->user()) {
+            // Assuming the User model has the actor relationship
+            $userActor = \App\Models\Actor::find($request->user()->id);
+            if ($userActor && $userActor->language) {
+                $locale = $userActor->language;
+            }
+        }
+        
+        // Set the application locale
+        app()->setLocale($locale);
+        
+        // Load translations for the current locale
+        $translations = [];
+        $translationFile = base_path("lang/{$locale}.json");
+        if (file_exists($translationFile)) {
+            $translations = json_decode(file_get_contents($translationFile), true) ?? [];
+        }
+        
         return [
             ...parent::share($request),
             'auth' => [
@@ -58,6 +78,9 @@ class HandleInertiaRequests extends Middleware
                 'company_logo' => config('app.company_logo'),
             ],
             'csrf_token' => csrf_token(),
+            'locale' => $locale,
+            'translations' => $translations,
+            'available_locales' => ['en', 'fr', 'de'],
         ];
     }
 }

@@ -47,6 +47,8 @@ class MatterController extends Controller
         return Inertia::render('Matter/Index', [
             'matters' => $matters,
             'filters' => $request->getAllParameters(),
+            'sort' => $options['sortkey'],
+            'direction' => $options['sortdir'],
         ]);
     }
 
@@ -82,7 +84,7 @@ class MatterController extends Controller
         $titles = $matter->titles->groupBy('type_name');
         $classifiers = $matter->classifiers->groupBy('type_code');
         $actors = $matter->actors->groupBy('role_name');
-        $statusEvents = $matter->events->where('info.status_event', 1);
+        $statusEvents = $matter->events->where('info.status_event', 1)->values();
 
         // Check SharePoint configuration
         $sharePointLink = null;
@@ -162,6 +164,16 @@ class MatterController extends Controller
                 'name' => \App\Models\Category::find($category_code)['category'],
             ];
             $category['next_caseref']++;
+        }
+
+        // Check if this is an Inertia request
+        if ($request->header('X-Inertia')) {
+            return Inertia::render('Matter/Create', [
+                'parentMatter' => $parent_matter,
+                'operation' => $operation,
+                'category' => $category,
+                'currentUser' => Auth::user(),
+            ]);
         }
 
         return view('matter.create', compact('parent_matter', 'operation', 'category'));
@@ -259,7 +271,7 @@ class MatterController extends Controller
                 break;
         }
 
-        return response()->json(['redirect' => route('matter.show', [$new_matter])]);
+        return to_route('matter.show', $new_matter);
     }
 
     public function storeN(Request $request)
@@ -654,6 +666,11 @@ class MatterController extends Controller
         );
         $request->merge(['updater' => Auth::user()->login]);
         $matter->update($request->except(['_token', '_method']));
+
+        // Always return Inertia response for AJAX requests
+        if ($request->ajax() || $request->wantsJson() || $request->inertia()) {
+            return redirect()->back();
+        }
 
         return $matter;
     }

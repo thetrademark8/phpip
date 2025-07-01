@@ -54,6 +54,8 @@ class MatterFilterRequest extends FormRequest
             // Sorting options
             'sortkey' => 'nullable|string|in:id,Ref,Cat,Status,Client,Filed,Published,Granted,caseref',
             'sortdir' => 'nullable|string|in:asc,desc',
+            'sort' => 'nullable|string',
+            'direction' => 'nullable|string|in:asc,desc',
             
             // Pagination
             'per_page' => 'nullable|integer|min:10|max:100',
@@ -119,9 +121,13 @@ class MatterFilterRequest extends FormRequest
      */
     public function getOptions(): array
     {
+        // Use new sort/direction parameters if available, fallback to sortkey/sortdir
+        $sortField = $this->input('sort') ?: $this->input('sortkey', 'caseref');
+        $sortDirection = $this->input('direction') ?: $this->input('sortdir', 'asc');
+        
         return [
-            'sortkey' => $this->input('sortkey', 'id'),
-            'sortdir' => $this->input('sortdir', 'desc'),
+            'sortkey' => $sortField,
+            'sortdir' => $sortDirection,
             'per_page' => $this->input('per_page', 25),
             'display_with' => $this->input('display_with'),
             'include_dead' => $this->boolean('include_dead'),

@@ -105,7 +105,7 @@ class MatterService implements MatterServiceInterface
     public function searchMatters(array $filters, array $options = []): LengthAwarePaginator
     {
         $sortKey = $options['sortkey'] ?? 'id';
-        $sortDir = $options['sortdir'] ?? 'desc';
+        $sortDir = $options['sortdir'] ?? 'asc';
         $perPage = $options['per_page'] ?? 25;
         $displayWith = $options['display_with'] ?? null;
         $includeDead = $options['include_dead'] ?? false;
@@ -126,7 +126,7 @@ class MatterService implements MatterServiceInterface
     public function exportMatters(array $filters, array $options = []): Collection
     {
         $sortKey = $options['sortkey'] ?? 'id';
-        $sortDir = $options['sortdir'] ?? 'desc';
+        $sortDir = $options['sortdir'] ?? 'asc';
         $displayWith = $options['display_with'] ?? null;
         $includeDead = $options['include_dead'] ?? false;
 
