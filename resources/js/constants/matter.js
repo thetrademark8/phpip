@@ -10,7 +10,8 @@ export const FILTER_FIELDS = {
   other: ['display_with', 'sortkey', 'sortdir', 'tab']
 }
 
-// Label mappings for display
+// Label mappings for display - These are now handled by translation keys
+// Keep for backward compatibility with non-Vue parts of the app
 export const FILTER_LABEL_MAP = {
   'Ctnr': 'Containers',
   'include_dead': 'Dead matters',

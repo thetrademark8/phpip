@@ -4,7 +4,7 @@
     <div class="flex flex-wrap gap-4">
       <!-- View Mode Toggle -->
       <div class="flex items-center gap-2">
-        <Label>View:</Label>
+        <Label>{{ t('matter.filters.view') }}:</Label>
         <ToggleGroup
           type="single"
           v-model="internalViewMode"
@@ -12,11 +12,11 @@
         >
           <ToggleGroupItem value="actor" size="sm">
             <Users class="mr-2 h-4 w-4" />
-            Actor View
+            {{ t('matter.filters.actorView') }}
           </ToggleGroupItem>
           <ToggleGroupItem value="status" size="sm">
             <FileCheck class="mr-2 h-4 w-4" />
-            Status View
+            {{ t('matter.filters.statusView') }}
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
@@ -30,7 +30,7 @@
             @update:checked="(value) => updateFilter('Ctnr', value)"
           />
           <Label htmlFor="show-containers" class="cursor-pointer">
-            Show Containers
+            {{ t('matter.filters.showContainers') }}
           </Label>
         </div>
 
@@ -41,7 +41,7 @@
             @update:checked="(value) => updateFilter('responsible', value ? $page.props.auth.user.login : '')"
           />
           <Label htmlFor="show-mine" class="cursor-pointer">
-            Show Mine
+            {{ t('matter.filters.showMine') }}
           </Label>
         </div>
 
@@ -52,7 +52,7 @@
             @update:checked="(value) => updateFilter('include_dead', value)"
           />
           <Label htmlFor="include-dead" class="cursor-pointer">
-            Include Dead
+            {{ t('matter.filters.includeDead') }}
           </Label>
         </div>
       </div>
@@ -62,11 +62,11 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <!-- Reference -->
       <div class="space-y-2">
-        <Label htmlFor="ref-filter">Reference</Label>
+        <Label htmlFor="ref-filter">{{ t('matter.filters.labels.reference') }}</Label>
         <Input
           id="ref-filter"
           type="text"
-          placeholder="Search reference..."
+          :placeholder="t('matter.filters.placeholders.reference')"
           :model-value="props.filters.Ref"
           @update:model-value="debouncedUpdate('Ref', $event)"
         />
@@ -74,10 +74,10 @@
 
       <!-- Category -->
       <div class="space-y-2">
-        <Label htmlFor="cat-filter">Category</Label>
+        <Label htmlFor="cat-filter">{{ t('matter.filters.labels.category') }}</Label>
         <AutocompleteInput
           id="cat-filter"
-          placeholder="e.g., PAT, TM, DES"
+          :placeholder="t('matter.filters.placeholders.category')"
           :model-value="props.filters.Cat"
           @update:model-value="debouncedUpdate('Cat', $event)"
           endpoint="/category/autocomplete"
@@ -89,10 +89,10 @@
 
       <!-- Status -->
       <div class="space-y-2">
-        <Label htmlFor="status-filter">Status</Label>
+        <Label htmlFor="status-filter">{{ t('matter.filters.labels.status') }}</Label>
         <AutocompleteInput
           id="status-filter"
-          placeholder="Search status..."
+          :placeholder="t('matter.filters.placeholders.status')"
           :model-value="props.filters.Status"
           @update:model-value="debouncedUpdate('Status', $event)"
           endpoint="/status-event/autocomplete"
@@ -103,10 +103,10 @@
 
       <!-- Client (Actor View) -->
       <div v-if="internalViewMode === 'actor' && $page.props.auth.user.default_role !== 'CLI'" class="space-y-2">
-        <Label htmlFor="client-filter">Client</Label>
+        <Label htmlFor="client-filter">{{ t('matter.filters.labels.client') }}</Label>
         <AutocompleteInput
           id="client-filter"
-          placeholder="Search client..."
+          :placeholder="t('matter.filters.placeholders.client')"
           :model-value="props.filters.Client"
           @update:model-value="debouncedUpdate('Client', $event)"
           endpoint="/actor/autocomplete"
@@ -117,11 +117,11 @@
 
       <!-- Client Reference -->
       <div v-if="internalViewMode === 'actor'" class="space-y-2">
-        <Label htmlFor="clref-filter">Client Reference</Label>
+        <Label htmlFor="clref-filter">{{ t('matter.filters.labels.clientReference') }}</Label>
         <Input
           id="clref-filter"
           type="text"
-          placeholder="Client ref..."
+          :placeholder="t('matter.filters.placeholders.clientReference')"
           :model-value="props.filters.ClRef"
           @update:model-value="debouncedUpdate('ClRef', $event)"
         />
@@ -129,10 +129,10 @@
 
       <!-- Applicant -->
       <div v-if="internalViewMode === 'actor'" class="space-y-2">
-        <Label htmlFor="applicant-filter">Applicant</Label>
+        <Label htmlFor="applicant-filter">{{ t('matter.filters.labels.applicant') }}</Label>
         <AutocompleteInput
           id="applicant-filter"
-          placeholder="Search applicant..."
+          :placeholder="t('matter.filters.placeholders.applicant')"
           :model-value="props.filters.Applicant"
           @update:model-value="debouncedUpdate('Applicant', $event)"
           endpoint="/actor/autocomplete"
@@ -143,11 +143,11 @@
 
       <!-- Agent -->
       <div v-if="internalViewMode === 'actor'" class="space-y-2">
-        <Label htmlFor="agent-filter">Agent</Label>
+        <Label htmlFor="agent-filter">{{ t('matter.filters.labels.agent') }}</Label>
         <Input
           id="agent-filter"
           type="text"
-          placeholder="Search agent..."
+          :placeholder="t('matter.filters.placeholders.agent')"
           :model-value="props.filters.Agent"
           @update:model-value="debouncedUpdate('Agent', $event)"
         />
@@ -155,11 +155,11 @@
 
       <!-- Agent Reference -->
       <div v-if="internalViewMode === 'actor'" class="space-y-2">
-        <Label htmlFor="agtref-filter">Agent Reference</Label>
+        <Label htmlFor="agtref-filter">{{ t('matter.filters.labels.agentReference') }}</Label>
         <Input
           id="agtref-filter"
           type="text"
-          placeholder="Agent ref..."
+          :placeholder="t('matter.filters.placeholders.agentReference')"
           :model-value="props.filters.AgtRef"
           @update:model-value="debouncedUpdate('AgtRef', $event)"
         />
@@ -167,11 +167,11 @@
 
       <!-- Title -->
       <div class="space-y-2">
-        <Label htmlFor="title-filter">Title</Label>
+        <Label htmlFor="title-filter">{{ t('matter.filters.labels.title') }}</Label>
         <Input
           id="title-filter"
           type="text"
-          placeholder="Search title..."
+          :placeholder="t('matter.filters.placeholders.title')"
           :model-value="props.filters.Title"
           @update:model-value="debouncedUpdate('Title', $event)"
         />
@@ -179,10 +179,10 @@
 
       <!-- Inventor -->
       <div v-if="internalViewMode === 'actor'" class="space-y-2">
-        <Label htmlFor="inventor-filter">Inventor</Label>
+        <Label htmlFor="inventor-filter">{{ t('matter.filters.labels.inventor') }}</Label>
         <AutocompleteInput
           id="inventor-filter"
-          placeholder="Search inventor..."
+          :placeholder="t('matter.filters.placeholders.inventor')"
           :model-value="props.filters.Inventor1"
           @update:model-value="debouncedUpdate('Inventor1', $event)"
           endpoint="/actor/autocomplete"
@@ -193,33 +193,33 @@
 
       <!-- Status Date -->
       <div v-if="internalViewMode === 'status'" class="space-y-2">
-        <Label htmlFor="status-date-filter">Status Date</Label>
+        <Label htmlFor="status-date-filter">{{ t('matter.filters.labels.statusDate') }}</Label>
         <DatePicker
           id="status-date-filter"
           :model-value="props.filters.Status_date"
           @update:model-value="updateFilter('Status_date', $event)"
-          placeholder="Select date..."
+          :placeholder="t('matter.filters.placeholders.selectDate')"
         />
       </div>
 
       <!-- Filing Date -->
       <div v-if="internalViewMode === 'status'" class="space-y-2">
-        <Label htmlFor="filed-filter">Filing Date</Label>
+        <Label htmlFor="filed-filter">{{ t('matter.filters.labels.filingDate') }}</Label>
         <DatePicker
           id="filed-filter"
           :model-value="props.filters.Filed"
           @update:model-value="updateFilter('Filed', $event)"
-          placeholder="Select date..."
+          :placeholder="t('matter.filters.placeholders.selectDate')"
         />
       </div>
 
       <!-- Filing Number -->
       <div v-if="internalViewMode === 'status'" class="space-y-2">
-        <Label htmlFor="filno-filter">Filing Number</Label>
+        <Label htmlFor="filno-filter">{{ t('matter.filters.labels.filingNumber') }}</Label>
         <Input
           id="filno-filter"
           type="text"
-          placeholder="Filing number..."
+          :placeholder="t('matter.filters.placeholders.filingNumber')"
           :model-value="props.filters.FilNo"
           @update:model-value="debouncedUpdate('FilNo', $event)"
         />
@@ -227,22 +227,22 @@
 
       <!-- Publication Date -->
       <div v-if="internalViewMode === 'status'" class="space-y-2">
-        <Label htmlFor="pub-filter">Publication Date</Label>
+        <Label htmlFor="pub-filter">{{ t('matter.filters.labels.publicationDate') }}</Label>
         <DatePicker
           id="pub-filter"
           :model-value="props.filters.Published"
           @update:model-value="updateFilter('Published', $event)"
-          placeholder="Select date..."
+          :placeholder="t('matter.filters.placeholders.selectDate')"
         />
       </div>
 
       <!-- Publication Number -->
       <div v-if="internalViewMode === 'status'" class="space-y-2">
-        <Label htmlFor="pubno-filter">Publication Number</Label>
+        <Label htmlFor="pubno-filter">{{ t('matter.filters.labels.publicationNumber') }}</Label>
         <Input
           id="pubno-filter"
           type="text"
-          placeholder="Publication number..."
+          :placeholder="t('matter.filters.placeholders.publicationNumber')"
           :model-value="props.filters.PubNo"
           @update:model-value="debouncedUpdate('PubNo', $event)"
         />
@@ -250,22 +250,22 @@
 
       <!-- Grant Date -->
       <div v-if="internalViewMode === 'status'" class="space-y-2">
-        <Label htmlFor="granted-filter">Grant Date</Label>
+        <Label htmlFor="granted-filter">{{ t('matter.filters.labels.grantDate') }}</Label>
         <DatePicker
           id="granted-filter"
           :model-value="props.filters.Granted"
           @update:model-value="updateFilter('Granted', $event)"
-          placeholder="Select date..."
+          :placeholder="t('matter.filters.placeholders.selectDate')"
         />
       </div>
 
       <!-- Grant Number -->
       <div v-if="internalViewMode === 'status'" class="space-y-2">
-        <Label htmlFor="grtno-filter">Grant Number</Label>
+        <Label htmlFor="grtno-filter">{{ t('matter.filters.labels.grantNumber') }}</Label>
         <Input
           id="grtno-filter"
           type="text"
-          placeholder="Grant number..."
+          :placeholder="t('matter.filters.placeholders.grantNumber')"
           :model-value="props.filters.GrtNo"
           @update:model-value="debouncedUpdate('GrtNo', $event)"
         />
@@ -277,6 +277,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import { Users, FileCheck } from 'lucide-vue-next'
 import { Label } from '@/Components/ui/label'
 import { Input } from '@/Components/ui/input'
@@ -301,6 +302,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:filters', 'update:view-mode'])
 
+const { t } = useI18n()
 const page = usePage()
 
 // Computed property for internal view mode that syncs with tab

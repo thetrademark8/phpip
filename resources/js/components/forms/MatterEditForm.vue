@@ -3,7 +3,7 @@
     <div class="space-y-4">
       <!-- Category -->
       <FormField
-        label="Category"
+        :label="t('Category')"
         name="category_code"
         :error="form.errors.category_code"
         required
@@ -12,7 +12,7 @@
           v-model="form.category_code"
           v-model:display-model-value="categoryDisplay"
           endpoint="/category/autocomplete"
-          placeholder="Select category"
+          :placeholder="t('Select category')"
           :min-length="0"
           value-key="key"
           label-key="value"
@@ -22,7 +22,7 @@
 
       <!-- Country -->
       <FormField
-        label="Country"
+        :label="t('Country')"
         name="country"
         :error="form.errors.country"
         required
@@ -31,7 +31,7 @@
           v-model="form.country"
           v-model:display-model-value="countryDisplay"
           endpoint="/country/autocomplete"
-          placeholder="Select country"
+          :placeholder="t('Select country')"
           :min-length="0"
           value-key="key"
           label-key="value"
@@ -40,44 +40,32 @@
 
       <!-- Reference -->
       <FormField
-        label="Reference"
+        :label="t('Reference')"
         name="caseref"
         :error="form.errors.caseref"
         required
       >
         <Input
           v-model="form.caseref"
-          placeholder="Matter reference"
-        />
-      </FormField>
-
-      <!-- Suffix -->
-      <FormField
-        label="Suffix"
-        name="suffix"
-        :error="form.errors.suffix"
-      >
-        <Input
-          v-model="form.suffix"
-          placeholder="Suffix"
+          :placeholder="t('Matter reference')"
         />
       </FormField>
 
       <!-- Alternative Reference -->
       <FormField
-        label="Alternative Reference"
+        :label="t('Alternative Reference')"
         name="alt_ref"
         :error="form.errors.alt_ref"
       >
         <Input
           v-model="form.alt_ref"
-          placeholder="Alternative reference"
+          :placeholder="t('Alternative reference')"
         />
       </FormField>
 
       <!-- Type -->
       <FormField
-        label="Type"
+        :label="t('Type')"
         name="type_code"
         :error="form.errors.type_code"
       >
@@ -85,7 +73,7 @@
           v-model="form.type_code"
           v-model:display-model-value="typeDisplay"
           endpoint="/type/autocomplete"
-          placeholder="Select type"
+          :placeholder="t('Select type')"
           value-key="key"
           label-key="value"
         />
@@ -93,7 +81,7 @@
 
       <!-- Responsible -->
       <FormField
-        label="Responsible"
+        :label="t('Responsible')"
         name="responsible"
         :error="form.errors.responsible"
       >
@@ -101,7 +89,7 @@
           v-model="form.responsible"
           v-model:display-model-value="responsibleDisplay"
           endpoint="/user/autocomplete"
-          placeholder="Select responsible user"
+          :placeholder="t('Select responsible user')"
           value-key="login"
           label-key="name"
         />
@@ -109,25 +97,25 @@
 
       <!-- Expiry Date -->
       <FormField
-        label="Expiry Date"
+        :label="t('Expiry Date')"
         name="expire_date"
         :error="form.errors.expire_date"
       >
         <DatePicker
           v-model="form.expire_date"
-          placeholder="Select expiry date"
+          :placeholder="t('Select expiry date')"
         />
       </FormField>
 
       <!-- Notes -->
       <FormField
-        label="Notes"
+        :label="t('Notes')"
         name="notes"
         :error="form.errors.notes"
       >
         <Textarea
           v-model="form.notes"
-          placeholder="Additional notes..."
+          :placeholder="t('Additional notes...')"
           rows="3"
         />
       </FormField>
@@ -136,11 +124,11 @@
     <!-- Form Actions -->
     <div class="flex justify-end gap-3 mt-6">
       <Button type="button" variant="outline" @click="handleCancel">
-        Cancel
+        {{ t('Cancel') }}
       </Button>
       <Button type="submit" :disabled="form.processing">
         <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
-        {{ form.processing ? 'Saving...' : 'Save Changes' }}
+        {{ form.processing ? t('Saving...') : t('Save Changes') }}
       </Button>
     </div>
   </form>
@@ -149,6 +137,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import { Loader2 } from 'lucide-vue-next'
 import { Button } from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
@@ -156,6 +145,7 @@ import { Textarea } from '@/Components/ui/textarea'
 import FormField from '@/Components/ui/form/FormField.vue'
 import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
 import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
+import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({
   matter: {
@@ -166,12 +156,14 @@ const props = defineProps({
 
 const emit = defineEmits(['success', 'cancel'])
 
+const { t } = useI18n()
+const { translated } = useTranslatedField()
+
 // Form setup
 const form = useForm({
   category_code: props.matter.category_code || '',
   country: props.matter.country || '',
   caseref: props.matter.caseref || '',
-  suffix: props.matter.suffix || '',
   alt_ref: props.matter.alt_ref || '',
   type_code: props.matter.type_code || '',
   responsible: props.matter.responsible || '',
@@ -181,7 +173,7 @@ const form = useForm({
 
 // Display values for autocomplete fields
 // The category object has the translated 'category' field
-const categoryDisplay = ref(props.matter.category?.category || '')
+const categoryDisplay = ref(props.matter.category?.category ? translated(props.matter.category.category) : '')
 const countryDisplay = ref(props.matter.country_info?.name || '')
 const typeDisplay = ref(props.matter.type?.type || '')
 const responsibleDisplay = ref(props.matter.responsible || '')

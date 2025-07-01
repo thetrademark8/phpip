@@ -3,7 +3,7 @@
     <div class="space-y-6">
       <!-- Category -->
       <FormField
-        label="Category"
+        :label="t('Category')"
         name="category_code"
         :error="form.errors.category_code"
         required
@@ -12,7 +12,7 @@
           v-model="form.category_code"
           v-model:display-model-value="categoryDisplay"
           endpoint="/category/autocomplete"
-          placeholder="Select category"
+          :placeholder="t('Select category')"
           :min-length="0"
           value-key="key"
           label-key="value"
@@ -23,10 +23,10 @@
       <!-- Pub Number (OPS mode only) -->
       <FormField
         v-if="operation === 'ops'"
-        label="Pub Number"
+        :label="t('Pub Number')"
         name="docnum"
         :error="form.errors.docnum"
-        help-text="Publication number prefixed with the country code and optionally suffixed with the kind code. No spaces nor non-alphanumeric characters."
+        :help-text="t('Publication number help')"
       >
         <Input
           v-model="form.docnum"
@@ -37,14 +37,14 @@
       <!-- Client (OPS mode only) -->
       <FormField
         v-if="operation === 'ops'"
-        label="Client"
+        :label="t('Client')"
         name="client_id"
         :error="form.errors.client_id"
       >
         <AutocompleteInput
           v-model="form.client_id"
           endpoint="/actor/autocomplete"
-          placeholder="Select client"
+          :placeholder="t('Select client')"
           value-key="key"
           label-key="value"
         />
@@ -53,7 +53,7 @@
       <!-- Country (non-OPS mode) -->
       <FormField
         v-if="operation !== 'ops'"
-        label="Country"
+        :label="t('Country')"
         name="country"
         :error="form.errors.country"
         required
@@ -62,7 +62,7 @@
           v-model="form.country"
           v-model:display-model-value="countryDisplay"
           endpoint="/country/autocomplete"
-          :placeholder="parentMatter?.countryInfo?.name || 'Select country'"
+          :placeholder="parentMatter?.countryInfo?.name || t('Select country')"
           value-key="key"
           label-key="value"
         />
@@ -71,7 +71,7 @@
       <!-- Origin (non-OPS mode) -->
       <FormField
         v-if="operation !== 'ops'"
-        label="Origin"
+        :label="t('Origin')"
         name="origin"
         :error="form.errors.origin"
       >
@@ -79,7 +79,7 @@
           v-model="form.origin"
           v-model:display-model-value="originDisplay"
           endpoint="/country/autocomplete"
-          :placeholder="parentMatter?.originInfo?.name || 'Select origin'"
+          :placeholder="parentMatter?.originInfo?.name || t('Select origin')"
           value-key="key"
           label-key="value"
         />
@@ -88,14 +88,14 @@
       <!-- Type (non-OPS mode) -->
       <FormField
         v-if="operation !== 'ops'"
-        label="Type"
+        :label="t('Type')"
         name="type_code"
         :error="form.errors.type_code"
       >
         <AutocompleteInput
           v-model="form.type_code"
           endpoint="/type/autocomplete"
-          :placeholder="parentMatter?.type?.type || 'Select type'"
+          :placeholder="parentMatter?.type?.type || t('Select type')"
           :min-length="0"
           value-key="key"
           label-key="value"
@@ -104,7 +104,7 @@
 
       <!-- Caseref -->
       <FormField
-        label="Caseref"
+        :label="t('Caseref')"
         name="caseref"
         :error="form.errors.caseref"
         required
@@ -118,7 +118,7 @@
 
       <!-- Responsible -->
       <FormField
-        label="Responsible"
+        :label="t('Responsible')"
         name="responsible"
         :error="form.errors.responsible"
         required
@@ -127,7 +127,7 @@
           v-model="form.responsible"
           v-model:display-model-value="responsibleDisplay"
           endpoint="/user/autocomplete"
-          :placeholder="parentMatter?.responsible || currentUser?.name || 'Select responsible'"
+          :placeholder="parentMatter?.responsible || currentUser?.name || t('Select responsible')"
           value-key="key"
           label-key="value"
         />
@@ -135,15 +135,15 @@
 
       <!-- Priority selection (child mode only) -->
       <div v-if="operation === 'child'" class="space-y-2">
-        <Label>Use original matter as</Label>
+        <Label>{{ t('Use original matter as') }}</Label>
         <RadioGroup v-model="priorityValue">
           <div class="flex items-center space-x-2">
             <RadioGroupItem value="1" id="priority-1" />
-            <Label for="priority-1">Priority application</Label>
+            <Label for="priority-1">{{ t('Priority application') }}</Label>
           </div>
           <div class="flex items-center space-x-2">
             <RadioGroupItem value="0" id="priority-0" />
-            <Label for="priority-0">Parent application</Label>
+            <Label for="priority-0">{{ t('Parent application') }}</Label>
           </div>
         </RadioGroup>
       </div>
@@ -157,7 +157,7 @@
           @click="onCancel"
           :disabled="form.processing"
         >
-          Cancel
+          {{ t('Cancel') }}
         </Button>
         <Button
           type="submit"
@@ -174,6 +174,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import { Loader2 } from 'lucide-vue-next'
 import { Button } from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
@@ -181,6 +182,7 @@ import { Label } from '@/Components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/Components/ui/radio-group'
 import FormField from '@/Components/ui/form/FormField.vue'
 import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({
   operation: {
@@ -193,7 +195,7 @@ const props = defineProps({
     default: null
   },
   category: {
-    type: Object,
+    type: String,
     default: null
   },
   currentUser: {
@@ -210,23 +212,26 @@ const props = defineProps({
   }
 })
 
+const { t } = useI18n()
+const { translated } = useTranslatedField()
+
 // Form setup
 const form = useForm({
   operation: props.operation,
-  category_code: props.parentMatter?.category_code || props.category?.code || '',
+  category_code: props.parentMatter?.category_code || props.category || '',
   docnum: '',
   client_id: '',
   parent_id: props.parentMatter?.id || '',
   country: props.parentMatter?.country || '',
   origin: props.parentMatter?.origin || '',
   type_code: props.parentMatter?.type_code || '',
-  caseref: props.parentMatter?.caseref || props.category?.next_caseref || '',
+  caseref: props.parentMatter?.caseref || '',
   responsible: props.parentMatter?.responsible || props.currentUser?.login || '',
   priority: '1' // Default to priority application
 })
 
 // Display values for autocomplete fields
-const categoryDisplay = ref(props.category?.name || props.parentMatter?.category?.category || '')
+const categoryDisplay = ref(props.parentMatter?.category?.category ? translated(props.parentMatter.category.category) : '')
 const countryDisplay = ref('')
 const originDisplay = ref('')
 const responsibleDisplay = ref('')
@@ -239,8 +244,8 @@ const priorityValue = computed({
 
 // Submit label
 const submitLabel = computed(() => {
-  if (form.processing) return 'Creating...'
-  return 'Create'
+  if (form.processing) return t('Creating...')
+  return t('Create')
 })
 
 // Handle category selection
@@ -304,6 +309,43 @@ watch(() => props.parentMatter, (matter) => {
     }
     if (matter.type_code && !form.type_code) {
       form.type_code = matter.type_code
+    }
+  }
+}, { immediate: true })
+
+// Fetch caseref when category is pre-selected
+watch(() => props.category, async (categoryCode) => {
+  if (categoryCode && props.operation === 'new') {
+    // First, fetch the category details to get the prefix
+    try {
+      const response = await fetch(`/category/autocomplete?term=${categoryCode}`, {
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      if (response.ok) {
+        const categories = await response.json()
+        const category = categories.find(c => c.key === categoryCode)
+        if (category) {
+          categoryDisplay.value = category.value
+          // Now fetch the next caseref
+          const caserefResponse = await fetch(`/matter/new-caseref?term=${category.prefix || categoryCode}`, {
+            headers: {
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+          if (caserefResponse.ok) {
+            const data = await caserefResponse.json()
+            if (data && data[0] && data[0].value) {
+              form.caseref = data[0].value
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching category/caseref:', error)
     }
   }
 }, { immediate: true })

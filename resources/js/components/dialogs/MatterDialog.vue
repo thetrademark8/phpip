@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="sm:max-w-sm">
+    <DialogContent class="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle>{{ dialogTitle }}</DialogTitle>
         <DialogDescription v-if="dialogDescription">
@@ -21,6 +21,8 @@
           :parent-matter="matter"
           :child-id="childId"
           :ops-number="opsNumber"
+          :category="category"
+          :current-user="currentUser"
           @success="handleSuccess"
           @cancel="$emit('update:open', false)"
         />
@@ -31,6 +33,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   Dialog,
   DialogContent,
@@ -62,32 +65,42 @@ const props = defineProps({
   opsNumber: {
     type: String,
     default: ''
+  },
+  category: {
+    type: String,
+    default: null
+  },
+  currentUser: {
+    type: Object,
+    default: null
   }
 })
 
 const emit = defineEmits(['update:open', 'success'])
 
+const { t } = useI18n()
+
 const dialogTitle = computed(() => {
   switch (props.operation) {
     case 'new':
-      return 'Create Matter'
+      return t('Create Matter')
     case 'edit':
-      return 'Edit Matter'
+      return t('Edit Matter')
     case 'child':
-      return 'Create Child Matter'
+      return t('Create Child Matter')
     case 'ops':
-      return 'Create Family from OPS'
+      return t('Create Family from OPS')
     default:
-      return 'Create Matter'
+      return t('Create Matter')
   }
 })
 
 const dialogDescription = computed(() => {
   switch (props.operation) {
     case 'child':
-      return 'Create a new matter linked to the current one'
+      return t('Create a new matter linked to the current one')
     case 'ops':
-      return 'Fetch patent family information from OPS and create matters'
+      return t('Fetch patent family information from OPS and create matters')
     default:
       return null
   }

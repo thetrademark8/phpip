@@ -8,7 +8,12 @@ export class MatterFilterService {
   /**
    * Apply filters and navigate to filtered results
    */
-  static applyFilters(filters, options = {}) {
+  static applyFilters(filters, sortField = null, sortDirection = null) {
+    const options = {}
+    if (sortField) {
+      options.sort = sortField
+      options.direction = sortDirection || 'asc'
+    }
     const params = this.buildQueryParams(filters, options)
     
     return new Promise((resolve, reject) => {
@@ -61,8 +66,13 @@ export class MatterFilterService {
       return false
     }
     
-    // Include false boolean values only for specific fields
-    if (value === false && !['Ctnr', 'include_dead'].includes(key)) {
+    // For boolean fields, only include if true
+    if (['Ctnr', 'include_dead'].includes(key)) {
+      return value === true || value === 1 || value === '1'
+    }
+    
+    // Skip false values for other fields
+    if (value === false) {
       return false
     }
     
@@ -138,6 +148,8 @@ export class MatterFilterService {
    * Get human-readable label for filter key
    */
   static getFilterLabel(key) {
+    // For now, use the static map. The component using this service
+    // should handle translations when displaying the labels
     return FILTER_LABEL_MAP[key] || key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')
   }
 
@@ -145,8 +157,14 @@ export class MatterFilterService {
    * Get display value for filter
    */
   static getFilterDisplayValue(key, value) {
-    if (typeof value === 'boolean' || value === 1 || value === '1') {
-      return 'Yes'
+    // For boolean fields, only show "Yes" if actually true
+    if (['Ctnr', 'include_dead'].includes(key)) {
+      return (value === true || value === 1 || value === '1') ? 'Yes' : 'No'
+    }
+    
+    // For other boolean-like values
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No'
     }
     
     return String(value)

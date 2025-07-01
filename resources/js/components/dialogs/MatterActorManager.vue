@@ -78,15 +78,16 @@
 
               <div class="grid grid-cols-2 gap-4">
                 <FormField
-                  label="Rate"
+                  label="Ownership %"
                   name="rate"
                   :error="addForm.errors.rate"
                 >
                   <Input
                     v-model="addForm.rate"
                     type="number"
-                    step="0.01"
-                    placeholder="Hourly rate (optional)"
+                    min="0"
+                    max="100"
+                    placeholder="100"
                   />
                 </FormField>
 
@@ -143,7 +144,7 @@
                   >
                     <div class="flex-1">
                       <div class="font-medium">
-                        {{ actor.display_name || actor.name }}
+                        {{ actor.display_name || actor.name }}{{ actor.rate && actor.rate != 100 ? ` (${actor.rate}%)` : '' }}
                         <span v-if="actor.inherited" class="text-sm text-muted-foreground italic">
                           (inherited)
                         </span>
@@ -154,7 +155,6 @@
                       <div class="flex gap-4 text-sm text-muted-foreground">
                         <span v-if="actor.actor_ref">Ref: {{ actor.actor_ref }}</span>
                         <span v-if="actor.date">{{ formatDate(actor.date) }}</span>
-                        <span v-if="actor.rate">Rate: ${{ actor.rate }}/hr</span>
                         <span v-if="actor.shared" class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">Shared</span>
                       </div>
                     </div>
@@ -235,7 +235,7 @@ const addForm = useForm({
   actor_id: '',
   actor_ref: '',
   date: '',
-  rate: '',
+  rate: 100,
   display_order: 0
 })
 

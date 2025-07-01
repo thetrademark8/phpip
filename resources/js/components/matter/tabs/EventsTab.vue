@@ -2,14 +2,14 @@
   <Card>
     <CardHeader>
       <div class="flex items-center justify-between">
-        <CardTitle>Events Timeline</CardTitle>
+        <CardTitle>{{ $t('Events Timeline') }}</CardTitle>
         <Button
           v-if="enableInlineEdit"
           size="sm"
           @click="showEventManagerDialog = true"
         >
           <Settings class="mr-1 h-3 w-3" />
-          Manage Events
+          {{ $t('Manage Events') }}
         </Button>
       </div>
     </CardHeader>

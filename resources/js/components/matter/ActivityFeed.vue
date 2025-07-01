@@ -2,7 +2,7 @@
   <Card>
     <CardHeader>
       <div class="flex items-center justify-between">
-        <CardTitle class="text-base">Recent Activity</CardTitle>
+        <CardTitle class="text-base">{{ $t('Recent Activity') }}</CardTitle>
         <Button
           size="sm"
           variant="ghost"
@@ -31,7 +31,7 @@
             </div>
             <div class="flex-1 space-y-1">
               <p class="text-sm">
-                <span class="font-medium">{{ activity.user || 'System' }}</span>
+                <span class="font-medium">{{ activity.user || $t('System') }}</span>
                 {{ activity.description }}
               </p>
               <p class="text-xs text-muted-foreground">
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div v-else class="p-8 text-center text-muted-foreground">
-        No recent activity
+        {{ $t('No recent activity') }}
       </div>
     </CardContent>
   </Card>
@@ -68,6 +68,7 @@ import {
 } from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   matterId: {
@@ -83,6 +84,8 @@ const props = defineProps({
     default: () => []
   }
 })
+
+const { t } = useI18n()
 
 // State
 const activities = ref([])
@@ -160,7 +163,7 @@ function buildActivitiesFromData() {
           id: event.id,
           type: 'event_created',
           user: event.creator?.name,
-          description: `added event "${event.event_name}"`,
+          description: t('added event "{name}"', { name: event.event_name }),
           details: event.detail,
           date: event.created_at || event.event_date
         })
@@ -177,7 +180,7 @@ function buildActivitiesFromData() {
           id: task.id,
           type: 'task_completed',
           user: task.done_by?.name,
-          description: `completed task "${task.name}"`,
+          description: t('completed task "{name}"', { name: task.name }),
           details: task.detail,
           date: task.done_date
         })

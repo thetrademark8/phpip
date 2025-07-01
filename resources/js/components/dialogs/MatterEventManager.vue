@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-4xl">
+    <DialogContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>Manage Events</DialogTitle>
         <DialogDescription>
