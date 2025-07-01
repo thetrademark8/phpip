@@ -1,22 +1,22 @@
 <template>
   <DataTable
-    :columns="columns"
-    :data="tasks"
-    :loading="false"
-    :selectable="permissions.canWrite"
-    :show-pagination="false"
-    :empty-message="'No tasks found'"
-    :get-row-id="(row) => row.id"
-    :get-row-class="getRowClass"
-    @update:selected="handleSelection"
+      :columns="columns"
+      :data="tasks"
+      :loading="false"
+      :selectable="permissions.canWrite"
+      :show-pagination="false"
+      :empty-message="'No tasks found'"
+      :get-row-id="(row) => row.id"
+      :get-row-class="getRowClass"
+      @update:selected="handleSelection"
   />
 </template>
 
 <script setup>
-import { h } from 'vue'
-import { Link } from '@inertiajs/vue3'
-import { format, parseISO, isPast, isBefore, addDays, formatDistanceToNow } from 'date-fns'
-import { CalendarDays, Clock, AlertCircle } from 'lucide-vue-next'
+import {h} from 'vue'
+import {Link} from '@inertiajs/vue3'
+import {format, parseISO, isPast, isBefore, addDays, formatDistanceToNow} from 'date-fns'
+import {CalendarDays, Clock, AlertCircle} from 'lucide-vue-next'
 import DataTable from '@/Components/ui/DataTable.vue'
 import StatusBadge from '@/Components/display/StatusBadge.vue'
 
@@ -38,12 +38,12 @@ const columns = [
   {
     accessorKey: 'matter.uid',
     header: 'Matter',
-    cell: ({ row }) => h('div', { class: 'flex flex-col gap-1' }, [
+    cell: ({row}) => h('div', {class: 'flex flex-col gap-1'}, [
       h(Link, {
-        href: `/matter/${row.original.matter_id}`,
+        href: route('matter.show', {matter: row.original.matter.id}),
         class: 'text-primary hover:underline text-sm font-medium'
       }, row.original.matter?.uid || `#${row.original.matter_id}`),
-      h('span', { class: 'text-xs text-muted-foreground' }, `ID: ${row.original.id}`)
+      h('span', {class: 'text-xs text-muted-foreground'}, `ID: ${row.original.id}`)
     ]),
     meta: {
       headerClass: 'w-[120px]',
@@ -52,22 +52,22 @@ const columns = [
   {
     accessorKey: 'info.name',
     header: 'Task Details',
-    cell: ({ row }) => {
+    cell: ({row}) => {
       const task = row.original
       const status = getTaskStatus(task)
-      
-      return h('div', { class: 'space-y-2 py-1' }, [
+
+      return h('div', {class: 'space-y-2 py-1'}, [
         // Task name and status badge
-        h('div', { class: 'flex items-center gap-2' }, [
-          h('span', { class: 'font-medium' }, task.info?.name || task.code),
-          h(StatusBadge, { status, type: 'task' })
+        h('div', {class: 'flex items-center gap-2'}, [
+          h('span', {class: 'font-medium'}, task.info?.name || task.code),
+          h(StatusBadge, {status, type: 'task'})
         ]),
         // Task detail if exists
-        task.detail && h('p', { class: 'text-sm text-muted-foreground' }, task.detail),
+        task.detail && h('p', {class: 'text-sm text-muted-foreground'}, task.detail),
         // Assigned to
-        task.assigned_to && h('div', { class: 'flex items-center gap-1 text-xs text-muted-foreground' }, [
+        task.assigned_to && h('div', {class: 'flex items-center gap-1 text-xs text-muted-foreground'}, [
           h('span', 'Assigned to:'),
-          h('span', { class: 'font-medium' }, task.assigned_to)
+          h('span', {class: 'font-medium'}, task.assigned_to)
         ])
       ])
     }
@@ -75,23 +75,23 @@ const columns = [
   {
     accessorKey: 'due_date',
     header: 'Due Date',
-    cell: ({ row }) => {
+    cell: ({row}) => {
       const date = row.original.due_date
-      if (!date) return h('span', { class: 'text-sm text-muted-foreground' }, 'No due date')
-      
+      if (!date) return h('span', {class: 'text-sm text-muted-foreground'}, 'No due date')
+
       const overdue = isOverdue(date)
       const dueSoon = isDueSoon(date) && !overdue
       const dueToday = isToday(date)
-      
+
       const IconComponent = overdue ? AlertCircle : (dueSoon || dueToday) ? Clock : CalendarDays
       const dateColor = overdue ? 'text-destructive' : (dueSoon || dueToday) ? 'text-warning-foreground' : 'text-muted-foreground'
-      
-      return h('div', { class: 'flex flex-col gap-1' }, [
-        h('div', { class: `flex items-center gap-1.5 ${dateColor}` }, [
-          h(IconComponent, { class: 'h-4 w-4' }),
-          h('span', { class: 'text-sm font-medium' }, formatDate(date))
+
+      return h('div', {class: 'flex flex-col gap-1'}, [
+        h('div', {class: `flex items-center gap-1.5 ${dateColor}`}, [
+          h(IconComponent, {class: 'h-4 w-4'}),
+          h('span', {class: 'text-sm font-medium'}, formatDate(date))
         ]),
-        h('span', { class: 'text-xs text-muted-foreground' }, getRelativeTime(date))
+        h('span', {class: 'text-xs text-muted-foreground'}, getRelativeTime(date))
       ])
     },
     meta: {
@@ -121,13 +121,13 @@ const getRelativeTime = (date) => {
     const parsedDate = parseISO(date)
     const now = new Date()
     const daysDiff = Math.floor((parsedDate - now) / (1000 * 60 * 60 * 24))
-    
+
     if (daysDiff === 0) return 'Due today'
     if (daysDiff === 1) return 'Due tomorrow'
     if (daysDiff === -1) return 'Due yesterday'
     if (daysDiff > 0 && daysDiff <= 7) return `Due in ${daysDiff} days`
-    if (daysDiff < 0) return formatDistanceToNow(parsedDate, { addSuffix: true })
-    
+    if (daysDiff < 0) return formatDistanceToNow(parsedDate, {addSuffix: true})
+
     return ''
   } catch {
     return ''
@@ -177,7 +177,7 @@ const getTaskStatus = (task) => {
 
 const getRowClass = (task) => {
   const classes = []
-  
+
   if (task.done) {
     classes.push('opacity-60')
   } else if (task.due_date && isOverdue(task.due_date)) {
@@ -187,7 +187,7 @@ const getRowClass = (task) => {
   } else if (task.due_date && isToday(task.due_date)) {
     classes.push('bg-warning/10 hover:bg-warning/15')
   }
-  
+
   return classes.join(' ')
 }
 </script>

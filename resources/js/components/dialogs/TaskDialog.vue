@@ -25,6 +25,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import {
   Dialog,
   DialogContent,
@@ -63,24 +64,26 @@ const props = defineProps({
 
 const emit = defineEmits(['update:open', 'success'])
 
+const { t } = useI18n()
+
 const dialogTitle = computed(() => {
-  return props.task ? 'Edit Task' : 'Create Task'
+  return props.task ? t('Edit Task') : t('Create Task')
 })
 
 const dialogDescription = computed(() => {
   if (props.task) {
-    return 'Update task details and completion status'
+    return t('Update task details and completion status')
   }
   
   if (props.eventId) {
-    return 'Create a new task for this event'
+    return t('Create a new task for this event')
   }
   
   if (props.matterId) {
-    return 'Create a new task for this matter'
+    return t('Create a new task for this matter')
   }
   
-  return 'Create a new task'
+  return t('Create a new task')
 })
 
 const handleSuccess = (response) => {

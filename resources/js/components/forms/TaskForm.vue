@@ -3,7 +3,7 @@
     <div class="space-y-4">
       <!-- Task Code/Type -->
       <FormField
-        label="Task Type"
+        :label="t('Task Type')"
         name="code"
         :error="form.errors.code"
         required
@@ -12,7 +12,7 @@
           v-model="form.code"
           v-model:display-model-value="taskTypeDisplay"
           endpoint="/event-name/autocomplete/1"
-          placeholder="Select task type"
+          :placeholder="t('Select task type')"
           value-key="key"
           label-key="value"
           @selected="handleTaskTypeSelect"
@@ -21,20 +21,20 @@
 
       <!-- Due Date -->
       <FormField
-        label="Due Date"
+        :label="t('Due Date')"
         name="due_date"
         :error="form.errors.due_date"
         required
       >
         <DatePicker
           v-model="form.due_date"
-          placeholder="Select due date"
+          :placeholder="t('Select due date')"
         />
       </FormField>
 
       <!-- Assigned To -->
       <FormField
-        label="Assigned To"
+        :label="t('Assigned To')"
         name="assigned_to"
         :error="form.errors.assigned_to"
       >
@@ -42,7 +42,7 @@
           v-model="form.assigned_to"
           v-model:display-model-value="assignedToDisplay"
           endpoint="/user/autocomplete"
-          placeholder="Select assignee"
+          :placeholder="t('Select assignee')"
           value-key="key"
           label-key="value"
         />
@@ -50,13 +50,13 @@
 
       <!-- Detail/Notes -->
       <FormField
-        label="Detail"
+        :label="t('Detail')"
         name="detail"
         :error="form.errors.detail"
       >
         <Textarea
           v-model="form.detail"
-          placeholder="Task details or notes"
+          :placeholder="t('Task details or notes')"
           :rows="3"
           class="resize-none"
         />
@@ -71,19 +71,19 @@
             id="done"
             @update:checked="handleDoneChange"
           />
-          <Label for="done">Task completed</Label>
+          <Label for="done">{{ t('Task completed') }}</Label>
         </div>
 
         <!-- Done Date (shown when done is checked) -->
         <FormField
           v-if="form.done"
-          label="Completion Date"
+          :label="t('Completion Date')"
           name="done_date"
           :error="form.errors.done_date"
         >
           <DatePicker
             v-model="form.done_date"
-            placeholder="Select completion date"
+            :placeholder="t('Select completion date')"
           />
         </FormField>
       </div>
@@ -91,7 +91,7 @@
       <!-- Cost and Fee fields (for renewals) -->
       <div v-if="showFinancialFields" class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField
-          label="Cost"
+          :label="t('Cost')"
           name="cost"
           :error="form.errors.cost"
         >
@@ -104,7 +104,7 @@
         </FormField>
 
         <FormField
-          label="Fee"
+          :label="t('Fee')"
           name="fee"
           :error="form.errors.fee"
         >
@@ -117,13 +117,13 @@
         </FormField>
 
         <FormField
-          label="Currency"
+          :label="t('Currency')"
           name="currency"
           :error="form.errors.currency"
         >
           <Select v-model="form.currency">
             <SelectTrigger>
-              <SelectValue placeholder="Select currency" />
+              <SelectValue :placeholder="t('Select currency')" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="USD">USD</SelectItem>
@@ -145,14 +145,14 @@
           @click="onCancel"
           :disabled="form.processing"
         >
-          Cancel
+          {{ t('Cancel') }}
         </Button>
         <Button
           type="submit"
           :disabled="form.processing"
         >
           <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
-          {{ task ? 'Update' : 'Create' }}
+          {{ task ? t('Update') : t('Create') }}
         </Button>
       </div>
     </div>
@@ -162,6 +162,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { useI18n } from 'vue-i18n'
 import { format } from 'date-fns'
 import { Loader2 } from 'lucide-vue-next'
 import { Button } from '@/Components/ui/button'
@@ -210,6 +211,8 @@ const props = defineProps({
     default: null
   }
 })
+
+const { t } = useI18n()
 
 // Initialize form
 const form = useForm({

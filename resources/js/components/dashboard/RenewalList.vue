@@ -15,7 +15,7 @@
 <script setup>
 import { h } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import { format, parseISO, isPast, isBefore, addDays, formatDistanceToNow } from 'date-fns'
+import { format, parseISO, isPast, isBefore, addDays, formatDistanceToNow, isToday as isTodayDateFns } from 'date-fns'
 import { CalendarDays, Clock, AlertCircle, DollarSign } from 'lucide-vue-next'
 import DataTable from '@/Components/ui/DataTable.vue'
 import StatusBadge from '@/Components/display/StatusBadge.vue'
@@ -138,5 +138,35 @@ const isDueSoon = (date) => {
   } catch {
     return false
   }
+}
+
+const isToday = (date) => {
+  if (!date) return false
+  try {
+    return isTodayDateFns(parseISO(date))
+  } catch {
+    return false
+  }
+}
+
+const getRelativeTime = (date) => {
+  if (!date) return ''
+  try {
+    return formatDistanceToNow(parseISO(date), { addSuffix: true })
+  } catch {
+    return date
+  }
+}
+
+const getRowClass = (row) => {
+  const date = row.due_date
+  if (!date) return ''
+  
+  if (isOverdue(date)) {
+    return 'bg-destructive/5'
+  } else if (isDueSoon(date)) {
+    return 'bg-warning/5'
+  }
+  return ''
 }
 </script>

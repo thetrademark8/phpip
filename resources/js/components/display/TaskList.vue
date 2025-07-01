@@ -59,9 +59,10 @@
               />
             </div>
             
-            <div class="flex gap-4 text-sm text-muted-foreground">
-              <span>
-                Due: 
+            <div class="flex flex-wrap gap-4 text-sm">
+              <div class="flex items-center gap-1">
+                <Calendar class="h-3 w-3 text-muted-foreground" />
+                <span class="text-muted-foreground">Due:</span>
                 <EditableField
                   v-if="enableInlineEdit"
                   :model-value="task.due_date"
@@ -69,24 +70,36 @@
                   type="date"
                   :url="updateUrl(task)"
                   :format="formatDate"
-                  value-class="text-sm text-muted-foreground"
+                  :value-class="cn(
+                    'font-medium',
+                    isOverdue(task) && !task.done ? 'text-red-600' : 'text-foreground'
+                  )"
                   @saved="emit('update', { ...task, due_date: $event })"
                 />
-                <span v-else>{{ formatDate(task.due_date) }}</span>
-              </span>
-              <span v-if="task.assigned_to || enableInlineEdit">
-                Assigned to: 
+                <span v-else :class="cn(
+                  'font-medium',
+                  isOverdue(task) && !task.done ? 'text-red-600' : 'text-foreground'
+                )">{{ formatDate(task.due_date) }}</span>
+              </div>
+              <div v-if="task.assigned_to || enableInlineEdit" class="flex items-center gap-1">
+                <User class="h-3 w-3 text-muted-foreground" />
+                <span class="text-muted-foreground">Assigned:</span>
                 <EditableField
                   v-if="enableInlineEdit"
                   :model-value="task.assigned_to || ''"
                   field="assigned_to"
                   :url="updateUrl(task)"
                   placeholder="Unassigned"
-                  value-class="text-sm text-muted-foreground"
+                  value-class="font-medium text-foreground"
                   @saved="emit('update', { ...task, assigned_to: $event })"
                 />
-                <span v-else>{{ task.assigned_to }}</span>
-              </span>
+                <span v-else class="font-medium">{{ task.assigned_to || 'Unassigned' }}</span>
+              </div>
+              <div v-if="task.cost" class="flex items-center gap-1">
+                <DollarSign class="h-3 w-3 text-muted-foreground" />
+                <span class="text-muted-foreground">Cost:</span>
+                <span class="font-medium">{{ formatCurrency(task.cost) }}</span>
+              </div>
             </div>
             
             <p v-if="task.detail || enableInlineEdit" class="text-sm mt-2">
@@ -136,7 +149,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { format, parseISO, isPast } from 'date-fns'
-import { Edit2, Trash2, Plus } from 'lucide-vue-next'
+import { Edit2, Trash2, Plus, Calendar, User, DollarSign } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
 import { Button } from '@/Components/ui/button'
 import { Checkbox } from '@/Components/ui/checkbox'
@@ -189,9 +202,9 @@ const filteredTasks = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(task => {
-      const name = (task.info?.name || task.code || '').toLowerCase()
-      const detail = (task.detail || '').toLowerCase()
-      const assignee = (task.assigned_to || '').toLowerCase()
+      const name = String(task.info?.name || task.code || '').toLowerCase()
+      const detail = String(task.detail || '').toLowerCase()
+      const assignee = String(task.assigned_to || '').toLowerCase()
       return name.includes(query) || detail.includes(query) || assignee.includes(query)
     })
   }
@@ -249,5 +262,13 @@ const getTaskStatus = (task) => {
 
 const handleTaskToggle = (task, checked) => {
   emit('toggle', { task, done: checked })
+}
+
+const formatCurrency = (amount) => {
+  if (!amount) return ''
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(amount)
 }
 </script>

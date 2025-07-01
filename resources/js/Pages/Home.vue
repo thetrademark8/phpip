@@ -4,7 +4,11 @@
       <!-- Left Panel -->
       <div class="lg:col-span-1 space-y-4">
         <!-- Categories Card -->
-        <CategoryStats :categories="categories" :permissions="permissions" />
+        <CategoryStats 
+          :categories="categories" 
+          :permissions="permissions" 
+          @openCreateMatter="handleOpenCreateMatter"
+        />
         
         <!-- Users Tasks Card -->
         <UserTasksSummary :tasks-count="tasksCount" />
@@ -148,6 +152,7 @@ const selectedRenewalIds = ref([])
 const taskClearDate = ref(new Date().toISOString().split('T')[0])
 const renewalClearDate = ref(new Date().toISOString().split('T')[0])
 
+
 // Update filters when radio selection changes
 const updateFilters = (value) => {
   if (value !== '2') {
@@ -242,5 +247,12 @@ const clearSelectedRenewals = async () => {
     console.error('Error:', error)
     alert('Error clearing renewals')
   }
+}
+
+// Handle opening the create matter dialog from CategoryStats
+const handleOpenCreateMatter = (categoryCode) => {
+  // Emit event to MainLayout via inject/provide or use a global event bus
+  // For now, we'll use the Navigation's approach
+  window.dispatchEvent(new CustomEvent('openCreateMatterWithCategory', { detail: { category: categoryCode } }))
 }
 </script>

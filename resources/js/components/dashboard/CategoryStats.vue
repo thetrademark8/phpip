@@ -62,7 +62,6 @@ import { Link } from '@inertiajs/vue3'
 import { Plus } from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
-import MatterDialog from '@/Components/dialogs/MatterDialog.vue'
 
 const props = defineProps({
   categories: {
@@ -78,12 +77,6 @@ const props = defineProps({
 const emit = defineEmits(['openCreateMatter'])
 
 const openCreateMatter = (categoryCode = null) => {
-  // For now, just navigate to the create page
-  // Later this can open a dialog when we implement the matter creation dialog
-  const url = categoryCode 
-    ? `/matter/create?operation=new&category=${categoryCode}`
-    : '/matter/create?operation=new'
-  
-  window.location.href = url
+  emit('openCreateMatter', categoryCode)
 }
 </script>
