@@ -6,6 +6,7 @@ use App\Models\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class RuleController extends Controller
 {
@@ -19,6 +20,9 @@ class RuleController extends Controller
         $Detail = $request->input('Detail');
         $Type = $request->input('Type');
         $Category = $request->input('Category');
+        $sort = $request->input('sort', 'task');
+        $direction = $request->input('direction', 'asc');
+        
         $rule = new Rule;
         $locale = app()->getLocale();
         // Normalize to the base locale (e.g., 'en' from 'en_US')
@@ -58,17 +62,40 @@ class RuleController extends Controller
 
         $query = $rule->with(['country:iso,name', 'trigger:code,name', 'category:code,category', 'origin:iso,name', 'type:code,type', 'taskInfo:code,name'])
             ->select('task_rules.*')
-            ->join('event_name AS t', 't.code', '=', 'task_rules.task')
-            ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(t.name, '$.\"{$baseLocale}\"'))");
+            ->join('event_name AS t', 't.code', '=', 'task_rules.task');
+
+        // Apply sorting
+        $sortableColumns = [
+            'task' => "JSON_UNQUOTE(JSON_EXTRACT(t.name, '$.\"{$baseLocale}\"'))",
+            'detail' => "JSON_UNQUOTE(JSON_EXTRACT(task_rules.detail, '$.\"{$baseLocale}\"'))",
+            'trigger_event' => 'task_rules.trigger_event',
+            'for_category' => 'task_rules.for_category',
+            'for_country' => 'task_rules.for_country',
+            'for_origin' => 'task_rules.for_origin',
+            'for_type' => 'task_rules.for_type',
+        ];
+
+        if (array_key_exists($sort, $sortableColumns)) {
+            $query = $query->orderByRaw("{$sortableColumns[$sort]} {$direction}");
+        } else {
+            // Default sorting
+            $query = $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(t.name, '$.\"{$baseLocale}\"')) {$direction}");
+        }
 
         if ($request->wantsJson()) {
             return response()->json($query->get());
         }
 
-        $ruleslist = $query->paginate(21);
+        $ruleslist = $query->paginate(15);
         $ruleslist->appends($request->input())->links();
 
-        return view('rule.index', compact('ruleslist'));
+        // Return Inertia response for Vue.js frontend
+        return Inertia::render('Rule/Index', [
+            'rules' => $ruleslist,
+            'filters' => $request->only(['Task', 'Detail', 'Trigger', 'Category', 'Country', 'Origin', 'Type']),
+            'sort' => $sort,
+            'direction' => $direction,
+        ]);
     }
 
     public function show(Rule $rule)
@@ -88,7 +115,11 @@ class RuleController extends Controller
 
         $ruleComments = $rule->getTableComments();
 
-        return view('rule.show', compact('ruleInfo', 'ruleComments'));
+        // Always return JSON since we use modal dialogs via AJAX
+        return response()->json([
+            'rule' => $ruleInfo,
+            'comments' => $ruleComments,
+        ]);
     }
 
     public function create()
@@ -97,7 +128,10 @@ class RuleController extends Controller
         $rule = new Rule;
         $ruleComments = $rule->getTableComments();
 
-        return view('rule.create', compact('ruleComments'));
+        // Return JSON for modal dialog usage
+        return response()->json([
+            'comments' => $ruleComments,
+        ]);
     }
 
     public function update(Request $request, Rule $rule)
@@ -137,7 +171,12 @@ class RuleController extends Controller
             'use_after' => 'nullable|date',
         ]);
         $request->merge(['creator' => Auth::user()->login]);
-        Rule::create($request->except(['_token', '_method']));
+        $rule = Rule::create($request->except(['_token', '_method']));
+
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('rule.index')
+                ->with('success', 'Rule created successfully');
+        }
 
         return response()->json(['redirect' => route('rule.index')]);
     }
@@ -146,6 +185,11 @@ class RuleController extends Controller
     {
         Gate::authorize('admin');
         $rule->delete();
+
+        if (request()->header('X-Inertia')) {
+            return redirect()->route('rule.index')
+                ->with('success', 'Rule deleted successfully');
+        }
 
         return $rule;
     }
