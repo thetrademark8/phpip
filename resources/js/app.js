@@ -5,6 +5,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import { createI18nInstance, updateI18nLocale } from './plugins/i18n';
 
 const appName = import.meta.env.VITE_APP_NAME || 'phpIP';
 
@@ -53,10 +54,29 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) })
+        // Create i18n instance with initial page data
+        const i18n = createI18nInstance(props.initialPage);
+        
+        // Create and mount app
+        const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .mount(el);
+            .use(i18n);
+            
+        // Listen for Inertia navigation to update locale
+        if (typeof window !== 'undefined') {
+            document.addEventListener('inertia:success', (event) => {
+                const newPage = event.detail.page;
+                const newLocale = newPage?.props?.locale;
+                const newTranslations = newPage?.props?.translations;
+                
+                if (newLocale && newTranslations) {
+                    updateI18nLocale(i18n, newLocale, newTranslations);
+                }
+            });
+        }
+        
+        return app.mount(el);
     },
     progress: {
         color: '#4B5563',
