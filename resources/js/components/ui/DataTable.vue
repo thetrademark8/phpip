@@ -206,12 +206,27 @@ const props = defineProps({
     type: Function,
     default: undefined,
   },
+  sortField: {
+    type: String,
+    default: null,
+  },
+  sortDirection: {
+    type: String,
+    default: 'asc',
+  },
 })
 
-const emit = defineEmits(['update:selected'])
+const emit = defineEmits(['update:selected', 'sort-change'])
 
-// Sorting state
-const sorting = ref([])
+// Initialize sorting state based on props
+const sorting = ref(
+  props.sortField 
+    ? [{
+        id: props.sortField,
+        desc: props.sortDirection === 'desc'
+      }]
+    : []
+)
 
 // Row selection state
 const rowSelection = ref({})
@@ -227,6 +242,20 @@ const table = useVueTable({
     sorting.value = typeof updaterOrValue === 'function' 
       ? updaterOrValue(sorting.value) 
       : updaterOrValue
+    
+    // Emit sort change event to parent
+    if (sorting.value.length > 0) {
+      const sort = sorting.value[0]
+      emit('sort-change', {
+        field: sort.id,
+        direction: sort.desc ? 'desc' : 'asc'
+      })
+    } else {
+      emit('sort-change', {
+        field: null,
+        direction: 'asc'
+      })
+    }
   },
   onRowSelectionChange: updaterOrValue => {
     rowSelection.value = typeof updaterOrValue === 'function'

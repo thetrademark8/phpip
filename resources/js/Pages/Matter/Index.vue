@@ -1,18 +1,18 @@
 <template>
-  <MainLayout title="Matters">
+  <MainLayout :title="t('matter.index.title')">
     <div class="space-y-4">
       <!-- Header with actions -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">Matters</h1>
+          <h1 class="text-2xl font-bold tracking-tight">{{ t('matter.index.heading') }}</h1>
           <p class="text-muted-foreground">
-            Manage your intellectual property portfolio
+            {{ t('matter.index.description') }}
           </p>
         </div>
         <div class="flex gap-2">
           <Button @click="exportMatters" variant="outline" size="sm">
             <Download class="mr-2 h-4 w-4" />
-            Export
+            {{ t('matter.index.export') }}
           </Button>
         </div>
       </div>
@@ -29,7 +29,7 @@
                     <ChevronUp v-else class="h-4 w-4" />
                   </Button>
                 </CollapsibleTrigger>
-                <CardTitle class="text-base">Filters</CardTitle>
+                <CardTitle class="text-base">{{ t('matter.index.filters') }}</CardTitle>
               </div>
               <Button
                 v-if="hasActiveFilters"
@@ -37,7 +37,7 @@
                 variant="ghost"
                 size="sm"
               >
-                Clear all
+                {{ t('matter.index.clearAll') }}
               </Button>
             </div>
           </CardHeader>
@@ -70,7 +70,7 @@
 
       <!-- Results count -->
       <div class="text-sm text-muted-foreground">
-        {{ matters.total || 0 }} matter{{ matters.total !== 1 ? 's' : '' }} found
+        {{ t('matter.index.foundCount', matters.total || 0, { count: matters.total || 0 }) }}
       </div>
 
       <!-- Data Table -->
@@ -84,37 +84,19 @@
             :selectable="canWrite"
             :get-row-id="(row) => row.id"
             :get-row-class="getRowClass"
+            :sort-field="sortField"
+            :sort-direction="sortDirection"
             @update:selected="handleSelection"
+            @sort-change="handleSortChange"
           />
         </CardContent>
       </Card>
 
       <!-- Custom Pagination -->
-      <div class="flex items-center justify-between">
-        <p class="text-sm text-muted-foreground">
-          Showing {{ matters.from || 0 }} to {{ matters.to || 0 }} of {{ matters.total || 0 }} results
-        </p>
-        <div class="flex gap-2">
-          <Button
-            v-if="matters.prev_page_url"
-            @click="goToPage(matters.prev_page_url)"
-            variant="outline"
-            size="sm"
-          >
-            <ChevronLeft class="h-4 w-4" />
-            Previous
-          </Button>
-          <Button
-            v-if="matters.next_page_url"
-            @click="goToPage(matters.next_page_url)"
-            variant="outline"
-            size="sm"
-          >
-            Next
-            <ChevronRight class="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+      <Pagination
+        :pagination="matters"
+        @page-change="goToPage"
+      />
     </div>
   </MainLayout>
 </template>
@@ -124,11 +106,10 @@ import { ref, computed, h, onMounted, watch } from 'vue'
 import { router, Link, usePage } from '@inertiajs/vue3'
 import { format, parseISO, formatDistanceToNow } from 'date-fns'
 import { debounce } from 'lodash-es'
+import { useI18n } from 'vue-i18n'
 import { 
   Download, 
   X, 
-  ChevronLeft, 
-  ChevronRight,
   ExternalLink,
   FileText,
   Hash,
@@ -139,6 +120,7 @@ import MainLayout from '@/Layouts/MainLayout.vue'
 import DataTable from '@/Components/ui/DataTable.vue'
 import MatterFilters from '@/Components/matter/MatterFilters.vue'
 import StatusBadge from '@/Components/display/StatusBadge.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
 import { Badge } from '@/Components/ui/badge'
@@ -150,16 +132,22 @@ import {
 import { useMatterFilters } from '@/composables/useMatterFilters'
 import { MatterFilterService } from '@/services/MatterFilterService'
 import { CATEGORY_VARIANTS } from '@/constants/matter'
+import { getTranslation } from '@/composables/useTranslation'
 
 const props = defineProps({
   matters: Object,
   filters: Object,
+  sort: String,
+  direction: String,
 })
 
+const { t } = useI18n()
 const page = usePage()
 const loading = ref(false)
 const selectedRows = ref([])
 const isFiltersOpen = ref(true)
+const sortField = ref(props.sort || 'caseref')
+const sortDirection = ref(props.direction || 'asc')
 
 // Load saved filter state from localStorage
 onMounted(() => {
@@ -218,7 +206,7 @@ const tableColumns = computed(() => {
   const baseColumns = [
     {
       accessorKey: 'Ref',
-      header: 'Reference',
+      header: t('matter.columns.reference'),
       cell: ({ row }) => h('div', { class: 'flex items-center gap-2' }, [
         h(Link, {
           href: `/matter/${row.original.id}`,
@@ -230,7 +218,7 @@ const tableColumns = computed(() => {
     },
     {
       accessorKey: 'Cat',
-      header: 'Category',
+      header: t('matter.columns.category'),
       cell: ({ row }) => h(Badge, {
         variant: getCategoryVariant(row.original.Cat)
       }, row.original.Cat),
@@ -238,7 +226,7 @@ const tableColumns = computed(() => {
     },
     {
       accessorKey: 'Status',
-      header: 'Status',
+      header: t('matter.columns.status'),
       cell: ({ row }) => row.original.Status ? h(StatusBadge, {
         status: row.original.Status.split('|')[0], // Take first status if multiple
         type: 'matter'
@@ -248,40 +236,40 @@ const tableColumns = computed(() => {
   ]
 
   if (viewMode.value === 'actor') {
-    // Actor View columns
+    // Actor View columns - in specified order: Reference, Category, Status, Client, Client Reference, Applicant, Agent, Agent ref, Title, Inventor
     return [
-      ...baseColumns,
+      ...baseColumns, // This includes Reference, Category, Status in the correct order
       {
         accessorKey: 'Client',
-        header: 'Client',
+        header: t('matter.columns.client'),
         cell: ({ row }) => h('div', { class: 'max-w-[200px] truncate', title: row.original.Client }, row.original.Client),
         enableSorting: true,
       },
       {
         accessorKey: 'ClRef',
-        header: 'Client Ref',
+        header: t('matter.columns.clientReference'),
         meta: { headerClass: 'w-[120px]' },
       },
       {
         accessorKey: 'Applicant',
-        header: 'Applicant',
+        header: t('matter.columns.applicant'),
         cell: ({ row }) => h('div', { class: 'max-w-[200px] truncate', title: row.original.Applicant }, row.original.Applicant),
         enableSorting: true,
       },
       {
         accessorKey: 'Agent',
-        header: 'Agent',
+        header: t('matter.columns.agent'),
         cell: ({ row }) => h('div', { class: 'max-w-[150px] truncate', title: row.original.Agent }, row.original.Agent),
         enableSorting: true,
       },
       {
         accessorKey: 'AgtRef',
-        header: 'Agent Ref',
+        header: t('matter.columns.agentRef'),
         meta: { headerClass: 'w-[120px]' },
       },
       {
         accessorKey: 'Title',
-        header: 'Title',
+        header: t('matter.columns.title'),
         cell: ({ row }) => h('div', { 
           class: 'max-w-[300px] truncate', 
           title: row.original.Title 
@@ -289,40 +277,32 @@ const tableColumns = computed(() => {
       },
       {
         accessorKey: 'Inventor1',
-        header: 'Inventor',
+        header: t('matter.columns.inventor'),
         cell: ({ row }) => h('div', { class: 'max-w-[150px] truncate', title: row.original.Inventor1 }, row.original.Inventor1),
         enableSorting: true,
       }
     ]
   } else {
-    // Status View columns
+    // Status View columns - in specified order: Reference, Category, Status, Status date, Filed Date, Filed number, Published date, Published number, Granted date, Granted number
     return [
-      ...baseColumns,
+      ...baseColumns, // This includes Reference, Category, Status in the correct order
       {
         accessorKey: 'Status_date',
-        header: 'Status Date',
+        header: t('matter.columns.statusDate'),
         cell: ({ row }) => formatDate(row.original.Status_date),
         enableSorting: true,
         meta: { headerClass: 'w-[120px]' },
       },
       {
-        accessorKey: 'Title',
-        header: 'Title',
-        cell: ({ row }) => h('div', { 
-          class: 'max-w-[300px] truncate', 
-          title: row.original.Title 
-        }, row.original.Title || row.original.Title2),
-      },
-      {
         accessorKey: 'Filed',
-        header: 'Filed',
+        header: t('matter.columns.filedDate'),
         cell: ({ row }) => formatDate(row.original.Filed),
         enableSorting: true,
         meta: { headerClass: 'w-[120px]' },
       },
       {
         accessorKey: 'FilNo',
-        header: 'Filing No',
+        header: t('matter.columns.filedNumber'),
         cell: ({ row }) => row.original.FilNo && h('div', { class: 'flex items-center gap-1' }, [
           h(FileText, { class: 'h-4 w-4 text-muted-foreground' }),
           h('span', row.original.FilNo)
@@ -330,26 +310,26 @@ const tableColumns = computed(() => {
       },
       {
         accessorKey: 'Published',
-        header: 'Published',
+        header: t('matter.columns.publishedDate'),
         cell: ({ row }) => formatDate(row.original.Published),
         enableSorting: true,
         meta: { headerClass: 'w-[120px]' },
       },
       {
         accessorKey: 'PubNo',
-        header: 'Pub. No',
+        header: t('matter.columns.publishedNumber'),
         cell: ({ row }) => row.original.PubNo,
       },
       {
         accessorKey: 'Granted',
-        header: 'Granted',
+        header: t('matter.columns.grantedDate'),
         cell: ({ row }) => formatDate(row.original.Granted),
         enableSorting: true,
         meta: { headerClass: 'w-[120px]' },
       },
       {
         accessorKey: 'GrtNo',
-        header: 'Grant No',
+        header: t('matter.columns.grantedNumber'),
         cell: ({ row }) => row.original.GrtNo && h('div', { class: 'flex items-center gap-1' }, [
           h(Hash, { class: 'h-4 w-4 text-muted-foreground' }),
           h('span', row.original.GrtNo)
@@ -389,14 +369,18 @@ function handleSelection(selected) {
 
 function handleRemoveFilter(key) {
   loading.value = true
-  MatterFilterService.removeFilter(filters.value, key)
-    .finally(() => { loading.value = false })
+  
+  // Use the composable's removeFilter method instead
+  removeFilter(key)
+  
+  // Apply the updated filters
+  applyFilters()
 }
 
 function applyFilters() {
   loading.value = true
   
-  MatterFilterService.applyFilters(filters.value)
+  MatterFilterService.applyFilters(filters.value, sortField.value, sortDirection.value)
     .finally(() => { loading.value = false })
 }
 
@@ -415,9 +399,37 @@ function exportMatters() {
   MatterFilterService.exportMatters(filters.value)
 }
 
-function goToPage(url) {
+function goToPage(page) {
   loading.value = true
-  router.visit(url, {
+  
+  // Get current URL parameters
+  const params = getApiParams()
+  params.page = page
+  params.sort = sortField.value
+  params.direction = sortDirection.value
+  
+  router.get('/matter', params, {
+    preserveState: true,
+    preserveScroll: true,
+    onFinish: () => {
+      loading.value = false
+    }
+  })
+}
+
+function handleSortChange({ field, direction }) {
+  sortField.value = field || 'caseref'
+  sortDirection.value = direction
+  
+  // Reset to first page when sorting changes
+  const params = getApiParams()
+  params.sort = sortField.value
+  params.direction = sortDirection.value
+  params.page = 1
+  
+  loading.value = true
+  router.get('/matter', params, {
+    preserveState: true,
     preserveScroll: true,
     onFinish: () => {
       loading.value = false

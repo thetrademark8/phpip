@@ -28,34 +28,34 @@
               href="/home" 
               class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-foreground/10 transition-colors"
             >
-              Dashboard
+              {{ $t('Dashboard') }}
             </Link>
 
             <!-- Matters Dropdown -->
             <DropdownMenu>
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
-                  Matters
+                  {{ $t('Matters') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" class="w-48">
                 <DropdownMenuItem as-child>
-                  <Link href="/matter">All</Link>
+                  <Link href="/matter">{{ $t('All') }}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem as-child>
-                  <Link href="/matter?display_with=PAT">Patents</Link>
+                  <Link href="/matter?display_with=PAT">{{ $t('Patents') }}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem as-child>
-                  <Link href="/matter?display_with=TM">Trademarks</Link>
+                  <Link href="/matter?display_with=TM">{{ $t('Trademarks') }}</Link>
                 </DropdownMenuItem>
                 <template v-if="canWrite">
                   <DropdownMenuSeparator />
                   <DropdownMenuItem @click="openCreateMatter">
-                    Create
+                    {{ $t('Create') }}
                   </DropdownMenuItem>
                   <DropdownMenuItem @click="openCreateFromOPS">
-                    Create family from OPS
+                    {{ $t('Create family from OPS') }}
                   </DropdownMenuItem>
                 </template>
               </DropdownMenuContent>
@@ -65,27 +65,27 @@
             <DropdownMenu v-if="canRead">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
-                  Tools
+                  {{ $t('Tools') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" class="w-48">
                 <DropdownMenuItem as-child>
-                  <Link href="/renewal">Manage renewals</Link>
+                  <Link href="/renewal">{{ $t('Manage renewals') }}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem as-child>
-                  <Link href="/fee">Renewal fees</Link>
+                  <Link href="/fee">{{ $t('Renewal fees') }}</Link>
                 </DropdownMenuItem>
                 <template v-if="isAdmin">
                   <DropdownMenuSeparator />
                   <DropdownMenuItem as-child>
-                    <Link href="/rule">Rules</Link>
+                    <Link href="/rule">{{ $t('Rules') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/document">Email template classes</Link>
+                    <Link href="/document">{{ $t('Email template classes') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/template-member">Email templates</Link>
+                    <Link href="/template-member">{{ $t('Email templates') }}</Link>
                   </DropdownMenuItem>
                 </template>
               </DropdownMenuContent>
@@ -95,36 +95,36 @@
             <DropdownMenu v-if="canRead">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
-                  Tables
+                  {{ $t('Tables') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" class="w-48">
                 <DropdownMenuItem as-child>
-                  <Link href="/actor">Actors</Link>
+                  <Link href="/actor">{{ $t('Actors') }}</Link>
                 </DropdownMenuItem>
                 <template v-if="isAdmin">
                   <DropdownMenuSeparator />
                   <DropdownMenuItem as-child>
-                    <Link href="/user">DB Users</Link>
+                    <Link href="/user">{{ $t('DB Users') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/eventname">Event names</Link>
+                    <Link href="/eventname">{{ $t('Event names') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/category">Categories</Link>
+                    <Link href="/category">{{ $t('Categories') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/role">Actor roles</Link>
+                    <Link href="/role">{{ $t('Actor roles') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/default_actor">Default actors</Link>
+                    <Link href="/default_actor">{{ $t('Default actors') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/type">Matter types</Link>
+                    <Link href="/type">{{ $t('Matter types') }}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem as-child>
-                    <Link href="/classifier_type">Classifier types</Link>
+                    <Link href="/classifier_type">{{ $t('Classifier types') }}</Link>
                   </DropdownMenuItem>
                 </template>
               </DropdownMenuContent>
@@ -140,11 +140,11 @@
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" class="w-48">
                 <DropdownMenuItem as-child>
-                  <Link href="/user/profile">My Profile</Link>
+                  <Link href="/user/profile">{{ $t('My Profile') }}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem @click="logout">
-                  Logout
+                  {{ $t('Logout') }}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -156,7 +156,7 @@
               href="/login" 
               class="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary-foreground/10 transition-colors"
             >
-              Login
+              {{ $t('Login') }}
             </Link>
           </template>
         </div>
@@ -182,7 +182,7 @@
             <template #trigger>
               <Button variant="secondary" class="w-full justify-start">
                 <Search class="h-4 w-4 mr-2" />
-                Search Matters
+                {{ $t('Search') }} {{ $t('Matters') }}
               </Button>
             </template>
           </SearchModal>
@@ -247,18 +247,19 @@ const isAdmin = computed(() => {
   return role === 'DBA'
 })
 
+// Emit events
+const emit = defineEmits(['openCreateMatter', 'openCreateFromOPS'])
+
 // Methods
 const logout = () => {
   router.post('/logout')
 }
 
 const openCreateMatter = () => {
-  // This will be replaced with a proper modal/dialog in the future
-  window.location.href = '/matter/create?operation=new'
+  emit('openCreateMatter')
 }
 
 const openCreateFromOPS = () => {
-  // This will be replaced with a proper modal/dialog in the future  
-  window.location.href = '/matter/create?operation=ops'
+  emit('openCreateFromOPS')
 }
 </script>

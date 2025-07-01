@@ -7,7 +7,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2 text-sm font-medium">
               <Zap class="h-4 w-4 text-warning" />
-              Quick Actions
+              {{ $t('Quick Actions') }}
             </div>
             <div class="flex flex-wrap gap-2">
               <Button
@@ -17,7 +17,7 @@
                 title="Generate email"
               >
                 <Mail class="mr-1 h-3 w-3" />
-                Email
+                {{ $t('Email') }}
               </Button>
               <Button
                 size="sm"
@@ -26,7 +26,16 @@
                 title="Generate report"
               >
                 <FileText class="mr-1 h-3 w-3" />
-                Report
+                {{ $t('Report') }}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                @click="showFileMergeDialog = true"
+                title="Merge document"
+              >
+                <FileText class="mr-1 h-3 w-3" />
+                {{ $t('Merge') }}
               </Button>
               <Button
                 size="sm"
@@ -35,7 +44,7 @@
                 title="Export matter data"
               >
                 <Download class="mr-1 h-3 w-3" />
-                Export
+                {{ $t('Export') }}
               </Button>
               <Button
                 size="sm"
@@ -44,7 +53,7 @@
                 title="Share matter"
               >
                 <Share2 class="mr-1 h-3 w-3" />
-                Share
+                {{ $t('Share') }}
               </Button>
               <Button
                 v-if="!matter.dead"
@@ -54,7 +63,7 @@
                 title="Archive matter"
               >
                 <Archive class="mr-1 h-3 w-3" />
-                Archive
+                {{ $t('Archive') }}
               </Button>
             </div>
           </div>
@@ -65,8 +74,8 @@
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <!-- Left Panel - Matter Info -->
         <div class="lg:col-span-1">
-          <Card class="border-primary h-full">
-            <CardHeader class="bg-primary text-primary-foreground p-3">
+          <Card class="border-primary h-full overflow-hidden">
+            <CardHeader class="bg-primary text-primary-foreground p-3 overflow-hidden">
               <div class="flex items-center justify-between">
                 <Link
                   :href="`/matter?Ref=${matter.caseref}`"
@@ -76,7 +85,7 @@
                 >
                   {{ matter.uid }}
                 </Link>
-                <span class="text-sm">({{ matter.category.category }})</span>
+                <span class="text-sm">({{ translated(matter.category.category) }})</span>
               </div>
               <div class="flex gap-2 mt-2">
                 <a
@@ -103,7 +112,7 @@
             <CardContent class="p-3">
               <dl class="space-y-2 text-sm">
                 <div v-if="matter.container_id" class="flex">
-                  <dt class="font-medium w-24">Container:</dt>
+                  <dt class="font-medium w-24">{{ $t('Container:') }}</dt>
                   <dd>
                     <Link :href="`/matter/${matter.container_id}`" class="text-primary hover:underline">
                       {{ matter.container.uid }}
@@ -111,7 +120,7 @@
                   </dd>
                 </div>
                 <div v-if="matter.parent_id" class="flex">
-                  <dt class="font-medium w-24">Parent:</dt>
+                  <dt class="font-medium w-24">{{ $t('Parent:') }}</dt>
                   <dd>
                     <Link :href="`/matter/${matter.parent_id}`" class="text-primary hover:underline">
                       {{ matter.parent.uid }}
@@ -119,30 +128,19 @@
                   </dd>
                 </div>
                 <div v-if="matter.alt_ref" class="flex">
-                  <dt class="font-medium w-24">Alt. ref:</dt>
+                  <dt class="font-medium w-24">{{ $t('Alt. ref:') }}</dt>
                   <dd>{{ matter.alt_ref }}</dd>
                 </div>
                 <div v-if="matter.expire_date" class="flex">
-                  <dt class="font-medium w-24">Expiry:</dt>
+                  <dt class="font-medium w-24">{{ $t('Expiry:') }}</dt>
                   <dd>{{ formatDate(matter.expire_date) }}</dd>
                 </div>
               </dl>
               <Alert class="mt-3 py-2">
                 <AlertDescription class="text-center">
-                  <strong>Responsible:</strong> {{ matter.responsible }}
+                  <strong>{{ $t('Responsible:') }}</strong> {{ matter.responsible }}
                 </AlertDescription>
               </Alert>
-              <div v-if="canWrite" class="mt-3">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  class="w-full"
-                  @click="showStatusInfoDialog = true"
-                >
-                  <Settings class="mr-1 h-3 w-3" />
-                  Status Info
-                </Button>
-              </div>
             </CardContent>
             <CardFooter v-if="canWrite" class="p-3">
               <div class="grid gap-2 w-full">
@@ -154,7 +152,7 @@
                     @click="createChild"
                   >
                     <GitBranch class="mr-1 h-3 w-3" />
-                    New Child
+                    {{ $t('New Child') }}
                   </Button>
                   <Button
                     size="sm"
@@ -163,7 +161,7 @@
                     @click="cloneMatter"
                   >
                     <Copy class="mr-1 h-3 w-3" />
-                    Clone
+                    {{ $t('Clone') }}
                   </Button>
                 </div>
                 <Button
@@ -174,7 +172,7 @@
                   class="w-full"
                 >
                   <Flag class="mr-1 h-3 w-3" />
-                  Nat. Phase
+                  {{ $t('Nat. Phase') }}
                 </Button>
               </div>
             </CardFooter>
@@ -198,17 +196,8 @@
                   @click="showTitleManagerDialog = true"
                 >
                   <Settings class="mr-1 h-3 w-3" />
-                  Manage Titles
+                  {{ $t('Manage Titles') }}
                 </Button>
-<!--                <Button-->
-<!--                  size="sm"-->
-<!--                  variant="outline"-->
-<!--                  @click="showClassifierDialog = true"-->
-<!--                  class="ml-2"-->
-<!--                >-->
-<!--                  <Settings class="mr-1 h-3 w-3" />-->
-<!--                  All Classifiers-->
-<!--                </Button>-->
               </div>
             </CardContent>
           </Card>
@@ -235,7 +224,7 @@
           <Card class="h-[600px] overflow-hidden">
             <CardHeader class="bg-secondary text-secondary-foreground p-3">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold">Actors</h3>
+                <h3 class="font-semibold">{{ $t('Actors') }}</h3>
                 <Button
                   v-if="canWrite"
                   variant="ghost"
@@ -263,27 +252,27 @@
         <div class="lg:col-span-3">
           <Tabs v-model="activeTab" class="w-full">
             <TabsList class="grid w-full grid-cols-6">
-              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="summary">{{ $t('Summary') }}</TabsTrigger>
               <TabsTrigger value="events">
-                Events
+                {{ $t('Events') }}
                 <Badge v-if="statusEvents.length" variant="secondary" class="ml-1">
                   {{ statusEvents.length }}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="tasks">
-                Tasks
+                {{ $t('Tasks') }}
                 <Badge v-if="matter.tasks_pending.length" variant="warning" class="ml-1">
                   {{ matter.tasks_pending.length }}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="renewals">
-                Renewals
+                {{ $t('Renewals') }}
                 <Badge v-if="matter.renewals_pending.length" variant="warning" class="ml-1">
                   {{ matter.renewals_pending.length }}
                 </Badge>
               </TabsTrigger>
-              <TabsTrigger value="notes">Notes</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="notes">{{ $t('Notes') }}</TabsTrigger>
+              <TabsTrigger value="activity">{{ $t('Activity') }}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="summary" class="mt-4">
@@ -292,8 +281,8 @@
                 :classifiers="classifiers"
                 :related-matters="getRelatedMatters()"
                 :can-edit="canWrite"
-                @openStatusInfo="showStatusInfoDialog = true"
-                @openClassifiers="showClassifierDialog = true"
+                @open-status-info="showStatusInfoDialog = true"
+                @open-classifiers="showClassifierDialog = true"
               />
             </TabsContent>
 
@@ -376,6 +365,18 @@
       :classifiers="classifiers"
       @success="handleClassifierUpdate"
     />
+
+    <FileMergeDialog
+      v-model:open="showFileMergeDialog"
+      :matter-id="matter.id"
+    />
+
+    <ChildMatterDialog
+      v-model:open="showChildDialog"
+      :parent-matter="matter"
+      :current-user="$page.props.auth.user"
+      @success="handleMatterUpdate"
+    />
   </MainLayout>
 </template>
 
@@ -383,6 +384,8 @@
 import { ref, computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { format } from 'date-fns'
+import { useI18n } from 'vue-i18n'
+import { useTranslatedField } from '@/composables/useTranslation'
 import { 
   FolderSymlink, 
   Pencil, 
@@ -415,6 +418,8 @@ import MatterActorManager from '@/Components/dialogs/MatterActorManager.vue'
 import TitleManager from '@/Components/dialogs/TitleManager.vue'
 import StatusInfoManager from '@/Components/dialogs/StatusInfoManager.vue'
 import ClassifierManager from '@/Components/dialogs/ClassifierManager.vue'
+import FileMergeDialog from '@/Components/dialogs/FileMergeDialog.vue'
+import ChildMatterDialog from '@/Components/dialogs/ChildMatterDialog.vue'
 
 // Import tab components (to be created)
 import SummaryTab from '@/Components/matter/tabs/SummaryTab.vue'
@@ -434,6 +439,9 @@ const props = defineProps({
   canWrite: Boolean
 })
 
+const { t } = useI18n()
+const { translated } = useTranslatedField()
+
 // State
 const activeTab = ref('summary')
 const showEditDialog = ref(false)
@@ -441,6 +449,8 @@ const showTitleManagerDialog = ref(false)
 const showActorManagerDialog = ref(false)
 const showStatusInfoDialog = ref(false)
 const showClassifierDialog = ref(false)
+const showFileMergeDialog = ref(false)
+const showChildDialog = ref(false)
 
 // Computed
 const imageClassifier = computed(() => 
@@ -461,7 +471,7 @@ function getRelatedMatters() {
 }
 
 function createChild() {
-  router.get(`/matter/create?matter_id=${props.matter.id}&operation=child`)
+  showChildDialog.value = true
 }
 
 function cloneMatter() {
@@ -498,12 +508,12 @@ function handleNotesUpdate() {
 // Quick Actions
 function generateEmail() {
   // TODO: Implement email generation
-  alert('Email generation coming soon!')
+  alert(t('Email generation coming soon!'))
 }
 
 function generateReport() {
   // TODO: Implement report generation
-  alert('Report generation coming soon!')
+  alert(t('Report generation coming soon!'))
 }
 
 function exportMatter() {
@@ -512,11 +522,11 @@ function exportMatter() {
 
 function shareMatter() {
   // TODO: Implement sharing functionality
-  alert('Sharing functionality coming soon!')
+  alert(t('Sharing functionality coming soon!'))
 }
 
 function archiveMatter() {
-  if (confirm('Are you sure you want to archive this matter?')) {
+  if (confirm(t('Are you sure you want to archive this matter?'))) {
     router.put(`/matter/${props.matter.id}`, {
       dead: 1
     }, {
