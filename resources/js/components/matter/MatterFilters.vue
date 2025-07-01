@@ -1,0 +1,339 @@
+<template>
+  <div class="space-y-4">
+    <!-- View Mode and Toggles -->
+    <div class="flex flex-wrap gap-4">
+      <!-- View Mode Toggle -->
+      <div class="flex items-center gap-2">
+        <Label>View:</Label>
+        <ToggleGroup
+          type="single"
+          v-model="internalViewMode"
+          class="justify-start"
+        >
+          <ToggleGroupItem value="actor" size="sm">
+            <Users class="mr-2 h-4 w-4" />
+            Actor View
+          </ToggleGroupItem>
+          <ToggleGroupItem value="status" size="sm">
+            <FileCheck class="mr-2 h-4 w-4" />
+            Status View
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+
+      <!-- Switches -->
+      <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-2">
+          <Switch
+            id="show-containers"
+            :checked="props.filters.Ctnr === true || props.filters.Ctnr === 1"
+            @update:checked="(value) => updateFilter('Ctnr', value)"
+          />
+          <Label htmlFor="show-containers" class="cursor-pointer">
+            Show Containers
+          </Label>
+        </div>
+
+        <div v-if="$page.props.auth.user.default_role !== 'CLI'" class="flex items-center space-x-2">
+          <Switch
+            id="show-mine"
+            :checked="props.filters.responsible === $page.props.auth.user.login"
+            @update:checked="(value) => updateFilter('responsible', value ? $page.props.auth.user.login : '')"
+          />
+          <Label htmlFor="show-mine" class="cursor-pointer">
+            Show Mine
+          </Label>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <Switch
+            id="include-dead"
+            :checked="props.filters.include_dead === true || props.filters.include_dead === 1"
+            @update:checked="(value) => updateFilter('include_dead', value)"
+          />
+          <Label htmlFor="include-dead" class="cursor-pointer">
+            Include Dead
+          </Label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Filters -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <!-- Reference -->
+      <div class="space-y-2">
+        <Label htmlFor="ref-filter">Reference</Label>
+        <Input
+          id="ref-filter"
+          type="text"
+          placeholder="Search reference..."
+          :model-value="props.filters.Ref"
+          @update:model-value="debouncedUpdate('Ref', $event)"
+        />
+      </div>
+
+      <!-- Category -->
+      <div class="space-y-2">
+        <Label htmlFor="cat-filter">Category</Label>
+        <AutocompleteInput
+          id="cat-filter"
+          placeholder="e.g., PAT, TM, DES"
+          :model-value="props.filters.Cat"
+          @update:model-value="debouncedUpdate('Cat', $event)"
+          endpoint="/category/autocomplete"
+          value-key="key"
+          label-key="key"
+          class="uppercase"
+        />
+      </div>
+
+      <!-- Status -->
+      <div class="space-y-2">
+        <Label htmlFor="status-filter">Status</Label>
+        <AutocompleteInput
+          id="status-filter"
+          placeholder="Search status..."
+          :model-value="props.filters.Status"
+          @update:model-value="debouncedUpdate('Status', $event)"
+          endpoint="/status-event/autocomplete"
+          value-key="value"
+          label-key="value"
+        />
+      </div>
+
+      <!-- Client (Actor View) -->
+      <div v-if="internalViewMode === 'actor' && $page.props.auth.user.default_role !== 'CLI'" class="space-y-2">
+        <Label htmlFor="client-filter">Client</Label>
+        <AutocompleteInput
+          id="client-filter"
+          placeholder="Search client..."
+          :model-value="props.filters.Client"
+          @update:model-value="debouncedUpdate('Client', $event)"
+          endpoint="/actor/autocomplete"
+          value-key="value"
+          label-key="value"
+        />
+      </div>
+
+      <!-- Client Reference -->
+      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+        <Label htmlFor="clref-filter">Client Reference</Label>
+        <Input
+          id="clref-filter"
+          type="text"
+          placeholder="Client ref..."
+          :model-value="props.filters.ClRef"
+          @update:model-value="debouncedUpdate('ClRef', $event)"
+        />
+      </div>
+
+      <!-- Applicant -->
+      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+        <Label htmlFor="applicant-filter">Applicant</Label>
+        <AutocompleteInput
+          id="applicant-filter"
+          placeholder="Search applicant..."
+          :model-value="props.filters.Applicant"
+          @update:model-value="debouncedUpdate('Applicant', $event)"
+          endpoint="/actor/autocomplete"
+          value-key="value"
+          label-key="value"
+        />
+      </div>
+
+      <!-- Agent -->
+      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+        <Label htmlFor="agent-filter">Agent</Label>
+        <Input
+          id="agent-filter"
+          type="text"
+          placeholder="Search agent..."
+          :model-value="props.filters.Agent"
+          @update:model-value="debouncedUpdate('Agent', $event)"
+        />
+      </div>
+
+      <!-- Agent Reference -->
+      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+        <Label htmlFor="agtref-filter">Agent Reference</Label>
+        <Input
+          id="agtref-filter"
+          type="text"
+          placeholder="Agent ref..."
+          :model-value="props.filters.AgtRef"
+          @update:model-value="debouncedUpdate('AgtRef', $event)"
+        />
+      </div>
+
+      <!-- Title -->
+      <div class="space-y-2">
+        <Label htmlFor="title-filter">Title</Label>
+        <Input
+          id="title-filter"
+          type="text"
+          placeholder="Search title..."
+          :model-value="props.filters.Title"
+          @update:model-value="debouncedUpdate('Title', $event)"
+        />
+      </div>
+
+      <!-- Inventor -->
+      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+        <Label htmlFor="inventor-filter">Inventor</Label>
+        <AutocompleteInput
+          id="inventor-filter"
+          placeholder="Search inventor..."
+          :model-value="props.filters.Inventor1"
+          @update:model-value="debouncedUpdate('Inventor1', $event)"
+          endpoint="/actor/autocomplete"
+          value-key="value"
+          label-key="value"
+        />
+      </div>
+
+      <!-- Status Date -->
+      <div v-if="internalViewMode === 'status'" class="space-y-2">
+        <Label htmlFor="status-date-filter">Status Date</Label>
+        <DatePicker
+          id="status-date-filter"
+          :model-value="props.filters.Status_date"
+          @update:model-value="updateFilter('Status_date', $event)"
+          placeholder="Select date..."
+        />
+      </div>
+
+      <!-- Filing Date -->
+      <div v-if="internalViewMode === 'status'" class="space-y-2">
+        <Label htmlFor="filed-filter">Filing Date</Label>
+        <DatePicker
+          id="filed-filter"
+          :model-value="props.filters.Filed"
+          @update:model-value="updateFilter('Filed', $event)"
+          placeholder="Select date..."
+        />
+      </div>
+
+      <!-- Filing Number -->
+      <div v-if="internalViewMode === 'status'" class="space-y-2">
+        <Label htmlFor="filno-filter">Filing Number</Label>
+        <Input
+          id="filno-filter"
+          type="text"
+          placeholder="Filing number..."
+          :model-value="props.filters.FilNo"
+          @update:model-value="debouncedUpdate('FilNo', $event)"
+        />
+      </div>
+
+      <!-- Publication Date -->
+      <div v-if="internalViewMode === 'status'" class="space-y-2">
+        <Label htmlFor="pub-filter">Publication Date</Label>
+        <DatePicker
+          id="pub-filter"
+          :model-value="props.filters.Published"
+          @update:model-value="updateFilter('Published', $event)"
+          placeholder="Select date..."
+        />
+      </div>
+
+      <!-- Publication Number -->
+      <div v-if="internalViewMode === 'status'" class="space-y-2">
+        <Label htmlFor="pubno-filter">Publication Number</Label>
+        <Input
+          id="pubno-filter"
+          type="text"
+          placeholder="Publication number..."
+          :model-value="props.filters.PubNo"
+          @update:model-value="debouncedUpdate('PubNo', $event)"
+        />
+      </div>
+
+      <!-- Grant Date -->
+      <div v-if="internalViewMode === 'status'" class="space-y-2">
+        <Label htmlFor="granted-filter">Grant Date</Label>
+        <DatePicker
+          id="granted-filter"
+          :model-value="props.filters.Granted"
+          @update:model-value="updateFilter('Granted', $event)"
+          placeholder="Select date..."
+        />
+      </div>
+
+      <!-- Grant Number -->
+      <div v-if="internalViewMode === 'status'" class="space-y-2">
+        <Label htmlFor="grtno-filter">Grant Number</Label>
+        <Input
+          id="grtno-filter"
+          type="text"
+          placeholder="Grant number..."
+          :model-value="props.filters.GrtNo"
+          @update:model-value="debouncedUpdate('GrtNo', $event)"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, watch, computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+import { Users, FileCheck } from 'lucide-vue-next'
+import { Label } from '@/Components/ui/label'
+import { Input } from '@/Components/ui/input'
+import { Switch } from '@/Components/ui/switch'
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from '@/Components/ui/toggle-group'
+import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
+import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+
+const props = defineProps({
+  filters: {
+    type: Object,
+    required: true,
+  },
+  viewMode: {
+    type: String,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['update:filters', 'update:view-mode'])
+
+const page = usePage()
+
+// Computed property for internal view mode that syncs with tab
+const internalViewMode = computed({
+  get: () => props.filters.tab === 0 ? 'actor' : 'status',
+  set: (value) => {
+    emit('update:filters', { 
+      ...props.filters, 
+      tab: value === 'actor' ? 0 : 1 
+    })
+    emit('update:view-mode', value)
+  }
+})
+
+// Debounce timer
+let debounceTimer = null
+
+function updateFilter(key, value) {
+  // Emit updated filters with the new value
+  emit('update:filters', { 
+    ...props.filters, 
+    [key]: value 
+  })
+}
+
+function debouncedUpdate(key, value) {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    // Emit updated filters with the new value
+    emit('update:filters', { 
+      ...props.filters, 
+      [key]: value 
+    })
+  }, 500)
+}
+</script>

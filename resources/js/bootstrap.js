@@ -4,9 +4,10 @@
 //import '@popperjs/core';
 //window.Popper = Popper
 
-import * as bootstrap from 'bootstrap';
-// This makes the bootstrap methods available outside the app.js module compiled by Vite
-window.bootstrap = bootstrap;
+// Bootstrap is not needed with Vue.js + shadcn-vue
+// Commenting out to prevent conflicts
+// import * as bootstrap from 'bootstrap';
+// window.bootstrap = bootstrap;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

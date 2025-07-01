@@ -221,6 +221,23 @@ class AutocompleteController extends Controller
         return $this->formatResponse($list);
     }
 
+    public function statusEventName(Request $request): JsonResponse
+    {
+        $eventNames = EventName::where('status_event', 1)
+            ->whereJsonLike('name', $request->term)
+            ->take(10)
+            ->get();
+        
+        $results = $eventNames->map(function ($item) {
+            return [
+                'key' => $item->code,
+                'value' => $item->name,
+            ];
+        })->toArray();
+        
+        return $this->formatResponse($results);
+    }
+
     protected function formatResponse($data): JsonResponse
     {
         // Ensure we're always returning an array, even for empty results

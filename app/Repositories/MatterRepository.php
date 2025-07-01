@@ -1,0 +1,314 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\Matter;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class MatterRepository
+{
+    /**
+     * Create a new matter
+     */
+    public function create(array $data): Matter
+    {
+        return Matter::create($data);
+    }
+
+    /**
+     * Update a matter
+     */
+    public function update(Matter $matter, array $data): Matter
+    {
+        $matter->update($data);
+        return $matter->fresh();
+    }
+
+    /**
+     * Delete a matter
+     */
+    public function delete(Matter $matter): bool
+    {
+        return $matter->delete();
+    }
+
+    /**
+     * Get matters expiring within specified days
+     */
+    public function getExpiringWithinDays(int $days): Collection
+    {
+        return Matter::where('expire_date', '<=', now()->addDays($days))
+            ->where('expire_date', '>=', now())
+            ->where('dead', 0)
+            ->get();
+    }
+
+    /**
+     * Search matters with filters and pagination
+     */
+    public function searchWithFilters(
+        array $filters,
+        string $sortKey,
+        string $sortDir,
+        int $perPage,
+        ?string $displayWith,
+        bool $includeDead
+    ): LengthAwarePaginator {
+        $query = $this->buildFilterQuery($filters, $displayWith, $includeDead);
+        
+        // Apply sorting
+        if ($sortKey === 'caseref') {
+            $query->orderBy('matter.caseref', $sortDir);
+        } else {
+            $query->orderBy($sortKey, $sortDir);
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Get filtered matters for export
+     */
+    public function getFilteredForExport(
+        array $filters,
+        string $sortKey,
+        string $sortDir,
+        ?string $displayWith,
+        bool $includeDead
+    ): Collection {
+        $query = $this->buildFilterQuery($filters, $displayWith, $includeDead);
+        
+        // Apply sorting
+        if ($sortKey === 'caseref') {
+            $query->orderBy('matter.caseref', $sortDir);
+        } else {
+            $query->orderBy($sortKey, $sortDir);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Build the filter query
+     */
+    protected function buildFilterQuery(array $filters, ?string $displayWith, bool $includeDead): Builder
+    {
+        $locale = app()->getLocale();
+        $baseLocale = substr($locale, 0, 2);
+
+        $query = Matter::select(
+            'matter.uid AS Ref',
+            'matter.country AS country',
+            'matter.category_code AS Cat',
+            'matter.origin',
+            DB::raw("GROUP_CONCAT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(event_name.name, '$.\"$baseLocale\"')) SEPARATOR '|') AS Status"),
+            DB::raw('MIN(status.event_date) AS Status_date'),
+            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(cli.display_name, clic.display_name, cli.name, clic.name) SEPARATOR '; ') AS Client"),
+            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(clilnk.actor_ref, cliclnk.actor_ref) SEPARATOR '; ') AS ClRef"),
+            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(app.display_name, app.name) SEPARATOR '; ') AS Applicant"),
+            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(agt.display_name, agtc.display_name, agt.name, agtc.name) SEPARATOR '; ') AS Agent"),
+            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(agtlnk.actor_ref, agtclnk.actor_ref) SEPARATOR '; ') AS AgtRef"),
+            'tit1.value AS Title',
+            DB::raw('COALESCE(tit2.value, tit1.value) AS Title2'),
+            'tit3.value AS Title3',
+            DB::raw("CONCAT_WS(' ', inv.name, inv.first_name) as Inventor1"),
+            'fil.event_date AS Filed',
+            'fil.detail AS FilNo',
+            'pub.event_date AS Published',
+            'pub.detail AS PubNo',
+            DB::raw('COALESCE(grt.event_date, reg.event_date) AS Granted'),
+            DB::raw('COALESCE(grt.detail, reg.detail) AS GrtNo'),
+            'matter.id',
+            'matter.container_id',
+            'matter.parent_id',
+            'matter.type_code',
+            'matter.responsible',
+            'del.login AS delegate',
+            'matter.dead',
+            DB::raw('isnull(matter.container_id) AS Ctnr'),
+            'matter.alt_ref AS Alt_Ref'
+        );
+
+        // Add all the joins
+        $this->addJoins($query);
+
+        // Apply display category filter
+        if ($displayWith) {
+            $query->where('matter_category.display_with', $displayWith);
+        }
+
+        // Apply user role restrictions
+        $this->applyUserRestrictions($query);
+
+        // Apply filters
+        $this->applyFilters($query, $filters);
+
+        // Apply dead filter
+        if (!$includeDead) {
+            $query->whereRaw('(select count(1) from matter m where m.caseref = matter.caseref and m.dead = 0) > 0');
+        }
+
+        // Group by required fields
+        $query->groupBy(
+            'matter.id',
+            'matter.uid',
+            'matter.country',
+            'matter.category_code',
+            'matter.origin',
+            'matter.container_id',
+            'matter.parent_id',
+            'matter.type_code',
+            'matter.responsible',
+            'matter.dead',
+            'matter.alt_ref',
+            'matter.caseref',
+            'matter.suffix',
+            'del.login',
+            'tit1.value',
+            'tit2.value',
+            'tit3.value',
+            'inv.name',
+            'inv.first_name',
+            'fil.event_date',
+            'fil.detail',
+            'pub.event_date',
+            'pub.detail',
+            'grt.event_date',
+            'grt.detail',
+            'reg.event_date',
+            'reg.detail'
+        );
+
+        return $query;
+    }
+
+    /**
+     * Add all necessary joins to the query
+     */
+    protected function addJoins(Builder $query): void
+    {
+        $query->join('matter_category', 'matter.category_code', 'matter_category.code')
+            ->leftJoin(DB::raw('matter_actor_lnk clilnk JOIN actor cli ON cli.id = clilnk.actor_id'), function ($join) {
+                $join->on('matter.id', 'clilnk.matter_id')->where('clilnk.role', 'CLI');
+            })
+            ->leftJoin(DB::raw('matter_actor_lnk cliclnk JOIN actor clic ON clic.id = cliclnk.actor_id'), function ($join) {
+                $join->on('matter.container_id', 'cliclnk.matter_id')->where([
+                    ['cliclnk.role', 'CLI'],
+                    ['cliclnk.shared', 1],
+                ]);
+            })
+            ->leftJoin(DB::raw('matter_actor_lnk agtlnk JOIN actor agt ON agt.id = agtlnk.actor_id'), function ($join) {
+                $join->on('matter.id', 'agtlnk.matter_id')->where([
+                    ['agtlnk.role', 'AGT'],
+                    ['agtlnk.display_order', 1],
+                ]);
+            })
+            ->leftJoin(DB::raw('matter_actor_lnk agtclnk JOIN actor agtc ON agtc.id = agtclnk.actor_id'), function ($join) {
+                $join->on('matter.container_id', 'agtclnk.matter_id')->where([
+                    ['agtclnk.role', 'AGT'],
+                    ['agtclnk.shared', 1],
+                ]);
+            })
+            ->leftJoin(DB::raw('matter_actor_lnk applnk JOIN actor app ON app.id = applnk.actor_id'), function ($join) {
+                $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'applnk.matter_id')->where('applnk.role', 'APP');
+            })
+            ->leftJoin(DB::raw('matter_actor_lnk dellnk JOIN actor del ON del.id = dellnk.actor_id'), function ($join) {
+                $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'dellnk.matter_id')->where('dellnk.role', 'DEL');
+            })
+            ->leftJoin('event AS fil', function ($join) {
+                $join->on('matter.id', 'fil.matter_id')->where('fil.code', 'FIL');
+            })
+            ->leftJoin('event AS pub', function ($join) {
+                $join->on('matter.id', 'pub.matter_id')->where('pub.code', 'PUB');
+            })
+            ->leftJoin('event AS grt', function ($join) {
+                $join->on('matter.id', 'grt.matter_id')->where('grt.code', 'GRT');
+            })
+            ->leftJoin('event AS reg', function ($join) {
+                $join->on('matter.id', 'reg.matter_id')->where('reg.code', 'REG');
+            })
+            ->leftJoin(DB::raw('event status JOIN event_name ON event_name.code = status.code AND event_name.status_event = 1'), 'matter.id', 'status.matter_id')
+            ->leftJoin(DB::raw('event e2 JOIN event_name en2 ON e2.code = en2.code AND en2.status_event = 1'), function ($join) {
+                $join->on('status.matter_id', 'e2.matter_id')->whereColumn('status.event_date', '<', 'e2.event_date');
+            })
+            ->leftJoin(DB::raw('classifier tit1 JOIN classifier_type ct1 ON tit1.type_code = ct1.code AND ct1.main_display = 1 AND ct1.display_order = 1'),
+                DB::raw('IFNULL(matter.container_id, matter.id)'), 'tit1.matter_id')
+            ->leftJoin(DB::raw('classifier tit2 JOIN classifier_type ct2 ON tit2.type_code = ct2.code AND ct2.main_display = 1 AND ct2.display_order = 2'),
+                DB::raw('IFNULL(matter.container_id, matter.id)'), 'tit2.matter_id')
+            ->leftJoin(DB::raw('classifier tit3 JOIN classifier_type ct3 ON tit3.type_code = ct3.code AND ct3.main_display = 1 AND ct3.display_order = 3'),
+                DB::raw('IFNULL(matter.container_id, matter.id)'), 'tit3.matter_id')
+            ->leftJoin(DB::raw('matter_actor_lnk invlnk JOIN actor inv ON inv.id = invlnk.actor_id'), function ($join) {
+                $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'invlnk.matter_id')->where([
+                    ['invlnk.role', 'INV'],
+                    ['invlnk.display_order', 1],
+                ]);
+            })
+            ->where('e2.matter_id', null);
+    }
+
+    /**
+     * Apply user role restrictions
+     */
+    protected function applyUserRestrictions(Builder $query): void
+    {
+        $authUserRole = Auth::user()->default_role;
+        $authUserId = Auth::user()->id;
+
+        if ($authUserRole == 'CLI' || empty($authUserRole)) {
+            $query->where(function ($q) use ($authUserId) {
+                $q->where('cli.id', $authUserId)
+                    ->orWhere('clic.id', $authUserId);
+            });
+        }
+    }
+
+    /**
+     * Apply filters to the query
+     */
+    protected function applyFilters(Builder $query, array $filters): void
+    {
+        foreach ($filters as $key => $value) {
+            if (empty($value)) continue;
+
+            match ($key) {
+                'Ref' => $query->where(function ($q) use ($value) {
+                    $q->whereLike('matter.uid', "$value%")
+                        ->orWhereLike('matter.alt_ref', "$value%");
+                }),
+                'Cat' => $query->whereLike('matter.category_code', "$value%"),
+                'country' => $query->whereLike('matter.country', "$value%"),
+                'Status' => $query->whereJsonLike('event_name.name', $value),
+                'Status_date' => $query->whereLike('status.event_date', "$value%"),
+                'Client' => $query->whereLike(DB::raw('IFNULL(cli.name, clic.name)'), "$value%"),
+                'ClRef' => $query->whereLike(DB::raw('IFNULL(clilnk.actor_ref, cliclnk.actor_ref)'), "$value%"),
+                'Applicant' => $query->whereLike('app.name', "$value%"),
+                'Agent' => $query->whereLike(DB::raw('IFNULL(agt.name, agtc.name)'), "$value%"),
+                'AgtRef' => $query->whereLike(DB::raw('IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)'), "$value%"),
+                'Title' => $query->whereLike(DB::Raw('concat_ws(" ", tit1.value, tit2.value, tit3.value)'), "%$value%"),
+                'Inventor1' => $query->whereLike('inv.name', "$value%"),
+                'Filed' => $query->whereLike('fil.event_date', "$value%"),
+                'FilNo' => $query->whereLike('fil.detail', "$value%"),
+                'Published' => $query->whereLike('pub.event_date', "$value%"),
+                'PubNo' => $query->whereLike('pub.detail', "$value%"),
+                'Granted' => $query->where(function ($q) use ($value) {
+                    $q->whereLike('grt.event_date', "$value%")
+                        ->orWhereLike('reg.event_date', "$value%");
+                }),
+                'GrtNo' => $query->where(function ($q) use ($value) {
+                    $q->whereLike('grt.detail', "$value%")
+                        ->orWhereLike('reg.detail', "$value%");
+                }),
+                'responsible' => $query->where(function ($q) use ($value) {
+                    $q->where('matter.responsible', $value)
+                        ->orWhere('del.login', $value);
+                }),
+                'Ctnr' => $value ? $query->whereNull('matter.container_id') : null,
+                default => $query->whereLike($key, "$value%"),
+            };
+        }
+    }
+}

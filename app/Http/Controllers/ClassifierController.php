@@ -28,7 +28,14 @@ class ClassifierController extends Controller
         }
         $request->merge(['creator' => Auth::user()->login]);
 
-        return Classifier::create($request->except(['_token', '_method', 'image']))->id;
+        $classifier = Classifier::create($request->except(['_token', '_method', 'image']));
+
+        // Handle Inertia requests
+        if ($request->inertia()) {
+            return redirect()->back();
+        }
+
+        return $classifier->id;
     }
 
     public function show(Classifier $classifier)
@@ -45,12 +52,22 @@ class ClassifierController extends Controller
             $classifier->update($request->except(['_token', '_method']));
         }
 
+        // Handle Inertia requests
+        if ($request->inertia()) {
+            return redirect()->back();
+        }
+
         return $classifier;
     }
 
     public function destroy(Classifier $classifier)
     {
         $classifier->delete();
+
+        // Handle Inertia requests
+        if (request()->inertia()) {
+            return redirect()->back();
+        }
 
         return $classifier;
     }

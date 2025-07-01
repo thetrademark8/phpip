@@ -1,0 +1,166 @@
+import { router } from '@inertiajs/vue3'
+import { FILTER_LABEL_MAP } from '@/constants/matter'
+
+/**
+ * Service for handling matter filtering operations
+ */
+export class MatterFilterService {
+  /**
+   * Apply filters and navigate to filtered results
+   */
+  static applyFilters(filters, options = {}) {
+    const params = this.buildQueryParams(filters, options)
+    
+    return new Promise((resolve, reject) => {
+      router.get('/matter', params, {
+        preserveState: true,
+        preserveScroll: true,
+        onFinish: () => resolve(),
+        onError: (errors) => reject(errors)
+      })
+    })
+  }
+
+  /**
+   * Export matters with current filters
+   */
+  static exportMatters(filters) {
+    const params = new URLSearchParams(this.buildQueryParams(filters))
+    window.location.href = `/matter/export?${params.toString()}`
+  }
+
+  /**
+   * Build query parameters from filters
+   */
+  static buildQueryParams(filters, options = {}) {
+    const params = {}
+    
+    // Add filter parameters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (this.shouldIncludeParam(key, value)) {
+        params[key] = this.formatParamValue(key, value)
+      }
+    })
+    
+    // Add options (sortkey, sortdir, etc.)
+    Object.entries(options).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        params[key] = value
+      }
+    })
+    
+    return params
+  }
+
+  /**
+   * Check if parameter should be included
+   */
+  static shouldIncludeParam(key, value) {
+    // Skip empty values
+    if (value === '' || value === null || value === undefined) {
+      return false
+    }
+    
+    // Include false boolean values only for specific fields
+    if (value === false && !['Ctnr', 'include_dead'].includes(key)) {
+      return false
+    }
+    
+    return true
+  }
+
+  /**
+   * Format parameter value for API
+   */
+  static formatParamValue(key, value) {
+    // Convert booleans to 1/0 for backend compatibility
+    if (typeof value === 'boolean') {
+      return value ? 1 : 0
+    }
+    
+    return value
+  }
+
+  /**
+   * Clear all filters except persistent ones
+   */
+  static clearFilters(currentFilters) {
+    const persistentKeys = ['tab', 'display_with', 'sortkey', 'sortdir']
+    const clearedFilters = {}
+    
+    // Keep only persistent values
+    persistentKeys.forEach(key => {
+      if (currentFilters[key] !== undefined) {
+        clearedFilters[key] = currentFilters[key]
+      }
+    })
+    
+    return this.applyFilters(clearedFilters)
+  }
+
+  /**
+   * Remove a specific filter
+   */
+  static removeFilter(filters, keyToRemove) {
+    const newFilters = { ...filters }
+    
+    if (['Ctnr', 'include_dead'].includes(keyToRemove)) {
+      newFilters[keyToRemove] = false
+    } else {
+      delete newFilters[keyToRemove]
+    }
+    
+    return this.applyFilters(newFilters)
+  }
+
+  /**
+   * Get active filter badges for display
+   */
+  static getActiveFilterBadges(filters) {
+    const badges = []
+    const skipKeys = ['sortkey', 'sortdir', 'tab', 'display_with']
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (skipKeys.includes(key)) return
+      if (!this.shouldIncludeParam(key, value)) return
+      
+      badges.push({
+        key,
+        label: this.getFilterLabel(key),
+        value: this.getFilterDisplayValue(key, value)
+      })
+    })
+    
+    return badges
+  }
+
+  /**
+   * Get human-readable label for filter key
+   */
+  static getFilterLabel(key) {
+    return FILTER_LABEL_MAP[key] || key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ')
+  }
+
+  /**
+   * Get display value for filter
+   */
+  static getFilterDisplayValue(key, value) {
+    if (typeof value === 'boolean' || value === 1 || value === '1') {
+      return 'Yes'
+    }
+    
+    return String(value)
+  }
+
+  /**
+   * Check if there are active filters
+   */
+  static hasActiveFilters(filters) {
+    const skipKeys = ['sortkey', 'sortdir', 'tab', 'display_with']
+    
+    return Object.entries(filters).some(([key, value]) => {
+      if (skipKeys.includes(key)) return false
+      return this.shouldIncludeParam(key, value)
+    })
+  }
+}

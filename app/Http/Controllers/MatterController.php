@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Services\MatterServiceInterface;
 use App\Http\Requests\MatterExportRequest;
+use App\Http\Requests\MatterFilterRequest;
 use App\Http\Requests\MergeFileRequest;
 use App\Models\Actor;
 use App\Models\ActorPivot;
@@ -11,76 +13,113 @@ use App\Models\Matter;
 use App\Services\DocumentMergeService;
 use App\Services\MatterExportService;
 use App\Services\OPSService;
+use App\Services\SharePointService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class MatterController extends Controller
 {
-    protected DocumentMergeService $documentMergeService;
-
-    protected MatterExportService $matterExportService;
-
-    protected OPSService $opsService;
-
     public function __construct(
-        DocumentMergeService $documentMergeService,
-        MatterExportService $matterExportService,
-        OPSService $opsService
-    ) {
-        $this->documentMergeService = $documentMergeService;
-        $this->matterExportService = $matterExportService;
-        $this->opsService = $opsService;
-    }
+        protected MatterServiceInterface $matterService,
+        protected DocumentMergeService $documentMergeService,
+        protected MatterExportService $matterExportService,
+        protected OPSService $opsService,
+        protected SharePointService $sharePoint
+    ) {}
 
-    public function index(Request $request)
+    public function index(MatterFilterRequest $request)
     {
-        $filters = $request->except(
-            [
-                'display_with',
-                'page',
-                'filter',
-                'value',
-                'sortkey',
-                'sortdir',
-                'tab',
-                'include_dead',
-            ]);
-
-        $query = Matter::filter(
-            $request->input('sortkey', 'id'),
-            $request->input('sortdir', 'desc'),
-            $filters,
-            $request->display_with,
-            $request->include_dead
-        );
+        $filters = $request->getFilters();
+        $options = $request->getOptions();
 
         if ($request->wantsJson()) {
-            $matters = $query->with('events.info')->get();
-
+            $matters = $this->matterService->exportMatters($filters, $options);
             return response()->json($matters);
         }
 
-        $matters = $query->simplePaginate(25);
-        $matters->withQueryString()->links();  // Keep URL parameters in the paginator links
+        $matters = $this->matterService->searchMatters($filters, $options);
+        $matters->withQueryString();
 
-        return view('matter.index', compact('matters'));
+        return Inertia::render('Matter/Index', [
+            'matters' => $matters,
+            'filters' => $request->getAllParameters(),
+        ]);
     }
 
     public function show(Matter $matter)
     {
         $this->authorize('view', $matter);
-        $matter->load(['tasksPending.info', 'renewalsPending', 'events.info', 'titles', 'actors', 'classifiers']);
+        
+        // Load all necessary relationships with optimized queries
+        $matter->load([
+            'tasksPending.info',
+            'renewalsPending',
+            'events' => function ($query) {
+                $query->with(['info', 'altMatter', 'link'])
+                    ->orderBy('event_date');
+            },
+            'titles',
+            'actors' => function ($query) {
+                $query->with('actor')
+                    ->orderBy('display_order');
+            },
+            'classifiers.linkedMatter',
+            'linkedBy',
+            'category',
+            'type',
+            'countryInfo',
+            'container',
+            'parent',
+            'family',
+            'priorityTo'
+        ]);
 
-        return view('matter.show', compact('matter'));
+        // Group data for the frontend
+        $titles = $matter->titles->groupBy('type_name');
+        $classifiers = $matter->classifiers->groupBy('type_code');
+        $actors = $matter->actors->groupBy('role_name');
+        $statusEvents = $matter->events->where('info.status_event', 1);
+
+        // Check SharePoint configuration
+        $sharePointLink = null;
+        if ($this->sharePoint->isEnabled()) {
+            $sharePointLink = $this->sharePoint->findFolderLink(
+                $matter->caseref,
+                $matter->suffix,
+                ''
+            );
+        }
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'matter' => $matter,
+                'titles' => $titles,
+                'classifiers' => $classifiers,
+                'actors' => $actors,
+                'statusEvents' => $statusEvents,
+                'sharePointLink' => $sharePointLink
+            ]);
+        }
+
+        return Inertia::render('Matter/Show', [
+            'matter' => $matter,
+            'titles' => $titles,
+            'classifiers' => $classifiers,
+            'actors' => $actors,
+            'statusEvents' => $statusEvents,
+            'sharePointLink' => $sharePointLink,
+            'canWrite' => Auth::user()->can('readwrite')
+        ]);
     }
 
     /**
      * Return a JSON array with info of a matter. For use with API REST.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Json
      **/
     public function info($id)
@@ -109,7 +148,7 @@ class MatterController extends Controller
                 $parent_matter->caseref = Matter::where(
                     'caseref',
                     'like',
-                    $parent_matter->category->ref_prefix.'%'
+                    $parent_matter->category->ref_prefix . '%'
                 )->max('caseref');
                 $parent_matter->caseref++;
             }
@@ -118,7 +157,7 @@ class MatterController extends Controller
             $ref_prefix = \App\Models\Category::find($category_code)['ref_prefix'];
             $category = [
                 'code' => $category_code,
-                'next_caseref' => Matter::where('caseref', 'like', $ref_prefix.'%')
+                'next_caseref' => Matter::where('caseref', 'like', $ref_prefix . '%')
                     ->max('caseref'),
                 'name' => \App\Models\Category::find($category_code)['category'],
             ];
@@ -354,7 +393,7 @@ class MatterController extends Controller
                         $new_matter->events()->create(
                             [
                                 'code' => 'PRI',
-                                'detail' => $pri['country'].$pri['number'],
+                                'detail' => $pri['country'] . $pri['number'],
                                 'event_date' => $pri['date'],
                             ]
                         );
@@ -407,7 +446,7 @@ class MatterController extends Controller
                             );
                         }
                     }
-                    $new_matter->notes = 'Applicants: '.collect($app['applicants'])->implode('; ');
+                    $new_matter->notes = 'Applicants: ' . collect($app['applicants'])->implode('; ');
                 }
                 if (array_key_exists('inventors', $app)) {
                     foreach ($app['inventors'] as $inventor) {
@@ -443,7 +482,7 @@ class MatterController extends Controller
                             );
                         }
                     }
-                    $new_matter->notes .= "\nInventors: ".collect($app['inventors'])->implode(' - ');
+                    $new_matter->notes .= "\nInventors: " . collect($app['inventors'])->implode(' - ');
                 }
             } else {
                 $new_matter->container_id = $container_id;
@@ -462,7 +501,7 @@ class MatterController extends Controller
                             $new_matter->events()->create(
                                 [
                                     'code' => 'PRI',
-                                    'detail' => $pri['country'].$pri['number'],
+                                    'detail' => $pri['country'] . $pri['number'],
                                     'event_date' => $pri['date'],
                                 ]
                             );
@@ -588,17 +627,17 @@ class MatterController extends Controller
             'filing'
         );
         $country_edit = $matter->tasks()->whereHas(
-            'rule',
-            function (Builder $q) {
-                $q->whereNotNull('for_country');
-            }
-        )->count() == 0;
+                'rule',
+                function (Builder $q) {
+                    $q->whereNotNull('for_country');
+                }
+            )->count() == 0;
         $cat_edit = $matter->tasks()->whereHas(
-            'rule',
-            function (Builder $q) {
-                $q->whereNotNull('for_category');
-            }
-        )->count() == 0;
+                'rule',
+                function (Builder $q) {
+                    $q->whereNotNull('for_category');
+                }
+            )->count() == 0;
 
         return view('matter.edit', compact(['matter', 'cat_edit', 'country_edit']));
     }
@@ -633,7 +672,7 @@ class MatterController extends Controller
      * This method exports a list of matters based on the provided filters and returns
      * a streamed response for downloading the file in CSV format.
      *
-     * @param  MatterExportRequest  $request  The request object containing the filters for exporting matters.
+     * @param MatterExportRequest $request The request object containing the filters for exporting matters.
      * @return \Symfony\Component\HttpFoundation\StreamedResponse The streamed response for the CSV file download.
      */
     public function export(MatterExportRequest $request)
@@ -678,7 +717,7 @@ class MatterController extends Controller
 
         return response()->streamDownload(function () use ($template) {
             $template->saveAs('php://output');
-        }, 'merged-'.$file->getClientOriginalName(), [
+        }, 'merged-' . $file->getClientOriginalName(), [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Transfer-Encoding' => 'binary',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
@@ -746,5 +785,80 @@ class MatterController extends Controller
         $description = $matter->getDescription($lang);
 
         return view('matter.summary', compact('description'));
+    }
+
+    public function search(Request $request)
+    {
+        $this->authorize('readMatter', Matter::class);
+
+        $query = Matter::query();
+
+        // Basic search query
+        if ($request->filled('q')) {
+            $searchTerm = $request->input('q');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('uid', 'like', "%{$searchTerm}%")
+                    ->orWhere('title', 'like', "%{$searchTerm}%")
+                    ->orWhere('alt_ref', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('actors', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', "%{$searchTerm}%")
+                            ->whereIn('role_code', ['CLI', 'APP', 'OWN']);
+                    });
+            });
+        }
+
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('category_code', $request->input('category'));
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            switch ($status) {
+                case 'active':
+                    $query->whereNull('dead')->orWhere('dead', 0);
+                    break;
+                case 'inactive':
+                    $query->where('dead', 1);
+                    break;
+                case 'pending':
+                    $query->whereHas('status', function ($q) {
+                        $q->where('code', 'Pending');
+                    });
+                    break;
+                case 'dead':
+                    $query->where('dead', 1);
+                    break;
+            }
+        }
+
+        // Responsible filter
+        if ($request->filled('responsible')) {
+            $query->where('responsible', 'like', "%{$request->input('responsible')}%");
+        }
+
+        // Limit results and order by relevance
+        $matters = $query->with(['category', 'actors' => function ($q) {
+            $q->where('role_code', 'CLI')->orderBy('display_order');
+        }])
+            ->orderBy('updated_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        return response()->json([
+            'data' => $matters->map(function ($matter) {
+                return [
+                    'id' => $matter->id,
+                    'uid' => $matter->uid,
+                    'title' => $matter->title,
+                    'category' => $matter->category?->category ?? $matter->category_code,
+                    'status' => $matter->dead ? 'inactive' : 'active',
+                    'client' => [
+                        'name' => $matter->actors->where('role_code', 'CLI')->first()?->name,
+                    ],
+                ];
+            }),
+        ]);
     }
 }

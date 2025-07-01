@@ -10,17 +10,22 @@ use Illuminate\Support\Facades\DB;
 
 class ActorPivotController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, $matter = null)
     {
+        // If matter_id comes from route parameter, use it
+        if ($matter) {
+            $request->merge(['matter_id' => $matter]);
+        }
+        
         $request->validate([
             'matter_id' => 'required|numeric',
             'actor_id' => 'required|numeric',
-            'role' => 'required',
+            'role_code' => 'required',
             'date' => 'date',
         ]);
 
         // Fix display order indexes if wrong
-        $roleGroup = ActorPivot::where('matter_id', $request->matter_id)->where('role', $request->role);
+        $roleGroup = ActorPivot::where('matter_id', $request->matter_id)->where('role', $request->role_code);
         $max = $roleGroup->max('display_order');
         $count = $roleGroup->count();
         if ($count < $max) {
@@ -37,13 +42,21 @@ class ActorPivotController extends Controller
         $addedActor = Actor::find($request->actor_id);
 
         $request->merge([
+            'role' => $request->role_code,
             'display_order' => $max + 1,
             'creator' => Auth::user()->login,
             'company_id' => $addedActor->company_id,
             'date' => Now(),
         ]);
 
-        return ActorPivot::create($request->except(['_token', '_method']));
+        $actorPivot = ActorPivot::create($request->except(['_token', '_method', 'role_code']));
+
+        // Handle Inertia requests
+        if ($request->inertia()) {
+            return redirect()->back();
+        }
+
+        return $actorPivot;
     }
 
     public function update(Request $request, ActorPivot $actorPivot)
@@ -53,6 +66,11 @@ class ActorPivotController extends Controller
         ]);
         $request->merge(['updater' => Auth::user()->login]);
         $actorPivot->update($request->except(['_token', '_method']));
+
+        // Handle Inertia requests
+        if ($request->inertia()) {
+            return redirect()->back();
+        }
 
         return $actorPivot;
     }
@@ -71,6 +89,11 @@ class ActorPivotController extends Controller
             $i++;
             $actor->display_order = $i;
             $actor->save();
+        }
+
+        // Handle Inertia requests
+        if (request()->inertia()) {
+            return redirect()->back();
         }
 
         return $actorPivot;

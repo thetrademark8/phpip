@@ -1,0 +1,427 @@
+<template>
+  <MainLayout title="Matters">
+    <div class="space-y-4">
+      <!-- Header with actions -->
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight">Matters</h1>
+          <p class="text-muted-foreground">
+            Manage your intellectual property portfolio
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <Button @click="exportMatters" variant="outline" size="sm">
+            <Download class="mr-2 h-4 w-4" />
+            Export
+          </Button>
+        </div>
+      </div>
+
+      <!-- Filters Card -->
+      <Collapsible v-model:open="isFiltersOpen" @update:open="saveFilterState">
+        <Card>
+          <CardHeader class="pb-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <CollapsibleTrigger as-child>
+                  <Button variant="ghost" size="sm" class="p-0 h-auto">
+                    <ChevronDown v-if="isFiltersOpen" class="h-4 w-4" />
+                    <ChevronUp v-else class="h-4 w-4" />
+                  </Button>
+                </CollapsibleTrigger>
+                <CardTitle class="text-base">Filters</CardTitle>
+              </div>
+              <Button
+                v-if="hasActiveFilters"
+                @click="clearFilters"
+                variant="ghost"
+                size="sm"
+              >
+                Clear all
+              </Button>
+            </div>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent>
+              <MatterFilters
+                :filters="filters"
+                :view-mode="viewMode"
+                @update:filters="handleFilterUpdate"
+                @update:view-mode="(value) => viewMode = value"
+              />
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
+      <!-- Active Filters -->
+      <div v-if="activeFilterBadges.length > 0" class="flex flex-wrap gap-2">
+        <Badge
+          v-for="badge in activeFilterBadges"
+          :key="badge.key"
+          variant="secondary"
+          class="cursor-pointer"
+          @click="handleRemoveFilter(badge.key)"
+        >
+          {{ badge.label }}: {{ badge.value }}
+          <X class="ml-1 h-3 w-3" />
+        </Badge>
+      </div>
+
+      <!-- Results count -->
+      <div class="text-sm text-muted-foreground">
+        {{ matters.total || 0 }} matter{{ matters.total !== 1 ? 's' : '' }} found
+      </div>
+
+      <!-- Data Table -->
+      <Card>
+        <CardContent class="p-0">
+          <DataTable
+            :columns="tableColumns"
+            :data="matters.data || []"
+            :loading="loading"
+            :show-pagination="false"
+            :selectable="canWrite"
+            :get-row-id="(row) => row.id"
+            :get-row-class="getRowClass"
+            @update:selected="handleSelection"
+          />
+        </CardContent>
+      </Card>
+
+      <!-- Custom Pagination -->
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-muted-foreground">
+          Showing {{ matters.from || 0 }} to {{ matters.to || 0 }} of {{ matters.total || 0 }} results
+        </p>
+        <div class="flex gap-2">
+          <Button
+            v-if="matters.prev_page_url"
+            @click="goToPage(matters.prev_page_url)"
+            variant="outline"
+            size="sm"
+          >
+            <ChevronLeft class="h-4 w-4" />
+            Previous
+          </Button>
+          <Button
+            v-if="matters.next_page_url"
+            @click="goToPage(matters.next_page_url)"
+            variant="outline"
+            size="sm"
+          >
+            Next
+            <ChevronRight class="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  </MainLayout>
+</template>
+
+<script setup>
+import { ref, computed, h, onMounted, watch } from 'vue'
+import { router, Link, usePage } from '@inertiajs/vue3'
+import { format, parseISO, formatDistanceToNow } from 'date-fns'
+import { debounce } from 'lodash-es'
+import { 
+  Download, 
+  X, 
+  ChevronLeft, 
+  ChevronRight,
+  ExternalLink,
+  FileText,
+  Hash,
+  ChevronDown,
+  ChevronUp
+} from 'lucide-vue-next'
+import MainLayout from '@/Layouts/MainLayout.vue'
+import DataTable from '@/Components/ui/DataTable.vue'
+import MatterFilters from '@/Components/matter/MatterFilters.vue'
+import StatusBadge from '@/Components/display/StatusBadge.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
+import { Badge } from '@/Components/ui/badge'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/Components/ui/collapsible'
+import { useMatterFilters } from '@/composables/useMatterFilters'
+import { MatterFilterService } from '@/services/MatterFilterService'
+import { CATEGORY_VARIANTS } from '@/constants/matter'
+
+const props = defineProps({
+  matters: Object,
+  filters: Object,
+})
+
+const page = usePage()
+const loading = ref(false)
+const selectedRows = ref([])
+const isFiltersOpen = ref(true)
+
+// Load saved filter state from localStorage
+onMounted(() => {
+  const savedState = localStorage.getItem('matter-filters-collapsed')
+  if (savedState !== null) {
+    isFiltersOpen.value = savedState === 'false' ? false : true
+  }
+})
+
+// Use the composable for filter management
+const { 
+  filters, 
+  activeFilterBadges, 
+  hasActiveFilters,
+  clearFilters: clearAllFilters,
+  removeFilter,
+  updateFiltersFromServer,
+  getApiParams
+} = useMatterFilters(props.filters)
+
+const viewMode = computed({
+  get: () => filters.value.tab === 0 ? 'actor' : 'status',
+  set: (value) => {
+    filters.value.tab = value === 'actor' ? 0 : 1
+  }
+})
+
+const canWrite = computed(() => page.props.auth.user.default_role !== 'CLI')
+
+// Create a debounced version of applyFilters
+const debouncedApplyFilters = debounce(() => {
+  applyFilters()
+}, 300)
+
+// Watch for filter changes and apply them automatically
+watch(filters, () => {
+  debouncedApplyFilters()
+}, { deep: true })
+
+// Handler for filter updates from MatterFilters component
+function handleFilterUpdate(newFilters) {
+  // Replace the entire filters object to trigger Vue's reactivity
+  filters.value = { ...newFilters }
+  // The watcher will then trigger applyFilters via debouncedApplyFilters
+}
+
+// Initialize filters from props on mount
+onMounted(() => {
+  if (props.filters) {
+    updateFiltersFromServer(props.filters)
+  }
+})
+
+// Define columns based on view mode
+const tableColumns = computed(() => {
+  const baseColumns = [
+    {
+      accessorKey: 'Ref',
+      header: 'Reference',
+      cell: ({ row }) => h('div', { class: 'flex items-center gap-2' }, [
+        h(Link, {
+          href: `/matter/${row.original.id}`,
+          class: 'text-primary hover:underline font-medium'
+        }, row.original.Ref),
+        row.original.Alt_Ref && h('span', { class: 'text-xs text-muted-foreground' }, `(${row.original.Alt_Ref})`)
+      ]),
+      enableSorting: true,
+    },
+    {
+      accessorKey: 'Cat',
+      header: 'Category',
+      cell: ({ row }) => h(Badge, {
+        variant: getCategoryVariant(row.original.Cat)
+      }, row.original.Cat),
+      meta: { headerClass: 'w-[100px]' },
+    },
+    {
+      accessorKey: 'Status',
+      header: 'Status',
+      cell: ({ row }) => row.original.Status ? h(StatusBadge, {
+        status: row.original.Status.split('|')[0], // Take first status if multiple
+        type: 'matter'
+      }) : null,
+      enableSorting: true,
+    }
+  ]
+
+  if (viewMode.value === 'actor') {
+    // Actor View columns
+    return [
+      ...baseColumns,
+      {
+        accessorKey: 'Client',
+        header: 'Client',
+        cell: ({ row }) => h('div', { class: 'max-w-[200px] truncate', title: row.original.Client }, row.original.Client),
+        enableSorting: true,
+      },
+      {
+        accessorKey: 'ClRef',
+        header: 'Client Ref',
+        meta: { headerClass: 'w-[120px]' },
+      },
+      {
+        accessorKey: 'Applicant',
+        header: 'Applicant',
+        cell: ({ row }) => h('div', { class: 'max-w-[200px] truncate', title: row.original.Applicant }, row.original.Applicant),
+        enableSorting: true,
+      },
+      {
+        accessorKey: 'Agent',
+        header: 'Agent',
+        cell: ({ row }) => h('div', { class: 'max-w-[150px] truncate', title: row.original.Agent }, row.original.Agent),
+        enableSorting: true,
+      },
+      {
+        accessorKey: 'AgtRef',
+        header: 'Agent Ref',
+        meta: { headerClass: 'w-[120px]' },
+      },
+      {
+        accessorKey: 'Title',
+        header: 'Title',
+        cell: ({ row }) => h('div', { 
+          class: 'max-w-[300px] truncate', 
+          title: row.original.Title 
+        }, row.original.Title || row.original.Title2),
+      },
+      {
+        accessorKey: 'Inventor1',
+        header: 'Inventor',
+        cell: ({ row }) => h('div', { class: 'max-w-[150px] truncate', title: row.original.Inventor1 }, row.original.Inventor1),
+        enableSorting: true,
+      }
+    ]
+  } else {
+    // Status View columns
+    return [
+      ...baseColumns,
+      {
+        accessorKey: 'Status_date',
+        header: 'Status Date',
+        cell: ({ row }) => formatDate(row.original.Status_date),
+        enableSorting: true,
+        meta: { headerClass: 'w-[120px]' },
+      },
+      {
+        accessorKey: 'Title',
+        header: 'Title',
+        cell: ({ row }) => h('div', { 
+          class: 'max-w-[300px] truncate', 
+          title: row.original.Title 
+        }, row.original.Title || row.original.Title2),
+      },
+      {
+        accessorKey: 'Filed',
+        header: 'Filed',
+        cell: ({ row }) => formatDate(row.original.Filed),
+        enableSorting: true,
+        meta: { headerClass: 'w-[120px]' },
+      },
+      {
+        accessorKey: 'FilNo',
+        header: 'Filing No',
+        cell: ({ row }) => row.original.FilNo && h('div', { class: 'flex items-center gap-1' }, [
+          h(FileText, { class: 'h-4 w-4 text-muted-foreground' }),
+          h('span', row.original.FilNo)
+        ]),
+      },
+      {
+        accessorKey: 'Published',
+        header: 'Published',
+        cell: ({ row }) => formatDate(row.original.Published),
+        enableSorting: true,
+        meta: { headerClass: 'w-[120px]' },
+      },
+      {
+        accessorKey: 'PubNo',
+        header: 'Pub. No',
+        cell: ({ row }) => row.original.PubNo,
+      },
+      {
+        accessorKey: 'Granted',
+        header: 'Granted',
+        cell: ({ row }) => formatDate(row.original.Granted),
+        enableSorting: true,
+        meta: { headerClass: 'w-[120px]' },
+      },
+      {
+        accessorKey: 'GrtNo',
+        header: 'Grant No',
+        cell: ({ row }) => row.original.GrtNo && h('div', { class: 'flex items-center gap-1' }, [
+          h(Hash, { class: 'h-4 w-4 text-muted-foreground' }),
+          h('span', row.original.GrtNo)
+        ]),
+      }
+    ]
+  }
+})
+
+function getCategoryVariant(category) {
+  return CATEGORY_VARIANTS[category] || 'default'
+}
+
+function formatDate(date) {
+  if (!date) return ''
+  try {
+    const parsed = parseISO(date)
+    const daysDiff = Math.abs(new Date() - parsed) / (1000 * 60 * 60 * 24)
+    
+    if (daysDiff < 30) {
+      return formatDistanceToNow(parsed, { addSuffix: true })
+    }
+    return format(parsed, 'dd/MM/yyyy')
+  } catch {
+    return date
+  }
+}
+
+function getRowClass(row) {
+  if (row.dead) return 'opacity-50'
+  return ''
+}
+
+function handleSelection(selected) {
+  selectedRows.value = selected
+}
+
+function handleRemoveFilter(key) {
+  loading.value = true
+  MatterFilterService.removeFilter(filters.value, key)
+    .finally(() => { loading.value = false })
+}
+
+function applyFilters() {
+  loading.value = true
+  
+  MatterFilterService.applyFilters(filters.value)
+    .finally(() => { loading.value = false })
+}
+
+function clearFilters() {
+  loading.value = true
+  
+  MatterFilterService.clearFilters(filters.value)
+    .finally(() => { loading.value = false })
+}
+
+function saveFilterState(open) {
+  localStorage.setItem('matter-filters-collapsed', open ? 'true' : 'false')
+}
+
+function exportMatters() {
+  MatterFilterService.exportMatters(filters.value)
+}
+
+function goToPage(url) {
+  loading.value = true
+  router.visit(url, {
+    preserveScroll: true,
+    onFinish: () => {
+      loading.value = false
+    }
+  })
+}
+</script>

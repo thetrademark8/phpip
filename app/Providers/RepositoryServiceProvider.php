@@ -7,8 +7,10 @@ use App\Contracts\Services\DateServiceInterface;
 use App\Contracts\Services\MatterServiceInterface;
 use App\Contracts\Services\NotificationServiceInterface;
 use App\Contracts\Services\RenewalServiceInterface;
+use App\Repositories\MatterRepository;
 use App\Services\DatePickerService;
 use App\Services\DateService;
+use App\Services\MatterService;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -18,65 +20,13 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Register repository bindings
+        $this->app->singleton(MatterRepository::class);
+
         // Register service bindings
         $this->app->bind(DateServiceInterface::class, DateService::class);
         $this->app->bind(DatePickerServiceInterface::class, DatePickerService::class);
-
-        // Register placeholder implementations for now
-        // These will be implemented in future phases
-        $this->app->bind(MatterServiceInterface::class, function ($app) {
-            // Placeholder until MatterService is implemented
-            return new class implements MatterServiceInterface
-            {
-                public function create(array $data): \App\Models\Matter
-                {
-                    return \App\Models\Matter::create($data);
-                }
-
-                public function update(\App\Models\Matter $matter, array $data): \App\Models\Matter
-                {
-                    $matter->update($data);
-
-                    return $matter->fresh();
-                }
-
-                public function delete(\App\Models\Matter $matter): bool
-                {
-                    return $matter->delete();
-                }
-
-                public function clone(\App\Models\Matter $matter, array $overrides = []): \App\Models\Matter
-                {
-                    $clone = $matter->replicate();
-                    $clone->fill($overrides);
-                    $clone->save();
-
-                    return $clone;
-                }
-
-                public function createFamily(array $patentData): \Illuminate\Support\Collection
-                {
-                    return collect();
-                }
-
-                public function copyToCountries(\App\Models\Matter $matter, array $countries): \Illuminate\Support\Collection
-                {
-                    return collect();
-                }
-
-                public function getExpiringMatters(int $days = 30): \Illuminate\Support\Collection
-                {
-                    return \App\Models\Matter::where('expire_date', '<=', now()->addDays($days))
-                        ->where('expire_date', '>=', now())
-                        ->get();
-                }
-
-                public function calculateRenewalDeadline(\App\Models\Matter $matter): ?string
-                {
-                    return $matter->expire_date?->format('Y-m-d');
-                }
-            };
-        });
+        $this->app->bind(MatterServiceInterface::class, MatterService::class);
 
         $this->app->bind(RenewalServiceInterface::class, function ($app) {
             // Placeholder until RenewalService is implemented

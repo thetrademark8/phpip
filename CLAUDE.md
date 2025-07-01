@@ -601,3 +601,480 @@ Continue with Phase 2 (Component Library Development) to:
 2. Create reusable components (MatterCard, ActorList, etc.)
 3. Build form components with Zod validation
 4. Start migrating actual pages from Blade to Vue
+
+## Phase 2: Component Library Development
+
+### Phase 2.1: DatePicker Replacement ✅
+
+Successfully replaced the complex 345-line jQuery DatePicker with a clean Vue component:
+
+**Old Implementation Issues:**
+- MutationObserver for dynamic content detection
+- Manual AJAX reinitialization
+- Hidden input fields for ISO format conversion
+- Complex event handling and form submission hacks
+
+**New DatePicker Component:**
+- Simple v-model binding (no hidden inputs)
+- Built-in ISO format handling (always stores YYYY-MM-DD)
+- French locale support via date-fns
+- Clean integration with Inertia's useForm
+- Only ~100 lines of code vs 345 lines
+- Test page available at `/test-datepicker`
+
+### Phase 2.2: Display Components ✅
+
+Created a comprehensive set of reusable display components:
+
+1. **StatusBadge** (`/Components/display/StatusBadge.vue`)
+   - Configurable status indicators with icons
+   - Supports task, matter, and event statuses
+   - Color-coded based on status type
+   - Tooltips for additional context
+
+2. **MatterCard** (`/Components/display/MatterCard.vue`)
+   - Compact matter information display
+   - Shows key details: UID, category, title, client, dates
+   - Action buttons for edit/view
+   - Count badges for tasks, events, actors
+   - Responsive design
+
+3. **ActorList** (`/Components/display/ActorList.vue`)
+   - Groups actors by role
+   - Drag-and-drop reordering within roles
+   - Inline editing capabilities
+   - Shows inherited actors in italic
+   - Special handling for client warnings
+
+4. **TaskList** (`/Components/display/TaskList.vue`)
+   - Filterable task display (All, Open, Overdue, Done)
+   - Color-coded based on urgency
+   - Checkbox for quick completion
+   - Shows financial information for renewals
+   - Inline editing support
+
+5. **EventTimeline** (`/Components/display/EventTimeline.vue`)
+   - Chronological event display with timeline UI
+   - Icons based on event type
+   - Links to public URLs (patents, etc.)
+   - Related matter connections
+   - Status events highlighted
+
+### Component Showcase
+
+Created a comprehensive showcase page at `/test-components` demonstrating:
+- All display components with sample data
+- DatePicker variations (single date, date range)
+- Status badge variations
+- Interactive examples
+
+### Key Technical Achievements:
+
+1. **Vue Composition API**: All components use `<script setup>` syntax
+2. **TypeScript-ready**: Props are properly typed
+3. **Tailwind Styling**: Consistent use of utility classes
+4. **Icon Library**: Integrated lucide-vue-next for consistent icons
+5. **Date Handling**: Standardized date formatting with date-fns
+6. **Inertia Integration**: Components work seamlessly with Inertia's router and forms
+
+### Benefits Over jQuery Implementation:
+
+1. **Simplicity**: No DOM manipulation, just reactive data
+2. **Maintainability**: Clear component boundaries
+3. **Reusability**: Components can be used anywhere
+4. **Performance**: Virtual DOM updates only what changes
+5. **Testing**: Easier to unit test isolated components
+
+### Next Steps for Phase 2:
+
+1. **Phase 2.3**: Build form components with useForm integration
+   - FormField wrapper
+   - AutocompleteInput replacement
+   - MatterForm, ActorForm, TaskForm
+   - Validation with Zod schemas
+
+2. **Phase 2.4**: Dialog system to replace Bootstrap modals
+   - Generic DialogWrapper
+   - FormDialog for inline editing
+   - ConfirmDialog for deletions
+   - Integration with useForm for submissions
+
+### Phase 2.5: Dialog System & Inline Editing ✅
+
+Successfully implemented a comprehensive dialog system and inline editing capabilities:
+
+**Dialog Component Renaming:**
+- Renamed all "Simple" prefix components for cleaner naming
+- `SimpleMatterDialog` → `MatterDialog`
+- `SimpleActorDialog` → `ActorDialog`
+- `SimpleTaskDialog` → `TaskDialog`
+- `SimpleConfirmDialog` → `ConfirmDialog`
+- Updated test page route from `/test-dialogs-simple` to `/test-dialogs`
+
+**Inline Editing Components:**
+
+1. **InlineEdit.vue** - Generic inline edit wrapper
+   - Supports text, select, and date input types
+   - Shows edit icon on hover
+   - Smooth transition between view/edit modes
+   - Keyboard shortcuts (Enter to save, Escape to cancel)
+   - Loading states and error handling
+
+2. **EditableField.vue** - Inertia-integrated field editor
+   - Wraps InlineEdit with useForm integration
+   - Automatic form submission to specified URLs
+   - Error display and validation
+   - Preserves scroll and state on updates
+   - Emits events for parent component updates
+
+**Enhanced Display Components:**
+
+1. **ActorList.vue**
+   - Added inline editing for name, company, email, phone
+   - Disabled editing for inherited actors
+   - New prop: `enableInlineEdit` and `updateUrl`
+   - Emits 'update' events when fields are saved
+
+2. **TaskList.vue**
+   - Inline editing for task details, due date, assigned user
+   - Date picker integration for due dates
+   - Real-time updates without page refresh
+   - Maintains task filtering and sorting
+
+3. **EventTimeline.vue**
+   - Inline editing for event dates and details
+   - Timeline visualization preserved during edits
+   - Consistent styling with other components
+
+**Technical Improvements:**
+- All components use modern Vue 3 Composition API
+- Removed jQuery dependencies
+- Fetch API already in use (no AJAX conversion needed)
+- Consistent event handling patterns
+- Proper TypeScript-ready prop definitions
+
+**Benefits:**
+- Reduced clicks - edit in place without dialogs
+- Better UX with instant feedback
+- Cleaner codebase without "Simple" prefixes
+- Reusable inline editing pattern
+- Seamless Inertia.js integration
+
+### Phase 2.5 Completion Summary
+
+✅ **All tasks completed successfully:**
+1. Renamed all dialog components (removed "Simple" prefix)
+2. Created InlineEdit.vue and EditableField.vue components
+3. Added inline editing to ActorList, TaskList, and EventTimeline
+4. Updated route from `/test-dialogs-simple` to `/test-dialogs`
+5. Verified AutocompleteInput already uses fetch API
+
+**Key Achievements:**
+- Clean component naming convention
+- Reusable inline editing system
+- Seamless Inertia.js integration
+- Modern Vue 3 Composition API usage
+- No jQuery dependencies
+
+**Test Pages Available:**
+- `/test-dialogs` - Dialog system showcase
+- `/test-components` - Display components with inline editing
+- `/test-datepicker` - Date picker functionality
+
+The UI refactoring is progressing well with Phase 2.5 complete. The inline editing feature significantly improves user experience by reducing the need for modal dialogs.
+
+## Phase 3: Page Migration - Core Features
+
+### Phase 3.3: Matter Management (In Progress)
+
+#### Matter Index Page ✅
+
+Successfully modernized the Matter listing page using the generic DataTable component with shadcn-vue for a clean, modern UI.
+
+**Created Components:**
+
+1. **Pages/Matter/Index.vue** - Modernized matter listing page
+   - Clean header with title and export button
+   - Filter panel in a Card component for better organization
+   - Active filter badges that can be clicked to remove
+   - Results count display
+   - DataTable integration with custom columns
+   - Custom pagination controls
+
+2. **Components/matter/MatterFilters.vue** - Advanced filter panel
+   - Toggle between Actor View and Status View using ToggleGroup
+   - Switch components for toggles (Show Containers, Show Mine, Include Dead)
+   - Grid layout for filter inputs
+   - DatePicker integration for date filters
+   - Debounced text inputs (500ms delay)
+   - Responsive design
+
+3. **New UI Components Created:**
+   - `ToggleGroup` and `ToggleGroupItem` - For view mode selection
+   - `Badge` - For filter badges and category display
+   - `Switch` - For toggle options
+
+**Key UI/UX Improvements:**
+- ✅ Filters moved to dedicated panel above table (cleaner layout)
+- ✅ Active filters shown as removable badges
+- ✅ Modern toggle components instead of radio buttons
+- ✅ Switch components for boolean options
+- ✅ Results count prominently displayed
+- ✅ Category badges with color coding
+- ✅ Status badges for matter status
+- ✅ Relative dates for recent items (e.g., "2 days ago")
+- ✅ Icons for filing/grant numbers
+- ✅ Tooltips for truncated text
+- ✅ Loading states during navigation
+- ✅ Responsive grid layout for filters
+
+**Controller Updates:**
+- Changed from `simplePaginate` to `paginate` to get total count
+- Maintained all existing filter functionality
+- Backward compatibility preserved
+
+#### Matter Search ✅
+
+The Matter Search functionality was already implemented and working:
+
+**Existing Components:**
+- `SearchModal.vue` - Full-featured search dialog in navigation
+- Advanced filters for category, status, and responsible person
+- Real-time search results display
+- Click-to-navigate functionality
+
+**Search Endpoint:**
+- `MatterController@search` - Returns JSON with filtered results
+- Supports text search across reference, title, and actors
+- Category and status filtering
+- Returns up to 50 results ordered by relevance
+
+**Integration:**
+- Search modal accessible from navigation bar
+- Keyboard shortcut support (could be added)
+- Results show matter reference, title, status, and client
+
+#### Matter Index Page ✅
+
+Successfully migrated the Matter listing page from Laravel Blade to Vue.js with Inertia.js.
+
+**Created Components:**
+
+1. **Pages/Matter/Index.vue** - Main matter listing page
+   - Filter buttons header (Show Containers, Actor/Status View, Show Mine, Include Dead)
+   - Export functionality
+   - Clear filters button
+   - Integrates with MatterDataTable component
+
+2. **Components/matter/MatterDataTable.vue** - Reusable data table component
+   - Dynamic columns based on Actor View / Status View toggle
+   - Sortable columns with visual indicators
+   - Inline filter inputs with debounced updates
+   - Pagination support
+   - Click-to-navigate rows
+   - Date formatting with date-fns
+
+**Controller Updates:**
+- Modified `MatterController@index` to return Inertia response when X-Inertia header is present
+- Maintains backward compatibility with Blade views
+- Passes all filters and pagination data to Vue component
+
+**Key Features Preserved:**
+- ✅ Dual view mode (Actor View / Status View)
+- ✅ All filter inputs with live updates
+- ✅ Column sorting with visual indicators
+- ✅ URL-based filtering for bookmarks
+- ✅ Show Containers toggle
+- ✅ Show Mine filter (for non-client users)
+- ✅ Include Dead matters option
+- ✅ Export to CSV functionality
+- ✅ Pagination with preserved filters
+
+**Technical Implementation:**
+- Uses Inertia router for seamless navigation
+- Debounced filter inputs (500ms delay)
+- Preserves state and scroll position during filter updates
+- Clean URL parameters (removes empty values)
+- Responsive design with Tailwind CSS
+
+**Usage:**
+Navigate to `/matter` to see the new Vue-based listing page. All existing functionality is preserved with improved performance and user experience.
+
+### Phase 3.1: Authentication Pages ✅
+
+Successfully migrated the authentication system from Laravel Blade templates to Vue.js components using Inertia.js and shadcn-vue.
+
+**Created Components:**
+
+1. **GuestLayout.vue** - Clean guest layout for auth pages
+   - Centered design with responsive breakpoints
+   - Company logo display support
+   - Flash message handling (success/error)
+   - Minimal, focused UI for authentication
+
+2. **Auth/Login.vue** - Modern login page
+   - Uses shadcn-vue Card and form components
+   - Username-based authentication (uses 'login' field)
+   - Remember Me functionality
+   - Form validation with error display
+   - Link to password reset (if enabled)
+
+3. **Auth/ForgotPassword.vue** - Password reset request
+   - Simple form to request password reset
+   - Username input (not email)
+   - Success message display
+   - Back to login link
+
+4. **Auth/ResetPassword.vue** - Password reset form
+   - Token-based password reset
+   - Password and confirmation fields
+   - Auto-fills username if provided
+   - Redirects to home on success
+
+**Controller Updates:**
+
+1. **LoginController**
+   - Added `showLoginForm()` for Inertia response
+   - Added `authenticated()` for proper redirects
+   - Maintains username-based auth (login field)
+
+2. **ForgotPasswordController**
+   - Added `showLinkRequestForm()` for Inertia
+   - Override `credentials()` to use 'login' field
+   - Custom `sendResetLinkResponse()` for status messages
+
+3. **ResetPasswordController**
+   - Added `showResetForm()` with token support
+   - Override `credentials()` to use 'login' field
+   - Custom `sendResetResponse()` with success flash
+
+**Technical Implementation:**
+- All forms use Inertia's `useForm` composable
+- Automatic CSRF protection via Inertia
+- Preserved all Laravel auth functionality
+- Flash messages handled via shared Inertia data
+- Responsive design with Tailwind CSS
+- Consistent with existing authentication flow
+
+**Key Features Preserved:**
+- Username-based authentication (not email)
+- Remember Me functionality
+- Password reset flow (if mail is configured)
+- Intended URL redirect after login
+- Guest/auth middleware configuration
+
+The authentication pages are now fully migrated to Vue.js while maintaining all existing functionality and improving the user experience with modern UI components.
+
+### Phase 3.2: Dashboard/Home Page ✅
+
+Successfully migrated the home/dashboard page from Laravel Blade to Vue.js with Inertia, fixing the login redirect issue in the process.
+
+**Created Components:**
+
+1. **Home.vue** - Main dashboard page
+   - Grid layout with left panel (categories/users) and right panel (tasks/renewals)
+   - Filter system with radio buttons (Everyone/User/Client)
+   - Client autocomplete integration
+   - Batch task/renewal clearing with date selection
+   - Real-time updates using Inertia router
+
+2. **CategoryStats.vue** - Categories statistics card
+   - Display matter counts per category
+   - Links to filtered matter views
+   - Quick create buttons for each category
+   - Permission-based UI (create buttons only for readwrite users)
+
+3. **UserTasksSummary.vue** - Users task overview
+   - Shows open tasks count per user
+   - Color-coded urgent dates (red for overdue, yellow for upcoming)
+   - Links to user-specific dashboard views
+   - Clean table layout with hover effects
+
+4. **TaskList.vue** - Dashboard-specific task list
+   - Dynamic loading based on filters
+   - Pagination support
+   - Checkbox selection for batch operations
+   - Color-coded rows for overdue/upcoming tasks
+   - Handles both HTML (current) and JSON (future) responses
+
+5. **RenewalList.vue** - Renewal tasks display
+   - Similar to TaskList but filtered for renewals
+   - Cost display support (when available)
+   - Batch selection and clearing
+   - Pagination support
+
+**Controller Updates:**
+
+1. **HomeController**
+   - Returns Inertia response with categories and task counts
+   - Handles filter parameters
+   - Updated clearTasks method with proper validation and JSON response
+
+2. **TaskController**
+   - Added JSON response support for AJAX requests
+   - Returns paginated data with related models
+   - Maintains backward compatibility with Blade views
+
+3. **HandleInertiaRequests**
+   - Added CSRF token to shared data for fetch requests
+
+**Key Features Implemented:**
+- ✅ Fixed login redirect issue (now properly redirects to dashboard)
+- ✅ Category statistics with create buttons
+- ✅ User tasks summary with urgency indicators
+- ✅ Task filtering (all/mine/client)
+- ✅ Client autocomplete for filtering
+- ✅ Batch task/renewal clearing
+- ✅ Real-time updates without page refresh
+- ✅ Permission-based UI elements
+- ✅ Responsive grid layout
+
+**Technical Improvements:**
+- No more vanilla JavaScript with DOM manipulation
+- Clean component architecture
+- Proper state management
+- Modern fetch API instead of jQuery AJAX
+- Loading states and error handling
+- Maintains all existing functionality
+
+The dashboard is now fully modernized with Vue.js components while preserving all functionality and improving user experience with instant updates and better visual feedback.
+
+### UI Improvements - Navbar & DataTable Implementation
+
+Successfully enhanced the Navigation component and implemented DataTable functionality:
+
+**Navigation Enhancement:**
+- Full menu structure restored with dropdowns (Matters, Tools, Tables)
+- Matter search functionality with field selection
+- Company logo display support
+- User dropdown with profile/logout
+- Permission-based menu visibility
+- Mobile responsive design
+
+**DataTable Implementation:**
+1. **Installed Dependencies:**
+   - @tanstack/vue-table for table functionality
+   - Created shadcn-vue table components (Table, TableBody, TableCell, etc.)
+   - Created DropdownMenu components for navigation
+
+2. **Built Reusable DataTable Component:**
+   - Supports sorting, pagination, and selection
+   - Custom column rendering with render functions
+   - Loading and empty states
+   - Row selection with checkboxes
+   - Configurable page sizes
+
+3. **Dashboard Refactoring:**
+   - **HomeController**: Now fetches tasks and renewals server-side
+   - **TaskList & RenewalList**: Converted to use DataTable component
+   - **Home.vue**: Receives pre-loaded data (no more client-side fetching)
+   - Eliminated loading delays by passing data during initial render
+
+**Benefits Achieved:**
+- **Performance**: No more client-side data fetching delays
+- **Consistency**: Reusable DataTable for all table needs
+- **UX**: Full navigation features restored with modern UI
+- **Maintainability**: Clean component architecture
+- **Accessibility**: Proper ARIA labels and keyboard navigation
+
+**Important Note**: Run `npm install` to install the new @tanstack/vue-table dependency before building assets.

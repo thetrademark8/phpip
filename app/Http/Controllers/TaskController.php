@@ -53,8 +53,13 @@ class TaskController extends Controller
 
         $query = $tasks->orderBy('due_date');
 
-        if ($request->wantsJson()) {
-            return response()->json($query->get());
+        // For AJAX/JSON requests, return paginated JSON data
+        if ($request->wantsJson() || $request->ajax()) {
+            $paginatedTasks = $query->with(['matter:id,uid', 'info:id,name,code'])
+                ->simplePaginate(18)
+                ->appends($request->input());
+            
+            return response()->json($paginatedTasks);
         }
 
         $tasks = $query->simplePaginate(18)

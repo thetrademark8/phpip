@@ -1,0 +1,529 @@
+<template>
+  <MainLayout :title="`Matter: ${matter.uid}`">
+    <div class="space-y-4">
+      <!-- Quick Actions Bar -->
+      <Card v-if="canWrite" class="bg-muted/50">
+        <CardContent class="p-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-sm font-medium">
+              <Zap class="h-4 w-4 text-warning" />
+              Quick Actions
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                @click="generateEmail"
+                title="Generate email"
+              >
+                <Mail class="mr-1 h-3 w-3" />
+                Email
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                @click="generateReport"
+                title="Generate report"
+              >
+                <FileText class="mr-1 h-3 w-3" />
+                Report
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                @click="exportMatter"
+                title="Export matter data"
+              >
+                <Download class="mr-1 h-3 w-3" />
+                Export
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                @click="shareMatter"
+                title="Share matter"
+              >
+                <Share2 class="mr-1 h-3 w-3" />
+                Share
+              </Button>
+              <Button
+                v-if="!matter.dead"
+                size="sm"
+                variant="outline"
+                @click="archiveMatter"
+                title="Archive matter"
+              >
+                <Archive class="mr-1 h-3 w-3" />
+                Archive
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Header Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <!-- Left Panel - Matter Info -->
+        <div class="lg:col-span-1">
+          <Card class="border-primary h-full">
+            <CardHeader class="bg-primary text-primary-foreground p-3">
+              <div class="flex items-center justify-between">
+                <Link
+                  :href="`/matter?Ref=${matter.caseref}`"
+                  target="_blank"
+                  :class="['text-primary-foreground font-bold text-lg hover:underline', matter.dead ? 'line-through' : '']"
+                  :title="'See family'"
+                >
+                  {{ matter.uid }}
+                </Link>
+                <span class="text-sm">({{ matter.category.category }})</span>
+              </div>
+              <div class="flex gap-2 mt-2">
+                <a
+                  v-if="sharePointLink || matter.caseref"
+                  :href="sharePointLink || `/matter?Ref=${matter.caseref}`"
+                  :title="sharePointLink ? 'Go to documents' : 'See family'"
+                  target="_blank"
+                  class="text-warning hover:text-warning/80"
+                >
+                  <FolderSymlink class="h-4 w-4" />
+                </a>
+                <Button
+                  v-if="canWrite"
+                  @click="showEditDialog = true"
+                  variant="ghost"
+                  size="icon"
+                  class="h-4 w-4 p-0 hover:bg-primary-foreground/10"
+                  title="Advanced matter edition"
+                >
+                  <Pencil class="h-4 w-4 text-primary-foreground" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent class="p-3">
+              <dl class="space-y-2 text-sm">
+                <div v-if="matter.container_id" class="flex">
+                  <dt class="font-medium w-24">Container:</dt>
+                  <dd>
+                    <Link :href="`/matter/${matter.container_id}`" class="text-primary hover:underline">
+                      {{ matter.container.uid }}
+                    </Link>
+                  </dd>
+                </div>
+                <div v-if="matter.parent_id" class="flex">
+                  <dt class="font-medium w-24">Parent:</dt>
+                  <dd>
+                    <Link :href="`/matter/${matter.parent_id}`" class="text-primary hover:underline">
+                      {{ matter.parent.uid }}
+                    </Link>
+                  </dd>
+                </div>
+                <div v-if="matter.alt_ref" class="flex">
+                  <dt class="font-medium w-24">Alt. ref:</dt>
+                  <dd>{{ matter.alt_ref }}</dd>
+                </div>
+                <div v-if="matter.expire_date" class="flex">
+                  <dt class="font-medium w-24">Expiry:</dt>
+                  <dd>{{ formatDate(matter.expire_date) }}</dd>
+                </div>
+              </dl>
+              <Alert class="mt-3 py-2">
+                <AlertDescription class="text-center">
+                  <strong>Responsible:</strong> {{ matter.responsible }}
+                </AlertDescription>
+              </Alert>
+              <div v-if="canWrite" class="mt-3">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  class="w-full"
+                  @click="showStatusInfoDialog = true"
+                >
+                  <Settings class="mr-1 h-3 w-3" />
+                  Status Info
+                </Button>
+              </div>
+            </CardContent>
+            <CardFooter v-if="canWrite" class="p-3">
+              <div class="grid gap-2 w-full">
+                <div class="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    class="flex-1"
+                    @click="createChild"
+                  >
+                    <GitBranch class="mr-1 h-3 w-3" />
+                    New Child
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    class="flex-1"
+                    @click="cloneMatter"
+                  >
+                    <Copy class="mr-1 h-3 w-3" />
+                    Clone
+                  </Button>
+                </div>
+                <Button
+                  v-if="matter.country_info?.goesnational"
+                  size="sm"
+                  variant="secondary"
+                  @click="enterNationalPhase"
+                  class="w-full"
+                >
+                  <Flag class="mr-1 h-3 w-3" />
+                  Nat. Phase
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
+        </div>
+
+        <!-- Middle Panel - Titles -->
+        <div class="lg:col-span-3">
+          <Card class="h-full">
+            <CardContent class="p-3">
+              <div v-for="(titleGroup, typeName) in titles" :key="typeName" class="mb-3">
+                <h4 class="font-semibold mb-1">{{ typeName }}</h4>
+                <div v-for="title in titleGroup" :key="title.id" class="mb-1">
+                  {{ title.value }}
+                </div>
+              </div>
+              <div v-if="canWrite" class="mt-3">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  @click="showTitleManagerDialog = true"
+                >
+                  <Settings class="mr-1 h-3 w-3" />
+                  Manage Titles
+                </Button>
+<!--                <Button-->
+<!--                  size="sm"-->
+<!--                  variant="outline"-->
+<!--                  @click="showClassifierDialog = true"-->
+<!--                  class="ml-2"-->
+<!--                >-->
+<!--                  <Settings class="mr-1 h-3 w-3" />-->
+<!--                  All Classifiers-->
+<!--                </Button>-->
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <!-- Right Panel - Image (if exists) -->
+        <div v-if="imageClassifier" class="lg:col-span-1">
+          <Card class="bg-secondary h-full">
+            <CardContent class="p-3">
+              <img
+                :src="`/classifier/${imageClassifier.id}/img`"
+                class="w-full h-auto max-h-40 object-contain"
+                alt="Matter image"
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Main Content Area with Tabs -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <!-- Actors Panel -->
+        <div class="lg:col-span-1">
+          <Card class="h-[600px] overflow-hidden">
+            <CardHeader class="bg-secondary text-secondary-foreground p-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold">Actors</h3>
+                <Button
+                  v-if="canWrite"
+                  variant="ghost"
+                  size="icon"
+                  class="h-6 w-6"
+                  @click="showActorManagerDialog = true"
+                >
+                  <Settings class="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent class="p-3 overflow-y-auto max-h-[calc(600px-60px)]">
+              <ActorList
+                :actors="matter.actors"
+                :matter-id="matter.id"
+                :container-id="matter.container_id"
+                :enable-inline-edit="false"
+                @update="handleActorUpdate"
+              />
+            </CardContent>
+          </Card>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="lg:col-span-3">
+          <Tabs v-model="activeTab" class="w-full">
+            <TabsList class="grid w-full grid-cols-6">
+              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="events">
+                Events
+                <Badge v-if="statusEvents.length" variant="secondary" class="ml-1">
+                  {{ statusEvents.length }}
+                </Badge>
+              </TabsTrigger>
+              <TabsTrigger value="tasks">
+                Tasks
+                <Badge v-if="matter.tasks_pending.length" variant="warning" class="ml-1">
+                  {{ matter.tasks_pending.length }}
+                </Badge>
+              </TabsTrigger>
+              <TabsTrigger value="renewals">
+                Renewals
+                <Badge v-if="matter.renewals_pending.length" variant="warning" class="ml-1">
+                  {{ matter.renewals_pending.length }}
+                </Badge>
+              </TabsTrigger>
+              <TabsTrigger value="notes">Notes</TabsTrigger>
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="summary" class="mt-4">
+              <SummaryTab
+                :matter="matter"
+                :classifiers="classifiers"
+                :related-matters="getRelatedMatters()"
+                :can-edit="canWrite"
+                @openStatusInfo="showStatusInfoDialog = true"
+                @openClassifiers="showClassifierDialog = true"
+              />
+            </TabsContent>
+
+            <TabsContent value="events" class="mt-4">
+              <EventsTab
+                :events="matter.events"
+                :matter-id="matter.id"
+                :matter="matter"
+                :enable-inline-edit="canWrite"
+              />
+            </TabsContent>
+
+            <TabsContent value="tasks" class="mt-4">
+              <TasksTab
+                :tasks="matter.tasks_pending"
+                :matter-id="matter.id"
+                :enable-inline-edit="canWrite"
+              />
+            </TabsContent>
+
+            <TabsContent value="renewals" class="mt-4">
+              <RenewalsTab
+                :renewals="matter.renewals_pending"
+                :matter-id="matter.id"
+              />
+            </TabsContent>
+
+            <TabsContent value="notes" class="mt-4">
+              <NotesTab
+                :notes="matter.notes"
+                :matter-id="matter.id"
+                :can-edit="canWrite"
+                @update="handleNotesUpdate"
+              />
+            </TabsContent>
+
+            <TabsContent value="activity" class="mt-4">
+              <ActivityFeed
+                :matter-id="matter.id"
+                :events="matter.events"
+                :tasks="matter.tasks_pending"
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dialogs -->
+    <MatterDialog
+      v-model:open="showEditDialog"
+      :matter="matter"
+      operation="edit"
+      @success="handleMatterUpdate"
+    />
+
+    <TitleManager
+      v-model:open="showTitleManagerDialog"
+      :matter="matter"
+      :titles="titles"
+      @success="handleTitleUpdate"
+    />
+
+    <MatterActorManager
+      v-model:open="showActorManagerDialog"
+      :matter="matter"
+      @success="handleActorUpdate"
+    />
+
+    <StatusInfoManager
+      v-model:open="showStatusInfoDialog"
+      :matter="matter"
+      :status-events="statusEvents"
+      @success="handleMatterUpdate"
+    />
+
+    <ClassifierManager
+      v-model:open="showClassifierDialog"
+      :matter="matter"
+      :classifiers="classifiers"
+      @success="handleClassifierUpdate"
+    />
+  </MainLayout>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
+import { format } from 'date-fns'
+import { 
+  FolderSymlink, 
+  Pencil, 
+  GitBranch, 
+  Copy, 
+  Flag, 
+  Plus,
+  Settings,
+  Mail,
+  FileText,
+  Download,
+  Share2,
+  Archive,
+  Zap
+} from 'lucide-vue-next'
+import MainLayout from '@/Layouts/MainLayout.vue'
+import { Card, CardContent, CardHeader, CardFooter } from '@/Components/ui/card'
+import { Button } from '@/Components/ui/button'
+import { Alert, AlertDescription } from '@/Components/ui/alert'
+import { Badge } from '@/Components/ui/badge'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/Components/ui/tabs'
+import ActorList from '@/Components/display/ActorList.vue'
+import MatterDialog from '@/Components/dialogs/MatterDialog.vue'
+import MatterActorManager from '@/Components/dialogs/MatterActorManager.vue'
+import TitleManager from '@/Components/dialogs/TitleManager.vue'
+import StatusInfoManager from '@/Components/dialogs/StatusInfoManager.vue'
+import ClassifierManager from '@/Components/dialogs/ClassifierManager.vue'
+
+// Import tab components (to be created)
+import SummaryTab from '@/Components/matter/tabs/SummaryTab.vue'
+import EventsTab from '@/Components/matter/tabs/EventsTab.vue'
+import TasksTab from '@/Components/matter/tabs/TasksTab.vue'
+import RenewalsTab from '@/Components/matter/tabs/RenewalsTab.vue'
+import NotesTab from '@/Components/matter/tabs/NotesTab.vue'
+import ActivityFeed from '@/Components/matter/ActivityFeed.vue'
+
+const props = defineProps({
+  matter: Object,
+  titles: Object,
+  classifiers: Object,
+  actors: Object,
+  statusEvents: Array,
+  sharePointLink: String,
+  canWrite: Boolean
+})
+
+// State
+const activeTab = ref('summary')
+const showEditDialog = ref(false)
+const showTitleManagerDialog = ref(false)
+const showActorManagerDialog = ref(false)
+const showStatusInfoDialog = ref(false)
+const showClassifierDialog = ref(false)
+
+// Computed
+const imageClassifier = computed(() => 
+  props.matter.classifiers?.find(c => c.type_code === 'IMG')
+)
+
+// Methods
+function formatDate(dateString) {
+  if (!dateString) return ''
+  return format(new Date(dateString), 'dd/MM/yyyy')
+}
+
+function getRelatedMatters() {
+  return {
+    family: props.matter.family || [],
+    priorityTo: props.matter.priority_to || []
+  }
+}
+
+function createChild() {
+  router.get(`/matter/create?matter_id=${props.matter.id}&operation=child`)
+}
+
+function cloneMatter() {
+  router.get(`/matter/create?matter_id=${props.matter.id}&operation=clone`)
+}
+
+function enterNationalPhase() {
+  router.get(`/matter/${props.matter.id}/createN`)
+}
+
+function handleMatterUpdate() {
+  showEditDialog.value = false
+  router.reload({ only: ['matter'] })
+}
+
+function handleTitleUpdate() {
+  router.reload({ only: ['titles'] })
+}
+
+function handleClassifierUpdate() {
+  router.reload({ only: ['classifiers', 'titles'] })
+}
+
+
+function handleActorUpdate() {
+  router.reload({ only: ['actors'] })
+}
+
+
+function handleNotesUpdate() {
+  router.reload({ only: ['matter'] })
+}
+
+// Quick Actions
+function generateEmail() {
+  // TODO: Implement email generation
+  alert('Email generation coming soon!')
+}
+
+function generateReport() {
+  // TODO: Implement report generation
+  alert('Report generation coming soon!')
+}
+
+function exportMatter() {
+  window.location.href = `/matter/${props.matter.id}/export`
+}
+
+function shareMatter() {
+  // TODO: Implement sharing functionality
+  alert('Sharing functionality coming soon!')
+}
+
+function archiveMatter() {
+  if (confirm('Are you sure you want to archive this matter?')) {
+    router.put(`/matter/${props.matter.id}`, {
+      dead: 1
+    }, {
+      onSuccess: () => {
+        router.reload()
+      }
+    })
+  }
+}
+</script>

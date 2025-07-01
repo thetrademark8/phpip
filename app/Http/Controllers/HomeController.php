@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Matter;
 use App\Models\Task;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Inertia\Inertia;
 
 class HomeController extends Controller
 {
@@ -22,7 +24,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index(Request $request)
     {
@@ -30,7 +32,116 @@ class HomeController extends Controller
         $categories = Matter::getCategoryMatterCount();
         $taskscount = Task::getUsersOpenTaskCount();
 
-        return view('home', compact('categories', 'taskscount'));
+        // Get filter parameters
+        $whatTasks = $request->input('what_tasks', 0);
+        $userDashboard = $request->input('user_dashboard', null);
+        $clientId = $request->input('client_id', null);
+
+        // Build tasks query (non-renewals)
+        $tasksQuery = Task::with(['info', 'matter.titles', 'matter.client'])
+            ->where('done', 0)
+            ->whereHas('matter', function (Builder $q) {
+                $q->where('dead', 0);
+            })
+            ->where('code', '!=', 'REN');
+        
+        // Apply filters for tasks
+        if ($whatTasks == 1) {
+            $tasksQuery->where('assigned_to', auth()->user()->login);
+        } elseif ($whatTasks == 2 && $clientId) {
+            $tasksQuery->whereHas('matter.client', function ($q) use ($clientId) {
+                $q->where('actor_id', $clientId);
+            });
+        } elseif ($whatTasks > 2) {
+            $tasksQuery->whereHas('matter.client', function ($q) use ($whatTasks) {
+                $q->where('actor_id', $whatTasks);
+            });
+        }
+
+        // Apply user dashboard filter
+        if ($userDashboard) {
+            $tasksQuery->where(function ($query) use ($userDashboard) {
+                $query->where('assigned_to', $userDashboard)
+                    ->orWhereHas('matter', function ($q) use ($userDashboard) {
+                        $q->where('responsible', $userDashboard);
+                    });
+            });
+        }
+
+        // Apply client filter for CLI users
+        if (auth()->user()->default_role == 'CLI' || empty(auth()->user()->default_role)) {
+            $tasksQuery->whereHas('matter.client', function ($q) {
+                $q->where('actor_id', auth()->user()->id);
+            });
+        }
+
+        // Fetch tasks with relationships
+        $tasks = $tasksQuery
+            ->with(['matter', 'info:code,name'])
+            ->orderBy('due_date')
+            ->take(50)
+            ->get();
+
+        // Build renewals query
+        $renewalsQuery = Task::with(['info', 'matter.titles', 'matter.client'])
+            ->where('done', 0)
+            ->whereHas('matter', function (Builder $q) {
+                $q->where('dead', 0);
+            })
+            ->where('code', 'REN');
+        
+        // Apply same filters for renewals
+        if ($whatTasks == 1) {
+            $renewalsQuery->where('assigned_to', auth()->user()->login);
+        } elseif ($whatTasks == 2 && $clientId) {
+            $renewalsQuery->whereHas('matter.client', function ($q) use ($clientId) {
+                $q->where('actor_id', $clientId);
+            });
+        } elseif ($whatTasks > 2) {
+            $renewalsQuery->whereHas('matter.client', function ($q) use ($whatTasks) {
+                $q->where('actor_id', $whatTasks);
+            });
+        }
+
+        if ($userDashboard) {
+            $renewalsQuery->where(function ($query) use ($userDashboard) {
+                $query->where('assigned_to', $userDashboard)
+                    ->orWhereHas('matter', function ($q) use ($userDashboard) {
+                        $q->where('responsible', $userDashboard);
+                    });
+            });
+        }
+
+        if (auth()->user()->default_role == 'CLI' || empty(auth()->user()->default_role)) {
+            $renewalsQuery->whereHas('matter.client', function ($q) {
+                $q->where('actor_id', auth()->user()->id);
+            });
+        }
+
+        // Fetch renewals with relationships
+        $renewals = $renewalsQuery
+            ->with(['matter', 'info:code,name'])
+            ->orderBy('due_date')
+            ->take(50)
+            ->get();
+
+        // Prepare filters for frontend
+        $filters = [
+            'what_tasks' => $whatTasks,
+            'user_dashboard' => $userDashboard,
+            'client_id' => $clientId,
+        ];
+
+        return Inertia::render('Home', [
+            'categories' => $categories,
+            'tasksCount' => $taskscount,
+            'tasks' => $tasks,
+            'renewals' => $renewals,
+            'filters' => $filters,
+            'permissions' => [
+                'canWrite' => auth()->user()->can('readwrite'),
+            ],
+        ]);
     }
 
     /**
@@ -38,12 +149,16 @@ class HomeController extends Controller
      */
     public function clearTasks(Request $request)
     {
-        $this->validate($request, [
-            'done_date' => 'bail|required',
+        $validated = $request->validate([
+            'done_date' => 'required|date',
+            'task_ids' => 'required|array',
+            'task_ids.*' => 'exists:task,id',
         ]);
+
         $tids = $request->task_ids;
         $done_date = Carbon::createFromFormat('Y-m-d', $request->done_date);
         $updated = 0;
+        
         foreach ($tids as $id) {
             $task = Task::find($id);
             $task->done_date = $done_date;
@@ -53,6 +168,11 @@ class HomeController extends Controller
             }
         }
 
-        return response()->json(['not_updated' => (count($tids) - $updated), 'errors' => '']);
+        return response()->json([
+            'success' => true,
+            'updated' => $updated,
+            'not_updated' => (count($tids) - $updated),
+            'message' => "$updated tasks cleared successfully"
+        ]);
     }
 }

@@ -22,6 +22,7 @@ use App\Models\Matter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,11 +38,43 @@ Route::middleware(['auth'])->group(function () {
         return inertia('Test');
     })->name('test.inertia');
     
+    // Test route for DatePicker
+    Route::get('/test-datepicker', function () {
+        return inertia('DatePickerTest');
+    })->name('test.datepicker');
+    
+    // Components showcase
+    Route::get('/test-components', function () {
+        return inertia('ComponentsShowcase');
+    })->name('test.components');
+    
+    // Forms test page
+    Route::get('/test-forms', function () {
+        return inertia('Test/Forms');
+    })->name('test.forms');
+    
+    // Dialog system test page
+    Route::get('/test-dialogs', function () {
+        return inertia('DialogTest');
+    })->name('test.dialogs');
+    
+    // Test form submission
+    Route::post('/test-date-submit', function () {
+        request()->validate([
+            'due_date' => 'nullable|date',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+        ]);
+        
+        return back()->with('success', 'Dates saved successfully!');
+    })->name('test.date.submit');
+    
     // Matter routes group
     Route::controller(MatterController::class)->prefix('matter')->name('matter.')->group(function () {
         Route::get('autocomplete', [AutocompleteController::class, 'matter'])->name('autocomplete');
         Route::get('new-caseref', [AutocompleteController::class, 'newCaseref'])->name('new-caseref');
         Route::post('search', [MatterSearchController::class, 'search'])->name('search');
+        Route::get('search', 'search')->name('search.ajax');
         Route::get('export', 'export')->name('export');
         Route::post('{matter}/mergeFile', 'mergeFile')->name('mergeFile');
         Route::get('{matter}/events', 'events')->name('events');
@@ -56,16 +89,27 @@ Route::middleware(['auth'])->group(function () {
         Route::post('storeFamily', 'storeFamily')->name('storeFamily');
     });
 
-    // Autocomplete routes - protected by readwrite middleware
+    // Nested matter routes for creating related records
+    Route::middleware('can:readwrite')->group(function () {
+        Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store'])->name('matter.actors.store');
+        Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store'])->name('matter.events.store');
+        Route::post('matter/{matter}/classifiers', [App\Http\Controllers\ClassifierController::class, 'store'])->name('matter.classifiers.store');
+    });
+
+    // Autocomplete routes - some are public for filtering, others require readwrite
+    // Public autocomplete routes (for filtering)
+    Route::get('status-event/autocomplete', [AutocompleteController::class, 'statusEventName']);
+    Route::get('category/autocomplete', [AutocompleteController::class, 'category']);
+    Route::get('actor/autocomplete/{create_option?}', [AutocompleteController::class, 'actor']);
+    
+    // Protected autocomplete routes - require readwrite permission
     Route::middleware('can:readwrite')->group(function () {
         Route::get('event-name/autocomplete/{is_task}', [AutocompleteController::class, 'eventName']);
         Route::get('classifier-type/autocomplete/{main_display}', [AutocompleteController::class, 'classifierType']);
         Route::get('user/autocomplete', [AutocompleteController::class, 'user']);
-        Route::get('actor/autocomplete/{create_option?}', [AutocompleteController::class, 'actor']);
         Route::get('role/autocomplete', [AutocompleteController::class, 'role']);
         Route::get('dbrole/autocomplete', [AutocompleteController::class, 'dbrole']);
         Route::get('country/autocomplete', [AutocompleteController::class, 'country']);
-        Route::get('category/autocomplete', [AutocompleteController::class, 'category']);
         Route::get('type/autocomplete', [AutocompleteController::class, 'type']);
         Route::get('template-category/autocomplete', [AutocompleteController::class, 'templateCategory']);
         Route::get('template-class/autocomplete', [AutocompleteController::class, 'templateClass']);
@@ -113,6 +157,11 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('can:except_client')->group(function () {
         Route::post('matter/clear-tasks', [HomeController::class, 'clearTasks']);
         Route::get('matter/{parent_matter}/createN', fn (Matter $parent_matter) => view('matter.createN', compact('parent_matter')));
+        
+        // Nested routes for matter relationships
+        Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store']);
+        Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store']);
+        
         Route::apiResource('event', App\Http\Controllers\EventController::class);
         Route::resource('category', App\Http\Controllers\CategoryController::class);
         Route::resource('classifier_type', App\Http\Controllers\ClassifierTypeController::class);

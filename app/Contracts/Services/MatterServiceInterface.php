@@ -4,6 +4,7 @@ namespace App\Contracts\Services;
 
 use App\Models\Matter;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface MatterServiceInterface
 {
@@ -48,4 +49,14 @@ interface MatterServiceInterface
      * @return string|null ISO date format
      */
     public function calculateRenewalDeadline(Matter $matter): ?string;
+
+    /**
+     * Search matters with filters and pagination
+     */
+    public function searchMatters(array $filters, array $options = []): LengthAwarePaginator;
+
+    /**
+     * Export matters based on filters
+     */
+    public function exportMatters(array $filters, array $options = []): Collection;
 }
