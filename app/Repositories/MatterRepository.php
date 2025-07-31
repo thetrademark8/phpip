@@ -3,13 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\Matter;
+use App\Repositories\Contracts\MatterRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class MatterRepository
+class MatterRepository implements MatterRepositoryInterface
 {
     /**
      * Create a new matter
@@ -369,5 +370,121 @@ class MatterRepository
             'GrtNo' => 'grt.detail',
             default => 'matter.id'
         };
+    }
+
+    /**
+     * Find a matter by ID
+     */
+    public function find(int $id): ?Matter
+    {
+        return Matter::find($id);
+    }
+
+    /**
+     * Find matter with related data for renewal
+     */
+    public function findWithRenewalData(int $id): ?Matter
+    {
+        return Matter::with([
+            'events' => function($query) {
+                $query->whereHas('tasks', function($q) {
+                    $q->where('code', 'REN');
+                });
+            },
+            'classifiers' => function($query) {
+                $query->whereIn('type_code', ['TIT', 'TITOF']);
+            },
+            'actors' => function($query) {
+                $query->whereIn('role_code', ['CLI', 'APP', 'OWN']);
+            }
+        ])->find($id);
+    }
+
+    /**
+     * Find multiple matters by IDs
+     */
+    public function findByIds(array $ids): Collection
+    {
+        return Matter::whereIn('id', $ids)->get();
+    }
+
+    /**
+     * Get matter's current annuity
+     */
+    public function getCurrentAnnuity(int $matterId): ?int
+    {
+        $lastRenewal = Matter::find($matterId)
+            ->events()
+            ->whereHas('tasks', function($query) {
+                $query->where('code', 'REN')
+                    ->where('done', 1);
+            })
+            ->orderByDesc('event_date')
+            ->first();
+        
+        if ($lastRenewal && $lastRenewal->tasks->first()) {
+            $detail = json_decode($lastRenewal->tasks->first()->detail, true);
+            return isset($detail['en']) ? (int) $detail['en'] : null;
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get matter's applicants
+     */
+    public function getApplicants(int $matterId): Collection
+    {
+        $matter = Matter::find($matterId);
+        if (!$matter) {
+            return collect();
+        }
+        
+        return $matter->actors()
+            ->where('role_code', 'APP')
+            ->get();
+    }
+
+    /**
+     * Get matter's owner
+     */
+    public function getOwner(int $matterId)
+    {
+        $matter = Matter::find($matterId);
+        if (!$matter) {
+            return null;
+        }
+        
+        return $matter->actors()
+            ->where('role_code', 'OWN')
+            ->first();
+    }
+
+    /**
+     * Update matter's responsible
+     */
+    public function updateResponsible(int $matterId, string $responsible): bool
+    {
+        return Matter::where('id', $matterId)
+            ->update(['responsible' => $responsible]) > 0;
+    }
+
+    /**
+     * Get matters by client
+     */
+    public function getByClient(int $clientId): Collection
+    {
+        return Matter::whereHas('actors', function($query) use ($clientId) {
+            $query->where('actor_id', $clientId)
+                ->where('role_code', 'CLI');
+        })->get();
+    }
+
+    /**
+     * Get active matters count
+     */
+    public function getActiveCount(): int
+    {
+        return Matter::where('dead', 0)->count();
     }
 }
