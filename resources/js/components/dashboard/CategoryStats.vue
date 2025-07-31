@@ -1,67 +1,70 @@
 <template>
-  <Card class="border-info">
-    <CardHeader class="bg-info text-white p-2">
-      <div class="flex items-center justify-between">
-        <CardTitle class="text-lg">Categories</CardTitle>
-        <Button 
-          v-if="permissions.canWrite"
-          size="sm"
-          variant="primary"
-          @click="openCreateMatter()"
-        >
-          Create matter
-        </Button>
-      </div>
+  <Card>
+    <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardTitle>{{ $t('dashboard.categories.title') }}</CardTitle>
+      <Button 
+        v-if="permissions.canWrite"
+        size="sm"
+        @click="openCreateMatter()"
+      >
+        <Plus class="h-4 w-4 mr-2" />
+        {{ $t('dashboard.categories.create_matter') }}
+      </Button>
     </CardHeader>
-    <CardContent class="p-0 max-h-[350px] overflow-auto">
-      <table class="w-full">
-        <thead class="sticky top-0 bg-background">
-          <tr class="border-b">
-            <th class="text-left p-2"></th>
-            <th class="text-left p-2">Count</th>
-            <th class="p-2" v-if="permissions.canWrite">
-              <span class="float-right text-muted-foreground">New</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr 
-            v-for="category in categories" 
-            :key="category.code"
-            class="border-b hover:bg-accent group"
-          >
-            <td class="p-2">
+    <CardContent class="pt-4">
+      <div class="space-y-4">
+        <div 
+          v-for="category in categoriesWithProgress" 
+          :key="category.code"
+          class="space-y-2"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <component 
+                :is="getCategoryIcon(category.code)" 
+                class="h-4 w-4 text-muted-foreground" 
+              />
               <Link 
                 :href="`/matter?Cat=${category.code}`"
-                class="text-primary hover:underline"
+                class="text-sm font-medium hover:underline"
               >
-                {{ category.category }}
+                {{ translated(category.category) }}
               </Link>
-            </td>
-            <td class="p-2">{{ category.total }}</td>
-            <td class="p-2" v-if="permissions.canWrite">
+              <Badge v-if="category.new > 0" variant="secondary" class="text-xs">
+                {{ category.new }} {{ $t('dashboard.categories.new') }}
+              </Badge>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-muted-foreground">{{ category.total }}</span>
               <Button
+                v-if="permissions.canWrite"
                 size="icon"
                 variant="ghost"
-                class="h-6 w-6 float-right opacity-0 group-hover:opacity-100 transition-opacity"
+                class="h-6 w-6"
                 @click="openCreateMatter(category.code)"
                 :title="`Create ${category.category}`"
               >
-                <Plus class="h-4 w-4" />
+                <Plus class="h-3 w-3" />
               </Button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </div>
+          <Progress :value="category.percentage" class="h-2" />
+        </div>
+      </div>
     </CardContent>
   </Card>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import { Plus } from 'lucide-vue-next'
+import { Plus, FileText, Shield, Scale, Briefcase } from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
+import { Badge } from '@/Components/ui/badge'
+import { Progress } from '@/Components/ui/progress'
+import {translate} from "@intlify/core-base";
+import {useTranslatedField} from "@/composables/useTranslation.js";
 
 const props = defineProps({
   categories: {
@@ -74,7 +77,35 @@ const props = defineProps({
   }
 })
 
+const { translated } = useTranslatedField()
+
 const emit = defineEmits(['openCreateMatter'])
+
+// Calculate total matters for percentage
+const totalMatters = computed(() => {
+  return props.categories.reduce((sum, cat) => sum + cat.total, 0)
+})
+
+// Add progress percentage and new matters count to categories
+const categoriesWithProgress = computed(() => {
+  console.log(props.categories)
+  return props.categories.map(category => ({
+    ...category,
+    percentage: totalMatters.value > 0 ? (category.total / totalMatters.value) * 100 : 0,
+  }))
+})
+
+// Map category codes to icons
+const getCategoryIcon = (code) => {
+  const iconMap = {
+    'PAT': FileText,
+    'TM': Shield,
+    'DES': Briefcase,
+    'DOM': Scale,
+    // Add more mappings as needed
+  }
+  return iconMap[code] || FileText
+}
 
 const openCreateMatter = (categoryCode = null) => {
   emit('openCreateMatter', categoryCode)

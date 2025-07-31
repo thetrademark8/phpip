@@ -5,7 +5,7 @@
       :loading="false"
       :selectable="permissions.canWrite"
       :show-pagination="false"
-      :empty-message="'No tasks found'"
+      :empty-message="t('dashboard.tasks.no_tasks_found')"
       :get-row-id="(row) => row.id"
       :get-row-class="getRowClass"
       @update:selected="handleSelection"
@@ -19,6 +19,8 @@ import {format, parseISO, isPast, isBefore, addDays, formatDistanceToNow} from '
 import {CalendarDays, Clock, AlertCircle} from 'lucide-vue-next'
 import DataTable from '@/Components/ui/DataTable.vue'
 import StatusBadge from '@/Components/display/StatusBadge.vue'
+import { useI18n } from 'vue-i18n'
+import {useTranslations} from "@/composables/useTranslations.js";
 
 const props = defineProps({
   tasks: {
@@ -33,17 +35,19 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selected'])
 
+const { t } = useTranslations()
+
 // Table columns definition
 const columns = [
   {
     accessorKey: 'matter.uid',
-    header: 'Matter',
+    header: t('dashboard.table.matter'),
     cell: ({row}) => h('div', {class: 'flex flex-col gap-1'}, [
       h(Link, {
         href: route('matter.show', {matter: row.original.matter.id}),
         class: 'text-primary hover:underline text-sm font-medium'
       }, row.original.matter?.uid || `#${row.original.matter_id}`),
-      h('span', {class: 'text-xs text-muted-foreground'}, `ID: ${row.original.id}`)
+      h('span', {class: 'text-xs text-muted-foreground'}, `${t('dashboard.table.id')}: ${row.original.id}`)
     ]),
     meta: {
       headerClass: 'w-[120px]',
@@ -51,7 +55,7 @@ const columns = [
   },
   {
     accessorKey: 'info.name',
-    header: 'Task Details',
+    header: t('dashboard.tasks.header'),
     cell: ({row}) => {
       const task = row.original
       const status = getTaskStatus(task)
@@ -66,7 +70,7 @@ const columns = [
         task.detail && h('p', {class: 'text-sm text-muted-foreground'}, task.detail),
         // Assigned to
         task.assigned_to && h('div', {class: 'flex items-center gap-1 text-xs text-muted-foreground'}, [
-          h('span', 'Assigned to:'),
+          h('span', `${t('dashboard.tasks.assigned_to')}:`),
           h('span', {class: 'font-medium'}, task.assigned_to)
         ])
       ])
@@ -74,10 +78,10 @@ const columns = [
   },
   {
     accessorKey: 'due_date',
-    header: 'Due Date',
+    header: t('dashboard.tasks.due_date'),
     cell: ({row}) => {
       const date = row.original.due_date
-      if (!date) return h('span', {class: 'text-sm text-muted-foreground'}, 'No due date')
+      if (!date) return h('span', {class: 'text-sm text-muted-foreground'}, t('dashboard.table.no_due_date'))
 
       const overdue = isOverdue(date)
       const dueSoon = isDueSoon(date) && !overdue
@@ -122,10 +126,10 @@ const getRelativeTime = (date) => {
     const now = new Date()
     const daysDiff = Math.floor((parsedDate - now) / (1000 * 60 * 60 * 24))
 
-    if (daysDiff === 0) return 'Due today'
-    if (daysDiff === 1) return 'Due tomorrow'
-    if (daysDiff === -1) return 'Due yesterday'
-    if (daysDiff > 0 && daysDiff <= 7) return `Due in ${daysDiff} days`
+    if (daysDiff === 0) return t('dashboard.table.due_today')
+    if (daysDiff === 1) return t('dashboard.table.due_tomorrow')
+    if (daysDiff === -1) return t('dashboard.table.due_yesterday')
+    if (daysDiff > 0 && daysDiff <= 7) return t('dashboard.table.due_in_days', daysDiff, { days: daysDiff })
     if (daysDiff < 0) return formatDistanceToNow(parsedDate, {addSuffix: true})
 
     return ''

@@ -5,7 +5,7 @@
     :loading="false"
     :selectable="permissions.canWrite"
     :show-pagination="false"
-    :empty-message="'No renewals found'"
+    :empty-message="t('dashboard.renewals.no_renewals_found')"
     :get-row-id="(row) => row.id"
     :get-row-class="getRowClass"
     @update:selected="handleSelection"
@@ -19,6 +19,7 @@ import { format, parseISO, isPast, isBefore, addDays, formatDistanceToNow, isTod
 import { CalendarDays, Clock, AlertCircle, DollarSign } from 'lucide-vue-next'
 import DataTable from '@/Components/ui/DataTable.vue'
 import StatusBadge from '@/Components/display/StatusBadge.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   renewals: {
@@ -33,17 +34,19 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selected'])
 
+const { t } = useI18n()
+
 // Table columns definition
 const columns = [
   {
     accessorKey: 'matter.uid',
-    header: 'Matter',
+    header: t('dashboard.table.matter'),
     cell: ({ row }) => h('div', { class: 'flex flex-col gap-1' }, [
       h(Link, {
         href: `/matter/${row.original.matter_id}`,
         class: 'text-primary hover:underline text-sm font-medium'
       }, row.original.matter?.uid || `#${row.original.matter_id}`),
-      h('span', { class: 'text-xs text-muted-foreground' }, `Renewal ID: ${row.original.id}`)
+      h('span', { class: 'text-xs text-muted-foreground' }, `${t('dashboard.renewals.renewal_id')}: ${row.original.id}`)
     ]),
     meta: {
       headerClass: 'w-[130px]',
@@ -51,14 +54,14 @@ const columns = [
   },
   {
     accessorKey: 'info.name',
-    header: 'Renewal Details',
+    header: t('dashboard.renewals.header'),
     cell: ({ row }) => {
       const renewal = row.original
       
       return h('div', { class: 'space-y-2 py-1' }, [
         // Renewal name and badge
         h('div', { class: 'flex items-center gap-2' }, [
-          h('span', { class: 'font-medium' }, renewal.info?.name || renewal.code || 'Renewal'),
+          h('span', { class: 'font-medium' }, renewal.info?.name || renewal.code || t('dashboard.renewals.renewal')),
           h(StatusBadge, { status: 'open', type: 'renewal' })
         ]),
         // Renewal detail if exists
@@ -73,10 +76,10 @@ const columns = [
   },
   {
     accessorKey: 'due_date',
-    header: 'Renewal Due',
+    header: t('dashboard.renewals.due_date'),
     cell: ({ row }) => {
       const date = row.original.due_date
-      if (!date) return h('span', { class: 'text-sm text-muted-foreground' }, 'No due date')
+      if (!date) return h('span', { class: 'text-sm text-muted-foreground' }, t('dashboard.table.no_due_date'))
       
       const overdue = isOverdue(date)
       const dueSoon = isDueSoon(date) && !overdue
