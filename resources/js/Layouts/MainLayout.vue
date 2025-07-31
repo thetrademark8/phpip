@@ -22,11 +22,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import Navigation from '@/Components/Navigation.vue'
 import Footer from '@/Components/Footer.vue'
-import { Toaster } from 'vue-sonner'
+import { Toaster, toast } from 'vue-sonner'
 import MatterDialog from '@/Components/dialogs/MatterDialog.vue'
 
 // Matter Dialog state
@@ -71,4 +71,28 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('openCreateMatterWithCategory', handleOpenCreateMatterWithCategory)
 })
+
+// Get page instance
+const page = usePage()
+
+// Watch for flash messages and display toasts
+watch(
+  () => page.props.flash,
+  (flash) => {
+    console.log(flash)
+    if (flash?.success) {
+      toast.success(flash.success)
+    }
+    if (flash?.error) {
+      toast.error(flash.error)
+    }
+    if (flash?.warning) {
+      toast.warning(flash.warning)
+    }
+    if (flash?.info) {
+      toast.info(flash.info)
+    }
+  },
+  { immediate: true, deep: true }
+)
 </script>

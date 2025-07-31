@@ -132,16 +132,85 @@ class HomeController extends Controller
             'client_id' => $clientId,
         ];
 
+        // Calculate metrics for dashboard
+        $metrics = $this->calculateDashboardMetrics();
+
         return Inertia::render('Home', [
             'categories' => $categories,
             'tasksCount' => $taskscount,
             'tasks' => $tasks,
             'renewals' => $renewals,
             'filters' => $filters,
+            'metrics' => $metrics,
             'permissions' => [
                 'canWrite' => auth()->user()->can('readwrite'),
             ],
         ]);
+    }
+
+    /**
+     * Calculate dashboard metrics.
+     */
+    private function calculateDashboardMetrics()
+    {
+        $now = Carbon::now();
+        $lastMonth = $now->copy()->subMonth();
+        
+        // Total active matters
+        $totalActiveMatters = Matter::where('dead', 0)->count();
+        
+        // Active matters change from last month
+        $lastMonthActiveMatters = Matter::where('dead', 0)
+            ->where('created_at', '<=', $lastMonth)
+            ->count();
+        
+        $activeMattersChange = $lastMonthActiveMatters > 0 
+            ? round((($totalActiveMatters - $lastMonthActiveMatters) / $lastMonthActiveMatters) * 100, 1)
+            : 0;
+        
+        // Overdue tasks
+        $overdueTasks = Task::where('done', 0)
+            ->where('due_date', '<', $now)
+            ->whereHas('matter', function (Builder $q) {
+                $q->where('dead', 0);
+            })
+            ->count();
+        
+        // Upcoming renewals (next 30 days)
+        $upcomingRenewals = Task::where('done', 0)
+            ->where('code', 'REN')
+            ->whereBetween('due_date', [$now, $now->copy()->addDays(30)])
+            ->whereHas('matter', function (Builder $q) {
+                $q->where('dead', 0);
+            })
+            ->count();
+        
+        // Task completion rate (last 30 days)
+        $completedTasks = Task::where('done', 1)
+            ->where('done_date', '>=', $now->copy()->subDays(30))
+            ->count();
+        
+        $totalTasksLast30Days = Task::where(function ($query) use ($now) {
+                $query->where('done', 1)
+                    ->where('done_date', '>=', $now->copy()->subDays(30));
+            })
+            ->orWhere(function ($query) use ($now) {
+                $query->where('done', 0)
+                    ->where('created_at', '>=', $now->copy()->subDays(30));
+            })
+            ->count();
+        
+        $taskCompletionRate = $totalTasksLast30Days > 0 
+            ? round(($completedTasks / $totalTasksLast30Days) * 100)
+            : 0;
+        
+        return [
+            'totalActiveMatters' => $totalActiveMatters,
+            'activeMattersChange' => $activeMattersChange,
+            'overdueTasks' => $overdueTasks,
+            'upcomingRenewals' => $upcomingRenewals,
+            'taskCompletionRate' => $taskCompletionRate,
+        ];
     }
 
     /**

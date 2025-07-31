@@ -1,5 +1,22 @@
 <template>
   <MainLayout>
+    <!-- Dashboard Metrics -->
+    <div class="mb-6">
+      <DashboardMetrics :metrics="metrics || {}" />
+    </div>
+
+    <!-- User Dashboard Alert -->
+    <Alert v-if="filters.user_dashboard" class="mb-6">
+      <User class="h-4 w-4" />
+      <AlertTitle>{{ $t('dashboard.viewing_user_dashboard') }}</AlertTitle>
+      <AlertDescription class="flex items-center justify-between">
+        <span>{{ $t('dashboard.viewing_dashboard_of', { user: filters.user_dashboard }) }}</span>
+        <Button @click="clearUserFilter" variant="link" size="sm" class="p-0 h-auto">
+          {{ $t('dashboard.back_to_general') }}
+        </Button>
+      </AlertDescription>
+    </Alert>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Left Panel -->
       <div class="lg:col-span-1 space-y-4">
@@ -20,7 +37,7 @@
         <Card>
           <CardHeader>
             <div class="flex flex-wrap items-center justify-between gap-4">
-              <CardTitle>Open tasks</CardTitle>
+              <CardTitle>{{ $t('Open tasks') }}</CardTitle>
               
               <div class="flex items-center gap-2">
                 <!-- Task Filters -->
@@ -31,7 +48,7 @@
                 >
                   <div class="flex items-center">
                     <RadioGroupItem value="0" id="alltasks" />
-                    <Label for="alltasks" class="ml-2 cursor-pointer">Everyone</Label>
+                    <Label for="alltasks" class="ml-2 cursor-pointer">{{ $t('Everyone') }}</Label>
                   </div>
                   <div v-if="!filters.user_dashboard" class="flex items-center">
                     <RadioGroupItem value="1" id="mytasks" />
@@ -39,7 +56,7 @@
                   </div>
                   <div class="flex items-center">
                     <RadioGroupItem value="2" id="clientTasks" />
-                    <Label for="clientTasks" class="ml-2 cursor-pointer">Client</Label>
+                    <Label for="clientTasks" class="ml-2 cursor-pointer">{{ $t('Client') }}</Label>
                   </div>
                 </RadioGroup>
 
@@ -49,7 +66,7 @@
                     v-model="selectedClientId"
                     v-model:display-model-value="selectedClientName"
                     endpoint="/actor/autocomplete"
-                    placeholder="Select Client"
+                    :placeholder="$t('Select Client')"
                     @selected="onClientSelected"
                   />
                 </div>
@@ -62,11 +79,11 @@
                     @click="clearSelectedTasks"
                     :disabled="selectedTaskIds.length === 0"
                   >
-                    Clear selected on
+                    {{ $t('Clear selected on') }}
                   </Button>
                   <DatePicker
                     v-model="taskClearDate"
-                    placeholder="Select date"
+                    :placeholder="$t('Select date')"
                     button-class="w-auto"
                   />
                 </div>
@@ -86,7 +103,7 @@
         <Card>
           <CardHeader>
             <div class="flex items-center justify-between">
-              <CardTitle>Open renewals</CardTitle>
+              <CardTitle>{{ $t('Open renewals') }}</CardTitle>
               
               <!-- Clear Renewals Button -->
               <div v-if="permissions.canWrite" class="flex items-center gap-2">
@@ -96,11 +113,11 @@
                   @click="clearSelectedRenewals"
                   :disabled="selectedRenewalIds.length === 0"
                 >
-                  Clear selected on
+                  {{ $t('Clear selected on') }}
                 </Button>
                 <DatePicker
                   v-model="renewalClearDate"
-                  placeholder="Select date"
+                  :placeholder="$t('Select date')"
                   button-class="w-auto"
                 />
               </div>
@@ -127,8 +144,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
 import { Label } from '@/Components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/Components/ui/radio-group'
+import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert'
+import { User } from 'lucide-vue-next'
 import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
 import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+import DashboardMetrics from '@/Components/dashboard/DashboardMetrics.vue'
 import CategoryStats from '@/Components/dashboard/CategoryStats.vue'
 import UserTasksSummary from '@/Components/dashboard/UserTasksSummary.vue'
 import DashboardTaskList from '@/Components/dashboard/TaskList.vue'
@@ -140,6 +160,7 @@ const props = defineProps({
   tasks: Array,
   renewals: Array,
   filters: Object,
+  metrics: Object,
   permissions: Object
 })
 
@@ -247,6 +268,14 @@ const clearSelectedRenewals = async () => {
     console.error('Error:', error)
     alert('Error clearing renewals')
   }
+}
+
+// Clear user filter and return to general dashboard
+const clearUserFilter = () => {
+  router.get('/home', {
+    what_tasks: taskFilter.value,
+    client_id: selectedClientId.value
+  }, { preserveState: true })
 }
 
 // Handle opening the create matter dialog from CategoryStats

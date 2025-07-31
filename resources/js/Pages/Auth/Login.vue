@@ -8,7 +8,7 @@
         <form @submit.prevent="submit" class="space-y-6">
           <!-- Username Field -->
           <FormField>
-            <Label for="login">User name</Label>
+            <Label for="login" class="mb-2">User name</Label>
             <Input
               id="login"
               v-model="form.login"
@@ -25,7 +25,7 @@
 
           <!-- Password Field -->
           <FormField>
-            <Label for="password">Password</Label>
+            <Label for="password" class="mb-2">Password</Label>
             <Input
               id="password"
               v-model="form.password"

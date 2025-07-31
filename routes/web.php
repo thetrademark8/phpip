@@ -125,6 +125,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('call/{send}', 'firstcall');
         Route::post('reminder', 'remindercall');
         Route::post('invoice/{toinvoice}', 'invoice');
+        Route::post('renewalsInvoiced', 'renewalsInvoiced');
         Route::post('topay', 'topay');
         Route::post('paid', 'paid');
         Route::post('done', 'done');
@@ -163,11 +164,27 @@ Route::middleware(['auth'])->group(function () {
         Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store']);
         
         Route::apiResource('event', App\Http\Controllers\EventController::class);
+        Route::get('category/autocomplete', [App\Http\Controllers\CategoryController::class, 'autocomplete']);
         Route::resource('category', App\Http\Controllers\CategoryController::class);
         Route::resource('classifier_type', App\Http\Controllers\ClassifierTypeController::class);
+        Route::get('role/autocomplete', [App\Http\Controllers\RoleController::class, 'autocomplete']);
         Route::resource('role', App\Http\Controllers\RoleController::class);
         Route::resource('type', App\Http\Controllers\MatterTypeController::class);
+        Route::get('default_actor/autocomplete', [App\Http\Controllers\DefaultActorController::class, 'autocomplete']);
         Route::resource('default_actor', App\Http\Controllers\DefaultActorController::class);
+        Route::get('country/autocomplete', function (Illuminate\Http\Request $request) {
+            $query = $request->get('query', '');
+            $countries = App\Models\Country::where('name', 'like', "%{$query}%")
+                ->take(10)
+                ->get()
+                ->map(function ($country) {
+                    return [
+                        'id' => $country->iso,
+                        'name' => $country->name,
+                    ];
+                });
+            return response()->json($countries);
+        });
         Route::get('actor/{actor}/usedin', [App\Http\Controllers\ActorPivotController::class, 'usedIn']);
         Route::resource('eventname', App\Http\Controllers\EventNameController::class);
         Route::resource('rule', App\Http\Controllers\RuleController::class);

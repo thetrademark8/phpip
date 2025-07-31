@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\PermissionHelper;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -58,13 +59,12 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user() ? [
+                'user' => $request->user() ? array_merge([
                     'id' => $request->user()->id,
                     'login' => $request->user()->login,
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
-                    'role' => $request->user()->default_role,
-                ] : null,
+                ], PermissionHelper::getUserPermissions($request->user())) : null,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

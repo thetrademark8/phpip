@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Helpers\PermissionHelper;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -26,11 +27,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrapFive();
-        Gate::define('client', fn ($user) => $user->default_role === 'CLI' || empty($user->default_role));
-        Gate::define('except_client', fn ($user) => $user->default_role !== 'CLI' && ! empty($user->default_role));
-        Gate::define('admin', fn ($user) => $user->default_role === 'DBA');
-        Gate::define('readwrite', fn ($user) => in_array($user->default_role, ['DBA', 'DBRW']));
-        Gate::define('readonly', fn ($user) => in_array($user->default_role, ['DBA', 'DBRW', 'DBRO']));
+        
+        // Use PermissionHelper to define gates
+        Gate::define('client', fn ($user) => PermissionHelper::isClient($user));
+        Gate::define('except_client', fn ($user) => PermissionHelper::isNotClient($user));
+        Gate::define('admin', fn ($user) => PermissionHelper::isAdmin($user));
+        Gate::define('readwrite', fn ($user) => PermissionHelper::canReadWrite($user));
+        Gate::define('readonly', fn ($user) => PermissionHelper::canReadOnly($user));
 
         // Add query macro for case-insensitive JSON column queries
         \Illuminate\Database\Query\Builder::macro('whereJsonLike', function ($column, $value, $locale = null) {
