@@ -11,7 +11,7 @@
       <form @submit.prevent="handleSubmit">
         <div class="space-y-4">
           <div class="space-y-2">
-            <Label>{{ $t('Task') }}</Label>
+            <Label class="mb-2">{{ $t('Task') }}</Label>
             <div class="text-sm text-muted-foreground">
               {{ task?.info?.name || task?.code }}
               <div v-if="task?.detail" class="mt-1">{{ task.detail }}</div>
@@ -19,7 +19,7 @@
           </div>
           
           <div class="space-y-2">
-            <Label for="done_date">{{ $t('Completion Date') }}</Label>
+            <Label for="done_date" class="mb-2">{{ $t('Completion Date') }}</Label>
             <DateInput
               id="done_date"
               v-model="form.done_date"

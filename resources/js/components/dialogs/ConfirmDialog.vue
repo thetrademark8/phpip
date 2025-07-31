@@ -1,5 +1,5 @@
 <template>
-  <Dialog :open="true" @close="$emit('cancel')">
+  <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{{ title || 'Confirm Action' }}</DialogTitle>
@@ -17,7 +17,7 @@
       <DialogFooter class="flex-col sm:flex-row">
         <Button
           variant="outline"
-          @click="$emit('cancel')"
+          @click="$emit('update:open', false)"
           :disabled="loading"
         >
           {{ cancelText || 'Cancel' }}
@@ -49,6 +49,10 @@ import {
 } from '@/Components/ui/dialog'
 
 const props = defineProps({
+  open: {
+    type: Boolean,
+    required: true
+  },
   title: {
     type: String,
     default: ''
@@ -76,7 +80,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['confirm', 'cancel'])
+const emit = defineEmits(['confirm', 'cancel', 'update:open'])
 
 const loading = ref(false)
 

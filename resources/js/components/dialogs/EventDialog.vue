@@ -6,7 +6,7 @@
       </DialogHeader>
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div class="space-y-2">
-          <Label htmlFor="code">{{ t('Event Type') }}</Label>
+          <Label htmlFor="code" class="mb-2">{{ t('Event Type') }}</Label>
           <AutocompleteInput
             id="code"
             v-model="form.code"
@@ -21,7 +21,7 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="event_date">{{ t('Event Date') }}</Label>
+          <Label htmlFor="event_date" class="mb-2">{{ t('Event Date') }}</Label>
           <DatePicker
             id="event_date"
             v-model="form.event_date"
@@ -30,7 +30,7 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="detail">{{ t('Detail') }}</Label>
+          <Label htmlFor="detail" class="mb-2">{{ t('Detail') }}</Label>
           <Input
             id="detail"
             v-model="form.detail"
@@ -38,7 +38,7 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="notes">{{ t('Notes') }}</Label>
+          <Label htmlFor="notes" class="mb-2">{{ t('Notes') }}</Label>
           <Textarea
             id="notes"
             v-model="form.notes"
