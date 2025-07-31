@@ -376,9 +376,7 @@
         <TabsContent value="usedin">
           <Card>
             <CardContent class="pt-6">
-              <div v-if="loadingUsedIn" class="flex justify-center py-8">
-                <Loader2 class="h-8 w-8 animate-spin text-muted-foreground" />
-              </div>
+              <UsedInSkeleton v-if="loadingUsedIn" />
               <div v-else class="space-y-6">
                 <!-- Matter Dependencies -->
                 <div>
@@ -449,7 +447,7 @@
     <ConfirmDialog
       v-model:open="showDeleteDialog"
       :title="t('actors.show.deleteTitle')"
-      :description="t('actors.show.deleteDescription', { name: actor.name })"
+      :message="t('actors.show.deleteDescription', { name: actor.name })"
       :confirm-text="t('actors.show.confirmDelete')"
       :cancel-text="t('actions.cancel')"
       variant="destructive"
@@ -470,6 +468,7 @@ import {
 import MainLayout from '@/Layouts/MainLayout.vue'
 import EditableField from '@/Components/ui/EditableField.vue'
 import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
+import UsedInSkeleton from '@/Components/ui/skeleton/UsedInSkeleton.vue'
 import { Card, CardContent } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
 import { Label } from '@/Components/ui/label'
@@ -496,7 +495,7 @@ const usedInData = ref(null)
 // Check permissions
 const canWrite = computed(() => {
   const user = page.props.auth?.user
-  return user?.default_role !== 'CLI'
+  return user?.role !== 'CLI'
 })
 
 // Group matter dependencies by role

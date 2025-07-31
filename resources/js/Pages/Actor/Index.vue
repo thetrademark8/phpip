@@ -29,7 +29,7 @@
                     <ChevronUp v-else class="h-4 w-4" />
                   </Button>
                 </CollapsibleTrigger>
-                <CardTitle class="text-base">Filters</CardTitle>
+                <CardTitle class="text-base">{{ t('Filters') }}</CardTitle>
               </div>
               <Button
                 v-if="hasActiveFilters"
@@ -84,7 +84,6 @@
             :sort-field="sortField"
             :sort-direction="sortDirection"
             :get-row-id="(row) => row.id"
-            @row-click="handleRowClick"
             @sort-change="handleSortChange"
           />
         </CardContent>
@@ -97,17 +96,13 @@
       />
     </div>
 
-    <!-- Create Actor Dialog -->
+    <!-- Actor Dialog (unified for create/view/edit) -->
     <ActorDialog
-      v-model:open="isCreateDialogOpen"
-      @success="handleCreateSuccess"
-    />
-
-    <!-- Actor View Modal -->
-    <ActorViewModal
-      v-model:open="isActorModalOpen"
+      v-model:open="isActorDialogOpen"
       :actor-id="selectedActorId"
+      :operation="dialogOperation"
       @show-actor="showActor"
+      @success="handleActorSuccess"
     />
   </MainLayout>
 </template>
@@ -128,7 +123,6 @@ import {
 import MainLayout from '@/Layouts/MainLayout.vue'
 import DataTable from '@/Components/ui/DataTable.vue'
 import ActorDialog from '@/Components/dialogs/ActorDialog.vue'
-import ActorViewModal from '@/Components/dialogs/ActorViewModal.vue'
 import ActorFilters from '@/Components/actor/ActorFilters.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
@@ -151,8 +145,8 @@ const props = defineProps({
 const { t } = useI18n()
 const loading = ref(false)
 const selectedActorId = ref(null)
-const isActorModalOpen = ref(false)
-const isCreateDialogOpen = ref(false)
+const isActorDialogOpen = ref(false)
+const dialogOperation = ref('view')
 const isFiltersOpen = ref(true)
 const sortField = ref(props.sort || 'name')
 const sortDirection = ref(props.direction || 'asc')
@@ -179,7 +173,7 @@ const {
 // Check permissions
 const canWrite = computed(() => {
   const user = usePage().props.auth?.user
-  return user?.default_role !== 'CLI'
+  return user?.can_write
 })
 
 // Create a debounced version of applyFilters
@@ -201,7 +195,8 @@ const tableColumns = computed(() => [
       class: [
         'font-medium cursor-pointer hover:underline',
         row.original.warn ? 'text-destructive' : 'text-primary'
-      ]
+      ],
+      onClick: () => showActor(row.original.id)
     }, [
       row.original.name,
       row.original.warn && h(AlertTriangle, { class: 'inline ml-1 h-4 w-4' })
@@ -285,18 +280,16 @@ function goToPage(page) {
   })
 }
 
-function handleRowClick(row) {
-  selectedActorId.value = row.id
-  isActorModalOpen.value = true
-}
-
 function showActor(actorId) {
   selectedActorId.value = actorId
-  isActorModalOpen.value = true
+  dialogOperation.value = 'view'
+  isActorDialogOpen.value = true
 }
 
 function openCreateDialog() {
-  isCreateDialogOpen.value = true
+  selectedActorId.value = null
+  dialogOperation.value = 'create'
+  isActorDialogOpen.value = true
 }
 
 function handleSortChange({ field, direction }) {
@@ -319,7 +312,8 @@ function handleSortChange({ field, direction }) {
   })
 }
 
-function handleCreateSuccess() {
+function handleActorSuccess() {
+  isActorDialogOpen.value = false
   router.reload({ only: ['actors'] })
 }
 </script>

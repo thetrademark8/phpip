@@ -65,11 +65,11 @@
           <FormField
             label="Default role"
             name="default_role"
-            :error="form.errors.default_role"
+            :error="form.errors.role"
             help-text="Role automatically assigned in new matters"
           >
             <AutocompleteInput
-              v-model="form.default_role"
+              v-model="form.role"
               endpoint="/role/autocomplete"
               placeholder="Select default role"
               value-key="key"
@@ -154,25 +154,6 @@
         </div>
       </div>
 
-      <!-- Submit buttons -->
-      <div class="flex justify-end space-x-2">
-        <Button
-          v-if="onCancel"
-          type="button"
-          variant="outline"
-          @click="onCancel"
-          :disabled="form.processing"
-        >
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          :disabled="form.processing"
-        >
-          <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
-          {{ actor ? 'Update' : 'Create' }}
-        </Button>
-      </div>
     </div>
   </form>
 </template>
@@ -195,10 +176,6 @@ const props = defineProps({
   onSuccess: {
     type: Function,
     default: null
-  },
-  onCancel: {
-    type: Function,
-    default: null
   }
 })
 
@@ -208,7 +185,7 @@ const form = useForm({
   first_name: props.actor?.first_name || '',
   display_name: props.actor?.display_name || '',
   company_id: props.actor?.company_id || '',
-  default_role: props.actor?.default_role || '',
+  default_role: props.actor?.role || '',
   function: props.actor?.function || '',
   address: props.actor?.address || '',
   country: props.actor?.country || '',
@@ -253,4 +230,10 @@ const handleSubmit = () => {
     })
   }
 }
+
+// Expose form state and methods to parent
+defineExpose({
+  form,
+  handleSubmit
+})
 </script>

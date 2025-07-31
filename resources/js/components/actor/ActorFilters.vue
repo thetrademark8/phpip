@@ -132,7 +132,7 @@
         <AutocompleteInput
           id="role-filter"
           :placeholder="t('actors.filters.placeholders.defaultRole')"
-          :model-value="props.filters.default_role"
+          :model-value="props.filters.role"
           @update:model-value="debouncedUpdate('default_role', $event)"
           endpoint="/role/autocomplete"
           value-key="name"

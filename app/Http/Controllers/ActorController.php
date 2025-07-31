@@ -153,8 +153,14 @@ class ActorController extends Controller
             'email' => 'email|nullable',
         ]);
         $request->merge(['creator' => Auth::user()->login]);
+        $actor = Actor::create($request->except(['_token', '_method']));
 
-        return Actor::create($request->except(['_token', '_method']));
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('actor.index')
+                ->with('success', 'Actor created successfully');
+        }
+
+        return $actor;
     }
 
     public function show(Actor $actor)
@@ -191,6 +197,11 @@ class ActorController extends Controller
         $request->merge(['updater' => Auth::user()->login]);
         $actor->update($request->except(['_token', '_method']));
 
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('actor.index')
+                ->with('success', 'Actor updated successfully');
+        }
+
         return $actor;
     }
 
@@ -199,6 +210,11 @@ class ActorController extends Controller
         Gate::authorize('readwrite');
         $actor->delete();
 
-        return $actor;
+        if (request()->header('X-Inertia')) {
+            return redirect()->route('actor.index')
+                ->with('success', 'Actor deleted successfully');
+        }
+
+        return response()->json(['success' => true]);
     }
 }
