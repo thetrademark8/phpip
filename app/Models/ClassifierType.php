@@ -19,9 +19,14 @@ class ClassifierType extends Model
 
     protected $keyType = 'string';
 
-    protected $hidden = ['creator', 'created_at', 'updated_at', 'updater'];
+    protected $hidden = ['created_at', 'updated_at'];
 
     protected $guarded = ['created_at', 'updated_at'];
+
+    protected $casts = [
+        'main_display' => 'boolean',
+        'display_order' => 'integer',
+    ];
 
     public $translatable = ['type'];
 
