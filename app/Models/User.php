@@ -19,6 +19,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'warn' => 'boolean',
     ];
 
     public function roleInfo()

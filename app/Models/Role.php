@@ -17,9 +17,17 @@ class Role extends Model
 
     protected $keyType = 'string';
 
-    protected $hidden = ['creator', 'created_at', 'updated_at', 'updater'];
+    protected $hidden = ['created_at', 'updated_at'];
 
     protected $guarded = ['created_at', 'updated_at'];
+    
+    protected $casts = [
+        'shareable' => 'boolean',
+        'show_ref' => 'boolean',
+        'show_company' => 'boolean',
+        'show_rate' => 'boolean',
+        'show_date' => 'boolean',
+    ];
 
     public $incrementing = false;
 
