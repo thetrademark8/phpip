@@ -82,6 +82,7 @@
             :loading="loading"
             :show-pagination="false"
             :selectable="canWrite"
+            :page-size="25"
             :get-row-id="(row) => row.id"
             :get-row-class="getRowClass"
             :sort-field="sortField"
@@ -175,7 +176,7 @@ const viewMode = computed({
   }
 })
 
-const canWrite = computed(() => page.props.auth.user.default_role !== 'CLI')
+const canWrite = computed(() => page.props.auth.user?.can_write)
 
 // Create a debounced version of applyFilters
 const debouncedApplyFilters = debounce(() => {

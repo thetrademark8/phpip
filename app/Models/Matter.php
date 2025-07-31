@@ -643,21 +643,40 @@ class Matter extends Model
 
     public static function getCategoryMatterCount()
     {
-        return Category::withCount(['matters as total' => function ($query) {
-            if (request()->input('what_tasks') == 1) {
-                $query->where('responsible', Auth::user()->login);
+        return Category::withCount([
+            'matters as total' => function ($query) {
+                if (request()->input('what_tasks') == 1) {
+                    $query->where('responsible', Auth::user()->login);
+                }
+                if (request()->input('what_tasks') > 1) {
+                    $query->whereHas('client', function ($aq) {
+                        $aq->where('actor_id', request()->input('what_tasks'));
+                    });
+                }
+                if (Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role)) {
+                    $query->whereHas('client', function ($aq) {
+                        $aq->where('actor_id', Auth::id());
+                    });
+                }
+            },
+            'matters as new' => function ($query) {
+                if (request()->input('what_tasks') == 1) {
+                    $query->where('responsible', Auth::user()->login);
+                }
+                if (request()->input('what_tasks') > 1) {
+                    $query->whereHas('client', function ($aq) {
+                        $aq->where('actor_id', request()->input('what_tasks'));
+                    });
+                }
+                if (Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role)) {
+                    $query->whereHas('client', function ($aq) {
+                        $aq->where('actor_id', Auth::id());
+                    });
+                }
+
+                $query->where('created_at', '>=', Carbon::now()->subDays(7));
             }
-            if (request()->input('what_tasks') > 1) {
-                $query->whereHas('client', function ($aq) {
-                    $aq->where('actor_id', request()->input('what_tasks'));
-                });
-            }
-            if (Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role)) {
-                $query->whereHas('client', function ($aq) {
-                    $aq->where('actor_id', Auth::id());
-                });
-            }
-        }])
+        ])
             ->when(Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role),
                 function ($query) {
                     $query->whereHas('matters', function ($q) {

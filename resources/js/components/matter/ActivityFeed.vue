@@ -14,7 +14,8 @@
       </div>
     </CardHeader>
     <CardContent class="p-0">
-      <div v-if="activities.length > 0" class="divide-y">
+      <ActivityItemSkeleton v-if="loading && activities.length === 0" :count="3" />
+      <div v-else-if="activities.length > 0" class="divide-y">
         <div
           v-for="activity in activities"
           :key="`${activity.type}-${activity.id}-${activity.date}`"
@@ -68,6 +69,7 @@ import {
 } from 'lucide-vue-next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
 import { Button } from '@/Components/ui/button'
+import ActivityItemSkeleton from '@/Components/ui/skeleton/ActivityItemSkeleton.vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({

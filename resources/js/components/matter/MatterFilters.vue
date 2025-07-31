@@ -34,7 +34,7 @@
           </Label>
         </div>
 
-        <div v-if="$page.props.auth.user.default_role !== 'CLI'" class="flex items-center space-x-2">
+        <div v-if="$page.props.auth.user.role !== 'CLI'" class="flex items-center space-x-2">
           <Switch
             id="show-mine"
             :checked="props.filters.responsible === $page.props.auth.user.login"
@@ -102,7 +102,7 @@
       </div>
 
       <!-- Client (Actor View) -->
-      <div v-if="internalViewMode === 'actor' && $page.props.auth.user.default_role !== 'CLI'" class="space-y-2">
+      <div v-if="internalViewMode === 'actor' && $page.props.auth.user.role !== 'CLI'" class="space-y-2">
         <Label htmlFor="client-filter">{{ t('matter.filters.labels.client') }}</Label>
         <AutocompleteInput
           id="client-filter"
