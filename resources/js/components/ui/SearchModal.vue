@@ -103,9 +103,7 @@
         </div>
         
         <!-- Loading -->
-        <div v-if="loading" class="flex items-center justify-center py-8">
-          <Loader2 class="h-6 w-6 animate-spin" />
-        </div>
+        <SearchResultSkeleton v-if="loading" :count="3" />
       </div>
       
       <div class="flex items-center justify-between pt-4 border-t">
@@ -134,7 +132,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { Search, Filter, ChevronRight, Loader2 } from 'lucide-vue-next'
+import { Search, Filter, ChevronRight } from 'lucide-vue-next'
 import { Button } from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
@@ -154,6 +152,7 @@ import {
   SelectValue,
 } from '@/Components/ui/select'
 import StatusBadge from '@/Components/display/StatusBadge.vue'
+import SearchResultSkeleton from '@/Components/ui/skeleton/SearchResultSkeleton.vue'
 
 const props = defineProps({
   modelValue: {

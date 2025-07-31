@@ -1,12 +1,7 @@
 <template>
   <div class="w-full">
-    <!-- Loading State -->
-    <div v-if="loading" class="flex items-center justify-center p-8">
-      <Loader2 class="h-8 w-8 animate-spin" />
-    </div>
-
     <!-- Table -->
-    <div v-else>
+    <div>
       <Table>
         <TableHead>
           <TableRow>
@@ -41,12 +36,20 @@
           </TableRow>
         </TableHead>
         <TableBody>
-          <template v-if="table.getRowModel().rows?.length">
+          <template v-if="loading">
+            <TableRowSkeleton 
+              :rows="pageSize"
+              :columns="table.getAllColumns().length"
+              :show-checkbox="selectable"
+              :column-widths="table.getAllColumns().map(col => col.columnDef.meta?.headerClass || '')"
+            />
+          </template>
+          <template v-else-if="table.getRowModel().rows?.length">
             <TableRow 
               v-for="row in table.getRowModel().rows" 
               :key="row.id"
               :data-state="row.getIsSelected() && 'selected'"
-              :class="props.getRowClass?.(row.original)"
+              :class="cn('h-[60px]', props.getRowClass?.(row.original))"
             >
               <!-- Selection Checkbox Cell -->
               <TableCell v-if="selectable">
@@ -72,10 +75,10 @@
               </TableCell>
             </TableRow>
           </template>
-          <TableRow v-else>
+          <TableRow v-else class="h-[60px]">
             <TableCell 
               :colspan="table.getAllColumns().length + (selectable ? 1 : 0)" 
-              class="h-24 text-center"
+              class="text-center"
             >
               {{ emptyMessage }}
             </TableCell>
@@ -164,6 +167,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/Components/ui/table'
+import TableRowSkeleton from '@/Components/ui/skeleton/TableRowSkeleton.vue'
+import { cn } from '@/lib/utils'
 
 const props = defineProps({
   columns: {
