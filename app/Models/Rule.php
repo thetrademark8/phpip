@@ -19,6 +19,15 @@ class Rule extends Model
 
     protected $translatable = ['detail'];
 
+    protected $casts = [
+        'clear_task' => 'boolean',
+        'delete_task' => 'boolean',
+        'active' => 'boolean',
+        'end_of_month' => 'boolean',
+        'use_priority' => 'boolean',
+        'recurring' => 'boolean',
+    ];
+
     public function country()
     {
         return $this->belongsTo(Country::class, 'for_country', 'iso');

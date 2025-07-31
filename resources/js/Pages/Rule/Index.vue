@@ -173,7 +173,7 @@ const {
 } = useRuleFilters(props.filters)
 
 // Check permissions
-const canAdmin = computed(() => page.props.auth.user.default_role === 'DBA')
+const canAdmin = computed(() => page.props.auth.user?.is_admin)
 
 // Create a debounced version of applyFilters
 const debouncedApplyFilters = debounce(() => {
@@ -217,7 +217,7 @@ const tableColumns = computed(() => [
   {
     accessorKey: 'for_category',
     header: t('rules.columns.category'),
-    cell: ({ row }) => row.original.category?.category || '',
+    cell: ({ row }) => translated(row.original.category?.category) || '',
     enableSorting: true,
     meta: { headerClass: 'w-[15%]' },
   },

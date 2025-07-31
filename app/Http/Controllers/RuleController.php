@@ -115,7 +115,7 @@ class RuleController extends Controller
 
         $ruleComments = $rule->getTableComments();
 
-        // Always return JSON since we use modal dialogs via AJAX
+        // Return JSON for modal dialog usage
         return response()->json([
             'rule' => $ruleInfo,
             'comments' => $ruleComments,
@@ -151,6 +151,11 @@ class RuleController extends Controller
         ]);
         $request->merge(['updater' => Auth::user()->login]);
         $rule->update($request->except(['_token', '_method']));
+
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('rule.index')
+                ->with('success', 'Rule updated successfully');
+        }
 
         return $rule;
     }
