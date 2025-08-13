@@ -133,4 +133,70 @@ class TaskFactory extends Factory
             'detail' => json_encode(['RYear' => $year]),
         ]);
     }
+    
+    /**
+     * Set the renewal in a specific workflow step
+     */
+    public function inStep(int $step): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'step' => $step,
+        ]);
+    }
+    
+    /**
+     * Set the renewal in a specific invoice step
+     */
+    public function inInvoiceStep(int $invoiceStep): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'invoice_step' => $invoiceStep,
+        ]);
+    }
+    
+    /**
+     * Set the renewal in grace period
+     */
+    public function inGracePeriod(int $gracePeriod = 1): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'grace_period' => $gracePeriod,
+            'due_date' => $this->faker->dateTimeBetween('-60 days', '-1 day'),
+        ]);
+    }
+    
+    /**
+     * Set the renewal as abandoned
+     */
+    public function abandoned(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'step' => 11,
+            'done' => 1,
+            'done_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
+        ]);
+    }
+    
+    /**
+     * Set the renewal as closed
+     */
+    public function closed(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'step' => 10,
+            'done' => 1,
+            'done_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
+        ]);
+    }
+    
+    /**
+     * Set specific cost and fee
+     */
+    public function withFees(float $cost, float $fee): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'cost' => $cost,
+            'fee' => $fee,
+        ]);
+    }
 }
