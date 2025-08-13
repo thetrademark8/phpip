@@ -32,16 +32,6 @@ interface RenewalWorkflowServiceInterface
     public function abandon(array $ids): ActionResultDTO;
 
     /**
-     * Check if transition between steps is allowed
-     */
-    public function canTransition(int $fromStep, int $toStep): bool;
-
-    /**
-     * Get next step in workflow
-     */
-    public function getNextStep(int $currentStep): ?int;
-
-    /**
      * Mark renewals as payment order received
      */
     public function markAsPaymentOrderReceived(array $ids): ActionResultDTO;

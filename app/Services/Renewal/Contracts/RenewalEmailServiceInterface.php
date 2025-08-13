@@ -22,11 +22,6 @@ interface RenewalEmailServiceInterface
     public function sendLastCall(array $ids): ActionResultDTO;
 
     /**
-     * Send formal call emails for renewals
-     */
-    public function sendFormalCall(array $ids): ActionResultDTO;
-
-    /**
      * Send invoice emails for renewals
      */
     public function sendInvoice(array $ids): ActionResultDTO;
