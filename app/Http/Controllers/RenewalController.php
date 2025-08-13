@@ -9,8 +9,6 @@ use App\Services\Renewal\Contracts\RenewalWorkflowServiceInterface;
 use App\Services\Renewal\Contracts\RenewalEmailServiceInterface;
 use App\Services\Renewal\Contracts\RenewalInvoiceServiceInterface;
 use App\Services\Renewal\Contracts\RenewalExportServiceInterface;
-use App\Services\Renewal\Contracts\RenewalOrderServiceInterface;
-use App\Services\Renewal\Contracts\RenewalPaymentServiceInterface;
 use App\Services\Renewal\Contracts\RenewalLogServiceInterface;
 use App\Repositories\Contracts\RenewalRepositoryInterface;
 use Illuminate\Http\Request;
@@ -26,8 +24,6 @@ class RenewalController extends Controller
         private RenewalEmailServiceInterface $emailService,
         private RenewalInvoiceServiceInterface $invoiceService,
         private RenewalExportServiceInterface $exportService,
-        private RenewalOrderServiceInterface $orderService,
-        private RenewalPaymentServiceInterface $paymentService,
         private RenewalLogServiceInterface $logService,
         private RenewalRepositoryInterface $renewalRepository
     ) {}
@@ -46,11 +42,15 @@ class RenewalController extends Controller
         // Paginate results
         $renewals = $this->renewalRepository->paginate($query, $filters->perPage);
         
-        // Transform renewals to include calculated fees
-        $renewals->transform(function ($renewal) {
-            $feeDTO = $this->feeCalculator->calculate(\App\DataTransferObjects\Renewal\RenewalDTO::fromModel($renewal));
-            $renewal->cost = $feeDTO->cost;
-            $renewal->fee = $feeDTO->fee;
+        // Calculate fees in batch to avoid N+1 queries
+        $fees = $this->feeCalculator->calculateBatch($renewals->getCollection());
+        
+        // Apply calculated fees to renewals
+        $renewals->transform(function ($renewal) use ($fees) {
+            if (isset($fees[$renewal->id])) {
+                $renewal->cost = $fees[$renewal->id]->cost;
+                $renewal->fee = $fees[$renewal->id]->fee;
+            }
             return $renewal;
         });
         
@@ -191,7 +191,7 @@ class RenewalController extends Controller
         
         if ($result->success) {
             // Generate XML file for payment
-            $xmlContent = $this->generatePaymentXml($ids);
+            $xmlContent = $this->exportService->generatePaymentXml($ids);
             
             return response($xmlContent, 200)
                 ->header('Content-Type', 'text/xml')
@@ -375,7 +375,7 @@ class RenewalController extends Controller
     public function dashboard(): Response
     {
         return Inertia::render('Renewal/Dashboard', [
-            'stats' => $this->getRenewalStats(),
+            'stats' => $this->queryService->getRenewalStats(),
         ]);
     }
 
@@ -395,71 +395,7 @@ class RenewalController extends Controller
         return response()->json($preview);
     }
 
-    /**
-     * Get renewal statistics for dashboard
-     */
-    private function getRenewalStats(): array
-    {
-        $filters = new RenewalFilterDTO();
-        
-        // Get counts by step
-        $stepCounts = [];
-        for ($step = 0; $step <= 5; $step++) {
-            $filters->step = $step;
-            $query = $this->queryService->buildQuery($filters);
-            $stepCounts["step_$step"] = $query->count();
-        }
-        
-        // Get counts by invoice step
-        $invoiceStepCounts = [];
-        $filters->step = null;
-        for ($invoiceStep = 0; $invoiceStep <= 3; $invoiceStep++) {
-            $filters->invoiceStep = $invoiceStep;
-            $query = $this->queryService->buildQuery($filters);
-            $invoiceStepCounts["invoice_step_$invoiceStep"] = $query->count();
-        }
-        
-        return [
-            'by_step' => $stepCounts,
-            'by_invoice_step' => $invoiceStepCounts,
-            'total_active' => array_sum($stepCounts),
-        ];
-    }
 
-    /**
-     * Generate payment XML for selected renewals
-     */
-    private function generatePaymentXml(array $ids): string
-    {
-        $renewals = $this->renewalRepository->getGroupedByClient($ids);
-        
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><payments></payments>');
-        
-        foreach ($renewals as $clientId => $clientRenewals) {
-            $payment = $xml->addChild('payment');
-            $payment->addChild('client_id', $clientId);
-            
-            $total = 0;
-            foreach ($clientRenewals as $renewal) {
-                $item = $payment->addChild('renewal');
-                $item->addChild('id', $renewal->id);
-                $item->addChild('caseref', $renewal->caseref);
-                $item->addChild('detail', $renewal->detail);
-                $item->addChild('due_date', $renewal->due_date);
-                
-                $feeDTO = $this->feeCalculator->calculate(\App\DataTransferObjects\Renewal\RenewalDTO::fromModel($renewal));
-                $item->addChild('cost', $feeDTO->cost);
-                $item->addChild('fee', $feeDTO->fee);
-                $item->addChild('total', $feeDTO->total);
-                
-                $total += $feeDTO->total;
-            }
-            
-            $payment->addChild('total_amount', $total);
-        }
-        
-        return $xml->asXML();
-    }
 
     /**
      * Create renewal orders for selected renewals
@@ -473,7 +409,7 @@ class RenewalController extends Controller
                 ->withErrors(['error' => 'No renewals selected']);
         }
         
-        $result = $this->orderService->createOrders($ids);
+        $result = $this->workflowService->createOrders($ids);
         
         if ($result->success) {
             return to_route('renewal.index', ['step' => 4])
@@ -496,7 +432,7 @@ class RenewalController extends Controller
                 ->withErrors(['error' => 'No renewals selected']);
         }
         
-        $result = $this->orderService->markInvoiced($ids);
+        $result = $this->workflowService->markInvoiced($ids);
         
         if ($result->success) {
             return to_route('renewal.index', ['invoice_step' => 2])
@@ -519,7 +455,7 @@ class RenewalController extends Controller
                 ->withErrors(['error' => 'No renewals selected']);
         }
         
-        $result = $this->paymentService->markPaid($ids);
+        $result = $this->workflowService->markPaid($ids);
         
         if ($result->success) {
             return to_route('renewal.index', ['invoice_step' => 3])
@@ -543,7 +479,7 @@ class RenewalController extends Controller
                 ->withErrors(['error' => 'No renewals selected']);
         }
         
-        $result = $this->paymentService->markDone($ids, $doneDate);
+        $result = $this->workflowService->markAsDone($ids, $doneDate);
         
         if ($result->success) {
             return to_route('renewal.index', ['step' => 10])
@@ -589,7 +525,7 @@ class RenewalController extends Controller
                 ->withErrors(['error' => 'No renewals selected']);
         }
         
-        $result = $this->paymentService->markLapsing($ids);
+        $result = $this->workflowService->markAsLapsing($ids);
         
         if ($result->success) {
             return to_route('renewal.index', ['step' => 11])

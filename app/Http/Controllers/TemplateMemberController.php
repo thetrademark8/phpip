@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TemplateMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class TemplateMemberController extends Controller
 {
@@ -48,17 +49,27 @@ class TemplateMemberController extends Controller
             return response()->json($query->get());
         }
 
-        $template_members = $query->simplePaginate(config('renewal.general.paginate') == 0 ? 25 : intval(config('renewal.general.paginate')));
-        $template_members->appends($request->input())->links();
-
-        return view('template-members.index', compact('template_members'));
+        return Inertia::render('TemplateMember/Index', [
+            'template_members' => $query->with('class')->paginate(15),
+            'filters' => $request->only(['summary', 'style', 'language', 'class', 'format', 'category']),
+            'sort' => 'summary',
+            'direction' => 'asc',
+            'languages' => $this->languages
+        ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $table = new TemplateMember;
         $tableComments = $table->getTableComments();
         $languages = $this->languages;
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'tableComments' => $tableComments,
+                'languages' => $languages
+            ]);
+        }
 
         return view('template-members.create', compact('tableComments', 'languages'));
     }
@@ -70,16 +81,29 @@ class TemplateMemberController extends Controller
             'language' => 'required',
         ]);
         $request->merge(['creator' => Auth::user()->login]);
-        $a = TemplateMember::create($request->except(['_token', '_method']));
+        $templateMember = TemplateMember::create($request->except(['_token', '_method']));
 
-        return $a;
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('template-member.index')
+                ->with('success', 'Template member created successfully.');
+        }
+
+        return $templateMember;
     }
 
-    public function show(TemplateMember $templateMember)
+    public function show(TemplateMember $templateMember, Request $request)
     {
         $tableComments = $templateMember->getTableComments();
-        $templateMember->with(['class', 'style', 'language']);
+        $templateMember->load(['class']);
         $languages = $this->languages;
+
+        if ($request->ajax()) {
+            return response()->json([
+                'templateMember' => $templateMember,
+                'tableComments' => $tableComments,
+                'languages' => $languages
+            ]);
+        }
 
         return view('template-members.show', compact('templateMember', 'languages', 'tableComments'));
     }

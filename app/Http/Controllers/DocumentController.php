@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class DocumentController extends Controller
 {
@@ -34,10 +35,12 @@ class DocumentController extends Controller
             return response()->json($query->get());
         }
 
-        $template_classes = $query->simplePaginate(config('renewal.general.paginate') == 0 ? 25 : intval(config('renewal.general.paginate')));
-        $template_classes->appends($request->input())->links();
-
-        return view('documents.index', compact('template_classes'));
+        return Inertia::render('Document/Index', [
+            'template_classes' => $query->paginate(15),
+            'filters' => $request->only(['Name', 'Notes']),
+            'sort' => 'name',
+            'direction' => 'asc'
+        ]);
     }
 
     public function create()
@@ -45,7 +48,9 @@ class DocumentController extends Controller
         $table = new TemplateClass;
         $tableComments = $table->getTableComments();
 
-        return view('documents.create', compact('tableComments'));
+        return response()->json([
+            'tableComments' => $tableComments
+        ]);
     }
 
     public function store(Request $request)
@@ -54,16 +59,26 @@ class DocumentController extends Controller
             'name' => 'required|max:55',
         ]);
         $request->merge(['creator' => Auth::user()->login]);
+        
+        $templateClass = TemplateClass::create($request->except(['_token', '_method']));
+        
+        if ($request->header('X-Inertia')) {
+            return redirect()->route('document.index')
+                ->with('success', 'Template class created successfully');
+        }
 
-        return TemplateClass::create($request->except(['_token', '_method']));
+        return $templateClass;
     }
 
     public function show(TemplateClass $class)
     {
+        $class->load(['role', 'eventNames']);
         $tableComments = $class->getTableComments();
-        $class->with(['role']);
 
-        return view('documents.show', compact('class', 'tableComments'));
+        return response()->json([
+            'templateClass' => $class,
+            'tableComments' => $tableComments
+        ]);
     }
 
     public function update(Request $request, TemplateClass $class)
