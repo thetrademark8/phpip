@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @deprecated Since version 2.0. Use App\Notifications\Renewal\* instead.
+ * This class is kept for reference only and should not be used.
+ */
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;

@@ -8,10 +8,16 @@ use App\DataTransferObjects\Renewal\RenewalDTO;
 use App\Repositories\Contracts\RenewalRepositoryInterface;
 use App\Repositories\Contracts\ActorRepositoryInterface;
 use App\Repositories\Contracts\MatterRepositoryInterface;
-use App\Mail\sendCall;
 use App\Models\RenewalsLog;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Actor;
+use App\Notifications\Renewal\RenewalFirstCallNotification;
+use App\Notifications\Renewal\RenewalReminderCallNotification;
+use App\Notifications\Renewal\RenewalLastCallNotification;
+use App\Notifications\Renewal\RenewalInvoiceNotification;
+use App\Notifications\Renewal\RenewalReportNotification;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class RenewalEmailService implements RenewalEmailServiceInterface
 {
@@ -29,7 +35,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
     public function sendFirstCall(array $ids, bool $preview = false): ActionResultDTO
     {
-        return $this->sendCalls($ids, ['first'], $preview, 2);
+        return $this->sendCalls($ids, ['first'], !$preview, 2);
     }
 
     public function sendReminderCall(array $ids): ActionResultDTO
@@ -74,8 +80,8 @@ class RenewalEmailService implements RenewalEmailServiceInterface
                 // Generate invoice data
                 $invoiceData = $this->prepareInvoiceData($renewalDTO);
                 
-                // Send invoice email
-                $result = $this->sendInvoiceEmail($invoiceData);
+                // Send invoice notification
+                $result = $this->sendInvoiceNotification($renewalDTO, $invoiceData);
                 
                 if ($result) {
                     $processedCount++;
@@ -116,8 +122,19 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             // Generate report data
             $reportData = $this->prepareReportData($renewals);
             
-            // Send report email
-            Mail::to($recipient)->send(new \App\Mail\RenewalReport($reportData));
+            // Send report notification
+            $user = \App\Models\User::where('email', $recipient)->first();
+            if ($user) {
+                $user->notify(new RenewalReportNotification($renewals, $recipient));
+            } else {
+                // If recipient is not a user, create a temporary notifiable
+                $tempNotifiable = new class($recipient) {
+                    private $email;
+                    public function __construct($email) { $this->email = $email; }
+                    public function routeNotificationForMail() { return $this->email; }
+                };
+                Notification::send($tempNotifiable, new RenewalReportNotification($renewals, $recipient));
+            }
             
             return ActionResultDTO::success(1, 'Report sent successfully');
         } catch (\Exception $e) {
@@ -205,21 +222,28 @@ class RenewalEmailService implements RenewalEmailServiceInterface
         $count = 0;
         
         // Group by client
-        $renewalsByClient = $renewals->where('grace_period', $gracePeriod)->groupBy('client_id');
+        $renewalsByClient = $renewals->where('grace_period', $gracePeriod)->groupBy(function($renewal) {
+            return $renewal->client_id;
+        });
         
         foreach ($renewalsByClient as $clientId => $clientRenewals) {
             $clientData = $this->getClientDataById($clientId);
             
-            if (!$clientData['email']) {
+            // Skip only if sending real emails and no email address
+            if ($send && !$clientData['email']) {
                 continue;
             }
             
             // Prepare email data
             $emailData = $this->prepareCallData($clientRenewals, $clientData, $gracePeriod, $notifyType);
             
-            if ($send) {
-                // Send email
-                Mail::to($clientData['email'])->send(new sendCall($emailData));
+            if ($send && $clientData['email']) {
+                // Send notification only if we have an email
+                $client = Actor::find((int) $clientId);
+                if ($client) {
+                    // Send appropriate notification based on type
+                    $this->sendNotification($client, $clientRenewals, $emailData, $notifyType, $gracePeriod);
+                }
             }
             
             $processedRenewals = array_merge($processedRenewals, $clientRenewals->pluck('id')->toArray());
@@ -234,6 +258,16 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
     private function prepareCallData($renewals, array $clientData, int $gracePeriod, string $notifyType): array
     {
+        // Calculate validity date (3 months from now) and instruction date (today)
+        $validityDate = now()->addMonths(3)->format('d/m/Y');
+        $instructionDate = now()->format('d/m/Y');
+        
+        // Calculate totals
+        $totalHt = $renewals->sum(function($task) {
+            return ($task->cost ?? 0) + ($task->fee ?? 0);
+        });
+        $total = $totalHt; // TODO: Add VAT calculation when implemented
+        
         $data = [
             'client' => $clientData,
             'renewals' => $renewals,
@@ -241,6 +275,10 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             'type' => $notifyType,
             'subject' => $this->notifyTypes[$notifyType]['subject'] ?? 'Patent Renewal Notice',
             'to' => $clientData['email'],
+            'validity_date' => $validityDate,
+            'instruction_date' => $instructionDate,
+            'total' => $total,
+            'total_ht' => $totalHt,
         ];
         
         // Add CC if configured
@@ -303,9 +341,9 @@ class RenewalEmailService implements RenewalEmailServiceInterface
         return $this->getClientDataById($renewal->clientId);
     }
 
-    private function getClientDataById(int $clientId): array
+    private function getClientDataById(int|string $clientId): array
     {
-        $client = $this->actorRepository->find($clientId);
+        $client = $this->actorRepository->find((int) $clientId);
         
         if (!$client) {
             return [
@@ -315,7 +353,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             ];
         }
         
-        $invoiceAddress = $this->actorRepository->getInvoicingAddress($clientId);
+        $invoiceAddress = $this->actorRepository->getInvoicingAddress((int) $clientId);
         
         return [
             'id' => $client->id,
@@ -328,10 +366,25 @@ class RenewalEmailService implements RenewalEmailServiceInterface
         ];
     }
 
-    private function sendInvoiceEmail(array $invoiceData): bool
+    private function sendInvoiceNotification(RenewalDTO $renewalDTO, array $invoiceData): bool
     {
         try {
-            Mail::to($invoiceData['to'])->send(new \App\Mail\RenewalInvoice($invoiceData));
+            $clientData = $this->getClientData($renewalDTO);
+            $invoiceNumber = $this->generateInvoiceNumber($renewalDTO);
+            
+            // Try to find the client as a user first
+            $client = Actor::find($renewalDTO->clientId);
+            if ($client) {
+                $client->notify(new RenewalInvoiceNotification($renewalDTO, $clientData, $invoiceNumber));
+            } else {
+                // If client is not found, create a temporary notifiable
+                $tempNotifiable = new class($invoiceData['to']) {
+                    private $email;
+                    public function __construct($email) { $this->email = $email; }
+                    public function routeNotificationForMail() { return $this->email; }
+                };
+                Notification::send($tempNotifiable, new RenewalInvoiceNotification($renewalDTO, $clientData, $invoiceNumber));
+            }
             return true;
         } catch (\Exception $e) {
             return false;
@@ -356,8 +409,127 @@ class RenewalEmailService implements RenewalEmailServiceInterface
                 'job_id' => $jobId,
                 'creator' => auth()->user()->login ?? 'system',
                 'created_at' => now(),
-                'note' => "Email sent: $notifyType",
             ]);
         }
+    }
+    
+    private function sendNotification($client, $renewals, array $emailData, string $notifyType, int $gracePeriod): void
+    {
+        // Format renewals for email display
+        $formattedRenewals = $this->formatRenewalsForEmail($renewals);
+        
+        // Calculate totals from formatted data
+        $totalHt = $formattedRenewals->sum(function ($renewal) {
+            return floatval(str_replace(',', '', $renewal['total_ht']));
+        });
+        $total = $formattedRenewals->sum(function ($renewal) {
+            return floatval(str_replace(',', '', $renewal['total']));
+        });
+        
+        // Prepare notification data from email data
+        $notificationData = [
+            'renewals' => $formattedRenewals,
+            'validity_date' => $emailData['validity_date'] ?? now()->addMonths(3)->format('d/m/Y'),
+            'instruction_date' => $emailData['instruction_date'] ?? now()->format('d/m/Y'),
+            'total' => $total,
+            'total_ht' => $totalHt,
+            'subject' => $emailData['subject'],
+            'dest' => $emailData['to'],
+        ];
+        
+        // Send appropriate notification based on type
+        switch ($notifyType) {
+            case 'first':
+                $client->notify(new RenewalFirstCallNotification(
+                    $notificationData['renewals'],
+                    $notificationData['validity_date'],
+                    $notificationData['instruction_date'],
+                    $notificationData['total'],
+                    $notificationData['total_ht'],
+                    $notificationData['subject'],
+                    $notificationData['dest'],
+                    $gracePeriod
+                ));
+                break;
+            case 'warn':
+                $client->notify(new RenewalReminderCallNotification(
+                    $notificationData['renewals'],
+                    $notificationData['validity_date'],
+                    $notificationData['instruction_date'],
+                    $notificationData['total'],
+                    $notificationData['total_ht'],
+                    $notificationData['subject'],
+                    $notificationData['dest'],
+                    $gracePeriod
+                ));
+                break;
+            case 'last':
+                $client->notify(new RenewalLastCallNotification(
+                    $notificationData['renewals'],
+                    $notificationData['validity_date'],
+                    $notificationData['instruction_date'],
+                    $notificationData['total'],
+                    $notificationData['total_ht'],
+                    $notificationData['subject'],
+                    $notificationData['dest'],
+                    $gracePeriod
+                ));
+                break;
+            default:
+                // Log unknown notification type
+                \Log::warning('Unknown notification type in sendNotification: ' . $notifyType);
+        }
+    }
+    
+    private function formatRenewalsForEmail($renewals): Collection
+    {
+        return $renewals->map(function ($task) {
+            $matter = $task->matter;
+            $trigger = $task->trigger;
+            
+            // Build description from matter info
+            $desc = $matter->caseref;
+            if ($matter->suffix) {
+                $desc .= $matter->suffix;
+            }
+            if ($matter->alt_ref) {
+                $desc .= ' (' . $matter->alt_ref . ')';
+            }
+            
+            // Get country from trigger's matter
+            $country = $trigger->matter->country ?? '';
+            
+            // Get annuity year
+            $annuity = is_array($task->detail) ? ($task->detail['en'] ?? '') : $task->detail;
+            
+            // Format date
+            $dueDate = $task->due_date instanceof \Carbon\Carbon 
+                ? $task->due_date->format('d/m/Y') 
+                : \Carbon\Carbon::parse($task->due_date)->format('d/m/Y');
+            
+            // Get costs with defaults
+            $cost = $task->cost ?? 0;
+            $fee = $task->fee ?? 0;
+            $totalHt = $cost + $fee;
+            
+            // TODO: Get VAT rate from client or config
+            $vatRate = 0; // Default no VAT
+            $total = $totalHt * (1 + $vatRate / 100);
+            
+            return [
+                'id' => $task->id,
+                'desc' => $desc,
+                'country' => $country,
+                'annuity' => $annuity,
+                'due_date' => $dueDate,
+                'cost' => number_format($cost, 2),
+                'fee' => number_format($fee, 2),
+                'total_ht' => number_format($totalHt, 2),
+                'vat_rate' => $vatRate,
+                'total' => number_format($total, 2),
+                'caseref' => $matter->caseref,
+                'language' => $task->language ?? app()->getLocale(),
+            ];
+        });
     }
 }

@@ -40,4 +40,19 @@ interface RenewalWorkflowServiceInterface
      * Get next step in workflow
      */
     public function getNextStep(int $currentStep): ?int;
+
+    /**
+     * Mark renewals as payment order received
+     */
+    public function markAsPaymentOrderReceived(array $ids): ActionResultDTO;
+
+    /**
+     * Update both step and invoice step simultaneously
+     */
+    public function updateStepAndInvoiceStep(array $ids, int $step, int $invoiceStep): ActionResultDTO;
+
+    /**
+     * Mark renewals as lapsing
+     */
+    public function markAsLapsing(array $ids): ActionResultDTO;
 }

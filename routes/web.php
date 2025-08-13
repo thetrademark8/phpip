@@ -121,21 +121,21 @@ Route::middleware(['auth'])->group(function () {
 
     // Renewal routes
     Route::controller(RenewalController::class)->prefix('renewal')->name('renewal.')->group(function () {
-        Route::post('order', 'renewalOrder');
-        Route::post('call/{send}', 'firstcall');
-        Route::post('reminder', 'remindercall');
-        Route::post('invoice/{toinvoice}', 'invoice');
-        Route::post('renewalsInvoiced', 'renewalsInvoiced');
-        Route::post('topay', 'topay');
-        Route::post('paid', 'paid');
-        Route::post('done', 'done');
-        Route::post('lastcall', 'lastcall');
-        Route::post('receipt', 'receipt');
-        Route::post('closing', 'closing');
-        Route::post('abandon', 'abandon');
-        Route::post('lapsing', 'lapsing');
-        Route::get('export', 'export');
-        Route::get('logs', 'logs');
+        Route::post('order', 'renewalOrder')->name('order');
+        Route::post('call/{send}', 'firstcall')->name('firstcall');
+        Route::post('reminder', 'remindercall')->name('reminder');
+        Route::post('invoice/{toinvoice}', 'invoice')->name('invoice');
+        Route::post('renewalsInvoiced', 'renewalsInvoiced')->name('renewalsInvoiced');
+        Route::post('topay', 'topay')->name('topay');
+        Route::post('paid', 'paid')->name('paid');
+        Route::post('done', 'done')->name('done');
+        Route::post('lastcall', 'lastcall')->name('lastcall');
+        Route::post('receipt', 'receipt')->name('receipt');
+        Route::post('closing', 'closing')->name('closing');
+        Route::post('abandon', 'abandon')->name('abandon');
+        Route::post('lapsing', 'lapsing')->name('lapsing');
+        Route::get('export', 'export')->name('export');
+        Route::get('logs', 'logs')->name('logs');
     });
 
     // Document routes

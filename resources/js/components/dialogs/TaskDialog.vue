@@ -8,7 +8,7 @@
         </DialogDescription>
       </DialogHeader>
       
-      <div class="max-h-[70vh] overflow-y-auto">
+      <div>
         <TaskForm
           :task="task"
           :event-id="eventId"

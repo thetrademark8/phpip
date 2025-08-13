@@ -1,5 +1,5 @@
 <template>
-  <Tabs :default-value="activeTab" class="w-full">
+  <Tabs v-model="activeTab" class="w-full">
     <TabsList class="grid w-full grid-flow-col auto-cols-fr">
       <TabsTrigger 
         value="first-call"

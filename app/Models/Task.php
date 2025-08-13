@@ -49,6 +49,22 @@ class Task extends Model
         return $this->belongsTo(Rule::class, 'rule_used', 'id');
     }
 
+    /**
+     * Get the client associated with this task through matter
+     */
+    public function getClientAttribute()
+    {
+        return $this->matter?->client;
+    }
+
+    /**
+     * Get the client ID associated with this task
+     */
+    public function getClientIdAttribute()
+    {
+        return $this->matter?->client?->actor_id;
+    }
+
     public static function getUsersOpenTaskCount()
     {
         $userid = Auth::user()->id;

@@ -101,15 +101,14 @@ class RenewalQueryService implements RenewalQueryServiceInterface
 
     private function applyStepFilters(Builder $query, RenewalFilterDTO $filters): Builder
     {
-        // Apply step filter if explicitly provided - use whereRaw to match old query exactly
-        if ($filters->step !== null) {
-            // Use whereRaw without table prefix and as string to match old query
-            $query->whereRaw('step = ?', [(string)$filters->step]);
-            
-            // Only add matter.dead = 0 when explicitly filtering by step=0
-            if ($filters->step === 0) {
-                $query->where('matter.dead', 0);
-            }
+        $step = $filters->step ?? 0;
+
+        // Use whereRaw without table prefix and as string to match old query
+        $query->where('step', $step);
+
+        // Only add matter.dead = 0 when explicitly filtering by step=0
+        if ($step == 0) {
+            $query->where('matter.dead', 0);
         }
         
         if ($filters->invoiceStep !== null) {
@@ -125,7 +124,7 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         $with_invoice = false;
         $filterArray = $filters->toArray();
         if (!empty($filterArray)) {
-            if (!empty($filterArray['step']) && $filterArray['step'] != 0) {
+            if (!empty($filterArray['step']) && $step != 0) {
                 $with_step = true;
             }
             if (!empty($filterArray['invoice_step']) && $filterArray['invoice_step'] != 0) {
@@ -134,7 +133,7 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         }
 
         // Only display pending renewals at the beginning of the pipeline
-        if (!($with_step || $with_invoice || $filters->step !== null || $filters->invoiceStep !== null)) {
+        if (!($with_step || $with_invoice)) {
             // Use whereRaw without table prefix to match old query
             $query->whereRaw('done = 0');
         }

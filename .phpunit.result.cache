@@ -1,1 +1,0 @@
-{"version":1,"defects":{"Tests\\Feature\\ActorControllerTest::testIndex":8,"Tests\\Feature\\RuleControllerTest::testIndex":7},"times":{"Tests\\Feature\\ActorControllerTest::testIndex":1.032,"Tests\\Feature\\HomeControllerTest::testHome":0.025,"Tests\\Feature\\RuleControllerTest::testIndex":0.01}}

@@ -8,7 +8,7 @@
         </DialogDescription>
       </DialogHeader>
       
-      <div class="max-h-[70vh] overflow-y-auto">
+    <div>
         <MatterEditForm
           v-if="operation === 'edit'"
           :matter="matter"

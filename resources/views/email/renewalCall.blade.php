@@ -63,6 +63,6 @@
     </table>
     <p>{{ __('Offer valid until') }} {{ $validity_date}}.</p>
     <p>{{ __('Best regards') }},</p>
-    <p>{{ Auth::user()->name }}</p>
+    <p>{{ Auth::user()->name ?? '' }}</p>
 </body>
 </html>

@@ -8,8 +8,8 @@
             <!-- Selection Checkbox Column -->
             <TableHeader v-if="selectable" class="w-[50px]">
               <Checkbox
-                :checked="table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')"
-                @update:checked="value => table.toggleAllPageRowsSelected(!!value)"
+                :model-value="table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')"
+                @update:model-value="value => table.toggleAllPageRowsSelected(!!value)"
                 aria-label="Select all"
               />
             </TableHeader>
@@ -54,8 +54,8 @@
               <!-- Selection Checkbox Cell -->
               <TableCell v-if="selectable">
                 <Checkbox
-                  :checked="row.getIsSelected()"
-                  @update:checked="value => row.toggleSelected(!!value)"
+                  :model-value="row.getIsSelected()"
+                  @update:model-value="value => row.toggleSelected(!!value)"
                   :aria-label="`Select row ${row.index + 1}`"
                 />
               </TableCell>
@@ -272,7 +272,7 @@ const table = useVueTable({
     get rowSelection() { return rowSelection.value },
   },
   enableRowSelection: props.selectable,
-  getRowId: props.getRowId,
+  getRowId: props.getRowId || ((row) => row.id),
   initialState: {
     pagination: {
       pageSize: props.pageSize,
@@ -290,7 +290,6 @@ watch(rowSelection, () => {
 
 // Update table data and reset selection when data changes
 watch(() => props.data, (newData) => {
-  console.log('DataTable data changed, updating table with:', newData?.length, 'rows')
   // Reset selection
   rowSelection.value = {}
   

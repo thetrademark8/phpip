@@ -1,25 +1,7 @@
 <template>
   <div class="space-y-4">
-    <!-- View Mode and Toggles -->
+    <!-- Toggles -->
     <div class="flex flex-wrap gap-4">
-      <!-- View Mode Toggle -->
-      <div class="flex items-center gap-2">
-        <Label>{{ t('matter.filters.view') }}:</Label>
-        <ToggleGroup
-          type="single"
-          v-model="internalViewMode"
-          class="justify-start"
-        >
-          <ToggleGroupItem value="actor" size="sm">
-            <Users class="mr-2 h-4 w-4" />
-            {{ t('matter.filters.actorView') }}
-          </ToggleGroupItem>
-          <ToggleGroupItem value="status" size="sm">
-            <FileCheck class="mr-2 h-4 w-4" />
-            {{ t('matter.filters.statusView') }}
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
 
       <!-- Switches -->
       <div class="flex items-center space-x-6">
@@ -101,8 +83,8 @@
         />
       </div>
 
-      <!-- Client (Actor View) -->
-      <div v-if="internalViewMode === 'actor' && $page.props.auth.user.role !== 'CLI'" class="space-y-2">
+      <!-- Client -->
+      <div v-if="$page.props.auth.user.role !== 'CLI'" class="space-y-2">
         <Label htmlFor="client-filter">{{ t('matter.filters.labels.client') }}</Label>
         <AutocompleteInput
           id="client-filter"
@@ -116,7 +98,7 @@
       </div>
 
       <!-- Client Reference -->
-      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="clref-filter">{{ t('matter.filters.labels.clientReference') }}</Label>
         <Input
           id="clref-filter"
@@ -128,7 +110,7 @@
       </div>
 
       <!-- Applicant -->
-      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="applicant-filter">{{ t('matter.filters.labels.applicant') }}</Label>
         <AutocompleteInput
           id="applicant-filter"
@@ -142,7 +124,7 @@
       </div>
 
       <!-- Agent -->
-      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="agent-filter">{{ t('matter.filters.labels.agent') }}</Label>
         <Input
           id="agent-filter"
@@ -154,7 +136,7 @@
       </div>
 
       <!-- Agent Reference -->
-      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="agtref-filter">{{ t('matter.filters.labels.agentReference') }}</Label>
         <Input
           id="agtref-filter"
@@ -178,7 +160,7 @@
       </div>
 
       <!-- Inventor -->
-      <div v-if="internalViewMode === 'actor'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="inventor-filter">{{ t('matter.filters.labels.inventor') }}</Label>
         <AutocompleteInput
           id="inventor-filter"
@@ -192,7 +174,7 @@
       </div>
 
       <!-- Status Date -->
-      <div v-if="internalViewMode === 'status'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="status-date-filter">{{ t('matter.filters.labels.statusDate') }}</Label>
         <DatePicker
           id="status-date-filter"
@@ -203,7 +185,7 @@
       </div>
 
       <!-- Filing Date -->
-      <div v-if="internalViewMode === 'status'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="filed-filter">{{ t('matter.filters.labels.filingDate') }}</Label>
         <DatePicker
           id="filed-filter"
@@ -214,7 +196,7 @@
       </div>
 
       <!-- Filing Number -->
-      <div v-if="internalViewMode === 'status'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="filno-filter">{{ t('matter.filters.labels.filingNumber') }}</Label>
         <Input
           id="filno-filter"
@@ -226,7 +208,7 @@
       </div>
 
       <!-- Publication Date -->
-      <div v-if="internalViewMode === 'status'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="pub-filter">{{ t('matter.filters.labels.publicationDate') }}</Label>
         <DatePicker
           id="pub-filter"
@@ -237,7 +219,7 @@
       </div>
 
       <!-- Publication Number -->
-      <div v-if="internalViewMode === 'status'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="pubno-filter">{{ t('matter.filters.labels.publicationNumber') }}</Label>
         <Input
           id="pubno-filter"
@@ -249,7 +231,7 @@
       </div>
 
       <!-- Grant Date -->
-      <div v-if="internalViewMode === 'status'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="granted-filter">{{ t('matter.filters.labels.grantDate') }}</Label>
         <DatePicker
           id="granted-filter"
@@ -260,7 +242,7 @@
       </div>
 
       <!-- Grant Number -->
-      <div v-if="internalViewMode === 'status'" class="space-y-2">
+      <div class="space-y-2">
         <Label htmlFor="grtno-filter">{{ t('matter.filters.labels.grantNumber') }}</Label>
         <Input
           id="grtno-filter"
@@ -278,14 +260,9 @@
 import { ref, watch, computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
-import { Users, FileCheck } from 'lucide-vue-next'
 import { Label } from '@/Components/ui/label'
 import { Input } from '@/Components/ui/input'
 import { Switch } from '@/Components/ui/switch'
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from '@/Components/ui/toggle-group'
 import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
 import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
 
@@ -294,28 +271,13 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  viewMode: {
-    type: String,
-    required: true,
-  },
 })
 
-const emit = defineEmits(['update:filters', 'update:view-mode'])
+const emit = defineEmits(['update:filters'])
 
 const { t } = useI18n()
 const page = usePage()
 
-// Computed property for internal view mode that syncs with tab
-const internalViewMode = computed({
-  get: () => props.filters.tab === 0 ? 'actor' : 'status',
-  set: (value) => {
-    emit('update:filters', { 
-      ...props.filters, 
-      tab: value === 'actor' ? 0 : 1 
-    })
-    emit('update:view-mode', value)
-  }
-})
 
 // Debounce timer
 let debounceTimer = null

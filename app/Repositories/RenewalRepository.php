@@ -16,7 +16,7 @@ class RenewalRepository implements RenewalRepositoryInterface
     {
         return Task::whereIn('id', $ids)
             ->where('code', 'REN')
-            ->with(['matter', 'event'])
+            ->with(['matter', 'matter.client', 'trigger'])
             ->get();
     }
 
@@ -24,7 +24,7 @@ class RenewalRepository implements RenewalRepositoryInterface
     {
         return Task::where('id', $id)
             ->where('code', 'REN')
-            ->with(['matter', 'event'])
+            ->with(['matter', 'trigger'])
             ->first();
     }
 
@@ -106,7 +106,7 @@ class RenewalRepository implements RenewalRepositoryInterface
     public function getForExport(array $filters = []): Collection
     {
         $query = Task::where('code', 'REN')
-            ->with(['matter', 'event', 'matter.actors']);
+            ->with(['matter', 'trigger', 'matter.actors']);
         
         if (!empty($filters['step'])) {
             $query->where('step', $filters['step']);
@@ -139,5 +139,39 @@ class RenewalRepository implements RenewalRepositoryInterface
                 $client = $task->matter->actors->where('role_code', 'CLI')->first();
                 return $client ? $client->id : 0;
             });
+    }
+
+    public function getRenewalsForInvoicing(array $ids): Collection
+    {
+        return Task::renewals()
+            ->whereIn('task.id', $ids)
+            ->orderBy('client_name')
+            ->get();
+    }
+
+    public function getRenewalsForExport(?array $filters = null): Collection
+    {
+        $query = Task::renewals();
+        
+        // Default filter for export: invoice_step = 1 (invoiced)
+        if (!$filters || !isset($filters['invoice_step'])) {
+            $query->where('invoice_step', 1);
+        }
+        
+        if ($filters) {
+            foreach ($filters as $key => $value) {
+                if ($value !== null && $value !== '') {
+                    match ($key) {
+                        'step' => $query->where('step', $value),
+                        'invoice_step' => $query->where('invoice_step', $value),
+                        'grace_period' => $query->where('grace_period', $value),
+                        'client_id' => $query->where('pmal_cli.actor_id', $value),
+                        default => null
+                    };
+                }
+            }
+        }
+        
+        return $query->orderBy('pmal_cli.actor_id')->get();
     }
 }

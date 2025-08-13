@@ -8,7 +8,7 @@
         </DialogDescription>
       </DialogHeader>
       
-      <div class="space-y-6 max-h-[70vh] overflow-y-auto">
+      <div class="space-y-6">
         <!-- Add Classifier Section -->
         <Card>
           <CardHeader>

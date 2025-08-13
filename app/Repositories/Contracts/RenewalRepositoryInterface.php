@@ -63,4 +63,14 @@ interface RenewalRepositoryInterface
      * Get renewals grouped by client
      */
     public function getGroupedByClient(array $ids): Collection;
+
+    /**
+     * Get renewals for invoicing process
+     */
+    public function getRenewalsForInvoicing(array $ids): Collection;
+
+    /**
+     * Get renewals for export process
+     */
+    public function getRenewalsForExport(?array $filters = null): Collection;
 }

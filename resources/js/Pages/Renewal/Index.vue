@@ -482,7 +482,7 @@ function handleAction(action) {
     case 'firstcall':
       // POST /renewal/call/1
       router.post('/renewal/call/1', params, {
-        preserveState: true,
+        preserveState: false,
         preserveScroll: true,
         onSuccess: (page) => {
           // Flash messages are handled by MainLayout watcher
@@ -554,7 +554,7 @@ function handleAction(action) {
   }
   
   router.post(route(routeName), params, {
-    preserveState: true,
+    preserveState: false,
     preserveScroll: true,
     onSuccess: (page) => {
       selectedRenewals.value = []
@@ -580,5 +580,19 @@ watch(() => props.renewals, () => {
 // Watch for myRenewalsOnly changes
 watch(myRenewalsOnly, () => {
   applyFilters()
+})
+
+// Watch for step changes from props
+watch(() => props.step, (newStep) => {
+  if (newStep !== undefined && newStep !== null) {
+    currentStep.value = parseInt(newStep)
+  }
+})
+
+// Watch for invoice_step changes from props
+watch(() => props.invoice_step, (newInvoiceStep) => {
+  if (newInvoiceStep !== undefined && newInvoiceStep !== null) {
+    currentInvoiceStep.value = parseInt(newInvoiceStep)
+  }
 })
 </script>

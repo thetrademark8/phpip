@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Traits\HasTableComments;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Actor extends Model
 {
-    use HasFactory, HasTableComments;
+    use HasFactory, HasTableComments, Notifiable;
 
     protected $table = 'actor';
 

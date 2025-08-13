@@ -76,7 +76,7 @@
                   <Button
                     variant="secondary"
                     size="sm"
-                    @click="clearSelectedTasks"
+                    @click="showTaskConfirmation"
                     :disabled="selectedTaskIds.length === 0"
                   >
                     {{ $t('Clear selected on') }}
@@ -110,7 +110,7 @@
                 <Button
                   variant="secondary"
                   size="sm"
-                  @click="clearSelectedRenewals"
+                  @click="showRenewalConfirmation"
                   :disabled="selectedRenewalIds.length === 0"
                 >
                   {{ $t('Clear selected on') }}
@@ -133,6 +133,32 @@
         </Card>
       </div>
     </div>
+
+    <!-- Task Confirmation Dialog -->
+    <ConfirmDialog
+      :open="showTaskConfirmDialog"
+      @update:open="showTaskConfirmDialog = $event"
+      :title="$t('Confirm Task Completion')"
+      :description="$t('This action will mark the selected tasks as completed.')"
+      :message="$t('Are you sure you want to mark {count} task(s) as completed on {date}?', { count: selectedTaskIds.length, date: taskClearDate })"
+      :confirm-text="$t('Complete Tasks')"
+      :cancel-text="$t('Cancel')"
+      type="default"
+      @confirm="clearSelectedTasks"
+    />
+
+    <!-- Renewal Confirmation Dialog -->
+    <ConfirmDialog
+      :open="showRenewalConfirmDialog"
+      @update:open="showRenewalConfirmDialog = $event"
+      :title="$t('Confirm Renewal Completion')"
+      :description="$t('This action will mark the selected renewals as completed.')"
+      :message="$t('Are you sure you want to mark {count} renewal(s) as completed on {date}?', { count: selectedRenewalIds.length, date: renewalClearDate })"
+      :confirm-text="$t('Complete Renewals')"
+      :cancel-text="$t('Cancel')"
+      type="default"
+      @confirm="clearSelectedRenewals"
+    />
   </MainLayout>
 </template>
 
@@ -153,6 +179,7 @@ import CategoryStats from '@/Components/dashboard/CategoryStats.vue'
 import UserTasksSummary from '@/Components/dashboard/UserTasksSummary.vue'
 import DashboardTaskList from '@/Components/dashboard/TaskList.vue'
 import RenewalList from '@/Components/dashboard/RenewalList.vue'
+import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
 
 const props = defineProps({
   categories: Array,
@@ -172,6 +199,10 @@ const selectedTaskIds = ref([])
 const selectedRenewalIds = ref([])
 const taskClearDate = ref(new Date().toISOString().split('T')[0])
 const renewalClearDate = ref(new Date().toISOString().split('T')[0])
+
+// Confirmation dialog state
+const showTaskConfirmDialog = ref(false)
+const showRenewalConfirmDialog = ref(false)
 
 
 // Update filters when radio selection changes
@@ -200,12 +231,15 @@ const onClientSelected = (client) => {
   updateFilters('2')
 }
 
+// Show task confirmation dialog
+const showTaskConfirmation = () => {
+  if (selectedTaskIds.value.length === 0) return
+  showTaskConfirmDialog.value = true
+}
+
 // Clear selected tasks
 const clearSelectedTasks = async () => {
-  if (selectedTaskIds.value.length === 0) {
-    alert('No tasks selected for clearing!')
-    return
-  }
+  showTaskConfirmDialog.value = false
 
   try {
     const response = await fetch('/matter/clear-tasks', {
@@ -227,20 +261,22 @@ const clearSelectedTasks = async () => {
       router.reload({ only: ['categories', 'tasksCount', 'tasks', 'renewals'] })
       selectedTaskIds.value = []
     } else {
-      alert('Error clearing tasks')
+      console.error('Error clearing tasks:', data)
     }
   } catch (error) {
     console.error('Error:', error)
-    alert('Error clearing tasks')
   }
+}
+
+// Show renewal confirmation dialog
+const showRenewalConfirmation = () => {
+  if (selectedRenewalIds.value.length === 0) return
+  showRenewalConfirmDialog.value = true
 }
 
 // Clear selected renewals
 const clearSelectedRenewals = async () => {
-  if (selectedRenewalIds.value.length === 0) {
-    alert('No renewals selected for clearing!')
-    return
-  }
+  showRenewalConfirmDialog.value = false
 
   try {
     const response = await fetch('/matter/clear-tasks', {
@@ -262,11 +298,10 @@ const clearSelectedRenewals = async () => {
       router.reload({ only: ['categories', 'tasksCount', 'tasks', 'renewals'] })
       selectedRenewalIds.value = []
     } else {
-      alert('Error clearing renewals')
+      console.error('Error clearing renewals:', data)
     }
   } catch (error) {
     console.error('Error:', error)
-    alert('Error clearing renewals')
   }
 }
 

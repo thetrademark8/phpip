@@ -16,7 +16,31 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Renewal service bindings
+        $this->app->bind(
+            \App\Services\Renewal\Contracts\RenewalInvoiceServiceInterface::class,
+            \App\Services\Renewal\RenewalInvoiceService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Renewal\Contracts\RenewalExportServiceInterface::class,
+            \App\Services\Renewal\RenewalExportService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Renewal\Contracts\RenewalOrderServiceInterface::class,
+            \App\Services\Renewal\RenewalOrderService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Renewal\Contracts\RenewalPaymentServiceInterface::class,
+            \App\Services\Renewal\RenewalPaymentService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Renewal\Contracts\RenewalLogServiceInterface::class,
+            \App\Services\Renewal\RenewalLogService::class
+        );
     }
 
     /**
