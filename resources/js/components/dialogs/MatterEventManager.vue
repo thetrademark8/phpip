@@ -26,7 +26,7 @@
                   <AutocompleteInput
                     v-model="addForm.code"
                     v-model:display-model-value="eventDisplay"
-                    endpoint="/event-name/autocomplete"
+                    endpoint="/event-name/autocomplete/1"
                     placeholder="Select event"
                     :min-length="0"
                     value-key="key"

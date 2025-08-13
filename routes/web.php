@@ -33,42 +33,6 @@ Auth::routes(['register' => false]);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    // Test route for Inertia setup
-    Route::get('/test-inertia', function () {
-        return inertia('Test');
-    })->name('test.inertia');
-    
-    // Test route for DatePicker
-    Route::get('/test-datepicker', function () {
-        return inertia('DatePickerTest');
-    })->name('test.datepicker');
-    
-    // Components showcase
-    Route::get('/test-components', function () {
-        return inertia('ComponentsShowcase');
-    })->name('test.components');
-    
-    // Forms test page
-    Route::get('/test-forms', function () {
-        return inertia('Test/Forms');
-    })->name('test.forms');
-    
-    // Dialog system test page
-    Route::get('/test-dialogs', function () {
-        return inertia('DialogTest');
-    })->name('test.dialogs');
-    
-    // Test form submission
-    Route::post('/test-date-submit', function () {
-        request()->validate([
-            'due_date' => 'nullable|date',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-        ]);
-        
-        return back()->with('success', 'Dates saved successfully!');
-    })->name('test.date.submit');
-    
     // Matter routes group
     Route::controller(MatterController::class)->prefix('matter')->name('matter.')->group(function () {
         Route::get('autocomplete', [AutocompleteController::class, 'matter'])->name('autocomplete');
@@ -164,27 +128,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store']);
         
         Route::apiResource('event', App\Http\Controllers\EventController::class);
-        Route::get('category/autocomplete', [App\Http\Controllers\CategoryController::class, 'autocomplete']);
         Route::resource('category', App\Http\Controllers\CategoryController::class);
         Route::resource('classifier_type', App\Http\Controllers\ClassifierTypeController::class);
-        Route::get('role/autocomplete', [App\Http\Controllers\RoleController::class, 'autocomplete']);
         Route::resource('role', App\Http\Controllers\RoleController::class);
         Route::resource('type', App\Http\Controllers\MatterTypeController::class);
-        Route::get('default_actor/autocomplete', [App\Http\Controllers\DefaultActorController::class, 'autocomplete']);
         Route::resource('default_actor', App\Http\Controllers\DefaultActorController::class);
-        Route::get('country/autocomplete', function (Illuminate\Http\Request $request) {
-            $query = $request->get('query', '');
-            $countries = App\Models\Country::where('name', 'like', "%{$query}%")
-                ->take(10)
-                ->get()
-                ->map(function ($country) {
-                    return [
-                        'id' => $country->iso,
-                        'name' => $country->name,
-                    ];
-                });
-            return response()->json($countries);
-        });
         Route::get('actor/{actor}/usedin', [App\Http\Controllers\ActorPivotController::class, 'usedIn']);
         Route::resource('eventname', App\Http\Controllers\EventNameController::class);
         Route::resource('rule', App\Http\Controllers\RuleController::class);

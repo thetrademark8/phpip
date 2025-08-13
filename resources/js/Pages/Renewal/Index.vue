@@ -371,10 +371,14 @@ function handleTabChange({ step, invoiceStep }) {
   if (step !== null) {
     params.step = step
     currentStep.value = step
+    // Clear invoice step when switching to step view
+    currentInvoiceStep.value = null
   }
   if (invoiceStep !== null) {
     params.invoice_step = invoiceStep
     currentInvoiceStep.value = invoiceStep
+    // Clear step when switching to invoice view
+    currentStep.value = null
   }
   if (myRenewalsOnly.value) {
     params.my_renewals = 1
@@ -503,7 +507,7 @@ function handleAction(action) {
     case 'renewalsSent':
       // POST /renewal/call/0
       router.post('/renewal/call/0', params, {
-        preserveState: true,
+        preserveState: false,
         preserveScroll: true,
         onSuccess: (page) => {
           selectedRenewals.value = []
@@ -529,7 +533,7 @@ function handleAction(action) {
     case 'invoice':
       // POST /renewal/invoice/1
       router.post('/renewal/invoice/1', params, {
-        preserveState: true,
+        preserveState: false,
         preserveScroll: true,
         onSuccess: (page) => {
           selectedRenewals.value = []
@@ -586,6 +590,11 @@ watch(myRenewalsOnly, () => {
 watch(() => props.step, (newStep) => {
   if (newStep !== undefined && newStep !== null) {
     currentStep.value = parseInt(newStep)
+    // Clear invoice step when step is set
+    currentInvoiceStep.value = null
+  } else if (newStep === null && props.invoice_step === null) {
+    // Both are null, set step to 0 (default)
+    currentStep.value = 0
   }
 })
 
@@ -593,6 +602,25 @@ watch(() => props.step, (newStep) => {
 watch(() => props.invoice_step, (newInvoiceStep) => {
   if (newInvoiceStep !== undefined && newInvoiceStep !== null) {
     currentInvoiceStep.value = parseInt(newInvoiceStep)
+    // Clear step when invoice_step is set
+    currentStep.value = null
   }
-})
+}, { immediate: true })
+
+// Watch for renewals changes to update invoice_step from data
+watch(() => props.renewals, (newRenewals) => {
+  // If we have renewals data and they have invoice_step, use the most common one
+  if (newRenewals?.data?.length > 0) {
+    const invoiceSteps = newRenewals.data.map(r => r.invoice_step).filter(s => s !== null && s !== undefined)
+    if (invoiceSteps.length > 0 && props.invoice_step === null) {
+      // Get the most common invoice_step
+      const stepCounts = invoiceSteps.reduce((acc, step) => {
+        acc[step] = (acc[step] || 0) + 1
+        return acc
+      }, {})
+      const mostCommonStep = Object.keys(stepCounts).reduce((a, b) => stepCounts[a] > stepCounts[b] ? a : b)
+      currentInvoiceStep.value = parseInt(mostCommonStep)
+    }
+  }
+}, { deep: true })
 </script>
