@@ -12,6 +12,10 @@
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
+            <exclude>tests/Feature/Renewal</exclude>
+        </testsuite>
+        <testsuite name="Functional">
+            <directory>tests/Feature/Renewal</directory>
         </testsuite>
     </testsuites>
     <source>

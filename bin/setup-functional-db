@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Create functional test database if it doesn't exist
+echo "Setting up functional test database..."
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS phpip_functional_tests CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;" 2>/dev/null
+
+if [ $? -eq 0 ]; then
+    echo "✅ Database 'phpip_functional_tests' is ready"
+else
+    echo "⚠️  Could not create database. It may already exist or you may need to adjust MySQL credentials."
+fi
+
+echo ""
+echo "You can now run tests with:"
+echo "  ./vendor/bin/pest tests/Feature/Renewal"
+echo "  ./vendor/bin/pest tests/Feature/Renewal --coverage"
