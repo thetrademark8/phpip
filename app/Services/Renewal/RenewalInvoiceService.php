@@ -4,7 +4,7 @@ namespace App\Services\Renewal;
 
 use App\Services\Renewal\Contracts\RenewalInvoiceServiceInterface;
 use App\Services\Renewal\Contracts\RenewalFeeCalculatorInterface;
-use App\DataTransferObjects\Renewal\ServiceResultDTO;
+use App\DataTransferObjects\Renewal\ActionResultDTO;
 use App\DataTransferObjects\Renewal\RenewalDTO;
 use App\Repositories\Contracts\RenewalRepositoryInterface;
 use Illuminate\Support\Facades\Log;
@@ -17,16 +17,16 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
         private RenewalFeeCalculatorInterface $feeCalculator
     ) {}
 
-    public function createInvoices(array $ids, bool $toInvoice = true): ServiceResultDTO
+    public function createInvoices(array $ids, bool $toInvoice = true): ActionResultDTO
     {
         if (empty($ids)) {
-            return new ServiceResultDTO(false, 'No renewal selected.');
+            return ActionResultDTO::error('No renewal selected.');
         }
 
         $renewals = $this->renewalRepository->getRenewalsForInvoicing($ids);
         
         if ($renewals->isEmpty()) {
-            return new ServiceResultDTO(false, 'No renewals found for invoicing.');
+            return ActionResultDTO::error('No renewals found for invoicing.');
         }
 
         $num = 0;
@@ -34,7 +34,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
         if (config('renewal.invoice.backend') === 'dolibarr' && $toInvoice) {
             $result = $this->processDolibarrInvoices($renewals);
             if (!$result['success']) {
-                return new ServiceResultDTO(false, $result['error']);
+                return ActionResultDTO::error($result['error']);
             }
             $num = $result['count'];
         } else {
@@ -44,7 +44,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
         // Update invoice step to 2 (invoiced)
         $this->renewalRepository->updateInvoiceStep($ids, 2);
 
-        return new ServiceResultDTO(true, "Invoices created for $num renewals");
+        return ActionResultDTO::success($num, "Invoices created for $num renewals");
     }
 
     public function searchClient(string $clientName): array

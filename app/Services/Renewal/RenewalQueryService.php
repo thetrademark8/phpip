@@ -24,6 +24,40 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         return $query;
     }
 
+    /**
+     * Get renewal statistics for dashboard
+     * Moved from RenewalController for better separation of concerns
+     * 
+     * @return array Statistics by step and invoice step
+     */
+    public function getRenewalStats(): array
+    {
+        $filters = new RenewalFilterDTO();
+        
+        // Get counts by step
+        $stepCounts = [];
+        for ($step = 0; $step <= 5; $step++) {
+            $filters->step = $step;
+            $query = $this->buildQuery($filters);
+            $stepCounts["step_$step"] = $query->count();
+        }
+        
+        // Get counts by invoice step
+        $invoiceStepCounts = [];
+        $filters->step = null;
+        for ($invoiceStep = 0; $invoiceStep <= 3; $invoiceStep++) {
+            $filters->invoiceStep = $invoiceStep;
+            $query = $this->buildQuery($filters);
+            $invoiceStepCounts["invoice_step_$invoiceStep"] = $query->count();
+        }
+        
+        return [
+            'by_step' => $stepCounts,
+            'by_invoice_step' => $invoiceStepCounts,
+            'total_active' => array_sum($stepCounts),
+        ];
+    }
+
     public function applyFilters(Builder $query, array $filters): Builder
     {
         foreach ($filters as $key => $value) {
@@ -101,22 +135,22 @@ class RenewalQueryService implements RenewalQueryServiceInterface
 
     private function applyStepFilters(Builder $query, RenewalFilterDTO $filters): Builder
     {
-        $step = $filters->step ?? 0;
-
-        // Use whereRaw without table prefix and as string to match old query
-        $query->where('step', $step);
-
-        // Only add matter.dead = 0 when explicitly filtering by step=0
-        if ($step == 0) {
-            $query->where('matter.dead', 0);
-        }
-        
+        // Apply step OR invoice_step filter, not both
         if ($filters->invoiceStep !== null) {
-            // Use whereRaw without table prefix and as string to match old query
+            // When filtering by invoice_step, don't apply step filter
             $query->whereRaw('invoice_step = ?', [(string)$filters->invoiceStep]);
             
             // When filtering by invoice_step, also add matter.dead = 0
             $query->where('matter.dead', 0);
+        } else {
+            // Only apply step filter if not filtering by invoice_step
+            $step = $filters->step ?? 0;
+            $query->where('step', $step);
+
+            // Only add matter.dead = 0 when explicitly filtering by step=0
+            if ($step == 0) {
+                $query->where('matter.dead', 0);
+            }
         }
 
         // Check if we have step or invoice filters from the filters array

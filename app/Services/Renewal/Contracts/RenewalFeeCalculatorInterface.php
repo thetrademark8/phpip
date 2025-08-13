@@ -13,17 +13,7 @@ interface RenewalFeeCalculatorInterface
     public function calculate(RenewalDTO $renewal): RenewalFeeDTO;
 
     /**
-     * Adjust fees for grace period
-     */
-    public function adjustForGracePeriod(RenewalFeeDTO $fee, bool $gracePeriod, ?string $doneDate = null): RenewalFeeDTO;
-
-    /**
-     * Apply discount to fees
-     */
-    public function applyDiscount(RenewalFeeDTO $fee, float $discount): RenewalFeeDTO;
-
-    /**
      * Calculate fees for a collection of renewals
      */
-    public function calculateBatch(array $renewals): array;
+    public function calculateBatch(\Illuminate\Support\Collection $renewals): array;
 }

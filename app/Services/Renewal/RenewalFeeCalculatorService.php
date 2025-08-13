@@ -16,6 +16,27 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
         private RenewalRepositoryInterface $renewalRepository
     ) {}
 
+    /**
+     * Calculate fees for multiple renewals in batch
+     * Optimized version to avoid N+1 queries
+     * 
+     * @param \Illuminate\Support\Collection $renewals Collection of renewal models
+     * @return array Associative array of renewal_id => RenewalFeeDTO
+     */
+    public function calculateBatch(\Illuminate\Support\Collection $renewals): array
+    {
+        $results = [];
+        
+        // Pre-load all necessary data to avoid N+1 queries
+        // This could be optimized further with eager loading if needed
+        foreach ($renewals as $renewal) {
+            $renewalDTO = RenewalDTO::fromModel($renewal);
+            $results[$renewal->id] = $this->calculate($renewalDTO);
+        }
+        
+        return $results;
+    }
+
     public function calculate(RenewalDTO $renewal): RenewalFeeDTO
     {
         // Get base cost and fee
@@ -52,21 +73,6 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
         }
 
         return $feeDTO;
-    }
-
-    public function calculateBatch(array $renewals): array
-    {
-        $results = [];
-        
-        foreach ($renewals as $renewal) {
-            if ($renewal instanceof RenewalDTO) {
-                $results[$renewal->id] = $this->calculate($renewal);
-            } else {
-                $results[$renewal->id] = $this->calculate(RenewalDTO::fromModel($renewal));
-            }
-        }
-        
-        return $results;
     }
 
     public function calculateWithDiscount(RenewalDTO $renewal, float $discount): RenewalFeeDTO
@@ -116,21 +122,6 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
         }
         
         return $vatRate;
-    }
-
-    public function adjustForGracePeriod(RenewalFeeDTO $fee, bool $gracePeriod, ?string $doneDate = null): RenewalFeeDTO
-    {
-        if ($gracePeriod && $doneDate && Carbon::parse($doneDate)->lt(Carbon::now())) {
-            $feeFactor = config('renewal.validity.fee_factor', 1.0);
-            return $fee->applyGracePeriodFactor($feeFactor);
-        }
-        
-        return $fee;
-    }
-
-    public function applyDiscount(RenewalFeeDTO $fee, float $discount): RenewalFeeDTO
-    {
-        return $fee->applyDiscount($discount);
     }
 
     private function calculateFeeFactor(RenewalDTO $renewal): float

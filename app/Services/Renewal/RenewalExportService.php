@@ -16,6 +16,45 @@ class RenewalExportService implements RenewalExportServiceInterface
         private RenewalFeeCalculatorInterface $feeCalculator
     ) {}
 
+    /**
+     * Generate payment XML for selected renewals
+     * Moved from RenewalController for better separation of concerns
+     * 
+     * @param array $ids Array of renewal IDs
+     * @return string XML content
+     */
+    public function generatePaymentXml(array $ids): string
+    {
+        $renewals = $this->renewalRepository->getGroupedByClient($ids);
+        
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><payments></payments>');
+        
+        foreach ($renewals as $clientId => $clientRenewals) {
+            $payment = $xml->addChild('payment');
+            $payment->addChild('client_id', $clientId);
+            
+            $total = 0;
+            foreach ($clientRenewals as $renewal) {
+                $item = $payment->addChild('renewal');
+                $item->addChild('id', $renewal->id);
+                $item->addChild('caseref', $renewal->caseref);
+                $item->addChild('detail', $renewal->detail);
+                $item->addChild('due_date', $renewal->due_date);
+                
+                $feeDTO = $this->feeCalculator->calculate(RenewalDTO::fromModel($renewal));
+                $item->addChild('cost', $feeDTO->cost);
+                $item->addChild('fee', $feeDTO->fee);
+                $item->addChild('total', $feeDTO->total);
+                
+                $total += $feeDTO->total;
+            }
+            
+            $payment->addChild('total_amount', $total);
+        }
+        
+        return $xml->asXML();
+    }
+
     public function exportToCsv(Collection $renewals): StreamedResponse
     {
         // Transform renewals to include calculated fees

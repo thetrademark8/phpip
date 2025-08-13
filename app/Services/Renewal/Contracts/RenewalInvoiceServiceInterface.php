@@ -2,7 +2,7 @@
 
 namespace App\Services\Renewal\Contracts;
 
-use App\DataTransferObjects\Renewal\ServiceResultDTO;
+use App\DataTransferObjects\Renewal\ActionResultDTO;
 
 interface RenewalInvoiceServiceInterface
 {
@@ -11,9 +11,9 @@ interface RenewalInvoiceServiceInterface
      *
      * @param array $ids Array of renewal task IDs
      * @param bool $toInvoice Whether to actually create invoices or just validate
-     * @return ServiceResultDTO
+     * @return ActionResultDTO
      */
-    public function createInvoices(array $ids, bool $toInvoice = true): ServiceResultDTO;
+    public function createInvoices(array $ids, bool $toInvoice = true): ActionResultDTO;
 
     /**
      * Search for a client in Dolibarr by name

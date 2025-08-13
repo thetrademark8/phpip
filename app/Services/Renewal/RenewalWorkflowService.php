@@ -312,51 +312,6 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * @param int $toStep Target workflow step
      * @return bool True if the transition is allowed, false otherwise
      */
-    public function canTransition(int $fromStep, int $toStep): bool
-    {
-        // Define valid transitions
-        $validTransitions = [
-            0 => [1, 2, 10, 11],    // Open can go to Instructions, Reminder, Closed, Abandoned
-            1 => [2, 3, 10, 11],    // Instructions can go to Reminder, Payment, Closed, Abandoned
-            2 => [3, 4, 10, 11],    // Reminder can go to Payment, Invoiced, Closed, Abandoned
-            3 => [4, 10, 11],       // Payment can go to Invoiced, Closed, Abandoned
-            4 => [5, 10, 11],       // Invoiced can go to Receipts, Closed, Abandoned
-            5 => [10, 11],          // Receipts can go to Closed, Abandoned
-            10 => [],               // Closed is final
-            11 => [],               // Abandoned is final
-        ];
-        
-        if (!isset($validTransitions[$fromStep])) {
-            return false;
-        }
-        
-        return in_array($toStep, $validTransitions[$fromStep]);
-    }
-
-    /**
-     * Get the next sequential workflow step.
-     *
-     * Returns the next logical step in the standard workflow progression.
-     * This represents the typical flow, though steps can be skipped using
-     * canTransition() validation.
-     *
-     * @param int $currentStep Current workflow step
-     * @return int|null Next step number, or null if current step is terminal (10, 11)
-     */
-    public function getNextStep(int $currentStep): ?int
-    {
-        $nextSteps = [
-            0 => 1,  // Open -> Instructions
-            1 => 2,  // Instructions -> Reminder
-            2 => 3,  // Reminder -> Payment
-            3 => 4,  // Payment -> Invoiced
-            4 => 5,  // Invoiced -> Receipts
-            5 => 10, // Receipts -> Closed
-        ];
-        
-        return $nextSteps[$currentStep] ?? null;
-    }
-
     /**
      * Validate if a workflow step value is valid.
      *
@@ -524,5 +479,81 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
             'detail' => 'Renewal abandoned',
             'notes' => 'Renewal ' . $renewal->id . ' abandoned',
         ]);
+    }
+
+    /**
+     * Create renewal orders for selected renewals.
+     * Moves renewals to step 4 (payment order) and invoice step 1 (invoiced).
+     * 
+     * Previously in RenewalOrderService, now integrated directly.
+     *
+     * @param array<int> $ids Array of renewal IDs
+     * @return ActionResultDTO Result of the operation
+     */
+    public function createOrders(array $ids): ActionResultDTO
+    {
+        if (empty($ids)) {
+            return ActionResultDTO::error('No renewals selected');
+        }
+
+        // Move to step 4 (payment order) and invoice step 1 (invoiced)
+        $result = $this->updateStepAndInvoiceStep($ids, 4, 1);
+        
+        if ($result->success) {
+            return ActionResultDTO::success($result->affectedCount ?? count($ids), 'Renewal orders created successfully');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Mark renewals as invoiced.
+     * Updates invoice step to 2 (invoiced).
+     * 
+     * Previously in RenewalOrderService, now integrated directly.
+     *
+     * @param array<int> $ids Array of renewal IDs
+     * @return ActionResultDTO Result of the operation
+     */
+    public function markInvoiced(array $ids): ActionResultDTO
+    {
+        if (empty($ids)) {
+            return ActionResultDTO::error('No renewals selected');
+        }
+
+        // Update invoice step to 2 (invoiced)
+        $result = $this->updateInvoiceStep($ids, 2);
+        
+        if ($result->success) {
+            return ActionResultDTO::success($result->affectedCount ?? count($ids), 'Renewals marked as invoiced');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Mark renewals as paid.
+     * Updates invoice step to 3 (paid).
+     * 
+     * Previously in RenewalPaymentService, now integrated directly.
+     *
+     * @param array<int> $ids Array of renewal IDs
+     * @return ActionResultDTO Result of the operation
+     */
+    public function markPaid(array $ids): ActionResultDTO
+    {
+        if (empty($ids)) {
+            return ActionResultDTO::error('No renewals selected');
+        }
+
+        // Update invoice step to 3 (paid)
+        $result = $this->updateInvoiceStep($ids, 3);
+        
+        if ($result->success) {
+            $count = $result->affectedCount ?? count($ids);
+            return ActionResultDTO::success($count, "$count invoices paid");
+        }
+
+        return $result;
     }
 }

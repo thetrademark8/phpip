@@ -55,11 +55,6 @@ class RenewalEmailService implements RenewalEmailServiceInterface
         return $result;
     }
 
-    public function sendFormalCall(array $ids): ActionResultDTO
-    {
-        return $this->sendCalls($ids, ['formal'], true, 6);
-    }
-
     public function sendInvoice(array $ids): ActionResultDTO
     {
         try {
