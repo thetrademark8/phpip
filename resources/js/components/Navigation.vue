@@ -44,9 +44,6 @@
                   <Link href="/matter">{{ $t('All') }}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem as-child>
-                  <Link href="/matter?display_with=PAT">{{ $t('Patents') }}</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem as-child>
                   <Link href="/matter?display_with=TM">{{ $t('Trademarks') }}</Link>
                 </DropdownMenuItem>
                 <template v-if="canWrite">
