@@ -1,3 +1,7 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the Vue.js MatterDialog component instead.
+Date deprecated: 2025-08-13 --}}
+
 <form id="createMatterForm" autocomplete="off">
   <input type="hidden" name="operation" value="{{ $operation ?? "new" }}">
   <div class="row mb-2">

@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 <div class="{{ isset($isProfileView) && $isProfileView ? 'row' : '' }}">
   <div class="{{ isset($isProfileView) && $isProfileView ? 'col-md-6' : '' }}">
     <div class="card mb-3">

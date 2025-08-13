@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 <div data-resource="/template-member/{{ $templateMember->id }}">
   <table class="table">
     <tr>

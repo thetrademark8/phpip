@@ -1,3 +1,7 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the Vue.js Matter component instead.
+Date deprecated: 2025-08-13 --}}
+
 @inject('sharePoint', 'App\Services\SharePointService')
 @php
 $titles = $matter->titles->groupBy('type_name');

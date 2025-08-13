@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 <form id="natMatterForm">
 	<input type="hidden" name="caseref" value="{{ $parent_matter->caseref }}" />
 	<input type="hidden" name="category_code" value="{{ $parent_matter->category_code }}" />

@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 @php
 $mdeps = $matter_dependencies->groupBy('role');
 $adeps = $other_dependencies->groupBy('Dependency');

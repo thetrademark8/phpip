@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 <div class="card" style="height: 480px;">
   <nav class="nav nav-tabs nav-fill">
     <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#actorMain">{{ __('Main') }}</button>

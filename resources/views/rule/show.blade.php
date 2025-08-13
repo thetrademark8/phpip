@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 <div class="card reload-part" style="height: 480px;">
   <div class="nav nav-pills nav-fill" role="tablist">
     <a class="nav-item nav-link active p-2" data-bs-toggle="tab" href="#ruleMain" role="tab">{{ __('Main') }}</a>

@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 @php
   // Get the collection from the matter
   $classifiersCollection = $matter->classifiers ?? collect(); // Use loaded relationship or fallback

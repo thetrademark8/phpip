@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 <table class="table table-striped table-sm mb-1" style="width: 100%; table-layout: fixed;">
   @foreach ($tasks as $task)
   <tr class="row g-0">

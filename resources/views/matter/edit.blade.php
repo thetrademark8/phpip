@@ -1,3 +1,6 @@
+{{-- DEPRECATED: This Blade view is deprecated and will be removed.
+Please use the corresponding Vue.js component instead.
+Date deprecated: 2025-08-13 --}}
 <div class="alert alert-info">{{ __('Some fields cannot be changed once the matter is filed, because this would affect the deadline calculations') }}</div>
 <form data-resource="/matter/{{ $matter->id }}">
   <table class="table">
