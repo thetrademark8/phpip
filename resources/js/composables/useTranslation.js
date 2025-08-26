@@ -55,7 +55,7 @@ export function useTranslatedField() {
   // Get current locale from Inertia shared data
   const locale = computed(() => usePage().props.locale || 'en')
   
-  const { t, locale } = useI18n()
+  const { t } = useI18n()
   
   /**
    * Get translated value for a field
@@ -75,6 +75,7 @@ export function useTranslatedField() {
   }
   
   return {
+    t,
     locale,
     translated,
     translatedComputed,
