@@ -35,6 +35,21 @@
           </Button>
         </div>
 
+        <!-- Show restriction summary if any fields are restricted -->
+        <div v-if="hasRestrictedFields" class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mb-6">
+          <div class="flex items-start gap-2">
+            <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p class="font-medium text-orange-800 dark:text-orange-200 text-sm">
+                {{ t('Some actor fields are restricted') }}
+              </p>
+              <p class="text-xs text-orange-700 dark:text-orange-300 mt-1">
+                {{ t('Fields marked with a lock icon cannot be edited based on your user role and actor type. Contact an administrator if you need to modify these fields.') }}
+              </p>
+            </div>
+          </div>
+        </div>
+        
         <!-- Tabbed Content -->
         <Tabs default-value="main" class="w-full">
           <TabsList class="grid w-full grid-cols-4">
@@ -48,11 +63,28 @@
           <TabsContent value="main" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label class="mb-2">{{ t('actors.fields.name') }}</Label>
+                <div class="flex items-center gap-2 mb-2">
+                  <Label>{{ t('actors.fields.name') }}</Label>
+                  <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
+                    <Lock class="h-3 w-3 text-muted-foreground" />
+                    <div class="relative group">
+                      <AlertCircle 
+                        class="h-3 w-3 text-orange-500 cursor-help" 
+                        @click="showRestrictionFeedback('name')"
+                      />
+                      <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        {{ getTranslatedRestrictionReason('name') }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <Input
                   v-model="actorForm.name"
-                  :disabled="!isEditMode && operation !== 'create'"
+                  :disabled="!isFieldEditable('name') || (!isEditMode && operation !== 'create')"
                   :placeholder="t('actors.placeholders.name')"
+                  :class="{
+                    'bg-muted/50 cursor-not-allowed text-muted-foreground opacity-75': !isFieldEditable('name')
+                  }"
                 />
               </div>
               <div>
@@ -377,7 +409,7 @@
       <DialogFooter>
         <div class="flex justify-between w-full">
           <Button
-              v-if="canWrite && isEditMode && operation !== 'create'"
+              v-if="canDelete && operation !== 'create'"
               @click="confirmDelete"
               variant="destructive"
           >
@@ -423,8 +455,11 @@ import {
   Loader2,
   AlertTriangle,
   Edit,
-  Trash2
+  Trash2,
+  Lock,
+  AlertCircle
 } from 'lucide-vue-next'
+import { usePermissions } from '@/composables/usePermissions'
 import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
 import DialogSkeleton from '@/Components/ui/skeleton/DialogSkeleton.vue'
 import {
@@ -507,6 +542,66 @@ const actorForm = useForm({
   site_id: ''
 })
 
+// Permissions composables
+const isCreateMode = computed(() => operation.value === 'create')
+const actorType = computed(() => {
+  if (actor.value) {
+    return actor.value.phy_person ? 'individual' : 'company'
+  }
+  return actorForm.phy_person ? 'individual' : 'company'
+})
+
+// Use simple permissions composable
+const { role, isAdmin, canWrite, hasRole } = usePermissions()
+
+// Simple permission logic - either can edit all fields or none
+const canEdit = computed(() => canWrite.value)
+const canDelete = computed(() => isAdmin.value)
+
+// Ultra-simple field editing - all fields follow same rule
+const isFieldEditable = (field) => canWrite.value
+
+// Simple restriction message - same for all fields
+const getTranslatedRestrictionReason = (fieldName) => {
+  return t('You do not have permission to modify actor data')
+}
+
+const showRestrictionFeedback = (fieldName) => {
+  const reason = getTranslatedRestrictionReason(fieldName)
+  if (reason) {
+    const notification = document.createElement('div')
+    notification.className = 'fixed top-4 right-4 bg-orange-100 dark:bg-orange-900 border border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-lg shadow-lg z-50 max-w-sm'
+    notification.innerHTML = `
+      <div class="flex items-start gap-2">
+        <svg class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+        <div>
+          <p class="font-medium text-sm">${t('Field Restricted')}</p>
+          <p class="text-xs mt-1">${reason}</p>
+        </div>
+      </div>
+    `
+    document.body.appendChild(notification)
+    
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification)
+      }
+    }, 5000)
+  }
+}
+
+// Check for restricted fields
+// Simple permission checks - either can edit everything or nothing
+const hasRestrictedFields = computed(() => {
+  return !canWrite.value
+})
+
+const hasEditableFields = computed(() => {
+  return canWrite.value
+})
+
 // Display values for autocomplete fields
 const countryDisplay = ref('')
 const nationalityDisplay = ref('')
@@ -517,11 +612,6 @@ const parentDisplay = ref('')
 const siteDisplay = ref('')
 const defaultRoleDisplay = ref('')
 
-// Check permissions
-const canWrite = computed(() => {
-  const user = page.props.auth?.user
-  return user?.role !== 'CLI'
-})
 
 // Group matter dependencies by role
 const groupedMatterDependencies = computed(() => {
@@ -683,33 +773,6 @@ function toggleEditMode() {
     populateForm()
   }
   isEditMode.value = !isEditMode.value
-}
-
-function handleUpdate(field, value) {
-  // Refresh actor data after update
-  if (actor.value) {
-    fetchActorData(actor.value.id)
-  }
-}
-
-async function updateCheckbox(field, checked) {
-  try {
-    const response = await fetch(`/actor/${actor.value.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': page.props.csrf_token,
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      body: JSON.stringify({ [field]: checked })
-    })
-    
-    if (response.ok) {
-      fetchActorData(actor.value.id)
-    }
-  } catch (error) {
-    console.error('Failed to update actor:', error)
-  }
 }
 
 function navigateToMatter(matterId) {

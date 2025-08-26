@@ -10,7 +10,7 @@
           </p>
         </div>
         <div class="flex gap-2">
-          <Button @click="openCreateDialog" v-if="canWrite" size="sm">
+          <Button @click="openCreateDialog" v-if="canCreateActor" size="sm">
             <Plus class="mr-2 h-4 w-4" />
             {{ t('actors.index.create') }}
           </Button>
@@ -134,6 +134,7 @@ import {
   CollapsibleTrigger,
 } from '@/Components/ui/collapsible'
 import { useActorFilters } from '@/composables/useActorFilters'
+import { usePermissions } from '@/composables/usePermissions'
 
 const props = defineProps({
   actors: Object,
@@ -170,11 +171,14 @@ const {
   getApiParams
 } = useActorFilters(props.filters)
 
-// Check permissions
-const canWrite = computed(() => {
-  const user = usePage().props.auth?.user
-  return user?.can_write
-})
+// Use simple permissions composable
+const { role, isAdmin, isClient, canWrite, canRead, hasRole } = usePermissions()
+
+// Simple action permissions
+const canCreateActor = canWrite.value
+const canViewActor = canRead.value
+const canEditActor = canWrite.value
+const canDeleteActor = isAdmin.value
 
 // Create a debounced version of applyFilters
 const debouncedApplyFilters = debounce(() => {
@@ -191,16 +195,20 @@ const tableColumns = computed(() => [
   {
     accessorKey: 'name',
     header: t('actors.columns.name'),
-    cell: ({ row }) => h('div', { 
-      class: [
-        'font-medium cursor-pointer hover:underline',
-        row.original.warn ? 'text-destructive' : 'text-primary'
-      ],
-      onClick: () => showActor(row.original.id)
-    }, [
-      row.original.name,
-      row.original.warn && h(AlertTriangle, { class: 'inline ml-1 h-4 w-4' })
-    ]),
+    cell: ({ row }) => {
+      const canView = canViewActor
+      return h('div', { 
+        class: [
+          'font-medium',
+          canView ? 'cursor-pointer hover:underline text-primary' : 'text-muted-foreground cursor-not-allowed',
+          row.original.warn && canView ? 'text-destructive' : ''
+        ],
+        onClick: canView ? () => showActor(row.original.id) : null
+      }, [
+        row.original.name,
+        row.original.warn && canView && h(AlertTriangle, { class: 'inline ml-1 h-4 w-4' })
+      ])
+    },
   },
   {
     accessorKey: 'first_name',
@@ -281,6 +289,13 @@ function goToPage(page) {
 }
 
 function showActor(actorId) {
+  // Find the actor to check permissions
+  const actor = props.actors.data?.find(a => a.id === actorId)
+  if (!actor || !canViewActor) {
+    console.warn('Access denied to view actor')
+    return
+  }
+  
   selectedActorId.value = actorId
   dialogOperation.value = 'view'
   isActorDialogOpen.value = true

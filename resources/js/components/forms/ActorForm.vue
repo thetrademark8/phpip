@@ -1,6 +1,20 @@
 <template>
   <form @submit.prevent="handleSubmit">
     <div class="space-y-6">
+      <!-- Show restriction summary if any fields are restricted -->
+      <div v-if="hasRestrictedFields" class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+        <div class="flex items-start gap-2">
+          <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p class="font-medium text-orange-800 dark:text-orange-200 text-sm">
+              {{ t('Some actor fields are restricted') }}
+            </p>
+            <p class="text-xs text-orange-700 dark:text-orange-300 mt-1">
+              {{ t('Fields marked with a lock icon cannot be edited based on your user role and actor type. Contact an administrator if you need to modify these fields.') }}
+            </p>
+          </div>
+        </div>
+      </div>
       <!-- Basic Information -->
       <div class="space-y-4">
         <h3 class="text-lg font-semibold">Basic Information</h3>
@@ -8,28 +22,68 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Name -->
           <FormField
-            label="Name"
             name="name"
             :error="form.errors.name"
             required
             help-text="Last name or company name"
           >
+            <template #label>
+              <div class="flex items-center gap-2">
+                <span>Name</span>
+                <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
+                  <Lock class="h-3 w-3 text-muted-foreground" />
+                  <div class="relative group">
+                    <AlertCircle 
+                      class="h-3 w-3 text-orange-500 cursor-help" 
+                      @click="showRestrictionFeedback('name')"
+                    />
+                    <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      {{ getTranslatedRestrictionReason('name') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
             <Input
               v-model="form.name"
               placeholder="NAME Firstname"
+              :disabled="!isFieldEditable('name')"
+              :class="{
+                'bg-muted/50 cursor-not-allowed text-muted-foreground opacity-75': !isFieldEditable('name')
+              }"
             />
           </FormField>
 
           <!-- First name -->
           <FormField
-            label="First name"
             name="first_name"
             :error="form.errors.first_name"
             help-text="For individuals only"
           >
+            <template #label>
+              <div class="flex items-center gap-2">
+                <span>First name</span>
+                <div v-if="!isFieldEditable('first_name')" class="flex items-center gap-1">
+                  <Lock class="h-3 w-3 text-muted-foreground" />
+                  <div class="relative group">
+                    <AlertCircle 
+                      class="h-3 w-3 text-orange-500 cursor-help" 
+                      @click="showRestrictionFeedback('first_name')"
+                    />
+                    <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      {{ getTranslatedRestrictionReason('first_name') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
             <Input
               v-model="form.first_name"
               placeholder="Optional"
+              :disabled="!isFieldEditable('first_name')"
+              :class="{
+                'bg-muted/50 cursor-not-allowed text-muted-foreground opacity-75': !isFieldEditable('first_name')
+              }"
             />
           </FormField>
 
@@ -128,14 +182,34 @@
 
           <!-- Email -->
           <FormField
-            label="Email"
             name="email"
             :error="form.errors.email"
           >
+            <template #label>
+              <div class="flex items-center gap-2">
+                <span>Email</span>
+                <div v-if="!isFieldEditable('email')" class="flex items-center gap-1">
+                  <Lock class="h-3 w-3 text-muted-foreground" />
+                  <div class="relative group">
+                    <AlertCircle 
+                      class="h-3 w-3 text-orange-500 cursor-help" 
+                      @click="showRestrictionFeedback('email')"
+                    />
+                    <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      {{ getTranslatedRestrictionReason('email') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
             <Input
               v-model="form.email"
               type="email"
               placeholder="email@example.com"
+              :disabled="!isFieldEditable('email')"
+              :class="{
+                'bg-muted/50 cursor-not-allowed text-muted-foreground opacity-75': !isFieldEditable('email')
+              }"
             />
           </FormField>
 
@@ -161,12 +235,14 @@
 <script setup>
 import { computed, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-import { Loader2 } from 'lucide-vue-next'
+import { Loader2, Lock, AlertCircle } from 'lucide-vue-next'
 import { Button } from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
 import FormField from '@/Components/ui/form/FormField.vue'
 import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+import { useActorCreationPermissions, useActorInstancePermissions } from '@/composables/permissions'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   actor: {
@@ -177,6 +253,111 @@ const props = defineProps({
     type: Function,
     default: null
   }
+})
+
+const { t } = useI18n()
+
+// Use appropriate permissions composable based on operation type
+const isCreateMode = computed(() => !props.actor)
+const actorType = computed(() => {
+  if (props.actor) {
+    return props.actor.phy_person ? 'individual' : 'company'
+  }
+  return 'individual' // Default for new actors
+})
+
+// Use different permissions composables based on mode
+const createPermissions = useActorCreationPermissions(actorType.value)
+const instancePermissions = props.actor ? useActorInstancePermissions(props.actor) : null
+
+// Get the appropriate permissions based on mode
+const {
+  canEditActorField,
+  getActorFieldRestrictionReason,
+  isActorFieldApplicable,
+  getEditableActorFields,
+  getRestrictedActorFields
+} = isCreateMode.value ? createPermissions : instancePermissions
+
+// Helper functions for permission UI
+const isFieldEditable = (fieldName) => {
+  if (isCreateMode.value) {
+    return createPermissions.canEditActorField(null, fieldName)
+  }
+  return instancePermissions?.canEditActorField(props.actor, fieldName) ?? false
+}
+
+const getTranslatedRestrictionReason = (fieldName) => {
+  const reason = isCreateMode.value 
+    ? createPermissions.getActorFieldRestrictionReason(null, fieldName)
+    : instancePermissions?.getActorFieldRestrictionReason(props.actor, fieldName)
+  
+  if (typeof reason === 'string') {
+    return reason
+  }
+  
+  if (reason && typeof reason === 'object') {
+    if (reason.fieldSpecific) {
+      const fieldSpecificTranslation = t(reason.fieldSpecific)
+      if (fieldSpecificTranslation !== reason.fieldSpecific) {
+        return fieldSpecificTranslation
+      }
+    }
+    
+    if (reason.actorType) {
+      const actorTypeTranslation = t(reason.actorType)
+      if (actorTypeTranslation !== reason.actorType) {
+        return actorTypeTranslation
+      }
+    }
+    
+    if (reason.roleLevel) {
+      const roleLevelTranslation = t(reason.roleLevel)
+      if (roleLevelTranslation !== reason.roleLevel) {
+        return roleLevelTranslation
+      }
+    }
+    
+    return reason.fallback || t('actor.restrictions.readonly_field')
+  }
+  
+  return t('actor.restrictions.readonly_field')
+}
+
+const showRestrictionFeedback = (fieldName) => {
+  const reason = getTranslatedRestrictionReason(fieldName)
+  if (reason) {
+    const notification = document.createElement('div')
+    notification.className = 'fixed top-4 right-4 bg-orange-100 dark:bg-orange-900 border border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-lg shadow-lg z-50 max-w-sm'
+    notification.innerHTML = `
+      <div class="flex items-start gap-2">
+        <svg class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+        <div>
+          <p class="font-medium text-sm">${t('Field Restricted')}</p>
+          <p class="text-xs mt-1">${reason}</p>
+        </div>
+      </div>
+    `
+    document.body.appendChild(notification)
+    
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification)
+      }
+    }, 5000)
+  }
+}
+
+// Check if there are restricted fields
+const formFields = ['name', 'first_name', 'display_name', 'company_id', 'default_role', 'function', 'address', 'country', 'email', 'phone']
+const hasRestrictedFields = computed(() => {
+  return formFields.some(field => !isFieldEditable(field))
+})
+
+const hasEditableFields = computed(() => {
+  return formFields.some(field => isFieldEditable(field))
 })
 
 // Initialize form with actor data or defaults

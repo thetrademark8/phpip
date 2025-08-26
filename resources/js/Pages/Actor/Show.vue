@@ -18,26 +18,73 @@
         <TabsContent value="main">
           <Card>
             <CardContent class="pt-6">
+              <!-- Show restriction summary if any fields are restricted -->
+              <div v-if="hasRestrictedFieldsInActor" class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mb-6">
+                <div class="flex items-start gap-2">
+                  <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p class="font-medium text-orange-800 dark:text-orange-200 text-sm">
+                      {{ t('Some actor fields are restricted') }}
+                    </p>
+                    <p class="text-xs text-orange-700 dark:text-orange-300 mt-1">
+                      {{ t('Fields marked with a lock icon cannot be edited based on your user role and actor type. Contact an administrator if you need to modify these fields.') }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
               <div class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="name">{{ t('actors.fields.name') }}</Label>
+                    <div class="flex items-center gap-2 mb-2">
+                      <Label htmlFor="name">{{ t('actors.fields.name') }}</Label>
+                      <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
+                        <Lock class="h-3 w-3 text-muted-foreground" />
+                        <div class="relative group">
+                          <AlertCircle 
+                            class="h-3 w-3 text-orange-500 cursor-help" 
+                            @click="showRestrictionFeedback('name')"
+                          />
+                          <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            {{ getTranslatedRestrictionReason('name') }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <EditableField
                       id="name"
                       :value="actor.name"
                       :update-url="`/actor/${actor.id}`"
                       field-name="name"
+                      :disabled="!isFieldEditable('name')"
+                      :class="getFieldClasses('name')"
                       @update="handleUpdate"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="first_name">{{ t('actors.fields.firstName') }}</Label>
+                    <div class="flex items-center gap-2 mb-2">
+                      <Label htmlFor="first_name">{{ t('actors.fields.firstName') }}</Label>
+                      <div v-if="!isFieldEditable('first_name')" class="flex items-center gap-1">
+                        <Lock class="h-3 w-3 text-muted-foreground" />
+                        <div class="relative group">
+                          <AlertCircle 
+                            class="h-3 w-3 text-orange-500 cursor-help" 
+                            @click="showRestrictionFeedback('first_name')"
+                          />
+                          <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            {{ getTranslatedRestrictionReason('first_name') }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <EditableField
                       id="first_name"
                       :value="actor.first_name"
                       :update-url="`/actor/${actor.id}`"
                       field-name="first_name"
                       :placeholder="'-'"
+                      :disabled="!isFieldEditable('first_name')"
+                      :class="getFieldClasses('first_name')"
                       @update="handleUpdate"
                     />
                   </div>
@@ -140,17 +187,47 @@
                     <Checkbox
                       id="phy_person"
                       :checked="actor.phy_person"
+                      :disabled="!isFieldEditable('phy_person')"
                       @update:checked="updateCheckbox('phy_person', $event)"
                     />
-                    <Label htmlFor="phy_person">{{ t('actors.fields.physicalPerson') }}</Label>
+                    <Label htmlFor="phy_person" :class="{ 'text-muted-foreground': !isFieldEditable('phy_person') }">
+                      {{ t('actors.fields.physicalPerson') }}
+                    </Label>
+                    <div v-if="!isFieldEditable('phy_person')" class="flex items-center gap-1">
+                      <Lock class="h-3 w-3 text-muted-foreground" />
+                      <div class="relative group">
+                        <AlertCircle 
+                          class="h-3 w-3 text-orange-500 cursor-help" 
+                          @click="showRestrictionFeedback('phy_person')"
+                        />
+                        <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          {{ getTranslatedRestrictionReason('phy_person') }}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="flex items-center space-x-2">
                     <Checkbox
                       id="small_entity"
                       :checked="actor.small_entity"
+                      :disabled="!isFieldEditable('small_entity')"
                       @update:checked="updateCheckbox('small_entity', $event)"
                     />
-                    <Label htmlFor="small_entity">{{ t('actors.fields.smallEntity') }}</Label>
+                    <Label htmlFor="small_entity" :class="{ 'text-muted-foreground': !isFieldEditable('small_entity') }">
+                      {{ t('actors.fields.smallEntity') }}
+                    </Label>
+                    <div v-if="!isFieldEditable('small_entity')" class="flex items-center gap-1">
+                      <Lock class="h-3 w-3 text-muted-foreground" />
+                      <div class="relative group">
+                        <AlertCircle 
+                          class="h-3 w-3 text-orange-500 cursor-help" 
+                          @click="showRestrictionFeedback('small_entity')"
+                        />
+                        <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          {{ getTranslatedRestrictionReason('small_entity') }}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -436,7 +513,7 @@
           <ArrowLeft class="mr-2 h-4 w-4" />
           {{ t('actors.show.backToList') }}
         </Button>
-        <Button v-if="canWrite" @click="confirmDelete" variant="destructive">
+        <Button v-if="canDeleteActor(actor)" @click="confirmDelete" variant="destructive">
           <Trash2 class="mr-2 h-4 w-4" />
           {{ t('actors.show.delete') }}
         </Button>
@@ -463,8 +540,11 @@ import { useI18n } from 'vue-i18n'
 import { 
   ArrowLeft,
   Trash2,
-  Loader2
+  Loader2,
+  Lock,
+  AlertCircle
 } from 'lucide-vue-next'
+import { usePermissions } from '@/composables/usePermissions'
 import MainLayout from '@/Layouts/MainLayout.vue'
 import EditableField from '@/Components/ui/EditableField.vue'
 import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
@@ -492,10 +572,138 @@ const showDeleteDialog = ref(false)
 const loadingUsedIn = ref(false)
 const usedInData = ref(null)
 
-// Check permissions
-const canWrite = computed(() => {
-  const user = page.props.auth?.user
-  return user?.role !== 'CLI'
+// Use simple permissions composable
+const { role, isAdmin, isClient, canWrite, canRead, hasRole } = usePermissions()
+
+// Define restricted fields by category
+const financialFields = ['VAT_number', 'ren_discount', 'registration_no']
+const loginFields = ['login', 'default_role', 'password', 'remember_token']
+const systemFields = ['created_at', 'updated_at', 'creator', 'updater']
+
+// Simple field permission logic
+const isFieldEditable = (field) => {
+  // Admin can edit everything
+  if (isAdmin.value) return true
+  
+  // Read-only and clients can't edit anything
+  if (hasRole('DBRO') || hasRole('CLI')) return false
+  
+  // DBRW users have restrictions
+  if (hasRole('DBRW')) {
+    if (financialFields.includes(field)) return false
+    if (loginFields.includes(field)) return false
+    if (systemFields.includes(field)) return false
+    return true
+  }
+  
+  return false
+}
+
+// Simple restriction messages
+const getTranslatedRestrictionReason = (field) => {
+  if (financialFields.includes(field)) {
+    return t('Only administrators can modify financial information')
+  }
+  if (loginFields.includes(field)) {
+    return t('Only administrators can modify login credentials')
+  }
+  if (systemFields.includes(field)) {
+    return t('System fields cannot be modified')
+  }
+  if (hasRole('DBRO')) {
+    return t('Read-only users cannot modify actor data')
+  }
+  if (hasRole('CLI')) {
+    return t('Client users cannot modify actor data')
+  }
+  return t('You do not have permission to modify this field')
+}
+
+// Simple actions based on role
+const canViewActor = canRead.value
+const canEditActor = canWrite.value  
+const canDeleteActor = isAdmin.value
+
+// Helper function to get translated restriction reason
+const getTranslatedRestrictionReason = (fieldName) => {
+  const reason = getActorFieldRestrictionReason(props.actor, fieldName)
+  
+  // If reason is a string, return it directly
+  if (typeof reason === 'string') {
+    return reason
+  }
+  
+  // If reason is an object with translation keys, try to translate them
+  if (reason && typeof reason === 'object') {
+    // First try field-specific translation
+    if (reason.fieldSpecific) {
+      const fieldSpecificTranslation = t(reason.fieldSpecific)
+      if (fieldSpecificTranslation !== reason.fieldSpecific) {
+        return fieldSpecificTranslation
+      }
+    }
+    
+    // Then try actor type translation
+    if (reason.actorType) {
+      const actorTypeTranslation = t(reason.actorType)
+      if (actorTypeTranslation !== reason.actorType) {
+        return actorTypeTranslation
+      }
+    }
+    
+    // Then try role-level translation
+    if (reason.roleLevel) {
+      const roleLevelTranslation = t(reason.roleLevel)
+      if (roleLevelTranslation !== reason.roleLevel) {
+        return roleLevelTranslation
+      }
+    }
+    
+    // Use fallback
+    return reason.fallback || t('actor.restrictions.readonly_field')
+  }
+  
+  return t('actor.restrictions.readonly_field')
+}
+
+// Helper function to show field restriction tooltip/alert
+const showRestrictionFeedback = (fieldName) => {
+  const reason = getTranslatedRestrictionReason(fieldName)
+  if (reason) {
+    // Create a temporary notification element
+    const notification = document.createElement('div')
+    notification.className = 'fixed top-4 right-4 bg-orange-100 dark:bg-orange-900 border border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-200 px-4 py-2 rounded-lg shadow-lg z-50 max-w-sm'
+    notification.innerHTML = `
+      <div class="flex items-start gap-2">
+        <svg class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+        <div>
+          <p class="font-medium text-sm">${t('Field Restricted')}</p>
+          <p class="text-xs mt-1">${reason}</p>
+        </div>
+      </div>
+    `
+    document.body.appendChild(notification)
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification)
+      }
+    }, 5000)
+  }
+}
+
+// Check if there are any restricted fields in this actor
+const actorFields = ['name', 'first_name', 'display_name', 'address', 'country', 'nationality', 'language', 'function', 'email', 'phone', 'warn']
+
+const hasRestrictedFieldsInActor = computed(() => {
+  return !isAdmin.value && (hasRole('DBRO') || hasRole('CLI'))
+})
+
+const hasEditableFieldsInActor = computed(() => {
+  return isAdmin.value || canWrite.value
 })
 
 // Group matter dependencies by role
@@ -565,6 +773,12 @@ function handleUpdate(field, value) {
 
 // Update checkbox fields
 async function updateCheckbox(field, checked) {
+  // Check permissions before allowing update
+  if (!isFieldEditable(field)) {
+    showRestrictionFeedback(field)
+    return
+  }
+  
   try {
     const response = await fetch(`/actor/${props.actor.id}`, {
       method: 'PUT',

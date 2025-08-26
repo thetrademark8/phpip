@@ -14,7 +14,7 @@
           v-for="actor in actors"
           :key="actor.id"
           :class="cn(
-            'flex items-center justify-between p-3 rounded-md border bg-background',
+            'flex items-center justify-between p-3 rounded-md border bg-background group',
             selectedActorId === actor.id && 'ring-2 ring-primary',
             editable && 'cursor-move hover:bg-accent'
           )"
@@ -27,7 +27,7 @@
           <div class="flex-1">
             <div class="font-medium">
               <EditableField
-                v-if="enableInlineEdit && !actor.inherited"
+                v-if="enableInlineEdit && !actor.inherited && canWrite"
                 :model-value="actor.display_name || actor.name"
                 field="display_name"
                 :url="updateUrl(actor)"
@@ -40,7 +40,7 @@
             </div>
             <div v-if="actor.company_name" class="text-sm text-muted-foreground">
               <EditableField
-                v-if="enableInlineEdit && !actor.inherited"
+                v-if="enableInlineEdit && !actor.inherited && canWrite"
                 :model-value="actor.company_name"
                 field="company_name"
                 :url="updateUrl(actor)"
@@ -55,7 +55,7 @@
             <div class="flex gap-4 mt-1 text-sm text-muted-foreground">
               <span v-if="actor.email">
                 <EditableField
-                  v-if="enableInlineEdit && !actor.inherited"
+                  v-if="enableInlineEdit && !actor.inherited && canWrite"
                   :model-value="actor.email"
                   field="email"
                   :url="updateUrl(actor)"
@@ -69,7 +69,7 @@
               </span>
               <span v-if="actor.phone">
                 <EditableField
-                  v-if="enableInlineEdit && !actor.inherited"
+                  v-if="enableInlineEdit && !actor.inherited && canWrite"
                   :model-value="actor.phone"
                   field="phone"
                   :url="updateUrl(actor)"
@@ -86,15 +86,29 @@
           
           <div v-if="editable" class="flex items-center gap-2 ml-4">
             <Button
+              v-if="canWrite"
               size="icon"
               variant="ghost"
+              class="opacity-0 group-hover:opacity-100 transition-opacity"
               @click.stop="emit('edit', actor)"
             >
               <Edit2 class="h-4 w-4" />
             </Button>
             <Button
+              v-else-if="canRead"
               size="icon"
               variant="ghost"
+              class="opacity-0 group-hover:opacity-100 transition-opacity"
+              :title="$t('View only - editing restricted')"
+              @click.stop="emit('click', actor)"
+            >
+              <Lock class="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <Button
+              v-if="canWrite"
+              size="icon"
+              variant="ghost"
+              class="opacity-0 group-hover:opacity-100 transition-opacity"
               @click.stop="emit('remove', actor)"
             >
               <X class="h-4 w-4" />
@@ -104,7 +118,7 @@
       </div>
       
       <Button
-        v-if="editable"
+        v-if="editable && canCreateActor"
         variant="outline"
         size="sm"
         class="mt-3 w-full"
@@ -119,12 +133,13 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { Edit2, X, Plus } from 'lucide-vue-next'
+import { Edit2, X, Plus, Lock } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
 import { Button } from '@/Components/ui/button'
 import InlineEdit from '@/Components/ui/InlineEdit.vue'
 import EditableField from '@/Components/ui/EditableField.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
+import { usePermissions } from '@/composables/usePermissions.js'
 
 const props = defineProps({
   actors: {
@@ -169,6 +184,7 @@ const props = defineProps({
 const emit = defineEmits(['edit', 'remove', 'add', 'click', 'reorder', 'update'])
 
 const { translated } = useTranslatedField()
+const { role, canWrite, canRead, isClient, isAdmin } = usePermissions();
 
 // Group actors by role
 const groupedActors = computed(() => {

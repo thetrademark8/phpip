@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionHelper;
 use App\Models\Matter;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -17,14 +18,14 @@ class MatterPolicy
      */
     public function view(User $user, Matter $matter)
     {
-        if ($user->default_role === 'CLI' || empty($user->default_role)) {
-            if ($matter->client->count()) {
-                return $user->id === $matter->client->actor_id;
-            } else {
-                return false;
+        if(PermissionHelper::isClient($user)) {
+            if($matter->client->count()) {
+                return $matter->client->where('id', $user->id)->notEmpty();
             }
-        } else {
-            return true;
+
+            return false;
         }
+
+        return PermissionHelper::canReadOnly($user);
     }
 }
