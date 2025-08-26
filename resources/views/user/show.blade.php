@@ -58,7 +58,7 @@ Date deprecated: 2025-08-13 --}}
         <h5 class="card-title mb-0">{{ __('Credentials') }}</h5>
       </div>
       <div class="card-body">
-        <form method="POST" action="{{ isset($isProfileView) ? route('user.updateProfile') : '/user/' . $userInfo->id }}">
+        <form method="POST" action="{{ isset($isProfileView) ? route('profile.update') : '/user/' . $userInfo->id }}">
           @csrf
           @method('PUT')
           <table class="table table-striped">
