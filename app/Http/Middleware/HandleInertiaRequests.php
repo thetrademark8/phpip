@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\PermissionHelper;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -77,6 +78,12 @@ class HandleInertiaRequests extends Middleware
                 'company_name' => config('app.company_name'),
                 'company_logo' => config('app.company_logo'),
             ],
+            'matter_categories' => cache()->remember('matter_categories_nav', now()->addHours(1), function () {
+                return Category::whereColumn('code', 'display_with')
+                    ->select('code', 'category')
+                    ->orderBy('code')
+                    ->get();
+            }),
             'csrf_token' => csrf_token(),
             'locale' => $locale,
             'translations' => $translations,

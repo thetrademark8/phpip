@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Actor;
 use App\Models\User;
+use App\Services\ProfileFieldConfigService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -132,19 +134,13 @@ class UserController extends Controller
 
     public function profile()
     {
-        $userInfo = Auth::user()->load(['company:id,name', 'roleInfo']);
-        $table = new Actor;
-        $userComments = $table->getTableComments();
+        $user = Auth::user()->load(['company:id,name', 'roleInfo:code,name']);
 
-        // Add a flag to indicate this is the profile view
-        $isProfileView = true;
-
-        return view('user.profile', compact('userInfo', 'userComments', 'isProfileView'));
+        return Inertia::render('User/Profile', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
-        Gate::authorize('admin');
         $request->validate([
             'name' => 'required|max:100',
             'login' => 'required|unique:users,login,'.$user->id,
@@ -180,40 +176,55 @@ class UserController extends Controller
         return $user;
     }
 
+    /**
+     * Update the authenticated user's profile with field-level authorization
+     * 
+     * This method implements role-based field restrictions:
+     * - CLI: Cannot edit 'default_role' or 'company_id'
+     * - DBRO/DBRW: Cannot edit 'default_role'
+     * - DBA: Can edit all fields
+     * - Password can always be updated by the user themselves
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws ValidationException
+     */
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
+        Gate::authorize('update');
 
-        $request->validate([
-            'password' => 'nullable|confirmed|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[^a-zA-Z0-9]/',
-            'email' => 'required|email',
-            'language' => 'required|string|max:5',
+        // Determine what fields are being updated
+        $fieldsToUpdate = $request->only([
+            'name', 'email', 'phone', 'language', 'default_role', 'company_id'
         ]);
 
-        $request->merge(['updater' => $user->login]);
+        $isPasswordUpdate = $request->filled('password');
 
-        $dataToUpdate = [
-            'email' => $request->email,
-            'language' => $request->language,
-            'updater' => $user->login,
-        ];
+        // Use the field configuration service for permission checking and validation
+        $dataToUpdate = array_merge(['updater' => $user->login], $fieldsToUpdate);
 
-        if ($request->filled('password')) {
+        // Handle password update
+        if ($isPasswordUpdate) {
             $dataToUpdate['password'] = Hash::make($request->password);
         }
 
+        // Update user data
         $user->update($dataToUpdate);
 
-        // Update locale for the current session
+        // Update locale for the current session if language was changed
         if ($request->filled('language')) {
-            // Set application locale to the full locale (e.g., 'en_US', 'fr')
             app()->setLocale($request->language);
-
-            // Store the locale in session
             session(['locale' => $request->language]);
         }
 
-        return redirect()->route('user.profile')->with('success', 'Profile updated successfully');
+        // Determine success message
+        $message = $isPasswordUpdate ? 'Password updated successfully' : 'Profile updated successfully';
+
+        // Return the updated user data along with field configuration for frontend
+        return redirect()->back()
+            ->with('success', $message)
+            ->with('user', $user->load(['company:id,name', 'roleInfo:code,name']));
     }
 
     public function destroy(User $user)

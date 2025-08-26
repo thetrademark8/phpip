@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
+import {useI18n} from "vue-i18n";
 
 /**
  * Extracts a translation from a translatable field based on locale
@@ -53,6 +54,8 @@ export function getTranslation(field, locale = null) {
 export function useTranslatedField() {
   // Get current locale from Inertia shared data
   const locale = computed(() => usePage().props.locale || 'en')
+  
+  const { t, locale } = useI18n()
   
   /**
    * Get translated value for a field
