@@ -19,7 +19,7 @@ class ClassifierController extends Controller
             'matter_id' => 'required',
             'type_code' => 'required',
             'value' => 'required_without_all:lnk_matter_id,image',
-            'image' => 'image|max:1024',
+            'image' => 'image|nullable|max:1024|required_if:type_code,IMG',
         ]);
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -30,12 +30,7 @@ class ClassifierController extends Controller
 
         $classifier = Classifier::create($request->except(['_token', '_method', 'image']));
 
-        // Handle Inertia requests
-        if ($request->inertia()) {
-            return redirect()->back();
-        }
-
-        return $classifier->id;
+        return redirect()->back();
     }
 
     public function show(Classifier $classifier)

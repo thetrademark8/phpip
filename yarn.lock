@@ -1337,10 +1337,10 @@ vue-i18n@^9.14.4:
     "@intlify/shared" "9.14.4"
     "@vue/devtools-api" "^6.5.0"
 
-vue-sonner@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/vue-sonner/-/vue-sonner-2.0.1.tgz"
-  integrity sha512-sn4vjCRzRcnMaxaLa9aNSyZQi6S+gshiea5Lc3eqpkj0ES9LH8ljg+WJCkxefr28V4PZ9xkUXBIWpxGfQxstIg==
+vue-sonner@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/vue-sonner/-/vue-sonner-2.0.2.tgz"
+  integrity sha512-cN6onnN6aBOZ56YWN8CMj6t4zqbz/XlenE+jx5z+mgduMMelFo6B6G+e2Q6hhxU9YFiV16MXG2MBPluZabyElQ==
 
 "vue@^2.7.0 || ^3.0.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.2.25, vue@^3.4.26, vue@^3.5.0, vue@^3.5.13, vue@^3.5.17, "vue@>= 3.2.0", vue@>=3.0.1, vue@>=3.2, vue@3.5.17:
   version "3.5.17"

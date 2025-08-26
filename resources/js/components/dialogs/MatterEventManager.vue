@@ -2,9 +2,9 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent class="max-w-3xl">
       <DialogHeader>
-        <DialogTitle>Manage Events</DialogTitle>
+        <DialogTitle>{{ t('Manage Events') }}</DialogTitle>
         <DialogDescription>
-          Add, edit, or remove events from this matter
+          {{ t('Add, edit, or remove events from this matter') }}
         </DialogDescription>
       </DialogHeader>
       
@@ -12,13 +12,13 @@
         <!-- Add Event Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Add Event</CardTitle>
+            <CardTitle class="text-base">{{ t('Add Event') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <form @submit.prevent="handleAddEvent" class="space-y-4">
               <div class="grid grid-cols-2 gap-4">
                 <FormField
-                  label="Event"
+                  :label="t('Event')"
                   name="code"
                   :error="addForm.errors.code"
                   required
@@ -27,7 +27,7 @@
                     v-model="addForm.code"
                     v-model:display-model-value="eventDisplay"
                     endpoint="/event-name/autocomplete/1"
-                    placeholder="Select event"
+                    :placeholder="t('Select event')"
                     :min-length="0"
                     value-key="key"
                     label-key="value"
@@ -35,57 +35,57 @@
                 </FormField>
 
                 <FormField
-                  label="Date"
+                  :label="t('Date')"
                   name="event_date"
                   :error="addForm.errors.event_date"
                   required
                 >
                   <DatePicker
                     v-model="addForm.event_date"
-                    placeholder="Select date"
+                    :placeholder="t('Select date')"
                   />
                 </FormField>
               </div>
 
               <div class="grid grid-cols-2 gap-4">
                 <FormField
-                  label="Detail"
+                  :label="t('Detail')"
                   name="detail"
                   :error="addForm.errors.detail"
                 >
                   <Input
                     v-model="addForm.detail"
-                    placeholder="Event detail (optional)"
+                    :placeholder="t('Event detail (optional)')"
                   />
                 </FormField>
 
                 <FormField
-                  label="Link"
+                  :label="t('Link')"
                   name="link"
                   :error="addForm.errors.link"
                 >
                   <Input
                     v-model="addForm.link"
-                    placeholder="URL (optional)"
+                    :placeholder="t('URL (optional)')"
                   />
                 </FormField>
               </div>
 
               <FormField
-                label="Notes"
+                :label="t('Notes')"
                 name="notes"
                 :error="addForm.errors.notes"
               >
                 <Textarea
                   v-model="addForm.notes"
-                  placeholder="Additional notes..."
+                  :placeholder="t('Additional notes...')"
                   rows="2"
                 />
               </FormField>
 
               <Button type="submit" :disabled="addForm.processing">
                 <CalendarPlus class="mr-2 h-4 w-4" />
-                Add Event
+                {{ t('Add Event') }}
               </Button>
             </form>
           </CardContent>
@@ -94,7 +94,7 @@
         <!-- Current Events Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">Current Events</CardTitle>
+            <CardTitle class="text-base">{{ t('Current Events') }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div v-if="events && events.length > 0" class="space-y-2">
@@ -118,7 +118,7 @@
                     <div class="text-sm text-muted-foreground">
                       {{ formatDate(event.event_date) }}
                       <span v-if="event.alt_matter_id" class="ml-2">
-                        (linked to {{ event.alt_matter?.uid }})
+                        ({{ t('linked to') }} {{ event.alt_matter?.uid }})
                       </span>
                     </div>
                     <div v-if="event.notes" class="text-sm text-muted-foreground mt-1">
@@ -154,7 +154,7 @@
               </div>
             </div>
             <div v-else class="text-center py-8 text-muted-foreground">
-              No events recorded for this matter
+              {{ t('No events recorded for this matter') }}
             </div>
           </CardContent>
         </Card>
@@ -162,7 +162,7 @@
 
       <DialogFooter>
         <Button variant="outline" @click="$emit('update:open', false)">
-          Close
+          {{ t('Close') }}
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -181,6 +181,7 @@
 import { ref, computed } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { format } from 'date-fns'
+import { useI18n } from 'vue-i18n'
 import { 
   CalendarPlus, 
   Trash2, 
@@ -227,6 +228,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:open', 'success'])
+
+const { t } = useI18n()
 
 // State
 const eventDisplay = ref('')
@@ -290,7 +293,7 @@ function handleEventUpdated() {
 }
 
 function handleRemoveEvent(event) {
-  if (confirm(`Remove event "${event.event_name}" from this matter?`)) {
+  if (confirm(t('Remove event from this matter?'))) {
     removingEventId.value = event.id
     
     router.delete(`/event/${event.id}`, {

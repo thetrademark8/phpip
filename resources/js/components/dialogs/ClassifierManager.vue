@@ -235,7 +235,7 @@ const showLinkedMatter = ref(false)
 
 // Forms
 const addForm = useForm({
-  matter_id: props.matter.id,
+  matter_id: props.matter.container_id ?? props.matter.id,
   type_code: '',
   value: '',
   lnk_matter_id: '',
@@ -253,9 +253,10 @@ const groupedClassifiers = computed(() => {
 })
 
 function handleTypeSelect(type) {
+  console.log(type)
   selectedType.value = type
-  isImageType.value = type?.code === 'IMG'
-  showLinkedMatter.value = type?.code === 'LINK'
+  isImageType.value = type?.key === 'IMG'
+  showLinkedMatter.value = type?.key === 'LINK'
 }
 
 function handleImageSelect(event) {
@@ -274,7 +275,9 @@ function handleAddClassifier() {
     formData.append('image', addForm.image)
     formData.append('display_order', addForm.display_order)
     
-    router.post('/classifier', formData, {
+    router.post(route('matter.classifiers.store', {
+      matter: props.matter.id,
+    }), formData, {
       forceFormData: true,
       onSuccess: () => {
         addForm.reset()
@@ -287,7 +290,9 @@ function handleAddClassifier() {
     })
   } else {
     // Regular classifier
-    addForm.post('/classifier', {
+    addForm.post(route('matter.classifiers.store', {
+      matter: props.matter.id,
+    }), {
       onSuccess: () => {
         addForm.reset()
         typeDisplay.value = ''

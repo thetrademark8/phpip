@@ -339,7 +339,7 @@ class MatterRepository implements MatterRepositoryInterface
                         ->orWhere('del.login', $value);
                 }),
                 'Ctnr' => $value ? $query->whereNull('matter.container_id') : null,
-                default => $query->whereLike($key, "$value%"),
+                default => null, // Ignore unknown filter keys to prevent SQL errors
             };
         }
     }

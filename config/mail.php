@@ -107,7 +107,7 @@ return [
     */
 
     'markdown' => [
-        'theme' => 'default',
+        // 'theme' => 'phpip',
 
         'paths' => [
             resource_path('views/vendor/mail'),

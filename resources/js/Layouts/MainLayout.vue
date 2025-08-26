@@ -26,7 +26,9 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import Navigation from '@/Components/Navigation.vue'
 import Footer from '@/Components/Footer.vue'
-import { Toaster, toast } from 'vue-sonner'
+import { toast } from 'vue-sonner'
+import { Toaster } from '@/Components/ui/sonner'
+import 'vue-sonner/style.css' // vue-sonner v2 requires this import
 import MatterDialog from '@/Components/dialogs/MatterDialog.vue'
 
 // Matter Dialog state

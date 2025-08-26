@@ -615,7 +615,7 @@ class Matter extends Model
                             }
                             break;
                         default:
-                            $query->whereLike($key, "$value%");
+                            // Ignore unknown filter keys to prevent SQL errors
                             break;
                     }
                 }

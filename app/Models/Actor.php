@@ -6,8 +6,9 @@ use App\Traits\HasTableComments;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 
-class Actor extends Model
+class Actor extends Model implements HasLocalePreference
 {
     use HasFactory, HasTableComments, Notifiable;
 
@@ -51,6 +52,17 @@ class Actor extends Model
     public function getLanguage()
     {
         return $this->language ?? config('app.locale');
+    }
+
+    /**
+     * Get the actor's preferred locale for Laravel notifications.
+     * Implementation of HasLocalePreference contract.
+     *
+     * @return string
+     */
+    public function preferredLocale(): string
+    {
+        return $this->getLanguage();
     }
 
     public function company()
@@ -101,5 +113,14 @@ class Actor extends Model
     public function nationalityInfo()
     {
         return $this->belongsTo(Country::class, 'nationality');
+    }
+
+    /**
+     * Route notifications for mail delivery.
+     * Required for Laravel Notifications to work with Actor model.
+     */
+    public function routeNotificationForMail()
+    {
+        return $this->email;
     }
 }

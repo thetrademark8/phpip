@@ -18,12 +18,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // Renewal service bindings
         $this->app->bind(
-            \App\Services\Renewal\Contracts\RenewalInvoiceServiceInterface::class,
+            \App\Contracts\Renewal\RenewalInvoiceServiceInterface::class,
             \App\Services\Renewal\RenewalInvoiceService::class
         );
 
         $this->app->bind(
-            \App\Services\Renewal\Contracts\RenewalExportServiceInterface::class,
+            \App\Contracts\Renewal\RenewalExportServiceInterface::class,
             \App\Services\Renewal\RenewalExportService::class
         );
 
@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \App\Services\Renewal\Contracts\RenewalLogServiceInterface::class,
+            \App\Contracts\Renewal\RenewalLogServiceInterface::class,
             \App\Services\Renewal\RenewalLogService::class
         );
     }
@@ -51,6 +51,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrapFive();
+        
+        // Register mail component namespace for email templates
+        view()->addNamespace('mail', resource_path('views/vendor/mail'));
         
         // Use PermissionHelper to define gates
         Gate::define('client', fn ($user) => PermissionHelper::isClient($user));

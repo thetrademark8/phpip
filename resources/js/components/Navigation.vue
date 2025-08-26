@@ -4,7 +4,7 @@
       <div class="flex items-center justify-between h-16">
         <!-- Logo and Brand -->
         <div class="flex items-center">
-          <Link href="/" class="flex items-center">
+          <Link :href="route('home')" class="flex items-center">
             <img 
               v-if="$page.props.app.company_logo" 
               :src="`/${$page.props.app.company_logo}`"
@@ -43,8 +43,14 @@
                 <DropdownMenuItem as-child>
                   <Link href="/matter">{{ $t('All') }}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem as-child>
-                  <Link href="/matter?display_with=TM">{{ $t('Trademarks') }}</Link>
+                <DropdownMenuItem 
+                  v-for="category in matterCategories" 
+                  :key="category.code"
+                  as-child
+                >
+                  <Link :href="`/matter?display_with=${category.code}`">
+                    {{ getCategoryTranslation(category.code) }}
+                  </Link>
                 </DropdownMenuItem>
                 <template v-if="canWrite">
                   <DropdownMenuSeparator />
@@ -59,7 +65,7 @@
             </DropdownMenu>
 
             <!-- Tools Dropdown (for readonly and above) -->
-            <DropdownMenu v-if="canRead">
+            <DropdownMenu v-if="canWrite">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
                   {{ $t('Tools') }}
@@ -68,10 +74,10 @@
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" class="w-48">
                 <DropdownMenuItem as-child>
-                  <Link href="/renewal">{{ $t('Manage renewals') }}</Link>
+                  <Link :href="route('renewal.index')">{{ $t('Manage renewals') }}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem as-child>
-                  <Link href="/fee">{{ $t('Renewal fees') }}</Link>
+                  <Link :href="route('fee.index')">{{ $t('Renewal fees') }}</Link>
                 </DropdownMenuItem>
                 <template v-if="isAdmin">
                   <DropdownMenuSeparator />
@@ -137,7 +143,7 @@
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" class="w-48">
                 <DropdownMenuItem as-child>
-                  <Link href="/user/profile">{{ $t('My Profile') }}</Link>
+                  <Link href="/profile">{{ $t('My Profile') }}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem @click="logout">
@@ -206,15 +212,8 @@
 import { ref, computed } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { ChevronDown, Menu, X, Search } from 'lucide-vue-next'
+import {usePermissions} from "@/composables/usePermissions.js";
 import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/Components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -225,24 +224,32 @@ import {
 } from '@/Components/ui/dropdown-menu'
 import SearchModal from '@/Components/ui/SearchModal.vue'
 
+const { canRead, canWrite, isAdmin } = usePermissions();
+
 // State
 const mobileMenuOpen = ref(false)
 
-// Computed permissions
-const canRead = computed(() => {
-  const role = usePage().props.auth.user?.role
-  return role && (role === 'RO' || role === 'RW' || role === 'DBA')
+// Computed properties for matter categories
+const matterCategories = computed(() => {
+  return usePage().props.matter_categories || []
 })
 
-const canWrite = computed(() => {
-  const role = usePage().props.auth.user?.role
-  return role && (role === 'RW' || role === 'DBA')
-})
+// Category code to translation key mapping
+const categoryTranslationMap = {
+  'LTG': 'Litigation',
+  'OTH': 'Others', 
+  'PAT': 'Patents',
+  'TM': 'Trademarks'
+}
 
-const isAdmin = computed(() => {
-  const role = usePage().props.auth.user?.role
-  return role === 'DBA'
-})
+// Get translation for category (using global $t helper from template)
+const getCategoryTranslation = (categoryCode) => {
+  const translationKey = categoryTranslationMap[categoryCode]
+  // We'll need to inject the global context to access $t
+  const page = usePage()
+  const translations = page.props.translations
+  return translationKey && translations[translationKey] ? translations[translationKey] : categoryCode
+}
 
 // Emit events
 const emit = defineEmits(['openCreateMatter', 'openCreateFromOPS'])

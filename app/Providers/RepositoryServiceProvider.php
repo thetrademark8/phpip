@@ -11,6 +11,7 @@ use App\Repositories\MatterRepository;
 use App\Services\DatePickerService;
 use App\Services\DateService;
 use App\Services\MatterService;
+use App\Services\TaskEmailService;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -27,6 +28,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DateServiceInterface::class, DateService::class);
         $this->app->bind(DatePickerServiceInterface::class, DatePickerService::class);
         $this->app->bind(MatterServiceInterface::class, MatterService::class);
+        
+        // Register TaskEmailService as singleton for better performance
+        $this->app->singleton(TaskEmailService::class);
 
         $this->app->bind(RenewalServiceInterface::class, function ($app) {
             // Placeholder until RenewalService is implemented
@@ -75,59 +79,7 @@ class RepositoryServiceProvider extends ServiceProvider
             };
         });
 
-        $this->app->bind(NotificationServiceInterface::class, function ($app) {
-            // Placeholder until NotificationService is implemented
-            return new class implements NotificationServiceInterface
-            {
-                public function sendTaskReminder(\App\Models\Task $task, \App\Models\User $recipient): bool
-                {
-                    return true;
-                }
-
-                public function sendUpcomingTaskReminders(int $daysAhead = 7): int
-                {
-                    return 0;
-                }
-
-                public function sendRenewalNotification(\App\Models\Task $renewalTask, array $recipients): bool
-                {
-                    return true;
-                }
-
-                public function sendStatusChangeNotification(
-                    string $matterId,
-                    string $oldStatus,
-                    string $newStatus,
-                    array $recipients
-                ): bool {
-                    return true;
-                }
-
-                public function getTaskRecipients(\App\Models\Task $task): \Illuminate\Support\Collection
-                {
-                    return collect();
-                }
-
-                public function sendCustomNotification(
-                    string $template,
-                    array $data,
-                    array $recipients,
-                    array $attachments = []
-                ): bool {
-                    return true;
-                }
-
-                public function queueNotification(string $type, array $data, string $sendAt): string
-                {
-                    return uniqid('notification_');
-                }
-
-                public function shouldSendNotification(string $type, array $context): bool
-                {
-                    return true;
-                }
-            };
-        });
+        $this->app->bind(NotificationServiceInterface::class, \App\Services\NotificationService::class);
     }
 
     /**

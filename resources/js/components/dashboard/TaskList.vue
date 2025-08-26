@@ -19,8 +19,7 @@ import {format, parseISO, isPast, isBefore, addDays, formatDistanceToNow} from '
 import {CalendarDays, Clock, AlertCircle} from 'lucide-vue-next'
 import DataTable from '@/Components/ui/DataTable.vue'
 import StatusBadge from '@/Components/display/StatusBadge.vue'
-import { useI18n } from 'vue-i18n'
-import {useTranslations} from "@/composables/useTranslations.js";
+import { useTranslatedField } from '@/composables/useTranslation.js'
 
 const props = defineProps({
   tasks: {
@@ -35,7 +34,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selected'])
 
-const { t } = useTranslations()
+const { t } = useTranslatedField()
 
 // Table columns definition
 const columns = [

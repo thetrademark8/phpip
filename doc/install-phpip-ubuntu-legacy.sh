@@ -12,7 +12,7 @@ Installing Apache, MySQL, PHP
 ********************************"
 apt -y install lamp-server^ php-simplexml php-mbstring php-curl unzip git-core composer
 # sed -i "s/^#application\/x-httpd-php/application\/x-httpd-php/" /etc/mime.types
-echo "CREATE DATABASE phpip DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE USER phpip@localhost IDENTIFIED BY 'phpip'; GRANT ALL PRIVILEGES ON phpip.* TO phpip@localhost; SET GLOBAL log_bin_trust_function_creators = 1;" | mysql
+echo "CREATE DATABASE phpip DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci; CREATE USER phpip@localhost IDENTIFIED BY 'phpip'; GRANT ALL PRIVILEGES ON phpip.* TO phpip@localhost; SET GLOBAL log_bin_trust_function_creators = 1;" | mysql
 a2enmod rewrite
 echo "127.0.0.1    phpip.local" >> /etc/hosts
 echo "
