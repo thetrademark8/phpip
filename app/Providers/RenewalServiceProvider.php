@@ -2,29 +2,29 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Services\Renewal\Contracts\RenewalQueryServiceInterface;
-use App\Services\Renewal\Contracts\RenewalFeeCalculatorInterface;
-use App\Services\Renewal\Contracts\RenewalWorkflowServiceInterface;
-use App\Services\Renewal\Contracts\RenewalEmailServiceInterface;
-use App\Services\Renewal\Contracts\RenewalInvoiceServiceInterface;
-use App\Services\Renewal\Contracts\RenewalExportServiceInterface;
-use App\Services\Renewal\Contracts\RenewalLogServiceInterface;
-use App\Services\Renewal\RenewalQueryService;
-use App\Services\Renewal\RenewalFeeCalculatorService;
-use App\Services\Renewal\RenewalWorkflowService;
-use App\Services\Renewal\RenewalEmailService;
-use App\Services\Renewal\RenewalInvoiceService;
-use App\Services\Renewal\RenewalExportService;
-use App\Services\Renewal\RenewalLogService;
-use App\Repositories\Contracts\RenewalRepositoryInterface;
-use App\Repositories\Contracts\MatterRepositoryInterface;
+use App\Contracts\Renewal\RenewalEmailServiceInterface;
+use App\Contracts\Renewal\RenewalExportServiceInterface;
+use App\Contracts\Renewal\RenewalFeeCalculatorInterface;
+use App\Contracts\Renewal\RenewalInvoiceServiceInterface;
+use App\Contracts\Renewal\RenewalLogServiceInterface;
+use App\Contracts\Renewal\RenewalQueryServiceInterface;
+use App\Contracts\Renewal\RenewalWorkflowServiceInterface;
+use App\Repositories\ActorRepository;
 use App\Repositories\Contracts\ActorRepositoryInterface;
 use App\Repositories\Contracts\EventRepositoryInterface;
-use App\Repositories\RenewalRepository;
-use App\Repositories\MatterRepository;
-use App\Repositories\ActorRepository;
+use App\Repositories\Contracts\MatterRepositoryInterface;
+use App\Repositories\Contracts\RenewalRepositoryInterface;
 use App\Repositories\EventRepository;
+use App\Repositories\MatterRepository;
+use App\Repositories\RenewalRepository;
+use App\Services\Renewal\RenewalEmailService;
+use App\Services\Renewal\RenewalExportService;
+use App\Services\Renewal\RenewalFeeCalculatorService;
+use App\Services\Renewal\RenewalInvoiceService;
+use App\Services\Renewal\RenewalLogService;
+use App\Services\Renewal\RenewalQueryService;
+use App\Services\Renewal\RenewalWorkflowService;
+use Illuminate\Support\ServiceProvider;
 
 class RenewalServiceProvider extends ServiceProvider
 {

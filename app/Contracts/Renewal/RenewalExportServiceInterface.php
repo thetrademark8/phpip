@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Renewal\Contracts;
+namespace App\Contracts\Renewal;
 
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;

@@ -2,7 +2,7 @@
 
 namespace App\Services\Renewal;
 
-use App\Services\Renewal\Contracts\RenewalFeeCalculatorInterface;
+use App\Contracts\Renewal\RenewalFeeCalculatorInterface;
 use App\DataTransferObjects\Renewal\RenewalDTO;
 use App\DataTransferObjects\Renewal\RenewalFeeDTO;
 use App\Repositories\Contracts\ActorRepositoryInterface;

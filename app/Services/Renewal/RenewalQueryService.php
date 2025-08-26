@@ -2,13 +2,11 @@
 
 namespace App\Services\Renewal;
 
-use App\Services\Renewal\Contracts\RenewalQueryServiceInterface;
+use App\Contracts\Renewal\RenewalQueryServiceInterface;
 use App\DataTransferObjects\Renewal\RenewalFilterDTO;
+use App\Models\Task;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\Matter;
-use App\Models\Task;
 
 class RenewalQueryService implements RenewalQueryServiceInterface
 {

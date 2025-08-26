@@ -2,19 +2,19 @@
 
 namespace App\Services\Renewal;
 
-use App\Services\Renewal\Contracts\RenewalEmailServiceInterface;
+use App\Contracts\Renewal\RenewalEmailServiceInterface;
 use App\DataTransferObjects\Renewal\ActionResultDTO;
 use App\DataTransferObjects\Renewal\RenewalDTO;
-use App\Repositories\Contracts\RenewalRepositoryInterface;
+use App\Models\Actor;
+use App\Models\RenewalsLog;
+use App\Notifications\Renewal\RenewalFirstCallNotification;
+use App\Notifications\Renewal\RenewalInvoiceNotification;
+use App\Notifications\Renewal\RenewalLastCallNotification;
+use App\Notifications\Renewal\RenewalReminderCallNotification;
+use App\Notifications\Renewal\RenewalReportNotification;
 use App\Repositories\Contracts\ActorRepositoryInterface;
 use App\Repositories\Contracts\MatterRepositoryInterface;
-use App\Models\RenewalsLog;
-use App\Models\Actor;
-use App\Notifications\Renewal\RenewalFirstCallNotification;
-use App\Notifications\Renewal\RenewalReminderCallNotification;
-use App\Notifications\Renewal\RenewalLastCallNotification;
-use App\Notifications\Renewal\RenewalInvoiceNotification;
-use App\Notifications\Renewal\RenewalReportNotification;
+use App\Repositories\Contracts\RenewalRepositoryInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;

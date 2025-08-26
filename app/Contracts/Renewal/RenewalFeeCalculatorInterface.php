@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Renewal\Contracts;
+namespace App\Contracts\Renewal;
 
 use App\DataTransferObjects\Renewal\RenewalDTO;
 use App\DataTransferObjects\Renewal\RenewalFeeDTO;

@@ -2,8 +2,8 @@
 
 namespace App\Services\Renewal;
 
-use App\Services\Renewal\Contracts\RenewalExportServiceInterface;
-use App\Services\Renewal\Contracts\RenewalFeeCalculatorInterface;
+use App\Contracts\Renewal\RenewalExportServiceInterface;
+use App\Contracts\Renewal\RenewalFeeCalculatorInterface;
 use App\DataTransferObjects\Renewal\RenewalDTO;
 use App\Repositories\Contracts\RenewalRepositoryInterface;
 use Illuminate\Support\Collection;

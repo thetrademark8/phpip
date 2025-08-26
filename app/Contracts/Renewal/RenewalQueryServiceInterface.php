@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Renewal\Contracts;
+namespace App\Contracts\Renewal;
 
-use Illuminate\Database\Eloquent\Builder;
 use App\DataTransferObjects\Renewal\RenewalFilterDTO;
+use Illuminate\Database\Eloquent\Builder;
 
 interface RenewalQueryServiceInterface
 {

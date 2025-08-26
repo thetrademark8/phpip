@@ -2,13 +2,13 @@
 
 namespace App\Services\Renewal;
 
-use App\Services\Renewal\Contracts\RenewalInvoiceServiceInterface;
-use App\Services\Renewal\Contracts\RenewalFeeCalculatorInterface;
+use App\Contracts\Renewal\RenewalFeeCalculatorInterface;
+use App\Contracts\Renewal\RenewalInvoiceServiceInterface;
 use App\DataTransferObjects\Renewal\ActionResultDTO;
 use App\DataTransferObjects\Renewal\RenewalDTO;
 use App\Repositories\Contracts\RenewalRepositoryInterface;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class RenewalInvoiceService implements RenewalInvoiceServiceInterface
 {

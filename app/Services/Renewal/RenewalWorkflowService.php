@@ -2,11 +2,11 @@
 
 namespace App\Services\Renewal;
 
-use App\Services\Renewal\Contracts\RenewalWorkflowServiceInterface;
+use App\Contracts\Renewal\RenewalWorkflowServiceInterface;
 use App\DataTransferObjects\Renewal\ActionResultDTO;
-use App\Repositories\Contracts\RenewalRepositoryInterface;
-use App\Repositories\Contracts\EventRepositoryInterface;
 use App\Models\RenewalsLog;
+use App\Repositories\Contracts\EventRepositoryInterface;
+use App\Repositories\Contracts\RenewalRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 

@@ -2,10 +2,10 @@
 
 namespace App\Services\Renewal;
 
-use App\Services\Renewal\Contracts\RenewalLogServiceInterface;
+use App\Contracts\Renewal\RenewalLogServiceInterface;
 use App\Models\RenewalsLog;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
