@@ -112,10 +112,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Resource routes
     Route::resource('matter', MatterController::class);
+    Route::get('matter/{matter}/export', [MatterController::class, 'exportSingle'])->name('matter.export.single');
     Route::resource('actor', App\Http\Controllers\ActorController::class);
     Route::resource('user', App\Http\Controllers\UserController::class);
     Route::get('/profile', [App\Http\Controllers\UserController::class, 'profile'])->name('user.profile');
-    Route::put('/profile/update', [App\Http\Controllers\UserController::class, 'updateProfile'])->name('user.updateProfile');
+    Route::put('/profile/update', [App\Http\Controllers\UserController::class, 'updateProfile'])->name('profile.update');
     Route::apiResource('task', App\Http\Controllers\TaskController::class);
 
     // The following resources are not accessible to clients
@@ -126,6 +127,13 @@ Route::middleware(['auth'])->group(function () {
         // Nested routes for matter relationships
         Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store']);
         Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store']);
+        
+        // International trademark automation routes
+        Route::post('matter/{matter}/create-national', [App\Http\Controllers\MatterController::class, 'storeInternational'])->name('matter.create-national');
+        Route::get('matter/{matter}/international-countries', [App\Http\Controllers\MatterController::class, 'getInternationalCountries'])->name('matter.international-countries');
+        
+        // Official links route
+        Route::get('matter/{matter}/official-links', [App\Http\Controllers\MatterController::class, 'getOfficialLinks'])->name('matter.official-links');
         
         Route::apiResource('event', App\Http\Controllers\EventController::class);
         Route::resource('category', App\Http\Controllers\CategoryController::class);
@@ -145,3 +153,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('event-class', App\Http\Controllers\EventClassController::class);
     });
 });
+
+// Email preview routes (development only)
+if (app()->environment('local')) {
+    Route::prefix('email-preview')->name('email.')->group(function () {
+        Route::get('/', [App\Http\Controllers\EmailPreviewController::class, 'index'])->name('preview.index');
+        Route::get('/{template}', [App\Http\Controllers\EmailPreviewController::class, 'show'])->name('preview');
+    });
+}

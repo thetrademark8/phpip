@@ -38,6 +38,16 @@
                 {{ $t('Merge') }}
               </Button>
               <Button
+                v-if="matter.country === 'WO' && matter.category_code === 'TM'"
+                size="sm"
+                variant="outline"
+                @click="showInternationalCreatorDialog = true"
+                title="Create national trademark matters"
+              >
+                <Globe class="mr-1 h-3 w-3" />
+                {{ $t('International') }}
+              </Button>
+              <Button
                 size="sm"
                 variant="outline"
                 @click="exportMatter"
@@ -174,6 +184,11 @@
                   <Flag class="mr-1 h-3 w-3" />
                   {{ $t('Nat. Phase') }}
                 </Button>
+                
+                <!-- Official Links Section -->
+                <div class="pt-3 border-t">
+                  <OfficeLinks :matter="matter" />
+                </div>
               </div>
             </CardFooter>
           </Card>
@@ -242,7 +257,9 @@
                 :matter-id="matter.id"
                 :container-id="matter.container_id"
                 :enable-inline-edit="false"
+                :editable="canWrite"
                 @update="handleActorUpdate"
+                @edit="handleActorEdit"
               />
             </CardContent>
           </Card>
@@ -352,6 +369,13 @@
       @success="handleActorUpdate"
     />
 
+    <ActorDialog
+      v-model:open="showActorEditDialog"
+      :actor-id="selectedActor?.actor_id || selectedActor?.id"
+      operation="edit"
+      @success="handleActorUpdate"
+    />
+
     <StatusInfoManager
       v-model:open="showStatusInfoDialog"
       :matter="matter"
@@ -377,6 +401,12 @@
       :current-user="$page.props.auth.user"
       @success="handleMatterUpdate"
     />
+
+    <InternationalTrademarkCreator
+      v-model:open="showInternationalCreatorDialog"
+      :matter="matter"
+      @success="handleInternationalSuccess"
+    />
   </MainLayout>
 </template>
 
@@ -399,7 +429,8 @@ import {
   Download,
   Share2,
   Archive,
-  Zap
+  Zap,
+  Globe
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
 import { Card, CardContent, CardHeader, CardFooter } from '@/Components/ui/card'
@@ -415,11 +446,14 @@ import {
 import ActorList from '@/Components/display/ActorList.vue'
 import MatterDialog from '@/Components/dialogs/MatterDialog.vue'
 import MatterActorManager from '@/Components/dialogs/MatterActorManager.vue'
+import ActorDialog from '@/Components/dialogs/ActorDialog.vue'
 import TitleManager from '@/Components/dialogs/TitleManager.vue'
 import StatusInfoManager from '@/Components/dialogs/StatusInfoManager.vue'
 import ClassifierManager from '@/Components/dialogs/ClassifierManager.vue'
 import FileMergeDialog from '@/Components/dialogs/FileMergeDialog.vue'
 import ChildMatterDialog from '@/Components/dialogs/ChildMatterDialog.vue'
+import InternationalTrademarkCreator from '@/Components/matter/InternationalTrademarkCreator.vue'
+import OfficeLinks from '@/Components/matter/OfficeLinks.vue'
 
 // Import tab components (to be created)
 import SummaryTab from '@/Components/matter/tabs/SummaryTab.vue'
@@ -447,10 +481,13 @@ const activeTab = ref('summary')
 const showEditDialog = ref(false)
 const showTitleManagerDialog = ref(false)
 const showActorManagerDialog = ref(false)
+const showActorEditDialog = ref(false)
+const selectedActor = ref(null)
 const showStatusInfoDialog = ref(false)
 const showClassifierDialog = ref(false)
 const showFileMergeDialog = ref(false)
 const showChildDialog = ref(false)
+const showInternationalCreatorDialog = ref(false)
 
 // Computed
 const imageClassifier = computed(() => 
@@ -487,6 +524,12 @@ function handleMatterUpdate() {
   router.reload({ only: ['matter'] })
 }
 
+function handleInternationalSuccess() {
+  showInternationalCreatorDialog.value = false
+  // Reload the full page to show new national matters in family
+  router.visit(`/matter?Ref=${props.matter.caseref}`)
+}
+
 function handleTitleUpdate() {
   router.reload({ only: ['titles'] })
 }
@@ -497,7 +540,13 @@ function handleClassifierUpdate() {
 
 
 function handleActorUpdate() {
-  router.reload({ only: ['actors'] })
+  router.reload({ only: ['actors', 'matter'] })
+}
+
+function handleActorEdit(actor) {
+  // Open the actor dialog for editing a specific actor
+  selectedActor.value = actor
+  showActorEditDialog.value = true
 }
 
 
@@ -517,7 +566,7 @@ function generateReport() {
 }
 
 function exportMatter() {
-  window.location.href = `/matter/${props.matter.id}/export`
+  window.location.href = route('matter.export.single', props.matter.id)
 }
 
 function shareMatter() {

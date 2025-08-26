@@ -320,6 +320,92 @@ class MatterController extends Controller
         return response()->json(['redirect' => "/matter?Ref=$request->caseref&origin=$parent_matter->country"]);
     }
 
+    /**
+     * Create national trademark matters from international WO registration
+     */
+    public function storeInternational(Request $request)
+    {
+        Gate::authorize('readwrite');
+        
+        $this->validate($request, [
+            'parent_id' => 'required|exists:matter,id',
+            'countries' => 'required|array|min:1',
+            'countries.*' => 'string|exists:country,iso'
+        ]);
+
+        $parentMatter = Matter::findOrFail($request->parent_id);
+        $service = app(\App\Services\InternationalTrademarkService::class);
+        
+        try {
+            // Create national matters
+            $results = $service->createCountryMatters($parentMatter, $request->countries);
+            
+            return response()->json([
+                'success' => true,
+                'message' => __('National trademark matters created successfully'),
+                'results' => $results,
+                'redirect' => route('matter.show', $parentMatter)
+            ]);
+
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('International trademark creation failed', [
+                'parent_id' => $request->parent_id,
+                'countries' => $request->countries,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => __('An error occurred while creating national matters')
+            ], 500);
+        }
+    }
+
+    /**
+     * Get available countries and existing national matters for international trademark
+     */
+    public function getInternationalCountries(Matter $matter)
+    {
+        Gate::authorize('readwrite');
+        
+        $service = app(\App\Services\InternationalTrademarkService::class);
+        
+        // Validate matter is eligible
+        $validation = $service->validateInternationalMatter($matter);
+        
+        return response()->json([
+            'validation' => $validation,
+            'available_countries' => $service->getAvailableCountries(),
+            'existing_matters' => $service->getExistingNationalMatters($matter),
+            'estimation' => $service->estimateCreation($matter, $service->getAvailableCountries()->pluck('iso')->toArray())
+        ]);
+    }
+
+    /**
+     * Get official links for a matter
+     */
+    public function getOfficialLinks(Matter $matter)
+    {
+        $linkService = app(\App\Services\LinkGeneratorService::class);
+        
+        $links = $linkService->getAllLinksForMatter($matter);
+        
+        return response()->json([
+            'links' => $links,
+            'matter_info' => [
+                'country' => $matter->country,
+                'category' => $matter->category_code,
+                'uid' => $matter->uid
+            ]
+        ]);
+    }
+
     public function storeFamily(Request $request)
     {
         Gate::authorize('readwrite');
@@ -703,6 +789,9 @@ class MatterController extends Controller
                 'value',
                 'sortkey',
                 'sortdir',
+                'sort',
+                'direction',
+                'per_page',
                 'tab',
                 'include_dead',
             ]
@@ -720,6 +809,22 @@ class MatterController extends Controller
 
         // Export the matters array to a CSV file and return the streamed response.
         return $this->matterExportService->export($export);
+    }
+
+    /**
+     * Export a single matter
+     * 
+     * @param Matter $matter
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function exportSingle(Matter $matter)
+    {
+        // Check if user can view this matter
+        Gate::authorize('view', $matter);
+        
+        // Export this specific matter
+        $matterData = [$matter->toArray()];
+        return $this->matterExportService->export($matterData);
     }
 
     /**
