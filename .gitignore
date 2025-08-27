@@ -1,5 +1,8 @@
 /node_modules
 /public/storage
+/public/build
+/public/js
+/public/images
 /storage/
 /vendor
 /.idea
@@ -9,8 +12,6 @@ Homestead.yaml
 /nbproject/private/
 /config/renewal.php
 .DS_Store
-/public
-/public/*
 
 ### Laravel ###
 /bootstrap/compiled@.php
