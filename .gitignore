@@ -1,6 +1,6 @@
 /node_modules
 /public/storage
-/storage/*.key
+/storage/
 /vendor
 /.idea
 Homestead.json
@@ -16,3 +16,4 @@ Homestead.yaml
 /bootstrap/compiled.php
 .env.*.php
 .env.*
+.phpunit.cache
