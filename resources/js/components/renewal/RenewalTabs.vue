@@ -87,7 +87,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Tabs, TabsList, TabsTrigger } from '@/Components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const props = defineProps({
   activeStep: {

@@ -102,10 +102,10 @@
 import { ref } from 'vue'
 import { debounce } from 'lodash-es'
 import { useI18n } from 'vue-i18n'
-import { Label } from '@/Components/ui/label'
-import { Input } from '@/Components/ui/input'
-import { Checkbox } from '@/Components/ui/checkbox'
-import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
+import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
 
 const props = defineProps({
   filters: {

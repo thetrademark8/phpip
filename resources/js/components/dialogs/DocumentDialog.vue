@@ -132,10 +132,10 @@ import {
   Edit,
   Trash2
 } from 'lucide-vue-next'
-import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
-import DialogSkeleton from '@/Components/ui/skeleton/DialogSkeleton.vue'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
-import FormField from '@/Components/ui/form/FormField.vue'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import DialogSkeleton from '@/components/ui/skeleton/DialogSkeleton.vue'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import FormField from '@/components/ui/form/FormField.vue'
 import {
   Dialog,
   DialogContent,
@@ -143,12 +143,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
-import { Textarea } from '@/Components/ui/textarea'
-import { Badge } from '@/Components/ui/badge'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
 
 const props = defineProps({
   open: Boolean,

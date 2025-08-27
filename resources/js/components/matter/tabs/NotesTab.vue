@@ -74,9 +74,9 @@
 import { ref, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { Copy, Mail } from 'lucide-vue-next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Textarea } from '@/Components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'vue-sonner'
 import { useI18n } from 'vue-i18n'
 

@@ -119,18 +119,18 @@ import {
   X
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import DataTable from '@/Components/ui/DataTable.vue'
-import TemplateMemberFilters from '@/Components/template-member/TemplateMemberFilters.vue'
-import TemplateMemberDialog from '@/Components/dialogs/TemplateMemberDialog.vue'
-import Pagination from '@/Components/ui/Pagination.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
+import DataTable from '@/components/ui/DataTable.vue'
+import TemplateMemberFilters from '@/components/template-member/TemplateMemberFilters.vue'
+import TemplateMemberDialog from '@/components/dialogs/TemplateMemberDialog.vue'
+import Pagination from '@/components/ui/Pagination.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/Components/ui/collapsible'
+} from '@/components/ui/collapsible'
 import { useTemplateMemberFilters } from '@/composables/useTemplateMemberFilters'
 
 const props = defineProps({

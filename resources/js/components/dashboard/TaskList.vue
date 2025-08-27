@@ -17,8 +17,8 @@ import {h} from 'vue'
 import {Link} from '@inertiajs/vue3'
 import {format, parseISO, isPast, isBefore, addDays, formatDistanceToNow} from 'date-fns'
 import {CalendarDays, Clock, AlertCircle} from 'lucide-vue-next'
-import DataTable from '@/Components/ui/DataTable.vue'
-import StatusBadge from '@/Components/display/StatusBadge.vue'
+import DataTable from '@/components/ui/DataTable.vue'
+import StatusBadge from '@/components/display/StatusBadge.vue'
 import { useTranslatedField } from '@/composables/useTranslation.js'
 
 const props = defineProps({

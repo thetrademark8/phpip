@@ -202,7 +202,7 @@ import {
   RotateCcw, 
   Download 
 } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 
 const props = defineProps({
   step: {

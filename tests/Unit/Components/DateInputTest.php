@@ -2,7 +2,7 @@
 
 use App\Services\DatePickerService;
 use App\Services\DateService;
-use App\View\Components\DateInput;
+use App\View\components\DateInput;
 
 beforeEach(function () {
     $this->dateService = new DateService;

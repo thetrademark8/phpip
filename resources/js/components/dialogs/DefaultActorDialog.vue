@@ -181,12 +181,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Button } from '@/Components/ui/button'
-import { Label } from '@/Components/ui/label'
-import { Badge } from '@/Components/ui/badge'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
-import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({

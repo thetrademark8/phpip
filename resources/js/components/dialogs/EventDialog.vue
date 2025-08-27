@@ -69,13 +69,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
-import { Textarea } from '@/Components/ui/textarea'
-import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
   open: {

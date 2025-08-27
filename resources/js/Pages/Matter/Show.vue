@@ -433,35 +433,35 @@ import {
   Globe
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import { Card, CardContent, CardHeader, CardFooter } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Alert, AlertDescription } from '@/Components/ui/alert'
-import { Badge } from '@/Components/ui/badge'
+import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@/Components/ui/tabs'
-import ActorList from '@/Components/display/ActorList.vue'
-import MatterDialog from '@/Components/dialogs/MatterDialog.vue'
-import MatterActorManager from '@/Components/dialogs/MatterActorManager.vue'
-import ActorDialog from '@/Components/dialogs/ActorDialog.vue'
-import TitleManager from '@/Components/dialogs/TitleManager.vue'
-import StatusInfoManager from '@/Components/dialogs/StatusInfoManager.vue'
-import ClassifierManager from '@/Components/dialogs/ClassifierManager.vue'
-import FileMergeDialog from '@/Components/dialogs/FileMergeDialog.vue'
-import ChildMatterDialog from '@/Components/dialogs/ChildMatterDialog.vue'
-import InternationalTrademarkCreator from '@/Components/matter/InternationalTrademarkCreator.vue'
-import OfficeLinks from '@/Components/matter/OfficeLinks.vue'
+} from '@/components/ui/tabs'
+import ActorList from '@/components/display/ActorList.vue'
+import MatterDialog from '@/components/dialogs/MatterDialog.vue'
+import MatterActorManager from '@/components/dialogs/MatterActorManager.vue'
+import ActorDialog from '@/components/dialogs/ActorDialog.vue'
+import TitleManager from '@/components/dialogs/TitleManager.vue'
+import StatusInfoManager from '@/components/dialogs/StatusInfoManager.vue'
+import ClassifierManager from '@/components/dialogs/ClassifierManager.vue'
+import FileMergeDialog from '@/components/dialogs/FileMergeDialog.vue'
+import ChildMatterDialog from '@/components/dialogs/ChildMatterDialog.vue'
+import InternationalTrademarkCreator from '@/components/matter/InternationalTrademarkCreator.vue'
+import OfficeLinks from '@/components/matter/OfficeLinks.vue'
 
 // Import tab components (to be created)
-import SummaryTab from '@/Components/matter/tabs/SummaryTab.vue'
-import EventsTab from '@/Components/matter/tabs/EventsTab.vue'
-import TasksTab from '@/Components/matter/tabs/TasksTab.vue'
-import RenewalsTab from '@/Components/matter/tabs/RenewalsTab.vue'
-import NotesTab from '@/Components/matter/tabs/NotesTab.vue'
-import ActivityFeed from '@/Components/matter/ActivityFeed.vue'
+import SummaryTab from '@/components/matter/tabs/SummaryTab.vue'
+import EventsTab from '@/components/matter/tabs/EventsTab.vue'
+import TasksTab from '@/components/matter/tabs/TasksTab.vue'
+import RenewalsTab from '@/components/matter/tabs/RenewalsTab.vue'
+import NotesTab from '@/components/matter/tabs/NotesTab.vue'
+import ActivityFeed from '@/components/matter/ActivityFeed.vue'
 
 const props = defineProps({
   matter: Object,

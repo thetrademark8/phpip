@@ -76,9 +76,9 @@ import { ref } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { Plus, X, FileText, Loader2 } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
-import { Label } from '@/Components/ui/label'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({

@@ -266,14 +266,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Checkbox } from '@/Components/ui/checkbox'
-import { Badge } from '@/Components/ui/badge'
-import { Progress } from '@/Components/ui/progress'
-import FormField from '@/Components/ui/form/FormField.vue'
+} from '@/components/ui/dialog'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import FormField from '@/components/ui/form/FormField.vue'
 
 const props = defineProps({
   open: {

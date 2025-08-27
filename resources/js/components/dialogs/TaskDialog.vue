@@ -32,8 +32,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import TaskForm from '@/Components/forms/TaskForm.vue'
+} from '@/components/ui/dialog'
+import TaskForm from '@/components/forms/TaskForm.vue'
 
 const props = defineProps({
   open: {

@@ -150,12 +150,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import FormField from '@/Components/ui/form/FormField.vue'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+} from '@/components/ui/dialog'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import FormField from '@/components/ui/form/FormField.vue'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
   open: {

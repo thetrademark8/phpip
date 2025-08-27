@@ -32,13 +32,13 @@ import { fr } from 'date-fns/locale'
 import { CalendarDate } from '@internationalized/date'
 import { CalendarIcon } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
-import { Button } from '@/Components/ui/button'
-import { Calendar } from '@/Components/ui/calendar'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/Components/ui/popover'
+} from '@/components/ui/popover'
 
 const props = defineProps({
   modelValue: {

@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { TableCell, TableRow } from '@/Components/ui/table'
+import { TableCell, TableRow } from '@/components/ui/table'
 import Skeleton from './Skeleton.vue'
 
 defineProps({

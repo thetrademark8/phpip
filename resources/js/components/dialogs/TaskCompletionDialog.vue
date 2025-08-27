@@ -69,10 +69,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Button } from '@/Components/ui/button'
-import { Label } from '@/Components/ui/label'
-import DateInput from '@/Components/ui/date-picker/DatePicker.vue'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import DateInput from '@/components/ui/date-picker/DatePicker.vue'
 
 const props = defineProps({
   open: {

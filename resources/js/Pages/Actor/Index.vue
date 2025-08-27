@@ -121,18 +121,18 @@ import {
   X
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import DataTable from '@/Components/ui/DataTable.vue'
-import ActorDialog from '@/Components/dialogs/ActorDialog.vue'
-import ActorFilters from '@/Components/actor/ActorFilters.vue'
-import Pagination from '@/Components/ui/Pagination.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
+import DataTable from '@/components/ui/DataTable.vue'
+import ActorDialog from '@/components/dialogs/ActorDialog.vue'
+import ActorFilters from '@/components/actor/ActorFilters.vue'
+import Pagination from '@/components/ui/Pagination.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/Components/ui/collapsible'
+} from '@/components/ui/collapsible'
 import { useActorFilters } from '@/composables/useActorFilters'
 import { usePermissions } from '@/composables/usePermissions'
 

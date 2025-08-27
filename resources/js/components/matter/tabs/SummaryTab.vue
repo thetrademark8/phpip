@@ -152,9 +152,9 @@ import { Link } from '@inertiajs/vue3'
 import { format, isPast, addDays } from 'date-fns'
 import { useTranslatedField } from '@/composables/useTranslation'
 import {List, ExternalLink, Pencil, Settings} from 'lucide-vue-next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Badge } from '@/Components/ui/badge'
-import {Button} from "@/Components/ui/button/index.js";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {Button} from "@/components/ui/button/index.js";
 
 const props = defineProps({
   matter: Object,

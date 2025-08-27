@@ -167,17 +167,17 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debounce } from 'lodash-es'
-import { Label } from '@/Components/ui/label'
-import { Input } from '@/Components/ui/input'
-import { Switch } from '@/Components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+} from '@/components/ui/select'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
   filters: {

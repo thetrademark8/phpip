@@ -119,18 +119,18 @@ import {
   X
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import DataTable from '@/Components/ui/DataTable.vue'
-import EventNameFilters from '@/Components/eventname/EventNameFilters.vue'
-import Pagination from '@/Components/ui/Pagination.vue'
-import EventNameDialog from '@/Components/eventname/EventNameDialog.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
+import DataTable from '@/components/ui/DataTable.vue'
+import EventNameFilters from '@/components/eventname/EventNameFilters.vue'
+import Pagination from '@/components/ui/Pagination.vue'
+import EventNameDialog from '@/components/eventname/EventNameDialog.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/Components/ui/collapsible'
+} from '@/components/ui/collapsible'
 import { useEventNameFilters } from '@/composables/useEventNameFilters'
 import { useTranslatedField } from '@/composables/useTranslation'
 

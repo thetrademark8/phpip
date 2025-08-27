@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-8">Form Components Test</h1>
+    <h1 class="text-3xl font-bold mb-8">Form components Test</h1>
     
     <div class="space-y-8">
       <!-- Matter Form Section -->
@@ -124,12 +124,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'
-import { RadioGroup, RadioGroupItem } from '@/Components/ui/radio-group'
-import MatterForm from '@/Components/forms/MatterForm.vue'
-import ActorForm from '@/Components/forms/ActorForm.vue'
-import TaskForm from '@/Components/forms/TaskForm.vue'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import MatterForm from '@/components/forms/MatterForm.vue'
+import ActorForm from '@/components/forms/ActorForm.vue'
+import TaskForm from '@/components/forms/TaskForm.vue'
 
 // Tab states
 const matterOperation = ref('new')

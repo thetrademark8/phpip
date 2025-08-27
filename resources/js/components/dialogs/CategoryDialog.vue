@@ -145,14 +145,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
-import { Badge } from '@/Components/ui/badge'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
-import DialogSkeleton from '@/Components/ui/skeleton/DialogSkeleton.vue'
-import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import DialogSkeleton from '@/components/ui/skeleton/DialogSkeleton.vue'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
 import { format } from 'date-fns'
 import { useTranslatedField } from '@/composables/useTranslation'
 

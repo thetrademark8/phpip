@@ -546,20 +546,20 @@ import {
 } from 'lucide-vue-next'
 import { usePermissions } from '@/composables/usePermissions'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import EditableField from '@/Components/ui/EditableField.vue'
-import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
-import UsedInSkeleton from '@/Components/ui/skeleton/UsedInSkeleton.vue'
-import { Card, CardContent } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Label } from '@/Components/ui/label'
-import { Badge } from '@/Components/ui/badge'
-import { Checkbox } from '@/Components/ui/checkbox'
+import EditableField from '@/components/ui/EditableField.vue'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import UsedInSkeleton from '@/components/ui/skeleton/UsedInSkeleton.vue'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@/Components/ui/tabs'
+} from '@/components/ui/tabs'
 
 const props = defineProps({
   actor: Object,

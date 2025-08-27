@@ -24,12 +24,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
-import Navigation from '@/Components/Navigation.vue'
-import Footer from '@/Components/Footer.vue'
+import Navigation from '@/components/Navigation.vue'
+import Footer from '@/components/Footer.vue'
 import { toast } from 'vue-sonner'
-import { Toaster } from '@/Components/ui/sonner'
+import { Toaster } from '@/components/ui/sonner'
 import 'vue-sonner/style.css' // vue-sonner v2 requires this import
-import MatterDialog from '@/Components/dialogs/MatterDialog.vue'
+import MatterDialog from '@/components/dialogs/MatterDialog.vue'
 
 // Matter Dialog state
 const matterDialogOpen = ref(false)

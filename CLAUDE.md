@@ -14,7 +14,7 @@ All project documentation is located in the `docs/` directory:
 
 Always reference these documents when working on related features.
 
-## Important Guidelines for Components
+## Important Guidelines for components
 
 ### Component Display
 

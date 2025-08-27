@@ -61,7 +61,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 
 const props = defineProps({
   // Support both individual props and pagination object

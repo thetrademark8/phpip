@@ -59,10 +59,10 @@
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { Plus, FileText, Shield, Scale, Briefcase } from 'lucide-vue-next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
-import { Progress } from '@/Components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {translate} from "@intlify/core-base";
 import {useTranslatedField} from "@/composables/useTranslation.js";
 

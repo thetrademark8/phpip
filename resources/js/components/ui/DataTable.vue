@@ -150,15 +150,15 @@ import {
   useVueTable,
 } from '@tanstack/vue-table'
 import { ArrowUpDown, ArrowUp, ArrowDown, Loader2 } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
-import { Checkbox } from '@/Components/ui/checkbox'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select'
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -166,8 +166,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/Components/ui/table'
-import TableRowSkeleton from '@/Components/ui/skeleton/TableRowSkeleton.vue'
+} from '@/components/ui/table'
+import TableRowSkeleton from '@/components/ui/skeleton/TableRowSkeleton.vue'
 import { cn } from '@/lib/utils'
 
 const props = defineProps({

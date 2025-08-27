@@ -55,7 +55,7 @@ import { router } from '@inertiajs/vue3'
 import { debounce } from 'lodash-es'
 import { Loader2 } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
-import { Input } from '@/Components/ui/input'
+import { Input } from '@/components/ui/input'
 
 const props = defineProps({
   modelValue: {

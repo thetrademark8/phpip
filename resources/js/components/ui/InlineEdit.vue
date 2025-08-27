@@ -98,16 +98,16 @@
 import { ref, computed, nextTick, watch } from 'vue'
 import { Edit2, Check, X, Loader2 } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select'
-import { DatePicker } from '@/Components/ui/date-picker'
+} from '@/components/ui/select'
+import { DatePicker } from '@/components/ui/date-picker'
 
 const props = defineProps({
   modelValue: {

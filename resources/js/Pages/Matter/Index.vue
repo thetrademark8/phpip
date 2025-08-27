@@ -116,18 +116,18 @@ import {
   ChevronUp
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import DataTable from '@/Components/ui/DataTable.vue'
-import MatterFilters from '@/Components/matter/MatterFilters.vue'
-import StatusBadge from '@/Components/display/StatusBadge.vue'
-import Pagination from '@/Components/ui/Pagination.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
+import DataTable from '@/components/ui/DataTable.vue'
+import MatterFilters from '@/components/matter/MatterFilters.vue'
+import StatusBadge from '@/components/display/StatusBadge.vue'
+import Pagination from '@/components/ui/Pagination.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/Components/ui/collapsible'
+} from '@/components/ui/collapsible'
 import { useMatterFilters } from '@/composables/useMatterFilters'
 import { MatterFilterService } from '@/services/MatterFilterService'
 import { CATEGORY_VARIANTS } from '@/constants/matter'

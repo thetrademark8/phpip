@@ -47,9 +47,9 @@
 
 <script setup>
 import { Link } from '@inertiajs/vue3'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar'
-import { Badge } from '@/Components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { format, parseISO, isPast, isBefore, addWeeks, addDays } from 'date-fns'
 
 const props = defineProps({

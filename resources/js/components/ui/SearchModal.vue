@@ -133,9 +133,9 @@
 import { ref, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { Search, Filter, ChevronRight } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Dialog,
   DialogContent,
@@ -143,16 +143,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/Components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select'
-import StatusBadge from '@/Components/display/StatusBadge.vue'
-import SearchResultSkeleton from '@/Components/ui/skeleton/SearchResultSkeleton.vue'
+} from '@/components/ui/select'
+import StatusBadge from '@/components/display/StatusBadge.vue'
+import SearchResultSkeleton from '@/components/ui/skeleton/SearchResultSkeleton.vue'
 
 const props = defineProps({
   modelValue: {

@@ -472,18 +472,18 @@
 import { useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from '@/Components/ui/select'
-import FormField from '@/Components/ui/form/FormField.vue'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+} from '@/components/ui/select'
+import FormField from '@/components/ui/form/FormField.vue'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import { User, Loader2, Key, Info, Lock, AlertCircle } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { usePermissions } from '@/composables/usePermissions'

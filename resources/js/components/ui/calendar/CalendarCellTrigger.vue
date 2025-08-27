@@ -2,7 +2,7 @@
 import { reactiveOmit } from "@vueuse/core";
 import { CalendarCellTrigger, useForwardProps } from "reka-ui";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from '@/Components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 
 const props = defineProps({
   day: { type: null, required: true },

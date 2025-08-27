@@ -403,22 +403,22 @@ Translation files are critical:
 - Test thoroughly after modifications
 - Consider translation impact on UI layout
 
-## Integration with Components
+## Integration with components
 
-### Filter Components
+### Filter components
 ```vue
 <Label>{{ t('module.fields.fieldName') }}</Label>
 <Input :placeholder="t('module.placeholders.fieldName')" />
 ```
 
-### Dialog Components
+### Dialog components
 ```vue
 <DialogTitle>
   {{ operation === 'create' ? t('module.dialog.createTitle') : t('module.dialog.editTitle') }}
 </DialogTitle>
 ```
 
-### Table Components
+### Table components
 ```vue
 const columns = computed(() => [
   {

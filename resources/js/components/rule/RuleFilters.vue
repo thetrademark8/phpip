@@ -105,9 +105,9 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debounce } from 'lodash-es'
-import { Label } from '@/Components/ui/label'
-import { Input } from '@/Components/ui/input'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
   filters: {

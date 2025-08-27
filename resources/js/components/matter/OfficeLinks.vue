@@ -85,8 +85,8 @@ import {
   Check,
   Palette
 } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 const props = defineProps({
   matter: {
@@ -110,7 +110,7 @@ const copiedStates = ref({})
 const copyTimeouts = ref({})
 
 // Icon mapping
-const iconComponents = {
+const iconcomponents = {
   Globe,
   ExternalLink,
   Search,
@@ -122,7 +122,7 @@ const iconComponents = {
 
 // Methods
 function getIcon(iconName) {
-  return iconComponents[iconName] || ExternalLink
+  return iconcomponents[iconName] || ExternalLink
 }
 
 async function loadOfficialLinks() {

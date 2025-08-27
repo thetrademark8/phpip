@@ -165,21 +165,21 @@ import { useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { format } from 'date-fns'
 import { Loader2 } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
-import { Textarea } from '@/Components/ui/textarea'
-import { Checkbox } from '@/Components/ui/checkbox'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select'
-import FormField from '@/Components/ui/form/FormField.vue'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
-import { DatePicker } from '@/Components/ui/date-picker'
+} from '@/components/ui/select'
+import FormField from '@/components/ui/form/FormField.vue'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import { DatePicker } from '@/components/ui/date-picker'
 
 const props = defineProps({
   task: {

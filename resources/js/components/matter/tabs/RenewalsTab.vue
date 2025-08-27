@@ -33,10 +33,10 @@ import { Link } from '@inertiajs/vue3'
 import { format, isPast, addDays } from 'date-fns'
 import { h } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Badge } from '@/Components/ui/badge'
-import StatusBadge from '@/Components/display/StatusBadge.vue'
-import DataTable from '@/Components/ui/DataTable.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import StatusBadge from '@/components/display/StatusBadge.vue'
+import DataTable from '@/components/ui/DataTable.vue'
 
 const props = defineProps({
   renewals: Array,

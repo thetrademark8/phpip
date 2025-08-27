@@ -247,19 +247,19 @@ import {
   AlertTriangle
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import { Button } from '@/Components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Checkbox } from '@/Components/ui/checkbox'
-import { Label } from '@/Components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/Components/ui/collapsible'
-import Pagination from '@/Components/ui/Pagination.vue'
-import RenewalFilters from '@/Components/renewal/RenewalFilters.vue'
-import RenewalTabs from '@/Components/renewal/RenewalTabs.vue'
-import RenewalActions from '@/Components/renewal/RenewalActions.vue'
+} from '@/components/ui/collapsible'
+import Pagination from '@/components/ui/Pagination.vue'
+import RenewalFilters from '@/components/renewal/RenewalFilters.vue'
+import RenewalTabs from '@/components/renewal/RenewalTabs.vue'
+import RenewalActions from '@/components/renewal/RenewalActions.vue'
 
 const props = defineProps({
   renewals: Object,

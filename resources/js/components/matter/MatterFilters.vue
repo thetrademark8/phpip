@@ -260,11 +260,11 @@
 import { ref, watch, computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
-import { Label } from '@/Components/ui/label'
-import { Input } from '@/Components/ui/input'
-import { Switch } from '@/Components/ui/switch'
-import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
+import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
   filters: {

@@ -38,7 +38,7 @@
 <script setup>
 import { ref } from 'vue'
 import { Loader2 } from 'lucide-vue-next'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -46,7 +46,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
+} from '@/components/ui/dialog'
 
 const props = defineProps({
   open: {

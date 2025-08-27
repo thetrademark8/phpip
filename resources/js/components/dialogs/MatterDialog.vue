@@ -40,9 +40,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import MatterForm from '@/Components/forms/MatterForm.vue'
-import MatterEditForm from '@/Components/forms/MatterEditForm.vue'
+} from '@/components/ui/dialog'
+import MatterForm from '@/components/forms/MatterForm.vue'
+import MatterEditForm from '@/components/forms/MatterEditForm.vue'
 
 const props = defineProps({
   open: {

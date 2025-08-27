@@ -419,23 +419,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@/Components/ui/tabs'
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Textarea } from '@/Components/ui/textarea'
-import { Label } from '@/Components/ui/label'
-import { Checkbox } from '@/Components/ui/checkbox'
-import { Badge } from '@/Components/ui/badge'
-import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
-import DatePicker from '@/Components/ui/date-picker/DatePicker.vue'
-import DialogSkeleton from '@/Components/ui/skeleton/DialogSkeleton.vue'
+} from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
+import DialogSkeleton from '@/components/ui/skeleton/DialogSkeleton.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({

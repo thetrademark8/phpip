@@ -213,7 +213,7 @@ import { ref, computed } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { ChevronDown, Menu, X, Search } from 'lucide-vue-next'
 import {usePermissions} from "@/composables/usePermissions.js";
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -221,8 +221,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu'
-import SearchModal from '@/Components/ui/SearchModal.vue'
+} from '@/components/ui/dropdown-menu'
+import SearchModal from '@/components/ui/SearchModal.vue'
 
 const { canRead, canWrite, isAdmin } = usePermissions();
 

@@ -135,9 +135,9 @@
 import { computed, ref } from 'vue'
 import { Edit2, X, Plus, Lock } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
-import { Button } from '@/Components/ui/button'
-import InlineEdit from '@/Components/ui/InlineEdit.vue'
-import EditableField from '@/Components/ui/EditableField.vue'
+import { Button } from '@/components/ui/button'
+import InlineEdit from '@/components/ui/InlineEdit.vue'
+import EditableField from '@/components/ui/EditableField.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
 import { usePermissions } from '@/composables/usePermissions.js'
 

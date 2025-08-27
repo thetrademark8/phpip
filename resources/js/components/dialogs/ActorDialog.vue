@@ -460,8 +460,8 @@ import {
   AlertCircle
 } from 'lucide-vue-next'
 import { usePermissions } from '@/composables/usePermissions'
-import ConfirmDialog from '@/Components/dialogs/ConfirmDialog.vue'
-import DialogSkeleton from '@/Components/ui/skeleton/DialogSkeleton.vue'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
+import DialogSkeleton from '@/components/ui/skeleton/DialogSkeleton.vue'
 import {
   Dialog,
   DialogContent,
@@ -469,20 +469,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
-import { Label } from '@/Components/ui/label'
-import { Input } from '@/Components/ui/input'
-import { Textarea } from '@/Components/ui/textarea'
-import { Checkbox } from '@/Components/ui/checkbox'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@/Components/ui/tabs'
+} from '@/components/ui/tabs'
 
 const props = defineProps({
   open: {

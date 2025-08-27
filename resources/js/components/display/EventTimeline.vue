@@ -106,10 +106,10 @@ import { computed } from 'vue'
 import { format, parseISO } from 'date-fns'
 import { Edit2, Trash2 } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
-import { Button } from '@/Components/ui/button'
+import { Button } from '@/components/ui/button'
 import StatusBadge from './StatusBadge.vue'
-import InlineEdit from '@/Components/ui/InlineEdit.vue'
-import EditableField from '@/Components/ui/EditableField.vue'
+import InlineEdit from '@/components/ui/InlineEdit.vue'
+import EditableField from '@/components/ui/EditableField.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({

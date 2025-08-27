@@ -65,15 +65,15 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select'
+} from '@/components/ui/select'
 
 const props = defineProps({
   filters: {

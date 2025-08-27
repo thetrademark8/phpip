@@ -151,19 +151,19 @@ import { ref, computed } from 'vue'
 import { format, parseISO, isPast } from 'date-fns'
 import { Edit2, Trash2, Plus, Calendar, User, DollarSign } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
-import { Button } from '@/Components/ui/button'
-import { Checkbox } from '@/Components/ui/checkbox'
-import { Input } from '@/Components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select'
+} from '@/components/ui/select'
 import StatusBadge from './StatusBadge.vue'
-import InlineEdit from '@/Components/ui/InlineEdit.vue'
-import EditableField from '@/Components/ui/EditableField.vue'
+import InlineEdit from '@/components/ui/InlineEdit.vue'
+import EditableField from '@/components/ui/EditableField.vue'
 
 const props = defineProps({
   tasks: {

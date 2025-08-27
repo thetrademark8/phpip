@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { Skeleton } from '@/Components/ui/skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 defineProps({
   fields: {

@@ -45,9 +45,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
-import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
   filters: {

@@ -110,18 +110,18 @@ import { router, usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { Plus, ChevronDown, ChevronUp, X } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import DataTable from '@/Components/ui/DataTable.vue'
-import { Button } from '@/Components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Badge } from '@/Components/ui/badge'
+import DataTable from '@/components/ui/DataTable.vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/Components/ui/collapsible'
-import Pagination from '@/Components/ui/Pagination.vue'
-import RoleFilters from '@/Components/role/RoleFilters.vue'
-import RoleDialog from '@/Components/dialogs/RoleDialog.vue'
+} from '@/components/ui/collapsible'
+import Pagination from '@/components/ui/Pagination.vue'
+import RoleFilters from '@/components/role/RoleFilters.vue'
+import RoleDialog from '@/components/dialogs/RoleDialog.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({

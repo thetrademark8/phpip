@@ -278,15 +278,15 @@ import {
   X
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
-import FeeFilters from '@/Components/fee/FeeFilters.vue'
-import FeeDialog from '@/Components/fee/FeeDialog.vue'
-import Pagination from '@/Components/ui/Pagination.vue'
-import CurrencySelect from '@/Components/ui/form/CurrencySelect.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import { Badge } from '@/Components/ui/badge'
-import { Input } from '@/Components/ui/input'
-import { Skeleton } from '@/Components/ui/skeleton'
+import FeeFilters from '@/components/fee/FeeFilters.vue'
+import FeeDialog from '@/components/fee/FeeDialog.vue'
+import Pagination from '@/components/ui/Pagination.vue'
+import CurrencySelect from '@/components/ui/form/CurrencySelect.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -294,12 +294,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/Components/ui/table'
+} from '@/components/ui/table'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/Components/ui/collapsible'
+} from '@/components/ui/collapsible'
 import { useFeeFilters } from '@/composables/useFeeFilters'
 
 const props = defineProps({

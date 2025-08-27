@@ -32,8 +32,8 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import debounce from 'lodash.debounce'
-import { Label } from '@/Components/ui/label'
-import { Input } from '@/Components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 
 const props = defineProps({
   filters: {

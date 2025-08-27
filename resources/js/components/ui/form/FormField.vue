@@ -38,7 +38,7 @@
 
 <script setup>
 import { cn } from '@/lib/utils'
-import { Label } from '@/Components/ui/label'
+import { Label } from '@/components/ui/label'
 
 defineProps({
   label: {

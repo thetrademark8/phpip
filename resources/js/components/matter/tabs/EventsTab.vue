@@ -34,10 +34,10 @@
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { Settings } from 'lucide-vue-next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import EventTimeline from '@/Components/display/EventTimeline.vue'
-import MatterEventManager from '@/Components/dialogs/MatterEventManager.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import EventTimeline from '@/components/display/EventTimeline.vue'
+import MatterEventManager from '@/components/dialogs/MatterEventManager.vue'
 
 const props = defineProps({
   events: Array,

@@ -115,16 +115,16 @@
 **Implémentation technique**:
 ```javascript
 // Extension du composant DatePicker existant
-// resources/js/Components/ui/date-picker/DatePicker.vue
+// resources/js/components/ui/date-picker/DatePicker.vue
 - Utiliser VCalendar ou date-fns (déjà installé)
 - Support multi-langue (FR/EN/DE)
 - Validation Zod intégrée
 ```
 
 **Fichiers à modifier**:
-- `resources/js/Components/dialogs/MatterDialog.vue`
-- `resources/js/Components/dialogs/TaskDialog.vue`
-- `resources/js/Components/dialogs/EventDialog.vue`
+- `resources/js/components/dialogs/MatterDialog.vue`
+- `resources/js/components/dialogs/TaskDialog.vue`
+- `resources/js/components/dialogs/EventDialog.vue`
 - Tous les formulaires avec champs date
 
 #### 1.2 Conservation de la Casse (P0 - 1 semaine)
@@ -183,8 +183,8 @@ DELETE /api/settings/logo
 
 **Composants Vue**:
 ```javascript
-// resources/js/Components/settings/LogoUploader.vue
-// resources/js/Components/common/CompanyLogo.vue
+// resources/js/components/settings/LogoUploader.vue
+// resources/js/components/common/CompanyLogo.vue
 ```
 
 ### PHASE 2: Gestion Catégories & Statuts (2-3 semaines)
@@ -250,7 +250,7 @@ public function index(Request $request) {
 #### 3.2 Fusion Actor/Status View (P1 - 2 semaines)
 **Nouveau composant unifié**:
 ```javascript
-// resources/js/Components/matter/UnifiedMatterTable.vue
+// resources/js/components/matter/UnifiedMatterTable.vue
 // Colonnes: Title, Client, Status, Categories, Deadline, Actions
 ```
 
@@ -357,7 +357,7 @@ class InternationalTrademarkService {
 
 **Interface Vue à créer**:
 ```javascript
-// 📋 resources/js/Components/matter/InternationalTrademarkCreator.vue (À CRÉER)
+// 📋 resources/js/components/matter/InternationalTrademarkCreator.vue (À CRÉER)
 // - Sélecteur multi-pays avec recherche
 // - Aperçu des dossiers à créer avec estimation coûts
 // - Validation avant création batch
@@ -393,7 +393,7 @@ class LinkGeneratorService {
 
 **Composant Vue à créer**:
 ```javascript
-// 📋 resources/js/Components/matter/OfficeLinks.vue (À CRÉER)
+// 📋 resources/js/components/matter/OfficeLinks.vue (À CRÉER)
 // - Liens automatiques basés sur numéros de dépôt/publication
 // - Ouverture dans nouvel onglet avec icônes office
 // - Validation format numéros avant génération liens

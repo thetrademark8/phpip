@@ -67,9 +67,9 @@ import {
   Clock,
   Tag
 } from 'lucide-vue-next'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card'
-import { Button } from '@/Components/ui/button'
-import ActivityItemSkeleton from '@/Components/ui/skeleton/ActivityItemSkeleton.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import ActivityItemSkeleton from '@/components/ui/skeleton/ActivityItemSkeleton.vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
