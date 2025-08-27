@@ -624,48 +624,6 @@ const canViewActor = canRead.value
 const canEditActor = canWrite.value  
 const canDeleteActor = isAdmin.value
 
-// Helper function to get translated restriction reason
-const getTranslatedRestrictionReason = (fieldName) => {
-  const reason = getActorFieldRestrictionReason(props.actor, fieldName)
-  
-  // If reason is a string, return it directly
-  if (typeof reason === 'string') {
-    return reason
-  }
-  
-  // If reason is an object with translation keys, try to translate them
-  if (reason && typeof reason === 'object') {
-    // First try field-specific translation
-    if (reason.fieldSpecific) {
-      const fieldSpecificTranslation = t(reason.fieldSpecific)
-      if (fieldSpecificTranslation !== reason.fieldSpecific) {
-        return fieldSpecificTranslation
-      }
-    }
-    
-    // Then try actor type translation
-    if (reason.actorType) {
-      const actorTypeTranslation = t(reason.actorType)
-      if (actorTypeTranslation !== reason.actorType) {
-        return actorTypeTranslation
-      }
-    }
-    
-    // Then try role-level translation
-    if (reason.roleLevel) {
-      const roleLevelTranslation = t(reason.roleLevel)
-      if (roleLevelTranslation !== reason.roleLevel) {
-        return roleLevelTranslation
-      }
-    }
-    
-    // Use fallback
-    return reason.fallback || t('actor.restrictions.readonly_field')
-  }
-  
-  return t('actor.restrictions.readonly_field')
-}
-
 // Helper function to show field restriction tooltip/alert
 const showRestrictionFeedback = (fieldName) => {
   const reason = getTranslatedRestrictionReason(fieldName)

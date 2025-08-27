@@ -241,7 +241,7 @@ import { Input } from '@/Components/ui/input'
 import { Textarea } from '@/Components/ui/textarea'
 import FormField from '@/Components/ui/form/FormField.vue'
 import AutocompleteInput from '@/Components/ui/form/AutocompleteInput.vue'
-import { useActorCreationPermissions, useActorInstancePermissions } from '@/composables/permissions'
+import { usePermissions } from '@/composables/usePermissions'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -256,72 +256,14 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+const { canWrite, isAdmin, hasRole } = usePermissions()
 
-// Use appropriate permissions composable based on operation type
-const isCreateMode = computed(() => !props.actor)
-const actorType = computed(() => {
-  if (props.actor) {
-    return props.actor.phy_person ? 'individual' : 'company'
-  }
-  return 'individual' // Default for new actors
-})
+// Simple permission logic - either can edit all fields or none
+const isFieldEditable = (field) => canWrite.value
 
-// Use different permissions composables based on mode
-const createPermissions = useActorCreationPermissions(actorType.value)
-const instancePermissions = props.actor ? useActorInstancePermissions(props.actor) : null
-
-// Get the appropriate permissions based on mode
-const {
-  canEditActorField,
-  getActorFieldRestrictionReason,
-  isActorFieldApplicable,
-  getEditableActorFields,
-  getRestrictedActorFields
-} = isCreateMode.value ? createPermissions : instancePermissions
-
-// Helper functions for permission UI
-const isFieldEditable = (fieldName) => {
-  if (isCreateMode.value) {
-    return createPermissions.canEditActorField(null, fieldName)
-  }
-  return instancePermissions?.canEditActorField(props.actor, fieldName) ?? false
-}
-
+// Simple restriction message
 const getTranslatedRestrictionReason = (fieldName) => {
-  const reason = isCreateMode.value 
-    ? createPermissions.getActorFieldRestrictionReason(null, fieldName)
-    : instancePermissions?.getActorFieldRestrictionReason(props.actor, fieldName)
-  
-  if (typeof reason === 'string') {
-    return reason
-  }
-  
-  if (reason && typeof reason === 'object') {
-    if (reason.fieldSpecific) {
-      const fieldSpecificTranslation = t(reason.fieldSpecific)
-      if (fieldSpecificTranslation !== reason.fieldSpecific) {
-        return fieldSpecificTranslation
-      }
-    }
-    
-    if (reason.actorType) {
-      const actorTypeTranslation = t(reason.actorType)
-      if (actorTypeTranslation !== reason.actorType) {
-        return actorTypeTranslation
-      }
-    }
-    
-    if (reason.roleLevel) {
-      const roleLevelTranslation = t(reason.roleLevel)
-      if (roleLevelTranslation !== reason.roleLevel) {
-        return roleLevelTranslation
-      }
-    }
-    
-    return reason.fallback || t('actor.restrictions.readonly_field')
-  }
-  
-  return t('actor.restrictions.readonly_field')
+  return t('You do not have permission to modify actor data')
 }
 
 const showRestrictionFeedback = (fieldName) => {
@@ -350,14 +292,13 @@ const showRestrictionFeedback = (fieldName) => {
   }
 }
 
-// Check if there are restricted fields
-const formFields = ['name', 'first_name', 'display_name', 'company_id', 'default_role', 'function', 'address', 'country', 'email', 'phone']
+// Simple permission checks - either can edit everything or nothing
 const hasRestrictedFields = computed(() => {
-  return formFields.some(field => !isFieldEditable(field))
+  return !canWrite.value
 })
 
 const hasEditableFields = computed(() => {
-  return formFields.some(field => isFieldEditable(field))
+  return canWrite.value
 })
 
 // Initialize form with actor data or defaults
