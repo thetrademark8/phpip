@@ -11,3 +11,8 @@ Homestead.yaml
 .DS_Store
 /public
 /public/*
+
+### Laravel ###
+/bootstrap/compiled.php
+.env.*.php
+.env.*
