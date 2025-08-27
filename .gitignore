@@ -13,7 +13,7 @@ Homestead.yaml
 /public/*
 
 ### Laravel ###
-/bootstrap/compiled.php
+/bootstrap/compiled@.php
 .env.*.php
 .env.*
 .phpunit.cache
