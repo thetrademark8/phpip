@@ -2,7 +2,8 @@
 /public/storage
 /public/build
 /public/js
-/public/images
+/public/images/vendor
+!/public/images/logos/**/*
 /storage/
 /vendor
 /.idea
