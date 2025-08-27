@@ -161,15 +161,8 @@ class ActorController extends Controller
         $actor = new Actor;
         $actorComments = $actor->getTableComments();
 
-        // Get field configuration for creating new actors
-        $fieldConfiguration = $this->fieldConfigService->getFieldConfiguration($user, null, app()->getLocale());
-
         return Inertia::render('Actor/Create', [
             'comments' => $actorComments,
-            'fieldConfiguration' => $fieldConfiguration,
-            'permissions' => [
-                'create' => true, // Already authorized above
-            ],
         ]);
     }
 
@@ -178,22 +171,27 @@ class ActorController extends Controller
         $user = Auth::user();
         
         // Use ActorPolicy for create authorization
-        Gate::authorize('create', Actor::class);
+        Gate::forUser($user)->authorize('create', Actor::class);
 
-        // Get editable fields for the user
-        $editableFields = $this->fieldConfigService->getEditableFields($user, null, false); // Exclude password for creation
+        // Simple validation rules
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:100',
+            'first_name' => 'nullable|string|max:100',
+            'display_name' => 'nullable|string|max:100',
+            'email' => 'nullable|email|max:100',
+            'phone' => 'nullable|string|max:50',
+            'address' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:2',
+            'nationality' => 'nullable|string|max:2',
+            'language' => 'nullable|string|max:5',
+            'function' => 'nullable|string|max:100',
+            'company_id' => 'nullable|exists:actor,id',
+            'phy_person' => 'boolean',
+            'small_entity' => 'boolean',
+            'warn' => 'boolean',
+        ]);
 
-        // Get validation rules for editable fields
-        $validationRules = $this->fieldConfigService->getValidationRules($editableFields);
-
-        // Add basic required validation
-        $validationRules['name'] = 'required|string|max:100';
-
-        // Validate the request
-        $validatedData = $request->validate($validationRules);
-
-        // Filter input data to only include fields the user can edit
-        $actorData = collect($validatedData)->only($editableFields)->toArray();
+        $actorData = $validatedData;
 
         // Add system fields
         $actorData['creator'] = $user->login;
@@ -259,7 +257,7 @@ class ActorController extends Controller
         $user = Auth::user();
         
         // Use ActorPolicy for view authorization
-        Gate::authorize('view', $actor);
+        Gate::forUser($user)->authorize('view', $actor);
         
         $actorInfo = $actor->load(['company:id,name', 'parent:id,name', 'site:id,name', 'droleInfo', 'countryInfo:iso,name', 'country_mailingInfo:iso,name', 'country_billingInfo:iso,name', 'nationalityInfo:iso,name']);
         $actorComments = $actor->getTableComments();
@@ -282,7 +280,7 @@ class ActorController extends Controller
         $user = Auth::user();
         
         // Use ActorPolicy for update authorization
-        Gate::authorize('update', $actor);
+        Gate::forUser($user)->authorize('update', $actor);
         
         $actorInfo = $actor->load(['company:id,name', 'parent:id,name', 'site:id,name', 'droleInfo', 'countryInfo:iso,name', 'country_mailingInfo:iso,name', 'country_billingInfo:iso,name', 'nationalityInfo:iso,name']);
         $actorComments = $actor->getTableComments();
@@ -290,21 +288,9 @@ class ActorController extends Controller
         // Filter actor data based on user permissions
         $filteredActor = $this->filterActorData($actorInfo, $user);
 
-        // Get field configuration for editing this actor
-        $fieldConfiguration = $this->fieldConfigService->getFieldConfiguration($user, $actor, app()->getLocale());
-
-        // Get permissions for editing
-        $permissions = [
-            'update' => true, // Already authorized above
-            'view' => Gate::allows('view', $actor),
-            'delete' => Gate::allows('delete', $actor),
-        ];
-
         return Inertia::render('Actor/Edit', [
             'actor' => $filteredActor,
             'comments' => $actorComments,
-            'fieldConfiguration' => $fieldConfiguration,
-            'permissions' => $permissions,
         ]);
     }
 
@@ -313,55 +299,27 @@ class ActorController extends Controller
         $user = Auth::user();
         
         // Use ActorPolicy for update authorization
-        Gate::authorize('update', $actor);
+        Gate::forUser($user)->authorize('update', $actor);
 
-        // Get editable fields for this user and actor
-        $editableFields = $this->fieldConfigService->getEditableFields($user, $actor, true); // Include password
+        // Simple validation rules
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:100',
+            'first_name' => 'nullable|string|max:100',
+            'display_name' => 'nullable|string|max:100',
+            'email' => 'nullable|email|max:100',
+            'phone' => 'nullable|string|max:50',
+            'address' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:2',
+            'nationality' => 'nullable|string|max:2',
+            'language' => 'nullable|string|max:5',
+            'function' => 'nullable|string|max:100',
+            'company_id' => 'nullable|exists:actor,id',
+            'phy_person' => 'boolean',
+            'small_entity' => 'boolean',
+            'warn' => 'boolean',
+        ]);
 
-        // Perform field-level permission checks
-        $requestedFields = collect($request->except(['_token', '_method']))->keys();
-        $deniedFields = [];
-        $validatedFields = [];
-
-        foreach ($requestedFields as $field) {
-            if (!$this->fieldConfigService->canEditField($user, $actor, $field)) {
-                $deniedFields[] = $field;
-            } else {
-                $validatedFields[] = $field;
-            }
-        }
-
-        // Log permission denials for security monitoring
-        if (!empty($deniedFields)) {
-            Log::warning('Actor update attempted with restricted fields', [
-                'actor_id' => $actor->id,
-                'user_id' => $user->id,
-                'user_role' => $user->default_role,
-                'denied_fields' => $deniedFields,
-                'ip' => $request->ip(),
-            ]);
-
-            // Return error for denied fields
-            if ($request->header('X-Inertia')) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', __('actor.messages.permission_denied_fields', ['fields' => implode(', ', $deniedFields)]));
-            }
-
-            return response()->json([
-                'message' => __('actor.messages.permission_denied_fields', ['fields' => implode(', ', $deniedFields)]),
-                'denied_fields' => $deniedFields,
-            ], 403);
-        }
-
-        // Get validation rules for editable fields
-        $validationRules = $this->fieldConfigService->getValidationRules($validatedFields, $actor->id);
-
-        // Validate the request with allowed fields only
-        $validatedData = $request->validate($validationRules);
-
-        // Filter to only allowed fields
-        $updateData = collect($validatedData)->only($editableFields)->toArray();
+        $updateData = $validatedData;
 
         // Add system fields
         $updateData['updater'] = $user->login;

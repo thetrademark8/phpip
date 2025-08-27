@@ -81,6 +81,7 @@ class UserController extends Controller
     public function create()
     {
         Gate::authorize('admin');
+
         $table = new Actor;
         $userComments = $table->getTableComments();
 
@@ -90,6 +91,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('admin');
+
         $request->validate([
             'name' => 'required|max:100',
             'login' => 'required|unique:users',
@@ -109,29 +111,6 @@ class UserController extends Controller
         return $user;
     }
 
-    public function show(User $user)
-    {
-        Gate::authorize('readonly');
-        $userInfo = $user->load(['company:id,name', 'roleInfo']);
-
-        if (request()->wantsJson()) {
-            return response()->json($userInfo);
-        }
-
-        $table = new Actor;
-        $userComments = $table->getTableComments();
-        return view('user.show', compact('userInfo', 'userComments'));
-    }
-
-    public function edit(User $user)
-    {
-        Gate::authorize('admin');
-        $table = new Actor;
-        $userComments = $table->getTableComments();
-
-        return view('user.edit', compact('user', 'userComments'));
-    }
-
     public function profile()
     {
         $user = Auth::user()->load(['company:id,name', 'roleInfo:code,name']);
@@ -141,6 +120,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        Gate::forUser(auth()->user())->authorize('update', $user);
+
         $request->validate([
             'name' => 'required|max:100',
             'login' => 'required|unique:users,login,'.$user->id,
@@ -191,8 +172,8 @@ class UserController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        $user = Auth::user();
-        Gate::authorize('update');
+        $user = auth()->user();
+        Gate::forUser($user)->authorize('update', $user);
 
         // Determine what fields are being updated
         $fieldsToUpdate = $request->only([
@@ -229,7 +210,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        Gate::authorize('admin');
+        Gate::forUser(auth()->user())->authorize('delete', $user);
+
         $user->delete();
 
         if (request()->header('X-Inertia')) {
