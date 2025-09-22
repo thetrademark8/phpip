@@ -98,6 +98,11 @@ const props = defineProps({
   initialDisplayValue: {
     type: String,
     default: ''
+  },
+  // Allow free text input without requiring selection from suggestions
+  allowFreeText: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -172,13 +177,18 @@ const searchSuggestions = debounce(async (query) => {
 const handleInput = (event) => {
   displayValue.value = event.target.value
   emit('update:displayModelValue', displayValue.value)
-  
-  // Clear the actual value if the display value doesn't match
-  if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {
-    selectedItem.value = null
-    emit('update:modelValue', '')
+
+  // If free text is allowed, immediately update the model value
+  if (props.allowFreeText) {
+    emit('update:modelValue', displayValue.value)
+  } else {
+    // Clear the actual value if the display value doesn't match
+    if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {
+      selectedItem.value = null
+      emit('update:modelValue', '')
+    }
   }
-  
+
   searchSuggestions(displayValue.value)
   showDropdown.value = true
 }
@@ -193,20 +203,27 @@ const handleBlur = () => {
   // Delay to allow click on suggestions
   setTimeout(() => {
     showDropdown.value = false
-    
-    // Revert to selected item if no new selection
-    if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {
-      displayValue.value = getItemLabel(selectedItem.value)
+
+    // If free text is allowed, keep the typed value
+    if (props.allowFreeText) {
+      // Keep the current display value and update model value
+      emit('update:modelValue', displayValue.value)
       emit('update:displayModelValue', displayValue.value)
-    } else if (!selectedItem.value && displayValue.value && !props.modelValue) {
-      // Clear if no valid selection and no initial value
-      displayValue.value = ''
-      emit('update:displayModelValue', '')
-      emit('update:modelValue', '')
-    } else if (!selectedItem.value && props.initialDisplayValue && displayValue.value !== props.initialDisplayValue) {
-      // Revert to initial display value if provided
-      displayValue.value = props.initialDisplayValue
-      emit('update:displayModelValue', displayValue.value)
+    } else {
+      // Revert to selected item if no new selection
+      if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {
+        displayValue.value = getItemLabel(selectedItem.value)
+        emit('update:displayModelValue', displayValue.value)
+      } else if (!selectedItem.value && displayValue.value && !props.modelValue) {
+        // Clear if no valid selection and no initial value
+        displayValue.value = ''
+        emit('update:displayModelValue', '')
+        emit('update:modelValue', '')
+      } else if (!selectedItem.value && props.initialDisplayValue && displayValue.value !== props.initialDisplayValue) {
+        // Revert to initial display value if provided
+        displayValue.value = props.initialDisplayValue
+        emit('update:displayModelValue', displayValue.value)
+      }
     }
   }, 200)
 }

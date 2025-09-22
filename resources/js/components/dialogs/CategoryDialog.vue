@@ -69,8 +69,12 @@
               endpoint="/category/autocomplete"
               :placeholder="t('categories.placeholders.displayWith')"
               :disabled="!isEditMode && operation !== 'create'"
+              :allow-free-text="true"
               required
             />
+            <p class="text-xs text-muted-foreground mt-1">
+              {{ operation === 'create' ? t('categories.help.displayWithCreate') : t('categories.help.displayWith') }}
+            </p>
             <p v-if="form.errors.display_with" class="text-sm text-destructive mt-1">
               {{ form.errors.display_with }}
             </p>

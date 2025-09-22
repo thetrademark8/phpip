@@ -82,7 +82,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('readwrite');
-        
+
         $request->validate([
             'code' => 'required|unique:matter_category|max:5',
             'category' => 'required|max:45',
@@ -91,6 +91,9 @@ class CategoryController extends Controller
         $request->merge(['creator' => Auth::user()->login]);
 
         $category = Category::create($request->except(['_token', '_method']));
+
+        // Clear the navigation cache to immediately show new categories
+        cache()->forget('matter_categories_nav');
 
         if ($request->header('X-Inertia')) {
             return redirect()->route('category.index')
@@ -116,15 +119,18 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         Gate::authorize('readwrite');
-        
+
         $request->validate([
             'code' => 'required|unique:matter_category,code,'.$category->code.',code|max:5',
             'category' => 'required|max:45',
             'display_with' => 'required',
         ]);
-        
+
         $request->merge(['updater' => Auth::user()->login]);
         $category->update($request->except(['_token', '_method']));
+
+        // Clear the navigation cache to immediately reflect changes
+        cache()->forget('matter_categories_nav');
 
         if ($request->header('X-Inertia')) {
             return redirect()->route('category.index')
@@ -137,8 +143,11 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         Gate::authorize('readwrite');
-        
+
         $category->delete();
+
+        // Clear the navigation cache after deletion
+        cache()->forget('matter_categories_nav');
 
         if (request()->header('X-Inertia')) {
             return redirect()->route('category.index')
