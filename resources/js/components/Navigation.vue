@@ -43,13 +43,13 @@
                 <DropdownMenuItem as-child>
                   <Link href="/matter">{{ $t('All') }}</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem 
-                  v-for="category in matterCategories" 
+                <DropdownMenuItem
+                  v-for="category in matterCategories"
                   :key="category.code"
                   as-child
                 >
                   <Link :href="`/matter?display_with=${category.code}`">
-                    {{ getCategoryTranslation(category.code) }}
+                    {{ getCategoryTranslation(category) }}
                   </Link>
                 </DropdownMenuItem>
                 <template v-if="canWrite">
@@ -64,11 +64,11 @@
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <!-- Tools Dropdown (for readonly and above) -->
+            <!-- Renewals Dropdown -->
             <DropdownMenu v-if="canWrite">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
-                  {{ $t('Tools') }}
+                  {{ $t('Renewals') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -79,57 +79,74 @@
                 <DropdownMenuItem as-child>
                   <Link :href="route('fee.index')">{{ $t('Renewal fees') }}</Link>
                 </DropdownMenuItem>
-                <template v-if="isAdmin">
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem as-child>
-                    <Link href="/rule">{{ $t('Rules') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/document">{{ $t('Email template classes') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/template-member">{{ $t('Email templates') }}</Link>
-                  </DropdownMenuItem>
-                </template>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <!-- Tables Dropdown -->
-            <DropdownMenu v-if="canRead">
+            <!-- Administration Dropdown (admin only) -->
+            <DropdownMenu v-if="isAdmin">
               <DropdownMenuTrigger as-child>
                 <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
-                  {{ $t('Tables') }}
+                  {{ $t('Administration') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" class="w-48">
+              <DropdownMenuContent align="start" class="w-56">
+                <!-- Emails Section -->
+                <DropdownMenuLabel>{{ $t('Emails') }}</DropdownMenuLabel>
                 <DropdownMenuItem as-child>
-                  <Link href="/actor">{{ $t('Actors') }}</Link>
+                  <Link href="/template-member">{{ $t('Email templates') }}</Link>
                 </DropdownMenuItem>
-                <template v-if="isAdmin">
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem as-child>
-                    <Link href="/user">{{ $t('DB Users') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/eventname">{{ $t('Event names') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/category">{{ $t('Categories') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/role">{{ $t('Actor roles') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/default_actor">{{ $t('Default actors') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/type">{{ $t('Matter types') }}</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem as-child>
-                    <Link href="/classifier_type">{{ $t('Classifier types') }}</Link>
-                  </DropdownMenuItem>
-                </template>
+                <DropdownMenuItem as-child>
+                  <Link href="/document">{{ $t('Email template classes') }}</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <!-- Rules -->
+                <DropdownMenuItem as-child>
+                  <Link href="/rule">{{ $t('Rules') }}</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <!-- Tables Section -->
+                <DropdownMenuLabel>{{ $t('Tables') }}</DropdownMenuLabel>
+
+                <!-- Actors Subsection -->
+                <div class="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                  {{ $t('Actors') }}
+                </div>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/actor">{{ $t('Actor list') }}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/user">{{ $t('DB Users') }}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/role">{{ $t('Actor roles') }}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/default_actor">{{ $t('Default actors') }}</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <!-- Configuration Subsection -->
+                <div class="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                  {{ $t('Configuration') }}
+                </div>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/eventname">{{ $t('Events') }}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/type">{{ $t('Matter types') }}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/category">{{ $t('Categories') }}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem as-child class="pl-6">
+                  <Link href="/classifier_type">{{ $t('Classifier types') }}</Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -229,26 +246,25 @@ const { canRead, canWrite, isAdmin } = usePermissions();
 // State
 const mobileMenuOpen = ref(false)
 
-// Computed properties for matter categories
+// Import translation composable
+import { useTranslatedField } from '@/composables/useTranslation'
+const { translated } = useTranslatedField()
+
+// Computed properties for matter categories (excluding PAT as requested)
 const matterCategories = computed(() => {
-  return usePage().props.matter_categories || []
+  const categories = usePage().props.matter_categories || []
+  // Filter out PAT (Patents) category as requested
+  return categories.filter(cat => cat.code !== 'PAT')
 })
 
-// Category code to translation key mapping
-const categoryTranslationMap = {
-  'LTG': 'Litigation',
-  'OTH': 'Others', 
-  'PAT': 'Patents',
-  'TM': 'Trademarks'
-}
-
-// Get translation for category (using global $t helper from template)
-const getCategoryTranslation = (categoryCode) => {
-  const translationKey = categoryTranslationMap[categoryCode]
-  // We'll need to inject the global context to access $t
-  const page = usePage()
-  const translations = page.props.translations
-  return translationKey && translations[translationKey] ? translations[translationKey] : categoryCode
+// Get translation for category using the translated field
+const getCategoryTranslation = (category) => {
+  // If category is just a code string, return it
+  if (typeof category === 'string') {
+    return category
+  }
+  // Use the translated helper to get the correct translation
+  return translated(category.category) || category.code
 }
 
 // Emit events
