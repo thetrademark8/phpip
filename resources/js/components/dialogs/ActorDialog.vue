@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
+    <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
           {{ operation === 'create' ? t('actors.modal.createTitle') : (actor?.name || 'Loading...') }}
@@ -432,7 +432,7 @@
           </div>
         </div>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 
   <!-- Delete Confirmation Dialog -->
@@ -464,7 +464,7 @@ import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
 import DialogSkeleton from '@/components/ui/skeleton/DialogSkeleton.vue'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

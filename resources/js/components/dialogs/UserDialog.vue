@@ -1,6 +1,6 @@
 <template>
   <Dialog v-model:open="dialogOpen" :max-width="maxWidth">
-    <DialogContent>
+    <DialogScrollContent>
       <DialogHeader>
         <div class="flex items-center justify-between">
           <div>
@@ -253,7 +253,7 @@
           </DialogFooter>
         </form>
       </div>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
   
   <!-- Delete Confirmation Dialog -->
@@ -274,7 +274,7 @@ import { useI18n } from 'vue-i18n'
 import { Edit, Trash2, AlertTriangle } from 'lucide-vue-next'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

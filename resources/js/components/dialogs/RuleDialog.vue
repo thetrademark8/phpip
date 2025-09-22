@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
+    <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
           {{ operation === 'create' ? t('rules.dialog.createTitle') : (rule?.task_info?.name ? translated(rule.task_info.name) : t('rules.dialog.viewTitle')) }}
@@ -392,7 +392,7 @@
           {{ operation === 'create' ? t('rules.dialog.create') : t('rules.dialog.save') }}
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 
   <!-- Delete Confirmation Dialog -->
@@ -414,7 +414,7 @@ import { useI18n } from 'vue-i18n'
 import { Loader2, Edit, Trash2 } from 'lucide-vue-next'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

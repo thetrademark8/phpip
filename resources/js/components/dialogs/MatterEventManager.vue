@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-3xl">
+    <DialogScrollContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>{{ t('Manage Events') }}</DialogTitle>
         <DialogDescription>
@@ -165,7 +165,7 @@
           {{ t('Close') }}
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
 
     <!-- Edit Event Dialog -->
     <EventDialog
@@ -197,7 +197,7 @@ import {
 } from 'lucide-vue-next'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

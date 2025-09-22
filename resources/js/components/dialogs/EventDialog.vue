@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="sm:max-w-lg">
+    <DialogScrollContent class="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle>{{ mode === 'create' ? t('Add Event') : t('Edit Event') }}</DialogTitle>
       </DialogHeader>
@@ -55,7 +55,7 @@
           </Button>
         </DialogFooter>
       </form>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -65,7 +65,7 @@ import { useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,

@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-3xl">
+    <DialogScrollContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>{{ t('Manage Actors') }}</DialogTitle>
         <DialogDescription>
@@ -211,7 +211,7 @@
           {{ t('Close') }}
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -224,7 +224,7 @@ import {UserPlus, Trash2, Lock, AlertCircle} from 'lucide-vue-next'
 import {usePermissions} from '@/composables/usePermissions.js'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
