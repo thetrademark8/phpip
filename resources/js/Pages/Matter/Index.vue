@@ -194,9 +194,8 @@ onMounted(() => {
   }
 })
 
-// Unified table columns - all columns from both Actor and Status views
+// Table columns in the specified order
 const tableColumns = [
-  // Common columns first
   {
     accessorKey: 'Ref',
     header: t('matter.columns.reference'),
@@ -215,74 +214,65 @@ const tableColumns = [
     cell: ({ row }) => h(Badge, {
       variant: getCategoryVariant(row.original.Cat)
     }, row.original.Cat),
-    meta: { headerClass: 'w-[100px]' },
+    meta: { headerClass: 'w-[80px]' },
+  },
+  {
+    accessorKey: 'country_name',
+    header: t('matter.columns.country'),
+    cell: ({ row }) => h('div', { class: 'max-w-[120px] truncate', title: row.original.country_name }, row.original.country_name),
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'Title',
+    header: t('matter.columns.title'),
+    cell: ({ row }) => h('div', {
+      class: 'max-w-[250px] truncate',
+      title: row.original.Title
+    }, row.original.Title || row.original.Title2),
+  },
+  {
+    accessorKey: 'image_id',
+    header: t('matter.columns.logo'),
+    cell: ({ row }) => row.original.image_id ? h('img', {
+      src: `/classifier/${row.original.image_id}/img`,
+      alt: 'Logo',
+      class: 'h-8 w-auto object-contain',
+      loading: 'lazy'
+    }) : null,
+    meta: { headerClass: 'w-[60px]' },
+  },
+  {
+    accessorKey: 'classes',
+    header: t('matter.columns.classes'),
+    cell: ({ row }) => h('div', { class: 'max-w-[150px] truncate', title: row.original.classes }, row.original.classes),
+  },
+  {
+    accessorKey: 'Client',
+    header: t('matter.columns.client'),
+    cell: ({ row }) => h('div', { class: 'max-w-[180px] truncate', title: row.original.Client }, row.original.Client),
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'Owner',
+    header: t('matter.columns.owner'),
+    cell: ({ row }) => h('div', { class: 'max-w-[180px] truncate', title: row.original.Owner }, row.original.Owner),
+    enableSorting: true,
   },
   {
     accessorKey: 'Status',
     header: t('matter.columns.status'),
     cell: ({ row }) => row.original.Status ? h(StatusBadge, {
-      status: row.original.Status.split('|')[0], // Take first status if multiple
+      status: row.original.Status.split('|')[0],
       type: 'matter'
     }) : null,
     enableSorting: true,
-  },
-  // Actor columns
-  {
-    accessorKey: 'Client',
-    header: t('matter.columns.client'),
-    cell: ({ row }) => h('div', { class: 'max-w-[200px] truncate', title: row.original.Client }, row.original.Client),
-    enableSorting: true,
-  },
-  {
-    accessorKey: 'ClRef',
-    header: t('matter.columns.clientReference'),
-    meta: { headerClass: 'w-[120px]' },
-  },
-  {
-    accessorKey: 'Applicant',
-    header: t('matter.columns.applicant'),
-    cell: ({ row }) => h('div', { class: 'max-w-[200px] truncate', title: row.original.Applicant }, row.original.Applicant),
-    enableSorting: true,
-  },
-  {
-    accessorKey: 'Agent',
-    header: t('matter.columns.agent'),
-    cell: ({ row }) => h('div', { class: 'max-w-[150px] truncate', title: row.original.Agent }, row.original.Agent),
-    enableSorting: true,
-  },
-  {
-    accessorKey: 'AgtRef',
-    header: t('matter.columns.agentRef'),
-    meta: { headerClass: 'w-[120px]' },
-  },
-  {
-    accessorKey: 'Title',
-    header: t('matter.columns.title'),
-    cell: ({ row }) => h('div', { 
-      class: 'max-w-[300px] truncate', 
-      title: row.original.Title 
-    }, row.original.Title || row.original.Title2),
-  },
-  {
-    accessorKey: 'Inventor1',
-    header: t('matter.columns.inventor'),
-    cell: ({ row }) => h('div', { class: 'max-w-[150px] truncate', title: row.original.Inventor1 }, row.original.Inventor1),
-    enableSorting: true,
-  },
-  // Status columns
-  {
-    accessorKey: 'Status_date',
-    header: t('matter.columns.statusDate'),
-    cell: ({ row }) => formatDate(row.original.Status_date),
-    enableSorting: true,
-    meta: { headerClass: 'w-[120px]' },
   },
   {
     accessorKey: 'Filed',
     header: t('matter.columns.filedDate'),
     cell: ({ row }) => formatDate(row.original.Filed),
     enableSorting: true,
-    meta: { headerClass: 'w-[120px]' },
+    meta: { headerClass: 'w-[100px]' },
   },
   {
     accessorKey: 'FilNo',
@@ -293,31 +283,21 @@ const tableColumns = [
     ]),
   },
   {
-    accessorKey: 'Published',
-    header: t('matter.columns.publishedDate'),
-    cell: ({ row }) => formatDate(row.original.Published),
+    accessorKey: 'registration_date',
+    header: t('matter.columns.registrationDate'),
+    cell: ({ row }) => {
+      const regDate = row.original.Granted || row.original.Registration_DP
+      return regDate ? formatDate(regDate) : null
+    },
     enableSorting: true,
-    meta: { headerClass: 'w-[120px]' },
+    meta: { headerClass: 'w-[100px]' },
   },
   {
-    accessorKey: 'PubNo',
-    header: t('matter.columns.publishedNumber'),
-    cell: ({ row }) => row.original.PubNo,
-  },
-  {
-    accessorKey: 'Granted',
-    header: t('matter.columns.grantedDate'),
-    cell: ({ row }) => formatDate(row.original.Granted),
+    accessorKey: 'renewal_due',
+    header: t('matter.columns.renewalDue'),
+    cell: ({ row }) => row.original.renewal_due ? formatDate(row.original.renewal_due) : null,
     enableSorting: true,
-    meta: { headerClass: 'w-[120px]' },
-  },
-  {
-    accessorKey: 'GrtNo',
-    header: t('matter.columns.grantedNumber'),
-    cell: ({ row }) => row.original.GrtNo && h('div', { class: 'flex items-center gap-1' }, [
-      h(Hash, { class: 'h-4 w-4 text-muted-foreground' }),
-      h('span', row.original.GrtNo)
-    ]),
+    meta: { headerClass: 'w-[100px]' },
   }
 ]
 

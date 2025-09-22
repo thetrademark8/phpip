@@ -69,6 +69,9 @@ class MatterRepository implements MatterRepositoryInterface
             'matter.id',
             'matter.uid',
             'matter.country',
+            'country.name',
+            'country.name_FR',
+            'country.name_DE',
             'matter.category_code',
             'matter.origin',
             'matter.container_id',
@@ -79,6 +82,7 @@ class MatterRepository implements MatterRepositoryInterface
             'matter.alt_ref',
             'matter.caseref',
             'matter.suffix',
+            'matter.expire_date',
             'del.login',
             'tit1.value',
             'tit2.value',
@@ -92,7 +96,9 @@ class MatterRepository implements MatterRepositoryInterface
             'grt.event_date',
             'grt.detail',
             'reg.event_date',
-            'reg.detail'
+            'reg.detail',
+            'regdp.event_date',
+            'img.id'
         ];
 
         // Group by the sort key and additional fields to match old implementation
@@ -122,6 +128,9 @@ class MatterRepository implements MatterRepositoryInterface
             'matter.id',
             'matter.uid',
             'matter.country',
+            'country.name',
+            'country.name_FR',
+            'country.name_DE',
             'matter.category_code',
             'matter.origin',
             'matter.container_id',
@@ -132,6 +141,7 @@ class MatterRepository implements MatterRepositoryInterface
             'matter.alt_ref',
             'matter.caseref',
             'matter.suffix',
+            'matter.expire_date',
             'del.login',
             'tit1.value',
             'tit2.value',
@@ -145,7 +155,9 @@ class MatterRepository implements MatterRepositoryInterface
             'grt.event_date',
             'grt.detail',
             'reg.event_date',
-            'reg.detail'
+            'reg.detail',
+            'regdp.event_date',
+            'img.id'
         ];
 
         // Group by the sort key and additional fields to match old implementation
@@ -166,6 +178,7 @@ class MatterRepository implements MatterRepositoryInterface
         $query = Matter::select(
             'matter.uid AS Ref',
             'matter.country AS country',
+            DB::raw("COALESCE(country.name_$baseLocale, country.name) AS country_name"),
             'matter.category_code AS Cat',
             'matter.origin',
             DB::raw("GROUP_CONCAT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(event_name.name, '$.\"$baseLocale\"')) SEPARATOR '|') AS Status"),
@@ -173,6 +186,7 @@ class MatterRepository implements MatterRepositoryInterface
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(cli.display_name, clic.display_name, cli.name, clic.name) SEPARATOR '; ') AS Client"),
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(clilnk.actor_ref, cliclnk.actor_ref) SEPARATOR '; ') AS ClRef"),
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(app.display_name, app.name) SEPARATOR '; ') AS Applicant"),
+            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(own.display_name, ownc.display_name, own.name, ownc.name) SEPARATOR '; ') AS Owner"),
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(agt.display_name, agtc.display_name, agt.name, agtc.name) SEPARATOR '; ') AS Agent"),
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(agtlnk.actor_ref, agtclnk.actor_ref) SEPARATOR '; ') AS AgtRef"),
             'tit1.value AS Title',
@@ -185,6 +199,10 @@ class MatterRepository implements MatterRepositoryInterface
             'pub.detail AS PubNo',
             DB::raw('COALESCE(grt.event_date, reg.event_date) AS Granted'),
             DB::raw('COALESCE(grt.detail, reg.detail) AS GrtNo'),
+            'regdp.event_date AS Registration_DP',
+            'img.id AS image_id',
+            DB::raw("GROUP_CONCAT(DISTINCT tmcl.value ORDER BY tmcl.value SEPARATOR ', ') AS classes"),
+            DB::raw("COALESCE((SELECT MIN(t.due_date) FROM task t INNER JOIN event e ON t.trigger_id = e.id WHERE e.matter_id = matter.id AND t.code = 'REN' AND t.done_date IS NULL), matter.expire_date) AS renewal_due"),
             'matter.id',
             'matter.container_id',
             'matter.parent_id',
@@ -224,6 +242,7 @@ class MatterRepository implements MatterRepositoryInterface
     protected function addJoins(Builder $query): void
     {
         $query->join('matter_category', 'matter.category_code', 'matter_category.code')
+            ->leftJoin('country', 'matter.country', 'country.iso')
             ->leftJoin(DB::raw('matter_actor_lnk clilnk JOIN actor cli ON cli.id = clilnk.actor_id'), function ($join) {
                 $join->on('matter.id', 'clilnk.matter_id')->where('clilnk.role', 'CLI');
             })
@@ -231,6 +250,15 @@ class MatterRepository implements MatterRepositoryInterface
                 $join->on('matter.container_id', 'cliclnk.matter_id')->where([
                     ['cliclnk.role', 'CLI'],
                     ['cliclnk.shared', 1],
+                ]);
+            })
+            ->leftJoin(DB::raw('matter_actor_lnk ownlnk JOIN actor own ON own.id = ownlnk.actor_id'), function ($join) {
+                $join->on('matter.id', 'ownlnk.matter_id')->where('ownlnk.role', 'OWN');
+            })
+            ->leftJoin(DB::raw('matter_actor_lnk ownclnk JOIN actor ownc ON ownc.id = ownclnk.actor_id'), function ($join) {
+                $join->on('matter.container_id', 'ownclnk.matter_id')->where([
+                    ['ownclnk.role', 'OWN'],
+                    ['ownclnk.shared', 1],
                 ]);
             })
             ->leftJoin(DB::raw('matter_actor_lnk agtlnk JOIN actor agt ON agt.id = agtlnk.actor_id'), function ($join) {
@@ -262,6 +290,15 @@ class MatterRepository implements MatterRepositoryInterface
             })
             ->leftJoin('event AS reg', function ($join) {
                 $join->on('matter.id', 'reg.matter_id')->where('reg.code', 'REG');
+            })
+            ->leftJoin('event AS regdp', function ($join) {
+                $join->on('matter.id', 'regdp.matter_id')->where('regdp.code', 'REGDP');
+            })
+            ->leftJoin('classifier AS img', function ($join) {
+                $join->on('matter.id', 'img.matter_id')->where('img.type_code', 'IMG');
+            })
+            ->leftJoin('classifier AS tmcl', function ($join) {
+                $join->on('matter.id', 'tmcl.matter_id')->where('tmcl.type_code', 'TMCL');
             })
             ->leftJoin(DB::raw('event status JOIN event_name ON event_name.code = status.code AND event_name.status_event = 1'), 'matter.id', 'status.matter_id')
             ->leftJoin(DB::raw('event e2 JOIN event_name en2 ON e2.code = en2.code AND en2.status_event = 1'), function ($join) {
