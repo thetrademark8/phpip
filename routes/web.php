@@ -136,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('matter/{matter}/official-links', [App\Http\Controllers\MatterController::class, 'getOfficialLinks'])->name('matter.official-links');
         
         Route::apiResource('event', App\Http\Controllers\EventController::class);
+        Route::post('event/{event}/recalculate-tasks', [App\Http\Controllers\EventController::class, 'recalculateTasks'])->name('event.recalculate-tasks');
         Route::resource('category', App\Http\Controllers\CategoryController::class);
         Route::resource('classifier_type', App\Http\Controllers\ClassifierTypeController::class);
         Route::resource('role', App\Http\Controllers\RoleController::class);

@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\EventName;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -99,6 +100,34 @@ class EventController extends Controller
             if ($oldStatus !== $newStatus) {
                 MatterStatusChanged::dispatch($event->matter, $oldStatus ?? 'Unknown', $newStatus);
             }
+        }
+    }
+
+    /**
+     * Recalculate tasks for an event
+     */
+    public function recalculateTasks(Event $event)
+    {
+        try {
+            // Call the stored procedure to recalculate tasks
+            DB::statement('CALL recalculate_tasks(?, ?, ?)', [
+                $event->matter_id,
+                $event->code,
+                Auth::user()->login
+            ]);
+
+            // Handle Inertia requests
+            if (request()->inertia()) {
+                return redirect()->back()->with('success', 'Tasks recalculated successfully');
+            }
+
+            return response()->json(['message' => 'Tasks recalculated successfully']);
+        } catch (\Exception $e) {
+            if (request()->inertia()) {
+                return redirect()->back()->with('error', 'Failed to recalculate tasks: ' . $e->getMessage());
+            }
+
+            return response()->json(['error' => 'Failed to recalculate tasks: ' . $e->getMessage()], 500);
         }
     }
 

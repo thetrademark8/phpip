@@ -110,7 +110,7 @@
                   />
                   <div class="flex-1">
                     <div class="font-medium">
-                      {{ event.event_name }}
+                      {{ translated(event.info?.name) || event.code }}
                       <span v-if="event.detail" class="text-muted-foreground">
                         - {{ event.detail }}
                       </span>
@@ -125,14 +125,6 @@
                       {{ event.notes }}
                     </div>
                   </div>
-                  <a
-                    v-if="event.link"
-                    :href="event.link"
-                    target="_blank"
-                    class="text-primary hover:underline"
-                  >
-                    <ExternalLink class="h-4 w-4" />
-                  </a>
                 </div>
                 <div class="flex items-center gap-2 ml-4">
                   <Button
@@ -172,6 +164,7 @@
       v-model:open="showEditDialog"
       :event="selectedEvent"
       :matter-id="matter.id"
+      mode="edit"
       @success="handleEventUpdated"
     />
   </Dialog>
@@ -182,11 +175,11 @@ import { ref, computed } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { format } from 'date-fns'
 import { useI18n } from 'vue-i18n'
-import { 
-  CalendarPlus, 
-  Trash2, 
+import { useTranslatedField } from '@/composables/useTranslation'
+import {
+  CalendarPlus,
+  Trash2,
   Pencil,
-  ExternalLink,
   Calendar,
   FileText,
   CheckCircle,
@@ -230,6 +223,7 @@ const props = defineProps({
 const emit = defineEmits(['update:open', 'success'])
 
 const { t } = useI18n()
+const { translated } = useTranslatedField()
 
 // State
 const eventDisplay = ref('')

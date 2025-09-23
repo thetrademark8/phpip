@@ -77,10 +77,22 @@
                 <Button
                   size="icon"
                   variant="ghost"
-                  @click.stop="emit('edit', event)"
+                  title="Recalculate tasks"
+                  :disabled="recalculatingEventId === event.id"
+                  @click.stop="recalculateTasks(event)"
                 >
-                  <Edit2 class="h-4 w-4" />
+                  <RotateCw
+                    class="h-4 w-4"
+                    :class="recalculatingEventId === event.id && 'animate-spin'"
+                  />
                 </Button>
+<!--                <Button-->
+<!--                  size="icon"-->
+<!--                  variant="ghost"-->
+<!--                  @click.stop="emit('edit', event)"-->
+<!--                >-->
+<!--                  <Edit2 class="h-4 w-4" />-->
+<!--                </Button>-->
                 <Button
                   size="icon"
                   variant="ghost"
@@ -102,9 +114,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { format, parseISO } from 'date-fns'
-import { Edit2, Trash2 } from 'lucide-vue-next'
+import { Edit2, Trash2, RotateCw } from 'lucide-vue-next'
+import { router } from '@inertiajs/vue3'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import StatusBadge from './StatusBadge.vue'
@@ -143,6 +156,9 @@ const emit = defineEmits(['click', 'edit', 'remove', 'update'])
 
 const { translated } = useTranslatedField()
 
+// State for recalculation
+const recalculatingEventId = ref(null)
+
 // Sort events by date (newest first)
 const sortedEvents = computed(() => {
   return [...props.events].sort((a, b) => {
@@ -164,5 +180,27 @@ const formatDate = (date) => {
 
 const handleEventClick = (event) => {
   emit('click', event)
+}
+
+// Recalculate tasks for an event
+const recalculateTasks = async (event) => {
+  recalculatingEventId.value = event.id
+
+  try {
+    await router.post(`/event/${event.id}/recalculate-tasks`, {}, {
+      preserveScroll: true,
+      onSuccess: () => {
+        // Success is handled by the flash message
+        recalculatingEventId.value = null
+      },
+      onError: () => {
+        // Error is handled by the flash message
+        recalculatingEventId.value = null
+      }
+    })
+  } catch (error) {
+    console.error('Failed to recalculate tasks:', error)
+    recalculatingEventId.value = null
+  }
 }
 </script>

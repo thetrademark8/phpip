@@ -38,6 +38,14 @@
           />
         </div>
         <div class="space-y-2">
+          <Label htmlFor="link" class="mb-2">{{ t('Link') }}</Label>
+          <Input
+            id="link"
+            v-model="form.link"
+            :placeholder="t('URL (optional)...')"
+          />
+        </div>
+        <div class="space-y-2">
           <Label htmlFor="notes" class="mb-2">{{ t('Notes') }}</Label>
           <Textarea
             id="notes"
@@ -63,6 +71,7 @@
 import { ref, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
+import { useTranslatedField } from '@/composables/useTranslation'
 import {
   Dialog,
   DialogScrollContent,
@@ -99,6 +108,7 @@ const props = defineProps({
 const emit = defineEmits(['update:open', 'success'])
 
 const { t } = useI18n()
+const { translated } = useTranslatedField()
 
 const eventDisplay = ref('')
 
@@ -108,6 +118,7 @@ const form = useForm({
   eventName: '',
   event_date: '',
   detail: '',
+  link: '',
   notes: ''
 })
 
@@ -117,8 +128,11 @@ watch(() => props.event, (newEvent) => {
     form.code = newEvent.code || ''
     form.event_date = newEvent.event_date || ''
     form.detail = newEvent.detail || ''
+    // Don't set link if it's an object (relation)
+    form.link = (typeof newEvent.link === 'string') ? newEvent.link : ''
     form.notes = newEvent.notes || ''
-    eventDisplay.value = newEvent.event_name || ''
+    // Use translated function to get the proper translation
+    eventDisplay.value = translated(newEvent.info?.name) || newEvent.code || ''
   } else {
     form.reset()
     eventDisplay.value = ''
