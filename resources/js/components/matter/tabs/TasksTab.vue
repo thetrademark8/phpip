@@ -1,48 +1,41 @@
 <template>
-  <Card>
-    <CardHeader>
-      <CardTitle>{{ $t('Tasks') }}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <DataTable
-        :data="tasks"
-        :columns="columns"
-        :loading="false"
-        :show-pagination="tasks.length > 10"
-        :page-size="10"
-        :empty-message="$t('No tasks found')"
-      />
-    </CardContent>
-  </Card>
+  <DataTable
+      :data="tasks"
+      :columns="columns"
+      :loading="false"
+      :show-pagination="tasks.length > 3"
+      :page-size="10"
+      :empty-message="$t('No tasks found')"
+  />
 
   <TaskDialog
-    v-model:open="showEditTaskDialog"
-    :matter-id="matterId"
-    :task="selectedTask"
-    operation="edit"
-    @success="handleTaskUpdate"
+      v-model:open="showEditTaskDialog"
+      :matter-id="matterId"
+      :task="selectedTask"
+      operation="edit"
+      @success="handleTaskUpdate"
   />
-  
+
   <TaskCompletionDialog
-    v-model:open="showCompletionDialog"
-    :task="selectedTask"
-    @success="handleTaskUpdate"
+      v-model:open="showCompletionDialog"
+      :task="selectedTask"
+      @success="handleTaskUpdate"
   />
 </template>
 
 <script setup>
-import { ref, h } from 'vue'
-import { router } from '@inertiajs/vue3'
-import { useI18n } from 'vue-i18n'
-import { Edit2, Check, Trash2, Calendar, User } from 'lucide-vue-next'
-import { format, parseISO, isPast } from 'date-fns'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import {ref, h} from 'vue'
+import {router} from '@inertiajs/vue3'
+import {useI18n} from 'vue-i18n'
+import {Edit2, Check, Trash2, Calendar, User} from 'lucide-vue-next'
+import {format, parseISO, isPast} from 'date-fns'
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
+import {Button} from '@/components/ui/button'
 import DataTable from '@/components/ui/DataTable.vue'
 import TaskDialog from '@/components/dialogs/TaskDialog.vue'
 import TaskCompletionDialog from '@/components/dialogs/TaskCompletionDialog.vue'
 import StatusBadge from '@/components/display/StatusBadge.vue'
-import { useTranslatedField } from '@/composables/useTranslation'
+import {useTranslatedField} from '@/composables/useTranslation'
 
 const props = defineProps({
   tasks: Array,
@@ -50,8 +43,8 @@ const props = defineProps({
   enableInlineEdit: Boolean
 })
 
-const { t } = useI18n()
-const { translated } = useTranslatedField()
+const {t} = useI18n()
+const {translated} = useTranslatedField()
 
 const showEditTaskDialog = ref(false)
 const showCompletionDialog = ref(false)
@@ -90,11 +83,11 @@ const columns = [
     id: 'task',
     accessorKey: 'code',
     header: t('Task'),
-    cell: ({ row }) => {
+    cell: ({row}) => {
       const task = row.original
-      return h('div', { class: 'space-y-1' }, [
-        h('div', { class: 'font-medium' }, task.info?.name ? translated(task.info.name) : task.code),
-        task.detail && h('div', { class: 'text-sm text-muted-foreground' }, translated(task.detail))
+      return h('div', {class: 'space-y-1'}, [
+        h('div', {class: 'font-medium'}, task.info?.name ? translated(task.info.name) : task.code),
+        task.detail && h('div', {class: 'text-sm text-muted-foreground'}, translated(task.detail))
       ])
     }
   },
@@ -102,12 +95,12 @@ const columns = [
     id: 'due_date',
     accessorKey: 'due_date',
     header: t('Due date'),
-    cell: ({ row }) => {
+    cell: ({row}) => {
       const task = row.original
       const overdue = isOverdue(task)
-      return h('div', { class: 'flex items-center gap-1' }, [
-        h(Calendar, { class: 'h-3 w-3 text-muted-foreground' }),
-        h('span', { 
+      return h('div', {class: 'flex items-center gap-1'}, [
+        h(Calendar, {class: 'h-3 w-3 text-muted-foreground'}),
+        h('span', {
           class: overdue && !task.done ? 'text-red-600 font-medium' : ''
         }, formatDate(task.due_date))
       ])
@@ -117,10 +110,10 @@ const columns = [
     id: 'assigned_to',
     accessorKey: 'assigned_to',
     header: t('Assigned to'),
-    cell: ({ row }) => {
+    cell: ({row}) => {
       const task = row.original
-      return h('div', { class: 'flex items-center gap-1' }, [
-        h(User, { class: 'h-3 w-3 text-muted-foreground' }),
+      return h('div', {class: 'flex items-center gap-1'}, [
+        h(User, {class: 'h-3 w-3 text-muted-foreground'}),
         h('span', {}, task.assigned_to || 'Unassigned')
       ])
     }
@@ -128,7 +121,7 @@ const columns = [
   {
     id: 'status',
     header: t('Status'),
-    cell: ({ row }) => h(StatusBadge, {
+    cell: ({row}) => h(StatusBadge, {
       status: getTaskStatus(row.original),
       type: 'task'
     })
@@ -140,9 +133,9 @@ if (props.enableInlineEdit) {
   columns.push({
     id: 'actions',
     header: t('Actions'),
-    cell: ({ row }) => {
+    cell: ({row}) => {
       const task = row.original
-      return h('div', { class: 'flex items-center gap-2' }, [
+      return h('div', {class: 'flex items-center gap-2'}, [
         h(Button, {
           size: 'icon',
           variant: 'ghost',
@@ -150,7 +143,7 @@ if (props.enableInlineEdit) {
             selectedTask.value = task
             showEditTaskDialog.value = true
           }
-        }, () => h(Edit2, { class: 'h-4 w-4' })),
+        }, () => h(Edit2, {class: 'h-4 w-4'})),
         !task.done && h(Button, {
           size: 'icon',
           variant: 'ghost',
@@ -158,12 +151,12 @@ if (props.enableInlineEdit) {
             selectedTask.value = task
             showCompletionDialog.value = true
           }
-        }, () => h(Check, { class: 'h-4 w-4' })),
+        }, () => h(Check, {class: 'h-4 w-4'})),
         h(Button, {
           size: 'icon',
           variant: 'ghost',
           onClick: () => handleDeleteTask(task)
-        }, () => h(Trash2, { class: 'h-4 w-4' }))
+        }, () => h(Trash2, {class: 'h-4 w-4'}))
       ])
     }
   })
@@ -172,7 +165,7 @@ if (props.enableInlineEdit) {
 function handleTaskUpdate() {
   showEditTaskDialog.value = false
   showCompletionDialog.value = false
-  router.reload({ only: ['matter'] })
+  router.reload({only: ['matter']})
 }
 
 
@@ -180,7 +173,7 @@ function handleDeleteTask(task) {
   if (confirm(t('Are you sure you want to delete this task?'))) {
     router.delete(`/task/${task.id}`, {
       onSuccess: () => {
-        router.reload({ only: ['matter'] })
+        router.reload({only: ['matter']})
       }
     })
   }

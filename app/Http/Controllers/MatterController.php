@@ -107,7 +107,7 @@ class MatterController extends Controller
             ]);
         }
 
-        return Inertia::render('Matter/Show', [
+        return Inertia::render('Matter/ShowSingleView', [
             'matter' => $matter,
             'titles' => $titles,
             'classifiers' => $classifiers,
