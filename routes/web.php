@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Nested matter routes for creating related records
-    Route::middleware('can:readwrite')->group(function () {
+    Route::can('readwrite')->group(function () {
         Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store'])->name('matter.actors.store');
         Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store'])->name('matter.events.store');
         Route::post('matter/{matter}/classifiers', [App\Http\Controllers\ClassifierController::class, 'store'])->name('matter.classifiers.store');
@@ -125,8 +125,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('matter/{parent_matter}/createN', fn (Matter $parent_matter) => view('matter.createN', compact('parent_matter')));
         
         // Nested routes for matter relationships
-        Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store']);
-        Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store']);
+        // Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store']);
+        // Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store']);
         
         // International trademark automation routes
         Route::post('matter/{matter}/create-national', [App\Http\Controllers\MatterController::class, 'storeInternational'])->name('matter.create-national');

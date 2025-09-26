@@ -7,26 +7,33 @@ use App\Models\ActorPivot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ActorPivotController extends Controller
 {
     public function store(Request $request, $matter = null)
     {
-        // If matter_id comes from route parameter, use it
-        if ($matter) {
-            $request->merge(['matter_id' => $matter]);
-        }
-        
-        $request->validate([
-            'matter_id' => 'required|numeric',
-            'actor_id' => 'required|numeric',
-            'role_code' => 'required',
-            'date' => 'date',
-        ]);
+        try {
+            // If matter_id comes from route parameter, use it
+            if ($matter) {
+                $request->merge(['matter_id' => $matter]);
+            }
+
+            Log::info('ActorPivot store request', ['data' => $request->all()]);
+
+            $request->validate([
+                'matter_id' => 'required|numeric',
+                'actor_id' => 'required|numeric',
+                'role' => 'required|string',
+                'actor_ref' => 'nullable|string|max:255',
+                'date' => 'nullable|date',
+                'rate' => 'nullable|numeric|min:0|max:100',
+                'display_order' => 'nullable|numeric|min:0',
+            ]);
 
         // Fix display order indexes if wrong
-        $roleGroup = ActorPivot::where('matter_id', $request->matter_id)->where('role', $request->role_code);
+        $roleGroup = ActorPivot::where('matter_id', $request->matter_id)->where('role', $request->role);
         $max = $roleGroup->max('display_order');
         $count = $roleGroup->count();
         if ($count < $max) {
@@ -40,24 +47,45 @@ class ActorPivotController extends Controller
             $max = $i;
         }
 
-        $addedActor = Actor::find($request->actor_id);
+            $addedActor = Actor::find($request->actor_id);
+            if (!$addedActor) {
+                Log::error('Actor not found', ['actor_id' => $request->actor_id]);
+                return response()->json(['error' => 'Actor not found'], 404);
+            }
 
-        $request->merge([
-            'role' => $request->role_code,
-            'display_order' => $max + 1,
-            'creator' => Auth::user()->login,
-            'company_id' => $addedActor->company_id,
-            'date' => Now(),
-        ]);
+            $request->merge([
+                'display_order' => $request->display_order ?: ($max + 1),
+                'creator' => Auth::user()->login,
+                'company_id' => $addedActor->company_id,
+                'date' => $request->date ?: now(),
+            ]);
 
-        $actorPivot = ActorPivot::create($request->except(['_token', '_method', 'role_code']));
+            $actorPivot = ActorPivot::create($request->except(['_token', '_method']));
 
-        // Handle Inertia requests
-        if ($request->inertia()) {
-            return redirect()->back();
+            Log::info('ActorPivot created successfully', ['id' => $actorPivot->id]);
+
+            // Handle Inertia requests
+            if ($request->inertia()) {
+                return redirect()->back()->with('success', 'Actor added successfully');
+            }
+
+            return response()->json($actorPivot, 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation failed', ['errors' => $e->errors()]);
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('Error creating ActorPivot', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            if ($request->inertia()) {
+                return redirect()->back()->with('error', 'Failed to add actor');
+            }
+
+            return response()->json(['error' => 'Internal server error'], 500);
         }
-
-        return $actorPivot;
     }
 
     public function update(Request $request, ActorPivot $actorPivot)
