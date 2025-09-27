@@ -2,6 +2,7 @@
 /public/storage
 /public/build
 /public/js
+/public/hot
 /public/images/vendor
 !/public/images/logos/**/*
 /storage/
