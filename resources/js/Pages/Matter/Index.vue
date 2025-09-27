@@ -103,7 +103,7 @@
 <script setup>
 import { ref, computed, h, onMounted, watch } from 'vue'
 import { router, Link, usePage } from '@inertiajs/vue3'
-import { format, parseISO, formatDistanceToNow } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { debounce } from 'lodash-es'
 import { useI18n } from 'vue-i18n'
 import { 
@@ -309,11 +309,6 @@ function formatDate(date) {
   if (!date) return ''
   try {
     const parsed = parseISO(date)
-    const daysDiff = Math.abs(new Date() - parsed) / (1000 * 60 * 60 * 24)
-    
-    if (daysDiff < 30) {
-      return formatDistanceToNow(parsed, { addSuffix: true })
-    }
     return format(parsed, 'dd/MM/yyyy')
   } catch {
     return date
