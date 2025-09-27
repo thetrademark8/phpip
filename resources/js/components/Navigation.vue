@@ -57,9 +57,6 @@
                   <DropdownMenuItem @click="openCreateMatter">
                     {{ $t('Create') }}
                   </DropdownMenuItem>
-                  <DropdownMenuItem @click="openCreateFromOPS">
-                    {{ $t('Create family from OPS') }}
-                  </DropdownMenuItem>
                 </template>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -268,7 +265,7 @@ const getCategoryTranslation = (category) => {
 }
 
 // Emit events
-const emit = defineEmits(['openCreateMatter', 'openCreateFromOPS'])
+const emit = defineEmits(['openCreateMatter'])
 
 // Methods
 const logout = () => {
@@ -277,9 +274,5 @@ const logout = () => {
 
 const openCreateMatter = () => {
   emit('openCreateMatter')
-}
-
-const openCreateFromOPS = () => {
-  emit('openCreateFromOPS')
 }
 </script>
