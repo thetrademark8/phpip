@@ -28,6 +28,9 @@
           <Button size="sm" variant="secondary" @click="showEditDialog = true" title="Edit">
             <Pencil class="h-3 w-3" />
           </Button>
+          <Button size="sm" variant="secondary" @click="showCreateChildDialog = true" title="New Child">
+            <FilePlus class="h-3 w-3" />
+          </Button>
         </div>
       </div>
 
@@ -65,24 +68,99 @@
             </CardContent>
           </Card>
 
-          <!-- Matter Links Below Actors -->
-          <Card v-if="matter.container_id || matter.parent_id" class="mt-3">
+          <!-- Attributes Below Actors -->
+          <Card v-if="attributeClassifiers.length > 0" class="mt-3">
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
+            </CardHeader>
             <CardContent class="p-3">
-              <dl class="space-y-1 text-sm">
-                <div v-if="matter.container_id" class="flex">
-                  <dt class="font-medium w-20">Container:</dt>
-                  <dd>
+              <dl class="space-y-2 text-sm">
+                <div v-for="classifier in attributeClassifiers" :key="classifier.id" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">{{ classifier.type_name }}:</dt>
+                  <dd class="ml-2">
+                    <template v-if="classifier.linked_matter_id">
+                      <Link :href="`/matter/${classifier.linked_matter_id}`" class="text-primary hover:underline text-xs">
+                        {{ classifier.linked_matter?.uid || classifier.value }}
+                      </Link>
+                    </template>
+                    <template v-else>
+                      {{ classifier.value }}
+                    </template>
+                  </dd>
+                </div>
+              </dl>
+            </CardContent>
+          </Card>
+
+          <!-- Related Matters Below Attributes -->
+          <Card v-if="hasRelatedMatters" class="mt-3">
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <h3 class="font-semibold text-sm">{{ $t('Related Matters') }}</h3>
+            </CardHeader>
+            <CardContent class="p-3">
+              <dl class="space-y-2 text-sm">
+                <div v-if="matter.container_id" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">Container:</dt>
+                  <dd class="ml-2">
                     <Link :href="`/matter/${matter.container_id}`" class="text-primary hover:underline text-xs">
                       {{ matter.container.uid }}
                     </Link>
                   </dd>
                 </div>
-                <div v-if="matter.parent_id" class="flex">
-                  <dt class="font-medium w-20">Parent:</dt>
-                  <dd>
+                <div v-if="matter.parent_id" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">Parent:</dt>
+                  <dd class="ml-2">
                     <Link :href="`/matter/${matter.parent_id}`" class="text-primary hover:underline text-xs">
                       {{ matter.parent.uid }}
                     </Link>
+                  </dd>
+                </div>
+                <div v-if="matter.family && matter.family.length > 0" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">Family:</dt>
+                  <dd class="ml-2 space-y-1">
+                    <Link
+                      v-for="familyMatter in matter.family.slice(0, 5)"
+                      :key="familyMatter.id"
+                      :href="`/matter/${familyMatter.id}`"
+                      class="block text-primary hover:underline text-xs"
+                    >
+                      {{ familyMatter.uid }}
+                    </Link>
+                    <div v-if="matter.family.length > 5" class="text-xs text-muted-foreground">
+                      +{{ matter.family.length - 5 }} more
+                    </div>
+                  </dd>
+                </div>
+                <div v-if="matter.linked_by && matter.linked_by.length > 0" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">Linked:</dt>
+                  <dd class="ml-2 space-y-1">
+                    <Link
+                      v-for="linked in matter.linked_by.slice(0, 3)"
+                      :key="linked.id"
+                      :href="`/matter/${linked.id}`"
+                      class="block text-primary hover:underline text-xs"
+                    >
+                      {{ linked.uid }}
+                    </Link>
+                    <div v-if="matter.linked_by.length > 3" class="text-xs text-muted-foreground">
+                      +{{ matter.linked_by.length - 3 }} more
+                    </div>
+                  </dd>
+                </div>
+                <div v-if="matter.priority_to && matter.priority_to.length > 0" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">Priority:</dt>
+                  <dd class="ml-2 space-y-1">
+                    <Link
+                      v-for="priority in matter.priority_to.slice(0, 3)"
+                      :key="priority.id"
+                      :href="`/matter/${priority.id}`"
+                      class="block text-primary hover:underline text-xs"
+                    >
+                      {{ priority.uid }}
+                    </Link>
+                    <div v-if="matter.priority_to.length > 3" class="text-xs text-muted-foreground">
+                      +{{ matter.priority_to.length - 3 }} more
+                    </div>
                   </dd>
                 </div>
               </dl>
@@ -344,6 +422,13 @@
       v-model:open="showFileMergeDialog"
       :matter-id="matter.id"
     />
+
+    <MatterDialog
+      v-model:open="showCreateChildDialog"
+      :matter="matter"
+      operation="child"
+      @success="handleMatterUpdate"
+    />
   </MainLayout>
 </template>
 
@@ -360,7 +445,8 @@ import {
   Pencil,
   Settings,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  FilePlus
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -408,6 +494,7 @@ const showEventManagerDialog = ref(false)
 const showActorEditDialog = ref(false)
 const selectedActor = ref(null)
 const showFileMergeDialog = ref(false)
+const showCreateChildDialog = ref(false)
 
 // Computed
 const imageClassifier = computed(() =>
@@ -421,6 +508,21 @@ const tmClasses = computed(() =>
 const recentEvents = computed(() =>
   props.matter.events?.slice(0, 10) || []
 )
+
+const attributeClassifiers = computed(() => {
+  if (!props.matter.classifiers) return []
+  return props.matter.classifiers.filter(
+    c => c.type_code !== 'TMCL' && c.type_code !== 'IMG'
+  )
+})
+
+const hasRelatedMatters = computed(() => {
+  return props.matter.container_id ||
+    props.matter.parent_id ||
+    (props.matter.family && props.matter.family.length > 0) ||
+    (props.matter.linked_by && props.matter.linked_by.length > 0) ||
+    (props.matter.priority_to && props.matter.priority_to.length > 0)
+})
 
 // Methods
 function formatDate(dateString) {
