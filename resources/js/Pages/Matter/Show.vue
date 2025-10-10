@@ -31,6 +31,9 @@
           <Button size="sm" variant="secondary" @click="showCreateChildDialog = true" title="New Child">
             <FilePlus class="h-3 w-3" />
           </Button>
+          <Button v-if="isEligibleForInternational" size="sm" variant="secondary" @click="showInternationalDialog = true" :title="t('Create National Matters')">
+            <Globe class="h-3 w-3" />
+          </Button>
         </div>
       </div>
 
@@ -429,6 +432,12 @@
       operation="child"
       @success="handleMatterUpdate"
     />
+
+    <InternationalTrademarkCreator
+      v-model:open="showInternationalDialog"
+      :matter="matter"
+      @success="handleInternationalSuccess"
+    />
   </MainLayout>
 </template>
 
@@ -446,7 +455,8 @@ import {
   Settings,
   ChevronDown,
   ChevronUp,
-  FilePlus
+  FilePlus,
+  Globe
 } from 'lucide-vue-next'
 import MainLayout from '@/Layouts/MainLayout.vue'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -471,6 +481,7 @@ import TasksTab from '@/components/matter/tabs/TasksTab.vue'
 import RenewalsTab from '@/components/matter/tabs/RenewalsTab.vue'
 import NotesTab from '@/components/matter/tabs/NotesTab.vue'
 import ActivityFeed from '@/components/matter/ActivityFeed.vue'
+import InternationalTrademarkCreator from '@/components/matter/InternationalTrademarkCreator.vue'
 
 const props = defineProps({
   matter: Object,
@@ -495,6 +506,7 @@ const showActorEditDialog = ref(false)
 const selectedActor = ref(null)
 const showFileMergeDialog = ref(false)
 const showCreateChildDialog = ref(false)
+const showInternationalDialog = ref(false)
 
 // Computed
 const imageClassifier = computed(() =>
@@ -522,6 +534,12 @@ const hasRelatedMatters = computed(() => {
     (props.matter.family && props.matter.family.length > 0) ||
     (props.matter.linked_by && props.matter.linked_by.length > 0) ||
     (props.matter.priority_to && props.matter.priority_to.length > 0)
+})
+
+const isEligibleForInternational = computed(() => {
+  return props.canWrite &&
+         props.matter.country === 'WO' &&
+         props.matter.category_code === 'TM'
 })
 
 // Methods
@@ -576,5 +594,11 @@ function handleEventRemove(event) {
 
 function handleEventUpdate(event) {
   router.reload({ only: ['matter'] })
+}
+
+function handleInternationalSuccess() {
+  showInternationalDialog.value = false
+  // Reload the page to see the updated family
+  router.reload()
 }
 </script>
