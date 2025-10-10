@@ -367,18 +367,18 @@ class Matter extends Model
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(cli.display_name, clic.display_name, cli.name, clic.name) SEPARATOR '; ') AS Client"),
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(clilnk.actor_ref, cliclnk.actor_ref) SEPARATOR '; ') AS ClRef"),
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(app.display_name, app.name) SEPARATOR '; ') AS Applicant"),
+            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(own.display_name, ownc.display_name, own.name, ownc.name) SEPARATOR '; ') AS Owner"),
             DB::raw("GROUP_CONCAT(DISTINCT COALESCE(agt.display_name, agtc.display_name, agt.name, agtc.name) SEPARATOR '; ') AS Agent"),
-            DB::raw("GROUP_CONCAT(DISTINCT COALESCE(agtlnk.actor_ref, agtclnk.actor_ref) SEPARATOR '; ') AS AgtRef"),
             'tit1.value AS Title',
             DB::raw('COALESCE(tit2.value, tit1.value) AS Title2'),
             'tit3.value AS Title3',
-            DB::raw("CONCAT_WS(' ', inv.name, inv.first_name) as Inventor1"),
             'fil.event_date AS Filed',
             'fil.detail AS FilNo',
             'pub.event_date AS Published',
             'pub.detail AS PubNo',
-            DB::raw('COALESCE(grt.event_date, reg.event_date) AS Granted'),
-            DB::raw('COALESCE(grt.detail, reg.detail) AS GrtNo'),
+            DB::raw('COALESCE(grt.event_date, reg.event_date) AS registration_date'),
+            DB::raw('COALESCE(grt.detail, reg.detail) AS registration_number'),
+            DB::raw("GROUP_CONCAT(DISTINCT tmcl.value ORDER BY tmcl.value SEPARATOR ', ') AS classes"),
             'matter.id',
             'matter.container_id',
             'matter.parent_id',
@@ -433,6 +433,19 @@ class Matter extends Model
                 $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'applnk.matter_id')->where('applnk.role', 'APP');
             }
         )->leftJoin(
+            DB::raw('matter_actor_lnk ownlnk JOIN actor own ON own.id = ownlnk.actor_id'),
+            function ($join) {
+                $join->on('matter.id', 'ownlnk.matter_id')->where('ownlnk.role', 'OWN');
+            }
+        )->leftJoin(
+            DB::raw('matter_actor_lnk ownclnk JOIN actor ownc ON ownc.id = ownclnk.actor_id'),
+            function ($join) {
+                $join->on('matter.container_id', 'ownclnk.matter_id')->where([
+                    ['ownclnk.role', 'OWN'],
+                    ['ownclnk.shared', 1],
+                ]);
+            }
+        )->leftJoin(
             DB::raw('matter_actor_lnk dellnk JOIN actor del ON del.id = dellnk.actor_id'),
             function ($join) {
                 $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'dellnk.matter_id')->where('dellnk.role', 'DEL');
@@ -456,6 +469,11 @@ class Matter extends Model
             'event AS reg',
             function ($join) {
                 $join->on('matter.id', 'reg.matter_id')->where('reg.code', 'REG');
+            }
+        )->leftJoin(
+            'classifier AS tmcl',
+            function ($join) {
+                $join->on('matter.id', 'tmcl.matter_id')->where('tmcl.type_code', 'TMCL');
             }
         )->leftJoin(
             DB::raw('event status JOIN event_name ON event_name.code = status.code AND event_name.status_event = 1'),
@@ -495,27 +513,6 @@ class Matter extends Model
             'tit3.matter_id'
         )->where('e2.matter_id', null);
 
-        if (array_key_exists('Inventor1', $multi_filter)) {
-            $query->leftJoin(
-                DB::raw('matter_actor_lnk invlnk JOIN actor inv ON inv.id = invlnk.actor_id'),
-                function ($join) {
-                    $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'invlnk.matter_id')->where('invlnk.role', 'INV');
-                }
-            );
-        } else {
-            $query->leftJoin(
-                DB::raw('matter_actor_lnk invlnk JOIN actor inv ON inv.id = invlnk.actor_id'),
-                function ($join) {
-                    $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'invlnk.matter_id')->where(
-                        [
-                            ['invlnk.role', 'INV'],
-                            ['invlnk.display_order', 1],
-                        ]
-                    );
-                }
-            );
-        }
-
         $authUserRole = Auth::user()->default_role;
         $authUserId = Auth::user()->id;
 
@@ -546,62 +543,57 @@ class Matter extends Model
                     switch ($key) {
                         case 'Ref':
                             $query->where(function ($q) use ($value) {
-                                $q->whereLike('uid', "$value%")
-                                    ->orWhereLike('alt_ref', "$value%");
+                                $q->whereRaw("uid COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"])
+                                    ->orWhereRaw("alt_ref COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"]);
                             });
                             break;
                         case 'Cat':
-                            $query->whereLike('category_code', "$value%");
+                            $query->whereRaw("category_code COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"]);
                             break;
                         case 'country':
-                            $query->whereLike('matter.country', "$value%");
+                            $query->whereRaw("matter.country COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"]);
                             break;
                         case 'Status':
                             $query->whereJsonLike('event_name.name', $value);
                             break;
-                        case 'Status_date':
-                            $query->whereLike('status.event_date', "$value%");
-                            break;
                         case 'Client':
-                            $query->whereLike(DB::raw('IFNULL(cli.name, clic.name)'), "$value%");
+                            $query->whereRaw("IFNULL(cli.name, clic.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'ClRef':
-                            $query->whereLike(DB::raw('IFNULL(clilnk.actor_ref, cliclnk.actor_ref)'), "$value%");
+                            $query->whereRaw("IFNULL(clilnk.actor_ref, cliclnk.actor_ref) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
-                        case 'Applicant':
-                            $query->whereLike('app.name', "$value%");
+                        case 'Owner':
+                            $query->whereRaw("IFNULL(own.name, ownc.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Agent':
-                            $query->whereLike(DB::raw('IFNULL(agt.name, agtc.name)'), "$value%");
-                            break;
-                        case 'AgtRef':
-                            $query->whereLike(DB::raw('IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)'), "$value%");
+                            $query->whereRaw("IFNULL(agt.name, agtc.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Title':
-                            $query->whereLike(DB::Raw('concat_ws(" ", tit1.value, tit2.value, tit3.value)'), "%$value%");
+                            $query->whereRaw("concat_ws(' ', tit1.value, tit2.value, tit3.value) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
-                        case 'Inventor1':
-                            $query->whereLike('inv.name', "$value%");
+                        case 'classes':
+                            $query->whereRaw("tmcl.value COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Filed':
                             $query->whereLike('fil.event_date', "$value%");
                             break;
                         case 'FilNo':
-                            $query->whereLike('fil.detail', "$value%");
+                            $query->whereRaw("fil.detail COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Published':
                             $query->whereLike('pub.event_date', "$value%");
                             break;
-                        case 'PubNo':
-                            $query->whereLike('pub.detail', "$value%");
+                        case 'registration_date':
+                            $query->where(function ($q) use ($value) {
+                                $q->whereLike('grt.event_date', "$value%")
+                                    ->orWhereLike('reg.event_date', "$value%");
+                            });
                             break;
-                        case 'Granted':
-                            $query->whereLike('grt.event_date', "$value%")
-                                ->orWhereLike('reg.event_date', "$value%");
-                            break;
-                        case 'GrtNo':
-                            $query->whereLike('grt.detail', "$value%")
-                                ->orWhereLike('reg.detail', "$value%");
+                        case 'registration_number':
+                            $query->where(function ($q) use ($value) {
+                                $q->whereRaw("grt.detail COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"])
+                                    ->orWhereRaw("reg.detail COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            });
                             break;
                         case 'responsible':
                             $query->where(function ($q) use ($value) {

@@ -26,37 +26,34 @@ class MatterFilterRequest extends FormRequest
             'Status' => 'nullable|string|max:100',
             'Client' => 'nullable|string|max:100',
             'ClRef' => 'nullable|string|max:50',
-            'Applicant' => 'nullable|string|max:100',
+            'Owner' => 'nullable|string|max:100',
             'Agent' => 'nullable|string|max:100',
-            'AgtRef' => 'nullable|string|max:50',
             'Title' => 'nullable|string|max:255',
-            'Inventor1' => 'nullable|string|max:100',
             'FilNo' => 'nullable|string|max:50',
-            'PubNo' => 'nullable|string|max:50',
-            'GrtNo' => 'nullable|string|max:50',
+            'registration_number' => 'nullable|string|max:50',
+            'classes' => 'nullable|string|max:100',
             'responsible' => 'nullable|string|max:50',
             'country' => 'nullable|string|size:2',
-            
+
             // Date filters
-            'Status_date' => 'nullable|date',
             'Filed' => 'nullable|date',
             'Published' => 'nullable|date',
-            'Granted' => 'nullable|date',
-            
+            'registration_date' => 'nullable|date',
+
             // Boolean filters
             'Ctnr' => 'nullable|boolean',
             'include_dead' => 'nullable|boolean',
-            
+
             // Display options
             'display_with' => 'nullable|string|max:10',
             'tab' => 'nullable|integer|in:0,1',
-            
+
             // Sorting options
-            'sortkey' => 'nullable|string|in:id,Ref,Cat,Status,Client,Filed,Published,Granted,caseref',
+            'sortkey' => 'nullable|string|in:id,Ref,Cat,Status,Client,Filed,Published,registration_date,caseref',
             'sortdir' => 'nullable|string|in:asc,desc',
             'sort' => 'nullable|string',
             'direction' => 'nullable|string|in:asc,desc',
-            
+
             // Pagination
             'per_page' => 'nullable|integer|min:10|max:100',
         ];
@@ -109,10 +106,9 @@ class MatterFilterRequest extends FormRequest
     {
         return $this->only([
             'Ref', 'Cat', 'Status', 'Client', 'ClRef',
-            'Applicant', 'Agent', 'AgtRef', 'Title',
-            'Inventor1', 'Status_date', 'Filed', 'FilNo',
-            'Published', 'PubNo', 'Granted', 'GrtNo',
-            'responsible', 'Ctnr', 'country'
+            'Owner', 'Agent', 'Title', 'FilNo',
+            'Published', 'registration_date', 'registration_number',
+            'classes', 'responsible', 'Ctnr', 'country', 'Filed'
         ]);
     }
 
