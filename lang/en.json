@@ -788,6 +788,7 @@
   "matter.columns.grantedNumber": "Granted number",
   "matter.columns.country": "Country",
   "matter.columns.logo": "Logo",
+  "matter.columns.image": "Image",
   "matter.columns.classes": "Classes",
   "matter.columns.owner": "Owner",
   "matter.columns.registrationDate": "Registration Date",

@@ -232,10 +232,10 @@ const tableColumns = [
   },
   {
     accessorKey: 'image_id',
-    header: t('matter.columns.logo'),
+    header: t('matter.columns.image'),
     cell: ({ row }) => row.original.image_id ? h('img', {
       src: `/classifier/${row.original.image_id}/img`,
-      alt: 'Logo',
+      alt: 'Image',
       class: 'h-8 w-auto object-contain',
       loading: 'lazy'
     }) : null,
@@ -291,6 +291,14 @@ const tableColumns = [
     },
     enableSorting: true,
     meta: { headerClass: 'w-[100px]' },
+  },
+  {
+    accessorKey: 'registration_number',
+    header: t('matter.columns.registrationNumber'),
+    cell: ({ row }) => row.original.registration_number && h('div', { class: 'flex items-center gap-1' }, [
+      h(FileText, { class: 'h-4 w-4 text-muted-foreground' }),
+      h('span', row.original.registration_number)
+    ]),
   },
   {
     accessorKey: 'renewal_due',

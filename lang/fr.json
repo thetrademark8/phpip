@@ -787,6 +787,7 @@
   "matter.columns.grantedNumber": "Numéro de délivrance",
   "matter.columns.country": "Pays",
   "matter.columns.logo": "Logo",
+  "matter.columns.image": "Image",
   "matter.columns.classes": "Classes",
   "matter.columns.owner": "Propriétaire",
   "matter.columns.registrationDate": "Date d'enregistrement",
