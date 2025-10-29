@@ -327,12 +327,23 @@
           </Card>
 
           <!-- Attributes Below Actors -->
-          <Card v-if="attributeClassifiers.length > 0" class="mt-3">
+          <Card class="mt-3">
             <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
+                <Button
+                  v-if="canWrite"
+                  variant="ghost"
+                  size="icon"
+                  class="h-5 w-5"
+                  @click="showClassifierManagerDialog = true"
+                >
+                  <Settings class="h-3 w-3" />
+                </Button>
+              </div>
             </CardHeader>
             <CardContent class="p-3">
-              <dl class="space-y-2 text-sm">
+              <dl v-if="attributeClassifiers.length > 0" class="space-y-2 text-sm">
                 <div v-for="classifier in attributeClassifiers" :key="classifier.id" class="flex flex-col">
                   <dt class="font-medium text-muted-foreground text-xs">{{ translated(classifier.type_name) }}:</dt>
                   <dd class="ml-2">
@@ -347,6 +358,9 @@
                   </dd>
                 </div>
               </dl>
+              <div v-else class="text-center py-4 text-sm text-muted-foreground">
+                {{ $t('No classifiers assigned to this matter') }}
+              </div>
             </CardContent>
           </Card>
 
@@ -399,6 +413,13 @@
       :matter="matter"
       :titles="titles"
       @success="handleTitleUpdate"
+    />
+
+    <ClassifierManager
+      v-model:open="showClassifierManagerDialog"
+      :matter="matter"
+      :classifiers="classifiers"
+      @success="handleClassifierUpdate"
     />
 
     <MatterActorManager
@@ -475,6 +496,7 @@ import MatterActorManager from '@/components/dialogs/MatterActorManager.vue'
 import MatterEventManager from '@/components/dialogs/MatterEventManager.vue'
 import ActorDialog from '@/components/dialogs/ActorDialog.vue'
 import TitleManager from '@/components/dialogs/TitleManager.vue'
+import ClassifierManager from '@/components/dialogs/ClassifierManager.vue'
 import FileMergeDialog from '@/components/dialogs/FileMergeDialog.vue'
 import OfficeLinks from '@/components/matter/OfficeLinks.vue'
 import TasksTab from '@/components/matter/tabs/TasksTab.vue'
@@ -502,6 +524,7 @@ const showEditDialog = ref(false)
 const showTitleManagerDialog = ref(false)
 const showActorManagerDialog = ref(false)
 const showEventManagerDialog = ref(false)
+const showClassifierManagerDialog = ref(false)
 const showActorEditDialog = ref(false)
 const selectedActor = ref(null)
 const showFileMergeDialog = ref(false)
@@ -555,6 +578,10 @@ function handleMatterUpdate() {
 
 function handleTitleUpdate() {
   router.reload({ only: ['titles'] })
+}
+
+function handleClassifierUpdate() {
+  router.reload({ only: ['classifiers', 'matter'] })
 }
 
 function handleActorUpdate() {
