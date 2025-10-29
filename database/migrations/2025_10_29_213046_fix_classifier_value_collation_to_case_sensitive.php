@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * Re-applies case-sensitive collation to classifier.value column.
+     * This ensures titles preserve their original case (uppercase, lowercase, mixed).
+     * Part of Bug #006 fix.
+     */
+    public function up(): void
+    {
+        DB::statement("ALTER TABLE classifier
+            MODIFY value TEXT
+            CHARACTER SET utf8mb4
+            COLLATE utf8mb4_bin"
+        );
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * Reverts to case-insensitive collation.
+     */
+    public function down(): void
+    {
+        DB::statement("ALTER TABLE classifier
+            MODIFY value TEXT
+            CHARACTER SET utf8mb4
+            COLLATE utf8mb4_0900_ai_ci"
+        );
+    }
+};

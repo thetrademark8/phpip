@@ -71,30 +71,6 @@
             </CardContent>
           </Card>
 
-          <!-- Attributes Below Actors -->
-          <Card v-if="attributeClassifiers.length > 0" class="mt-3">
-            <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
-            </CardHeader>
-            <CardContent class="p-3">
-              <dl class="space-y-2 text-sm">
-                <div v-for="classifier in attributeClassifiers" :key="classifier.id" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">{{ classifier.type_name }}:</dt>
-                  <dd class="ml-2">
-                    <template v-if="classifier.linked_matter_id">
-                      <Link :href="`/matter/${classifier.linked_matter_id}`" class="text-primary hover:underline text-xs">
-                        {{ classifier.linked_matter?.uid || classifier.value }}
-                      </Link>
-                    </template>
-                    <template v-else>
-                      {{ classifier.value }}
-                    </template>
-                  </dd>
-                </div>
-              </dl>
-            </CardContent>
-          </Card>
-
           <!-- Related Matters Below Attributes -->
           <Card v-if="hasRelatedMatters" class="mt-3">
             <CardHeader class="py-2 px-3 bg-secondary">
@@ -347,6 +323,30 @@
                 :compact="true"
                 @update="handleNotesUpdate"
               />
+            </CardContent>
+          </Card>
+
+          <!-- Attributes Below Actors -->
+          <Card v-if="attributeClassifiers.length > 0" class="mt-3">
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
+            </CardHeader>
+            <CardContent class="p-3">
+              <dl class="space-y-2 text-sm">
+                <div v-for="classifier in attributeClassifiers" :key="classifier.id" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">{{ translated(classifier.type_name) }}:</dt>
+                  <dd class="ml-2">
+                    <template v-if="classifier.linked_matter_id">
+                      <Link :href="`/matter/${classifier.linked_matter_id}`" class="text-primary hover:underline text-xs">
+                        {{ classifier.linked_matter?.uid || classifier.value }}
+                      </Link>
+                    </template>
+                    <template v-else>
+                      {{ classifier.value }}
+                    </template>
+                  </dd>
+                </div>
+              </dl>
             </CardContent>
           </Card>
 

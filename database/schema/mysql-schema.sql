@@ -92,7 +92,7 @@ CREATE TABLE `classifier` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `matter_id` int unsigned NOT NULL,
   `type_code` char(5) COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'Link to ''classifier_types''',
-  `value` text COLLATE utf8mb4_0900_ai_ci COMMENT 'A free-text value used when classifier_values has no record linked to the classifier_types record',
+  `value` text COLLATE utf8mb4_bin COMMENT 'A free-text value used when classifier_values has no record linked to the classifier_types record',
   `img` mediumblob,
   `url` varchar(256) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'Display value as a link to the URL defined here',
   `value_id` int unsigned DEFAULT NULL COMMENT 'Links to the classifier_values table if it has a link to classifier_types',
@@ -116,27 +116,6 @@ CREATE TABLE `classifier` (
   CONSTRAINT `classifier_value_id_foreign` FOREIGN KEY (`value_id`) REFERENCES `classifier_value` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE TRIGGER `classifier_before_insert` BEFORE INSERT ON `classifier` FOR EACH ROW BEGIN
-    IF NEW.type_code = 'TITEN' THEN
-  		SET NEW.value=tcase(NEW.value);
-  	ELSEIF NEW.type_code IN ('TIT', 'TITOF', 'TITAL') THEN
-  		SET NEW.value=CONCAT(UCASE(SUBSTR(NEW.value, 1, 1)),LCASE(SUBSTR(NEW.value FROM 2)));
-  	END IF;
-  END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 DROP TABLE IF EXISTS `classifier_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

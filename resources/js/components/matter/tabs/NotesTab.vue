@@ -3,7 +3,7 @@
         <Textarea
             v-if="canEdit"
             v-model="localNotes"
-            class="min-h-[200px] font-mono"
+            class="min-h-[100px] font-mono"
             :placeholder="$t('Add notes...')"
             @blur="saveNotes"
         />
