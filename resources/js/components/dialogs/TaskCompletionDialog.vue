@@ -13,8 +13,8 @@
           <div class="space-y-2">
             <Label class="mb-2">{{ $t('Task') }}</Label>
             <div class="text-sm text-muted-foreground">
-              {{ task?.info?.name || task?.code }}
-              <div v-if="task?.detail" class="mt-1">{{ task.detail }}</div>
+              {{ translated(task?.info?.name) || task?.code }}
+              <div v-if="task?.detail" class="mt-1">{{ translated(task.detail) }}</div>
             </div>
           </div>
           
@@ -73,6 +73,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import DateInput from '@/components/ui/date-picker/DatePicker.vue'
+import {useTranslatedField} from "@/composables/useTranslation.js";
+
+const { translated } = useTranslatedField();
 
 const props = defineProps({
   open: {

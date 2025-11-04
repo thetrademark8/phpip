@@ -180,6 +180,7 @@ import {
 import FormField from '@/components/ui/form/FormField.vue'
 import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import { DatePicker } from '@/components/ui/date-picker'
+import {useTranslatedField} from "@/composables/useTranslation.js";
 
 const props = defineProps({
   task: {
@@ -213,13 +214,14 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+const { translated } = useTranslatedField();
 
 // Initialize form
 const form = useForm({
   code: props.task?.code || '',
   due_date: props.task?.due_date || '',
   assigned_to: props.task?.assigned_to || props.defaultAssignee || '',
-  detail: props.task?.detail || '',
+  detail: translated(props.task?.detail) || '',
   done: props.task?.done || false,
   done_date: props.task?.done_date || '',
   cost: props.task?.cost || '',
@@ -230,7 +232,7 @@ const form = useForm({
 })
 
 // Display values
-const taskTypeDisplay = ref(props.task?.info?.name || '')
+const taskTypeDisplay = ref(translated(props.task?.info?.name) || '')
 const assignedToDisplay = ref('')
 
 // Handle task type selection

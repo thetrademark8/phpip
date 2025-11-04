@@ -1664,5 +1664,7 @@
   "You do not have permission to modify actor data": "Vous n'avez pas la permission de modifier les données de l'acteur",
   "You do not have permission to add or remove actors from this matter. Contact an administrator if you need to modify actor assignments.": "Vous n'avez pas la permission d'ajouter ou de supprimer des acteurs de ce dossier. Contactez un administrateur si vous devez modifier les affectations d'acteurs.",
   "added event \"{name}\"": "a ajouté l'événement \"{name}\"",
-  "completed task \"{name}\"": "a terminé la tâche \"{name}\""
+  "completed task \"{name}\"": "a terminé la tâche \"{name}\"",
+  "No pending tasks": "Aucune tâche en attente",
+  "No pending renewals": "Aucun renouvellement en attente"
 }

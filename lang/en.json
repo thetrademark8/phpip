@@ -1666,5 +1666,7 @@
   "You do not have permission to modify actor data": "You do not have permission to modify actor data",
   "You do not have permission to add or remove actors from this matter. Contact an administrator if you need to modify actor assignments.": "You do not have permission to add or remove actors from this matter. Contact an administrator if you need to modify actor assignments.",
   "added event \"{name}\"": "added event \"{name}\"",
-  "completed task \"{name}\"": "completed task \"{name}\""
+  "completed task \"{name}\"": "completed task \"{name}\"",
+  "No pending tasks": "No pending tasks",
+  "No pending renewals": "No pending renewals"
 }

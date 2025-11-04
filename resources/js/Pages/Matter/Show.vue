@@ -41,7 +41,22 @@
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
 
         <!-- Left Column - Actors (25%) -->
-        <div class="lg:col-span-1">
+        <div class="lg:col-span-1 space-y-3">
+
+          <!-- Image -->
+          <Card v-if="imageClassifier">
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <h3 class="font-semibold text-sm">{{ $t('Image') }}</h3>
+            </CardHeader>
+            <CardContent class="p-2">
+              <img
+                :src="`/classifier/${imageClassifier.id}/img`"
+                class="w-full h-auto max-h-32 object-contain"
+                alt="Matter image"
+              />
+            </CardContent>
+          </Card>
+
           <Card class="h-fit">
             <CardHeader class="py-2 px-3 bg-secondary">
               <div class="flex items-center justify-between">
@@ -205,37 +220,45 @@
           </Card>
 
           <!-- Tasks & Renewals -->
-          <div v-if="matter.tasks_pending.length > 0 || matter.renewals_pending.length > 0" class="grid gap-3" :class="{'grid-cols-2': matter.tasks_pending.length > 0 && matter.renewals_pending.length > 0, 'grid-cols-1': matter.tasks_pending.length <= 0 || matter.renewals_pending.length <= 0}">
-            <Card v-if="matter.tasks_pending.length > 0">
-              <CardHeader class="py-2 px-3 bg-warning/10">
+          <div class="grid gap-3 grid-cols-2">
+            <Card>
+              <CardHeader class="py-2 px-3" :class="matter.tasks_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'">
                 <h3 class="font-semibold text-sm flex items-center justify-between">
                   {{ $t('Pending Tasks') }}
-                  <Badge variant="warning">{{ matter.tasks_pending.length }}</Badge>
+                  <Badge :variant="matter.tasks_pending.length > 0 ? 'warning' : 'secondary'">{{ matter.tasks_pending.length }}</Badge>
                 </h3>
               </CardHeader>
               <CardContent class="p-3 overflow-y-auto">
                 <TasksTab
+                  v-if="matter.tasks_pending.length > 0"
                   :tasks="matter.tasks_pending"
                   :matter-id="matter.id"
                   :enable-inline-edit="canWrite"
                   :compact="true"
                 />
+                <div v-else class="text-center py-4 text-sm text-muted-foreground">
+                  {{ $t('No pending tasks') }}
+                </div>
               </CardContent>
             </Card>
 
-            <Card v-if="matter.renewals_pending.length > 0">
-              <CardHeader class="py-2 px-3 bg-warning/10">
+            <Card>
+              <CardHeader class="py-2 px-3" :class="matter.renewals_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'">
                 <h3 class="font-semibold text-sm flex items-center justify-between">
                   {{ $t('Renewals') }}
-                  <Badge variant="warning">{{ matter.renewals_pending.length }}</Badge>
+                  <Badge :variant="matter.renewals_pending.length > 0 ? 'warning' : 'secondary'">{{ matter.renewals_pending.length }}</Badge>
                 </h3>
               </CardHeader>
               <CardContent class="p-3 overflow-y-auto">
                 <RenewalsTab
+                  v-if="matter.renewals_pending.length > 0"
                   :renewals="matter.renewals_pending"
                   :matter-id="matter.id"
                   :compact="true"
                 />
+                <div v-else class="text-center py-4 text-sm text-muted-foreground">
+                  {{ $t('No pending renewals') }}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -296,17 +319,6 @@
                   {{ title.value }}
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <!-- Image -->
-          <Card v-if="imageClassifier">
-            <CardContent class="p-2">
-              <img
-                :src="`/classifier/${imageClassifier.id}/img`"
-                class="w-full h-auto max-h-32 object-contain"
-                alt="Matter image"
-              />
             </CardContent>
           </Card>
 
