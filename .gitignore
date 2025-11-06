@@ -5,7 +5,6 @@
 /public/hot
 /public/images/vendor
 !/public/images/logos/**/*
-/storage/
 /vendor
 /.idea
 Homestead.json
@@ -20,3 +19,5 @@ Homestead.yaml
 .env.*.php
 .env.*
 .phpunit.cache
+/storage/*.key
+/storage/pail
