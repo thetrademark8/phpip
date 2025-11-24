@@ -220,7 +220,7 @@
           </Card>
 
           <!-- Tasks & Renewals -->
-          <div class="grid gap-3 grid-cols-2">
+          <div class="grid gap-3 grid-cols-1">
             <Card>
               <CardHeader class="py-2 px-3" :class="matter.tasks_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'">
                 <h3 class="font-semibold text-sm flex items-center justify-between">
