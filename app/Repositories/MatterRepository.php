@@ -368,6 +368,11 @@ class MatterRepository implements MatterRepositoryInterface
                     $q->whereLike('grt.event_date', "$value%")
                         ->orWhereLike('reg.event_date', "$value%");
                 }),
+                'registration_date' => $query->where(function ($q) use ($value) {
+                    $q->whereLike('grt.event_date', "$value%")
+                        ->orWhereLike('reg.event_date', "$value%")
+                        ->orWhereLike('regdp.event_date', "$value%");
+                }),
                 'GrtNo' => $query->where(function ($q) use ($value) {
                     $q->whereLike('grt.detail', "$value%")
                         ->orWhereLike('reg.detail', "$value%");
