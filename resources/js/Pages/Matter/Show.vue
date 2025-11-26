@@ -57,32 +57,57 @@
             </CardContent>
           </Card>
 
-          <Card class="h-fit">
+          <!-- Key Dates & Status -->
+          <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Actors') }}</h3>
-                <Button
-                  v-if="canWrite"
-                  variant="ghost"
-                  size="icon"
-                  class="h-5 w-5"
-                  @click="showActorManagerDialog = true"
-                >
-                  <Settings class="h-3 w-3" />
-                </Button>
-              </div>
+              <h3 class="font-semibold text-sm">{{ $t('Key Information') }}</h3>
             </CardHeader>
             <CardContent class="p-3">
-              <ActorList
-                :actors="matter.actors"
-                :matter-id="matter.id"
-                :container-id="matter.container_id"
-                :enable-inline-edit="false"
-                :editable="canWrite"
-                :compact="true"
-                @update="handleActorUpdate"
-                @edit="handleActorEdit"
-              />
+              <div class="grid grid-cols-1 gap-3 text-sm">
+                <div>
+                  <span class="font-medium">{{ $t('Status:') }}</span>
+                  <div class="mt-1">
+                    <StatusBadge
+                        v-for="event in statusEvents.slice(0,2)"
+                        :key="event.id"
+                        :status="event.code"
+                        :date="event.event_date"
+                        class="mr-2 mb-1"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <span class="font-medium">{{ $t('Responsible:') }}</span>
+                  <span class="ml-2">{{ matter.responsible }}</span>
+                </div>
+                <div v-if="matter.filing">
+                  <span class="font-medium">{{ $t('Filed:') }}</span>
+                  <span class="ml-2">{{ formatDate(matter.filing.event_date) }}</span>
+                  <span v-if="matter.filing.detail" class="text-xs text-muted-foreground ml-1">({{ matter.filing.detail }})</span>
+                </div>
+                <div v-if="matter.grant || matter.registration">
+                  <span class="font-medium">{{ $t('Registered:') }}</span>
+                  <span class="ml-2">{{ formatDate((matter.grant || matter.registration)?.event_date) }}</span>
+                </div>
+                <div v-if="matter.expire_date">
+                  <span class="font-medium">{{ $t('Next Renewal:') }}</span>
+                  <span class="ml-2 text-warning">{{ formatDate(matter.expire_date) }}</span>
+                </div>
+                <div v-if="matter.alt_ref">
+                  <span class="font-medium">{{ $t('Alt. Ref:') }}</span>
+                  <span class="ml-2">{{ matter.alt_ref }}</span>
+                </div>
+              </div>
+
+              <!-- Classes for TM -->
+              <div v-if="tmClasses.length > 0" class="mt-3 pt-3 border-t">
+                <span class="font-medium text-sm">{{ $t('Classes:') }}</span>
+                <div class="mt-1 flex flex-wrap gap-1">
+                  <Badge v-for="cls in tmClasses" :key="cls.id" variant="outline" class="text-xs">
+                    {{ cls.value }}
+                  </Badge>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -160,62 +185,75 @@
               </dl>
             </CardContent>
           </Card>
+
+          <!-- Attributes Below Actors -->
+          <Card class="mt-3">
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
+                <Button
+                    v-if="canWrite"
+                    variant="ghost"
+                    size="icon"
+                    class="h-5 w-5"
+                    @click="showClassifierManagerDialog = true"
+                >
+                  <Settings class="h-3 w-3" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent class="p-3">
+              <dl v-if="attributeClassifiers.length > 0" class="space-y-2 text-sm">
+                <div v-for="classifier in attributeClassifiers" :key="classifier.id" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">{{ translated(classifier.type_name) }}:</dt>
+                  <dd class="ml-2">
+                    <template v-if="classifier.linked_matter_id">
+                      <Link :href="`/matter/${classifier.linked_matter_id}`" class="text-primary hover:underline text-xs">
+                        {{ classifier.linked_matter?.uid || classifier.value }}
+                      </Link>
+                    </template>
+                    <template v-else>
+                      {{ classifier.value }}
+                    </template>
+                  </dd>
+                </div>
+              </dl>
+              <div v-else class="text-center py-4 text-sm text-muted-foreground">
+                {{ $t('No classifiers assigned to this matter') }}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <!-- Middle Column - Main Information (50%) -->
         <div class="lg:col-span-2 space-y-3">
 
-          <!-- Key Dates & Status -->
+          <!-- Events - Timeline with Actions -->
           <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Key Information') }}</h3>
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-sm">{{ $t('Recent Events') }}</h3>
+                <Button
+                    v-if="canWrite"
+                    variant="ghost"
+                    size="icon"
+                    class="h-5 w-5"
+                    @click="showEventManagerDialog = true"
+                >
+                  <Settings class="h-3 w-3" />
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent class="p-3">
-              <div class="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <span class="font-medium">{{ $t('Status:') }}</span>
-                  <div class="mt-1">
-                    <StatusBadge
-                      v-for="event in statusEvents.slice(0,2)"
-                      :key="event.id"
-                      :status="event.code"
-                      :date="event.event_date"
-                      class="mr-2 mb-1"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <span class="font-medium">{{ $t('Responsible:') }}</span>
-                  <span class="ml-2">{{ matter.responsible }}</span>
-                </div>
-                <div v-if="matter.filing">
-                  <span class="font-medium">{{ $t('Filed:') }}</span>
-                  <span class="ml-2">{{ formatDate(matter.filing.event_date) }}</span>
-                  <span v-if="matter.filing.detail" class="text-xs text-muted-foreground ml-1">({{ matter.filing.detail }})</span>
-                </div>
-                <div v-if="matter.grant || matter.registration">
-                  <span class="font-medium">{{ $t('Registered:') }}</span>
-                  <span class="ml-2">{{ formatDate((matter.grant || matter.registration)?.event_date) }}</span>
-                </div>
-                <div v-if="matter.expire_date">
-                  <span class="font-medium">{{ $t('Next Renewal:') }}</span>
-                  <span class="ml-2 text-warning">{{ formatDate(matter.expire_date) }}</span>
-                </div>
-                <div v-if="matter.alt_ref">
-                  <span class="font-medium">{{ $t('Alt. Ref:') }}</span>
-                  <span class="ml-2">{{ matter.alt_ref }}</span>
-                </div>
-              </div>
-
-              <!-- Classes for TM -->
-              <div v-if="tmClasses.length > 0" class="mt-3 pt-3 border-t">
-                <span class="font-medium text-sm">{{ $t('Classes:') }}</span>
-                <div class="mt-1 flex flex-wrap gap-1">
-                  <Badge v-for="cls in tmClasses" :key="cls.id" variant="outline" class="text-xs">
-                    {{ cls.value }}
-                  </Badge>
-                </div>
-              </div>
+            <CardContent class="p-3 max-h-64 overflow-y-auto">
+              <EventTimeline
+                  :events="recentEvents"
+                  :enable-inline-edit="false"
+                  :editable="canWrite"
+                  :show-tasks="false"
+                  @edit="handleEventEdit"
+                  @remove="handleEventRemove"
+                  @update="handleEventUpdate"
+              />
             </CardContent>
           </Card>
 
@@ -263,31 +301,18 @@
             </Card>
           </div>
 
-          <!-- Events - Timeline with Actions -->
+          <!-- Notes -->
           <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Recent Events') }}</h3>
-                <Button
-                  v-if="canWrite"
-                  variant="ghost"
-                  size="icon"
-                  class="h-5 w-5"
-                  @click="showEventManagerDialog = true"
-                >
-                  <Settings class="h-3 w-3" />
-                </Button>
-              </div>
+              <h3 class="font-semibold text-sm">{{ $t('Notes') }}</h3>
             </CardHeader>
-            <CardContent class="p-3 max-h-64 overflow-y-auto">
-              <EventTimeline
-                :events="recentEvents"
-                :enable-inline-edit="false"
-                :editable="canWrite"
-                :show-tasks="false"
-                @edit="handleEventEdit"
-                @remove="handleEventRemove"
-                @update="handleEventUpdate"
+            <CardContent class="p-3 overflow-y-auto">
+              <NotesTab
+                  :notes="matter.notes"
+                  :matter-id="matter.id"
+                  :can-edit="canWrite"
+                  :compact="true"
+                  @update="handleNotesUpdate"
               />
             </CardContent>
           </Card>
@@ -295,6 +320,37 @@
 
         <!-- Right Column - Titles & Image (25%) -->
         <div class="lg:col-span-1 space-y-3">
+
+
+          <!-- Actors -->
+          <Card class="h-fit">
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-sm">{{ $t('Actors') }}</h3>
+                <Button
+                    v-if="canWrite"
+                    variant="ghost"
+                    size="icon"
+                    class="h-5 w-5"
+                    @click="showActorManagerDialog = true"
+                >
+                  <Settings class="h-3 w-3" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent class="p-3">
+              <ActorList
+                  :actors="matter.actors"
+                  :matter-id="matter.id"
+                  :container-id="matter.container_id"
+                  :enable-inline-edit="false"
+                  :editable="canWrite"
+                  :compact="true"
+                  @update="handleActorUpdate"
+                  @edit="handleActorEdit"
+              />
+            </CardContent>
+          </Card>
 
           <!-- Titles -->
           <Card>
@@ -318,60 +374,6 @@
                 <div v-for="title in titleGroup" :key="title.id" class="text-sm mb-1">
                   {{ title.value }}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <!-- Notes -->
-          <Card>
-            <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Notes') }}</h3>
-            </CardHeader>
-            <CardContent class="p-3 overflow-y-auto">
-              <NotesTab
-                :notes="matter.notes"
-                :matter-id="matter.id"
-                :can-edit="canWrite"
-                :compact="true"
-                @update="handleNotesUpdate"
-              />
-            </CardContent>
-          </Card>
-
-          <!-- Attributes Below Actors -->
-          <Card class="mt-3">
-            <CardHeader class="py-2 px-3 bg-secondary">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
-                <Button
-                  v-if="canWrite"
-                  variant="ghost"
-                  size="icon"
-                  class="h-5 w-5"
-                  @click="showClassifierManagerDialog = true"
-                >
-                  <Settings class="h-3 w-3" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent class="p-3">
-              <dl v-if="attributeClassifiers.length > 0" class="space-y-2 text-sm">
-                <div v-for="classifier in attributeClassifiers" :key="classifier.id" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">{{ translated(classifier.type_name) }}:</dt>
-                  <dd class="ml-2">
-                    <template v-if="classifier.linked_matter_id">
-                      <Link :href="`/matter/${classifier.linked_matter_id}`" class="text-primary hover:underline text-xs">
-                        {{ classifier.linked_matter?.uid || classifier.value }}
-                      </Link>
-                    </template>
-                    <template v-else>
-                      {{ classifier.value }}
-                    </template>
-                  </dd>
-                </div>
-              </dl>
-              <div v-else class="text-center py-4 text-sm text-muted-foreground">
-                {{ $t('No classifiers assigned to this matter') }}
               </div>
             </CardContent>
           </Card>
