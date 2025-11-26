@@ -1569,5 +1569,8 @@
   "added event \"{name}\"": "hat Ereignis \"{name}\" hinzugefügt",
   "completed task \"{name}\"": "hat Aufgabe \"{name}\" abgeschlossen",
   "No pending tasks": "Keine offenen Aufgaben",
-  "No pending renewals": "Keine ausstehenden Verlängerungen"
+  "No pending renewals": "Keine ausstehenden Verlängerungen",
+  "Child matter created successfully": "Unterakte erfolgreich erstellt",
+  "Matter cloned successfully": "Akte erfolgreich geklont",
+  "Matter created successfully": "Akte erfolgreich erstellt"
 }

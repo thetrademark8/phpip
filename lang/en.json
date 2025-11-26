@@ -1668,5 +1668,8 @@
   "added event \"{name}\"": "added event \"{name}\"",
   "completed task \"{name}\"": "completed task \"{name}\"",
   "No pending tasks": "No pending tasks",
-  "No pending renewals": "No pending renewals"
+  "No pending renewals": "No pending renewals",
+  "Child matter created successfully": "Child matter created successfully",
+  "Matter cloned successfully": "Matter cloned successfully",
+  "Matter created successfully": "Matter created successfully"
 }

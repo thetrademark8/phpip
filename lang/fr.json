@@ -1666,5 +1666,8 @@
   "added event \"{name}\"": "a ajouté l'événement \"{name}\"",
   "completed task \"{name}\"": "a terminé la tâche \"{name}\"",
   "No pending tasks": "Aucune tâche en attente",
-  "No pending renewals": "Aucun renouvellement en attente"
+  "No pending renewals": "Aucun renouvellement en attente",
+  "Child matter created successfully": "Dossier enfant créé avec succès",
+  "Matter cloned successfully": "Dossier cloné avec succès",
+  "Matter created successfully": "Dossier créé avec succès"
 }

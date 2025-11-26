@@ -216,7 +216,7 @@ class MatterController extends Controller
 
         switch ($request->operation) {
             case 'child':
-                $parent_matter = Matter::with('priority', 'filing')->find($request->parent_id);
+                $parent_matter = Matter::with('priority', 'filing', 'classifiersNative', 'actorPivot')->find($request->parent_id);
                 // Copy priority claims from original matter
                 $new_matter->priority()->createMany($parent_matter->priority->toArray());
                 $new_matter->container_id = $parent_matter->container_id ?? $request->parent_id;
@@ -233,6 +233,30 @@ class MatterController extends Controller
                             'detail' => 'Child filing date',
                         ]
                     );
+                }
+                // Copy actors from parent matter (same logic as clone)
+                $actors = $parent_matter->actorPivot;
+                $new_matter_id = $new_matter->id;
+                $actors->each(function ($item) use ($new_matter_id) {
+                    $item->matter_id = $new_matter_id;
+                    $item->id = null;
+                });
+                ActorPivot::insertOrIgnore($actors->toArray());
+                // Copy classifiers (including image) from container or parent
+                if ($parent_matter->container_id) {
+                    // Copy shared actors from container
+                    $sharedActors = $parent_matter->container->actorPivot->where('shared', 1);
+                    $sharedActors->each(function ($item) use ($new_matter_id) {
+                        $item->matter_id = $new_matter_id;
+                        $item->id = null;
+                    });
+                    ActorPivot::insertOrIgnore($sharedActors->toArray());
+                    // Copy classifiers from container
+                    $new_matter->classifiersNative()
+                        ->createMany($parent_matter->container->classifiersNative->toArray());
+                } else {
+                    // Copy classifiers from parent matter
+                    $new_matter->classifiersNative()->createMany($parent_matter->classifiersNative->toArray());
                 }
                 $new_matter->save();
                 break;
@@ -271,7 +295,13 @@ class MatterController extends Controller
                 break;
         }
 
-        return to_route('matter.show', $new_matter);
+        $message = match ($request->operation) {
+            'child' => __('Child matter created successfully'),
+            'clone' => __('Matter cloned successfully'),
+            default => __('Matter created successfully'),
+        };
+
+        return to_route('matter.show', $new_matter)->with('success', $message);
     }
 
     public function storeN(Request $request)

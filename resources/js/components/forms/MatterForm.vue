@@ -276,9 +276,8 @@ const handleCategorySelect = async (category) => {
 // Handle form submission
 const handleSubmit = () => {
   const endpoint = props.operation === 'ops' ? '/matter/storeFamily' : '/matter'
-  
+
   form.post(endpoint, {
-    preserveState: true,
     preserveScroll: true,
     onSuccess: (page) => {
       if (props.onSuccess) {

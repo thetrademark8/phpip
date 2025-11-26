@@ -13,25 +13,26 @@
           </Link>
           <Badge variant="secondary">{{ translated(matter.category.category) }}</Badge>
           <span v-if="matter.country_info" class="text-sm">{{ matter.country_info.name }}</span>
+          <Button size="sm" variant="secondary" @click="showCreateChildDialog = true" title="New Child">
+            <FilePlus class="h-3 w-3" />
+            {{ $t('New Child') }}
+          </Button>
         </div>
 
         <div v-if="canWrite" class="flex items-center gap-2">
-          <Button size="sm" variant="secondary" @click="generateEmail" title="Generate email">
+          <Button size="icon" variant="secondary" @click="generateEmail" title="Generate email">
             <Mail class="h-3 w-3" />
           </Button>
-          <Button size="sm" variant="secondary" @click="showFileMergeDialog = true" title="Merge document">
+          <Button size="icon" variant="secondary" @click="showFileMergeDialog = true" title="Merge document">
             <FileText class="h-3 w-3" />
           </Button>
-          <Button size="sm" variant="secondary" @click="exportMatter" title="Export">
+          <Button size="icon" variant="secondary" @click="exportMatter" title="Export">
             <Download class="h-3 w-3" />
           </Button>
-          <Button size="sm" variant="secondary" @click="showEditDialog = true" title="Edit">
+          <Button size="icon" variant="secondary" @click="showEditDialog = true" title="Edit">
             <Pencil class="h-3 w-3" />
           </Button>
-          <Button size="sm" variant="secondary" @click="showCreateChildDialog = true" title="New Child">
-            <FilePlus class="h-3 w-3" />
-          </Button>
-          <Button v-if="isEligibleForInternational" size="sm" variant="secondary" @click="showInternationalDialog = true" :title="t('Create National Matters')">
+          <Button v-if="isEligibleForInternational" size="icon" variant="secondary" @click="showInternationalDialog = true" :title="t('Create National Matters')">
             <Globe class="h-3 w-3" />
           </Button>
         </div>
