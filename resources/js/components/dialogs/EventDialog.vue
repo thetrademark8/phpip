@@ -30,11 +30,11 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="detail" class="mb-2">{{ t('Detail') }}</Label>
+          <Label htmlFor="detail" class="mb-2">{{ detailLabel }}</Label>
           <Input
             id="detail"
             v-model="form.detail"
-            :placeholder="t('Event details...')"
+            :placeholder="detailPlaceholder"
           />
         </div>
         <div class="space-y-2">
@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { useTranslatedField } from '@/composables/useTranslation'
@@ -120,6 +120,20 @@ const form = useForm({
   detail: '',
   link: '',
   notes: ''
+})
+
+// Event codes that represent numbers (filing, registration, publication, grant, allowance)
+const numberEventCodes = ['FIL', 'REG', 'GRT', 'PUB', 'ALL']
+
+// Dynamic label for detail field based on event type
+const detailLabel = computed(() => {
+  return numberEventCodes.includes(form.code) ? t('Number') : t('Detail')
+})
+
+const detailPlaceholder = computed(() => {
+  return numberEventCodes.includes(form.code)
+    ? t('Enter number (e.g., 1234567)...')
+    : t('Event details...')
 })
 
 // Watch for event changes to populate form

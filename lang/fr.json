@@ -1669,5 +1669,6 @@
   "No pending renewals": "Aucun renouvellement en attente",
   "Child matter created successfully": "Dossier enfant créé avec succès",
   "Matter cloned successfully": "Dossier cloné avec succès",
-  "Matter created successfully": "Dossier créé avec succès"
+  "Matter created successfully": "Dossier créé avec succès",
+  "Enter number (e.g., 1234567)...": "Entrez le numéro (ex: 1234567)..."
 }

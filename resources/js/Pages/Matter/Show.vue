@@ -89,6 +89,9 @@
                 <div v-if="matter.grant || matter.registration">
                   <span class="font-medium">{{ $t('Registered:') }}</span>
                   <span class="ml-2">{{ formatDate((matter.grant || matter.registration)?.event_date) }}</span>
+                  <span v-if="(matter.grant || matter.registration)?.detail" class="text-xs text-muted-foreground ml-1">
+                    ({{ (matter.grant || matter.registration)?.detail }})
+                  </span>
                 </div>
                 <div v-if="matter.expire_date">
                   <span class="font-medium">{{ $t('Next Renewal:') }}</span>

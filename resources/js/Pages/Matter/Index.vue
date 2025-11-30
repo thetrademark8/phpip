@@ -293,11 +293,11 @@ const tableColumns = [
     meta: { headerClass: 'w-[100px]' },
   },
   {
-    accessorKey: 'registration_number',
+    accessorKey: 'GrtNo',
     header: t('matter.columns.registrationNumber'),
-    cell: ({ row }) => row.original.registration_number && h('div', { class: 'flex items-center gap-1' }, [
+    cell: ({ row }) => row.original.GrtNo && h('div', { class: 'flex items-center gap-1' }, [
       h(FileText, { class: 'h-4 w-4 text-muted-foreground' }),
-      h('span', row.original.registration_number)
+      h('span', row.original.GrtNo)
     ]),
   },
   {

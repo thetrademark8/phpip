@@ -49,13 +49,13 @@
 
               <div class="grid grid-cols-2 gap-4">
                 <FormField
-                  :label="t('Detail')"
+                  :label="detailLabel"
                   name="detail"
                   :error="addForm.errors.detail"
                 >
                   <Input
                     v-model="addForm.detail"
-                    :placeholder="t('Event detail (optional)')"
+                    :placeholder="detailPlaceholder"
                   />
                 </FormField>
 
@@ -171,7 +171,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { format } from 'date-fns'
 import { useI18n } from 'vue-i18n'
@@ -239,6 +239,20 @@ const addForm = useForm({
   detail: '',
   link: '',
   notes: ''
+})
+
+// Event codes that represent numbers (filing, registration, publication, grant, allowance)
+const numberEventCodes = ['FIL', 'REG', 'GRT', 'PUB', 'ALL']
+
+// Dynamic label for detail field based on event type
+const detailLabel = computed(() => {
+  return numberEventCodes.includes(addForm.code) ? t('Number') : t('Detail')
+})
+
+const detailPlaceholder = computed(() => {
+  return numberEventCodes.includes(addForm.code)
+    ? t('Enter number (e.g., 1234567)...')
+    : t('Event detail (optional)')
 })
 
 // Computed

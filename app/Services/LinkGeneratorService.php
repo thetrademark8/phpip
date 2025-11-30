@@ -314,16 +314,19 @@ class LinkGeneratorService
     }
 
     /**
-     * Clean number format (remove spaces, special characters)
+     * Clean number format (remove spaces, special characters, country prefixes)
      */
     private function cleanNumber(string $number): string
     {
+        // Remove country prefixes (FR, DE, etc.) at the beginning
+        $cleaned = preg_replace('/^[A-Z]{2}/', '', $number);
+
         // Remove common separators and spaces
-        $cleaned = preg_replace('/[\s\-\.\/]/', '', $number);
-        
+        $cleaned = preg_replace('/[\s\-\.\/]/', '', $cleaned);
+
         // Remove non-alphanumeric characters but keep basic ones
         $cleaned = preg_replace('/[^\w\-]/', '', $cleaned);
-        
+
         return trim($cleaned);
     }
 
@@ -376,7 +379,7 @@ class LinkGeneratorService
             'USPTO' => '/^\d{7,10}$/', // 7-10 digits (more flexible)
             'EUIPO' => '/^\d{6,9}$/', // 6-9 digits
             'UKIPO' => '/^(UK)?\d{7,10}$/', // Optional UK prefix + 7-10 digits
-            'INPI' => '/^\d{6,8}$/', // 6-8 digits (more flexible French format)
+            'INPI' => '/^(FR)?\d{5,9}$/', // Accept optional FR prefix + 5-9 digits
             'DPMA' => '/^(DE)?\d{6,10}$/', // Optional DE prefix + 6-10 digits
             'JPO' => '/^\d+$/', // Numeric
             'EPO' => '/^\d+$/', // Numeric

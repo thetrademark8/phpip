@@ -1671,5 +1671,6 @@
   "No pending renewals": "No pending renewals",
   "Child matter created successfully": "Child matter created successfully",
   "Matter cloned successfully": "Matter cloned successfully",
-  "Matter created successfully": "Matter created successfully"
+  "Matter created successfully": "Matter created successfully",
+  "Enter number (e.g., 1234567)...": "Enter number (e.g., 1234567)..."
 }
