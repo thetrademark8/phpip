@@ -344,6 +344,9 @@ class MatterRepository implements MatterRepositoryInterface
         foreach ($filters as $key => $value) {
             if (empty($value)) continue;
 
+            // Convert value to lowercase for case-insensitive search
+            $lowerValue = mb_strtolower($value);
+
             match ($key) {
                 'Ref' => $query->where(function ($q) use ($value) {
                     $q->whereLike('matter.uid', "$value%")
@@ -353,17 +356,17 @@ class MatterRepository implements MatterRepositoryInterface
                 'country' => $query->whereLike('matter.country', "$value%"),
                 'Status' => $query->whereJsonLike('event_name.name', $value),
                 'Status_date' => $query->whereLike('status.event_date', "$value%"),
-                'Client' => $query->whereLike(DB::raw('IFNULL(cli.name, clic.name)'), "$value%"),
-                'ClRef' => $query->whereLike(DB::raw('IFNULL(clilnk.actor_ref, cliclnk.actor_ref)'), "$value%"),
-                'Applicant' => $query->whereLike('app.name', "$value%"),
-                'Agent' => $query->whereLike(DB::raw('IFNULL(agt.name, agtc.name)'), "$value%"),
-                'AgtRef' => $query->whereLike(DB::raw('IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)'), "$value%"),
-                'Title' => $query->whereLike(DB::Raw('concat_ws(" ", tit1.value, tit2.value, tit3.value)'), "%$value%"),
-                'Inventor1' => $query->whereLike('inv.name', "$value%"),
+                'Client' => $query->whereRaw('LOWER(IFNULL(cli.name, clic.name)) LIKE ?', ["$lowerValue%"]),
+                'ClRef' => $query->whereRaw('LOWER(IFNULL(clilnk.actor_ref, cliclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
+                'Applicant' => $query->whereRaw('LOWER(app.name) LIKE ?', ["$lowerValue%"]),
+                'Agent' => $query->whereRaw('LOWER(IFNULL(agt.name, agtc.name)) LIKE ?', ["$lowerValue%"]),
+                'AgtRef' => $query->whereRaw('LOWER(IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
+                'Title' => $query->whereRaw('LOWER(concat_ws(" ", tit1.value, tit2.value, tit3.value)) LIKE ?', ["%$lowerValue%"]),
+                'Inventor1' => $query->whereRaw('LOWER(inv.name) LIKE ?', ["$lowerValue%"]),
                 'Filed' => $query->whereLike('fil.event_date', "$value%"),
-                'FilNo' => $query->whereLike('fil.detail', "$value%"),
+                'FilNo' => $query->whereRaw('LOWER(fil.detail) LIKE ?', ["$lowerValue%"]),
                 'Published' => $query->whereLike('pub.event_date', "$value%"),
-                'PubNo' => $query->whereLike('pub.detail', "$value%"),
+                'PubNo' => $query->whereRaw('LOWER(pub.detail) LIKE ?', ["$lowerValue%"]),
                 'Granted' => $query->where(function ($q) use ($value) {
                     $q->whereLike('grt.event_date', "$value%")
                         ->orWhereLike('reg.event_date', "$value%");
@@ -373,13 +376,13 @@ class MatterRepository implements MatterRepositoryInterface
                         ->orWhereLike('reg.event_date', "$value%")
                         ->orWhereLike('regdp.event_date', "$value%");
                 }),
-                'GrtNo' => $query->where(function ($q) use ($value) {
-                    $q->whereLike('grt.detail', "$value%")
-                        ->orWhereLike('reg.detail', "$value%");
+                'GrtNo' => $query->where(function ($q) use ($lowerValue) {
+                    $q->whereRaw('LOWER(grt.detail) LIKE ?', ["$lowerValue%"])
+                        ->orWhereRaw('LOWER(reg.detail) LIKE ?', ["$lowerValue%"]);
                 }),
-                'responsible' => $query->where(function ($q) use ($value) {
-                    $q->where('matter.responsible', $value)
-                        ->orWhere('del.login', $value);
+                'responsible' => $query->where(function ($q) use ($lowerValue) {
+                    $q->whereRaw('LOWER(matter.responsible) LIKE ?', ["$lowerValue%"])
+                        ->orWhereRaw('LOWER(del.login) LIKE ?', ["$lowerValue%"]);
                 }),
                 'Ctnr' => $value ? $query->whereNull('matter.container_id') : null,
                 default => null, // Ignore unknown filter keys to prevent SQL errors
