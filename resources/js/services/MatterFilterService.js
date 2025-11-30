@@ -39,21 +39,28 @@ export class MatterFilterService {
    */
   static buildQueryParams(filters, options = {}) {
     const params = {}
-    
+
     // Add filter parameters
     Object.entries(filters).forEach(([key, value]) => {
       if (this.shouldIncludeParam(key, value)) {
-        params[key] = this.formatParamValue(key, value)
+        // Handle date range objects specially
+        if (typeof value === 'object' && value !== null && !Array.isArray(value) && (value.from || value.to)) {
+          // Send as nested object for Laravel validation
+          if (value.from) params[`${key}[from]`] = value.from
+          if (value.to) params[`${key}[to]`] = value.to
+        } else {
+          params[key] = this.formatParamValue(key, value)
+        }
       }
     })
-    
+
     // Add options (sortkey, sortdir, etc.)
     Object.entries(options).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         params[key] = value
       }
     })
-    
+
     return params
   }
 
@@ -65,17 +72,22 @@ export class MatterFilterService {
     if (value === '' || value === null || value === undefined) {
       return false
     }
-    
+
+    // For date range objects, check if at least one date is set
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      return !!(value.from || value.to)
+    }
+
     // For boolean fields, only include if true
     if (['Ctnr', 'include_dead'].includes(key)) {
       return value === true || value === 1 || value === '1'
     }
-    
+
     // Skip false values for other fields
     if (value === false) {
       return false
     }
-    
+
     return true
   }
 
@@ -161,13 +173,29 @@ export class MatterFilterService {
     if (['Ctnr', 'include_dead'].includes(key)) {
       return (value === true || value === 1 || value === '1') ? 'Yes' : 'No'
     }
-    
+
+    // For date range objects, display as "from → to"
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      const from = value.from ? this.formatDateDisplay(value.from) : '...'
+      const to = value.to ? this.formatDateDisplay(value.to) : '...'
+      return `${from} → ${to}`
+    }
+
     // For other boolean-like values
     if (typeof value === 'boolean') {
       return value ? 'Yes' : 'No'
     }
-    
+
     return String(value)
+  }
+
+  /**
+   * Format date for display (YYYY-MM-DD to DD/MM/YYYY)
+   */
+  static formatDateDisplay(dateString) {
+    if (!dateString) return ''
+    const [year, month, day] = dateString.split('-')
+    return `${day}/${month}/${year}`
   }
 
   /**

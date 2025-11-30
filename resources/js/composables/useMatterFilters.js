@@ -39,10 +39,15 @@ export function useMatterFilters(initialFilters = {}) {
     return filters.value
   }
 
+  // Date filter keys
+  const dateFilterKeys = ['Filed', 'Published', 'registration_date']
+
   // Remove a specific filter
   const removeFilter = (key) => {
     if (FILTER_FIELDS.boolean.includes(key)) {
       filters.value[key] = false
+    } else if (dateFilterKeys.includes(key)) {
+      filters.value[key] = { from: null, to: null }
     } else {
       filters.value[key] = ''
     }

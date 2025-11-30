@@ -35,10 +35,16 @@ class MatterFilterRequest extends FormRequest
             'responsible' => 'nullable|string|max:50',
             'country' => 'nullable|string|size:2',
 
-            // Date filters
-            'Filed' => 'nullable|date',
-            'Published' => 'nullable|date',
-            'registration_date' => 'nullable|date',
+            // Date range filters (support both single date and { from, to } object)
+            'Filed' => 'nullable|array',
+            'Filed.from' => 'nullable|date',
+            'Filed.to' => 'nullable|date',
+            'Published' => 'nullable|array',
+            'Published.from' => 'nullable|date',
+            'Published.to' => 'nullable|date',
+            'registration_date' => 'nullable|array',
+            'registration_date.from' => 'nullable|date',
+            'registration_date.to' => 'nullable|date',
 
             // Boolean filters
             'Ctnr' => 'nullable|boolean',

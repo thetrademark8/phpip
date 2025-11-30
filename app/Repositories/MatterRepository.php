@@ -337,6 +337,76 @@ class MatterRepository implements MatterRepositoryInterface
     }
 
     /**
+     * Apply a date range filter to the query
+     */
+    protected function applyDateFilter(Builder $query, string $column, $value): void
+    {
+        if (empty($value)) {
+            return;
+        }
+
+        // Format intervalle : { from: "2025-01-01", to: "2025-12-31" }
+        if (is_array($value)) {
+            if (!empty($value['from'])) {
+                $query->where($column, '>=', $value['from']);
+            }
+            if (!empty($value['to'])) {
+                $query->where($column, '<=', $value['to']);
+            }
+            return;
+        }
+
+        // Format legacy : date simple (rétrocompatibilité)
+        $query->whereDate($column, $value);
+    }
+
+    /**
+     * Apply registration date filter (searches across grt, reg, and regdp columns)
+     */
+    protected function applyRegistrationDateFilter(Builder $query, $value): void
+    {
+        if (empty($value)) {
+            return;
+        }
+
+        // Format intervalle : { from: "2025-01-01", to: "2025-12-31" }
+        if (is_array($value)) {
+            $query->where(function ($q) use ($value) {
+                $q->where(function ($sub) use ($value) {
+                    if (!empty($value['from'])) {
+                        $sub->where('grt.event_date', '>=', $value['from']);
+                    }
+                    if (!empty($value['to'])) {
+                        $sub->where('grt.event_date', '<=', $value['to']);
+                    }
+                })->orWhere(function ($sub) use ($value) {
+                    if (!empty($value['from'])) {
+                        $sub->where('reg.event_date', '>=', $value['from']);
+                    }
+                    if (!empty($value['to'])) {
+                        $sub->where('reg.event_date', '<=', $value['to']);
+                    }
+                })->orWhere(function ($sub) use ($value) {
+                    if (!empty($value['from'])) {
+                        $sub->where('regdp.event_date', '>=', $value['from']);
+                    }
+                    if (!empty($value['to'])) {
+                        $sub->where('regdp.event_date', '<=', $value['to']);
+                    }
+                });
+            });
+            return;
+        }
+
+        // Format legacy : date simple (rétrocompatibilité)
+        $query->where(function ($q) use ($value) {
+            $q->whereDate('grt.event_date', $value)
+                ->orWhereDate('reg.event_date', $value)
+                ->orWhereDate('regdp.event_date', $value);
+        });
+    }
+
+    /**
      * Apply filters to the query
      */
     protected function applyFilters(Builder $query, array $filters): void
@@ -344,8 +414,9 @@ class MatterRepository implements MatterRepositoryInterface
         foreach ($filters as $key => $value) {
             if (empty($value)) continue;
 
-            // Convert value to lowercase for case-insensitive search
-            $lowerValue = mb_strtolower($value);
+            // Skip array values for lowercase conversion (date ranges)
+            // Convert value to lowercase for case-insensitive search only for strings
+            $lowerValue = is_string($value) ? mb_strtolower($value) : '';
 
             match ($key) {
                 'Ref' => $query->where(function ($q) use ($value) {
@@ -363,19 +434,15 @@ class MatterRepository implements MatterRepositoryInterface
                 'AgtRef' => $query->whereRaw('LOWER(IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
                 'Title' => $query->whereRaw('LOWER(concat_ws(" ", tit1.value, tit2.value, tit3.value)) LIKE ?', ["%$lowerValue%"]),
                 'Inventor1' => $query->whereRaw('LOWER(inv.name) LIKE ?', ["$lowerValue%"]),
-                'Filed' => $query->whereLike('fil.event_date', "$value%"),
+                'Filed' => $this->applyDateFilter($query, 'fil.event_date', $value),
                 'FilNo' => $query->whereRaw('LOWER(fil.detail) LIKE ?', ["$lowerValue%"]),
-                'Published' => $query->whereLike('pub.event_date', "$value%"),
+                'Published' => $this->applyDateFilter($query, 'pub.event_date', $value),
                 'PubNo' => $query->whereRaw('LOWER(pub.detail) LIKE ?', ["$lowerValue%"]),
                 'Granted' => $query->where(function ($q) use ($value) {
                     $q->whereLike('grt.event_date', "$value%")
                         ->orWhereLike('reg.event_date', "$value%");
                 }),
-                'registration_date' => $query->where(function ($q) use ($value) {
-                    $q->whereLike('grt.event_date', "$value%")
-                        ->orWhereLike('reg.event_date', "$value%")
-                        ->orWhereLike('regdp.event_date', "$value%");
-                }),
+                'registration_date' => $this->applyRegistrationDateFilter($query, $value),
                 'GrtNo' => $query->where(function ($q) use ($lowerValue) {
                     $q->whereRaw('LOWER(grt.detail) LIKE ?', ["$lowerValue%"])
                         ->orWhereRaw('LOWER(reg.detail) LIKE ?', ["$lowerValue%"]);

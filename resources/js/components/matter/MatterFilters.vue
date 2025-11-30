@@ -175,35 +175,29 @@
       </div>
 
       <!-- Filing Date -->
-      <div class="space-y-2">
+      <div class="space-y-2 relative">
         <Label htmlFor="filed-filter">{{ t('matter.filters.labels.filingDate') }}</Label>
-        <DatePicker
-          id="filed-filter"
+        <DateRangeFilter
           :model-value="props.filters.Filed"
           @update:model-value="updateFilter('Filed', $event)"
-          :placeholder="t('matter.filters.placeholders.selectDate')"
         />
       </div>
 
       <!-- Publication Date -->
       <div class="space-y-2">
         <Label htmlFor="pub-filter">{{ t('matter.filters.labels.publicationDate') }}</Label>
-        <DatePicker
-          id="pub-filter"
+        <DateRangeFilter
           :model-value="props.filters.Published"
           @update:model-value="updateFilter('Published', $event)"
-          :placeholder="t('matter.filters.placeholders.selectDate')"
         />
       </div>
 
       <!-- Registration Date -->
       <div class="space-y-2">
         <Label htmlFor="registration-date-filter">{{ t('matter.filters.labels.registrationDate') }}</Label>
-        <DatePicker
-          id="registration-date-filter"
+        <DateRangeFilter
           :model-value="props.filters.registration_date"
           @update:model-value="updateFilter('registration_date', $event)"
-          :placeholder="t('matter.filters.placeholders.selectDate')"
         />
       </div>
 
@@ -241,7 +235,7 @@ import { useI18n } from 'vue-i18n'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
+import { DateRangeFilter } from '@/components/ui/date-picker'
 import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
