@@ -19,18 +19,19 @@ class MatterExportService
         // Define the column captions for the CSV file - matching the table interface columns
         // Same order as displayed in Matter/Index.vue
         $captions = [
-            __('matter.columns.reference'),        // Ref
-            __('matter.columns.category'),         // Cat
-            __('matter.columns.country'),          // Country (full name)
-            __('matter.columns.title'),            // Title
-            __('matter.columns.classes'),          // Classes
-            __('matter.columns.client'),           // Client
-            __('matter.columns.owner'),            // Owner
-            __('matter.columns.status'),           // Status
-            __('matter.columns.filedDate'),        // Filed Date
-            __('matter.columns.filedNumber'),      // Filed Number
-            __('matter.columns.registrationDate'), // Registration Date
-            __('matter.columns.renewalDue'),       // Renewal Due
+            __('matter.columns.reference'),           // Ref
+            __('matter.columns.category'),            // Cat
+            __('matter.columns.country'),             // Country (full name)
+            __('matter.columns.title'),               // Title
+            __('matter.columns.classes'),             // Classes
+            __('matter.columns.client'),              // Client
+            __('matter.columns.owner'),               // Owner
+            __('matter.columns.status'),              // Status
+            __('matter.columns.filedDate'),           // Filed Date
+            __('matter.columns.filedNumber'),         // Filed Number
+            __('matter.columns.registrationDate'),    // Registration Date
+            __('matter.columns.registrationNumber'),  // Registration Number
+            __('matter.columns.renewalDue'),          // Renewal Due
         ];
 
         // Open a memory stream for the CSV file.
@@ -60,6 +61,7 @@ class MatterExportService
                 $matter['Filed'] ?? '',                  // Filed Date
                 $matter['FilNo'] ?? '',                  // Filed Number
                 $registrationDate,                       // Registration Date
+                $matter['GrtNo'] ?? '',                  // Registration Number
                 $matter['renewal_due'] ?? '',            // Renewal Due
             ];
             // Remove utf8_decode to preserve UTF-8 encoding (BOM handles encoding)
