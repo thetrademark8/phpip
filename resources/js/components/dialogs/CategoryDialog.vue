@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-2xl">
+    <DialogScrollContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>
           {{ operation === 'create' ? t('categories.dialog.createTitle') : (category?.code || t('categories.dialog.viewTitle')) }}
@@ -122,7 +122,7 @@
           </div>
         </div>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 
   <!-- Delete Confirmation Dialog -->
@@ -144,7 +144,7 @@ import { Edit, Trash2, Loader2 } from 'lucide-vue-next'
 import axios from 'axios'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

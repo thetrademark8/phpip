@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-3xl">
+    <DialogScrollContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>{{ $t('Manage Titles') }}</DialogTitle>
         <DialogDescription>
@@ -134,7 +134,7 @@
           {{ $t('Close') }}
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -145,7 +145,7 @@ import { Plus, Trash2, Pencil, Check, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

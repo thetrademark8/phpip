@@ -1,6 +1,6 @@
 <template>
   <Dialog v-model:open="dialogOpen" :max-width="maxWidth">
-    <DialogContent>
+    <DialogScrollContent>
       <DialogHeader>
         <DialogTitle>
           <span v-if="operation === 'create'">{{ t('defaultActors.dialog.createTitle') }}</span>
@@ -155,9 +155,9 @@
           </DialogFooter>
         </form>
       </div>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
-  
+
   <!-- Delete Confirmation Dialog -->
   <ConfirmDialog
     v-model:open="deleteDialogOpen"
@@ -176,7 +176,7 @@ import { useI18n } from 'vue-i18n'
 import { Edit, Trash2 } from 'lucide-vue-next'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

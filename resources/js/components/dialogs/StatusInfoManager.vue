@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-2xl">
+    <DialogScrollContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>{{ $t('Manage Status Information') }}</DialogTitle>
         <DialogDescription>
@@ -123,7 +123,7 @@
           </Button>
         </DialogFooter>
       </form>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -133,7 +133,7 @@ import { useForm } from '@inertiajs/vue3'
 import { Loader2 } from 'lucide-vue-next'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-2xl">
+    <DialogScrollContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>
           {{ dialogTitle }}
@@ -107,7 +107,7 @@
           </div>
         </div>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 
   <!-- Delete Confirmation Dialog -->
@@ -127,7 +127,7 @@ import { ref, computed, watch } from 'vue'
 import { useForm, router, usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { useTranslatedField } from '@/composables/useTranslation'
-import { 
+import {
   Loader2,
   Edit,
   Trash2
@@ -138,7 +138,7 @@ import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import FormField from '@/components/ui/form/FormField.vue'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

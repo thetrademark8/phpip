@@ -1,13 +1,13 @@
 <template>
   <Dialog v-model:open="isOpen">
-    <DialogContent class="sm:max-w-2xl">
+    <DialogScrollContent class="sm:max-w-2xl">
       <DialogHeader>
         <DialogTitle>{{ $t('New Child Matter') }}</DialogTitle>
         <DialogDescription>
           {{ $t('Create a child matter from') }} {{ parentMatter.uid }}
         </DialogDescription>
       </DialogHeader>
-      
+
       <MatterForm
         operation="child"
         :parent-matter="parentMatter"
@@ -15,7 +15,7 @@
         :on-success="handleSuccess"
         :on-cancel="() => isOpen = false"
       />
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -25,7 +25,7 @@ import { router } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
