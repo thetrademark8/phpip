@@ -43,6 +43,31 @@
 
         <!-- Left Column - Actors (25%) -->
         <div class="lg:col-span-1 space-y-3">
+          <!-- Titles -->
+          <Card>
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-sm">{{ $t('Titles') }}</h3>
+                <Button
+                    v-if="canWrite"
+                    variant="ghost"
+                    size="icon"
+                    class="h-5 w-5"
+                    @click="showTitleManagerDialog = true"
+                >
+                  <Settings class="h-3 w-3" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent class="p-3">
+              <div v-for="(titleGroup, typeName) in titles" :key="typeName" class="mb-2">
+                <h4 class="font-medium text-xs text-muted-foreground mb-1">{{ typeName }}</h4>
+                <div v-for="title in titleGroup" :key="title.id" class="text-sm mb-1">
+                  {{ title.value }}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <!-- Image -->
           <Card v-if="imageClassifier">
@@ -353,32 +378,6 @@
                   @update="handleActorUpdate"
                   @edit="handleActorEdit"
               />
-            </CardContent>
-          </Card>
-
-          <!-- Titles -->
-          <Card>
-            <CardHeader class="py-2 px-3 bg-secondary">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Titles') }}</h3>
-                <Button
-                  v-if="canWrite"
-                  variant="ghost"
-                  size="icon"
-                  class="h-5 w-5"
-                  @click="showTitleManagerDialog = true"
-                >
-                  <Settings class="h-3 w-3" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent class="p-3">
-              <div v-for="(titleGroup, typeName) in titles" :key="typeName" class="mb-2">
-                <h4 class="font-medium text-xs text-muted-foreground mb-1">{{ typeName }}</h4>
-                <div v-for="title in titleGroup" :key="title.id" class="text-sm mb-1">
-                  {{ title.value }}
-                </div>
-              </div>
             </CardContent>
           </Card>
 
