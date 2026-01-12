@@ -1,0 +1,42 @@
+code;name;category;country;is_task;status_event;default_responsible;use_matter_resp;unique;killer;notes;creator;updater;created_at;updated_at
+ABA;Abandoned;NULL;NULL;0;1;NULL;0;1;1;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+APL;Appeal;NULL;NULL;0;1;NULL;1;0;0;Appeal or other remedy filed;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+CAN;Cancelled;TM;NULL;0;1;NULL;0;0;1;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+CLO;Closed;LTG;NULL;0;1;NULL;0;0;1;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+COM;Communication;NULL;NULL;0;0;NULL;0;0;0;Communication regarding administrative or formal matters (missing parts, irregularities...);system;NULL;08/03/2024 11:26;08/03/2024 11:26
+CRE;Created;NULL;NULL;0;0;NULL;0;1;0;Creation date of matter - for attaching tasks necessary before anything else;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+DAPL;Decision on Appeal;NULL;NULL;0;0;NULL;0;0;0;State outcome in detail field;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+DEX;Deadline Extended;NULL;NULL;0;0;NULL;0;0;0;Deadline extension requested;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+DW;Deemed withrawn;NULL;NULL;0;1;NULL;0;0;0;Decision needing a reply, such as further processing;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+EXA;Examiner Action;NULL;NULL;0;0;NULL;0;0;0;AKA Office Action, i.e. anything related to substantive examination;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+EXP;Expiry;NULL;NULL;0;1;NULL;0;1;1;Do not use nor change - present for internal functionality;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+FAP;File Notice of Appeal;NULL;NULL;1;0;NULL;1;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+FBY;File by;NULL;NULL;1;0;NULL;0;1;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+FIL;Filed;NULL;NULL;0;1;NULL;0;1;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+FOP;File Opposition;OP;EP;1;0;NULL;1;1;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+INV;Invalidated;TM;US;0;1;NULL;0;0;1;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+LAP;Lapsed;NULL;NULL;0;1;NULL;0;1;1;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+OPP;Opposition;NULL;EP;0;1;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+PAY;Pay;NULL;NULL;1;0;NULL;0;0;0;Use for any fees to be paid;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+PDES;Post designation;TM;WO;0;1;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+PR;Publication of Reg.;TM;NULL;0;1;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+PREP;Prepare;NULL;NULL;1;0;NULL;1;0;0;Any further action to be done by the responsible (comments, pre-handling, ...);system;NULL;08/03/2024 11:26;08/03/2024 11:26
+PRI;Priority Claim;NULL;NULL;0;1;NULL;0;0;0;Use as link to the priority matter;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+PRID;Priority Deadline;NULL;NULL;1;1;NULL;0;1;0;NULL;system;claire.yam;08/03/2024 11:26;27/03/2024 14:26
+PROD;Produce;NULL;NULL;1;0;NULL;0;0;0;Any further documents to be filed (inventor designation, priority document, missing parts...);system;NULL;08/03/2024 11:26;08/03/2024 11:26
+PUB;Published;NULL;NULL;0;1;NULL;0;0;0;For EP, this means publication WITH the search report (A1 publ.);system;NULL;08/03/2024 11:26;08/03/2024 11:26
+REC;Received;NULL;NULL;0;1;NULL;0;1;0;Date the case was received from the client;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+REF;Refused;NULL;NULL;0;1;NULL;0;0;0;This is the final decision, that can only be appealed - do not mistake with an exam report;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+REG;Registration;TM;NULL;0;1;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+REGDM;Registration DP;DP;NULL;0;1;NULL;0;0;0;NULL;claire.yam;NULL;02/04/2024 15:06;02/04/2024 15:06
+REM;Reminder;NULL;NULL;1;0;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+REN;Renewal;NULL;NULL;1;0;NULL;0;0;0;AKA Annuity;system;claire.yam;08/03/2024 11:26;27/03/2024 10:11
+REP;Respond;NULL;NULL;1;0;NULL;1;0;0;Use for any response;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+REQ;Request Examination;NULL;NULL;1;0;NULL;0;1;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+SEND;Send;NULL;NULL;1;0;NULL;1;0;0;NULL;claire.yam;claire.yam;27/03/2024 10:10;27/03/2024 10:24
+SOL;Sold;NULL;NULL;0;1;NULL;0;0;1;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+SOP;Summons to Oral Proc.;NULL;NULL;0;0;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+SR;Search Report;NULL;NULL;0;0;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+SUS;Suspended;NULL;NULL;0;1;NULL;0;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+TRF;Transferred;NULL;NULL;0;1;NULL;0;1;1;Case no longer followed;system;NULL;08/03/2024 11:26;08/03/2024 11:26
+WAT;Watch;NULL;NULL;1;0;NULL;1;0;0;NULL;system;NULL;08/03/2024 11:26;08/03/2024 11:26

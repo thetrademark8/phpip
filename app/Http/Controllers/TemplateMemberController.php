@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TemplateMember;
+use App\Services\Email\PlaceholderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -126,5 +127,13 @@ class TemplateMemberController extends Controller
         $templateMember->delete();
 
         return response()->json(['success' => 'Template deleted']);
+    }
+
+    /**
+     * Get available placeholders for template editing.
+     */
+    public function placeholders(PlaceholderService $placeholderService)
+    {
+        return response()->json($placeholderService->getAvailablePlaceholders());
     }
 }

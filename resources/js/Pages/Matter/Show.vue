@@ -615,7 +615,7 @@ function handleNotesUpdate() {
 }
 
 function generateEmail() {
-  alert(t('Email generation coming soon!'))
+  router.visit(`/matter/${props.matter.id}/email/compose`)
 }
 
 function exportMatter() {

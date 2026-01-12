@@ -33,6 +33,10 @@ class ProductionSeeder extends Seeder
         // Admin user
         $this->call(Production\AdminUserSeeder::class);
 
+        // Import production data from CSV files (idempotent - skips existing records)
+        $this->call(Production\EventNameImportSeeder::class);
+        $this->call(Production\TaskRulesImportSeeder::class);
+
         $this->command->info('Production seeding completed successfully!');
     }
 }

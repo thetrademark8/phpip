@@ -14,8 +14,11 @@
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\ClassifierController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\EmailSettingController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MatterAttachmentController;
 use App\Http\Controllers\MatterController;
+use App\Http\Controllers\MatterEmailController;
 use App\Http\Controllers\MatterSearchController;
 use App\Http\Controllers\RenewalController;
 use App\Models\Matter;
@@ -58,6 +61,28 @@ Route::middleware(['auth'])->group(function () {
         Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store'])->name('matter.actors.store');
         Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store'])->name('matter.events.store');
         Route::post('matter/{matter}/classifiers', [App\Http\Controllers\ClassifierController::class, 'store'])->name('matter.classifiers.store');
+    });
+
+    // Matter Email routes
+    Route::prefix('matter/{matter}')->name('matter.')->group(function () {
+        Route::get('email/compose', [MatterEmailController::class, 'compose'])->name('email.compose');
+        Route::post('email/preview', [MatterEmailController::class, 'preview'])->name('email.preview');
+        Route::post('email/send', [MatterEmailController::class, 'send'])->name('email.send');
+        Route::get('email/history', [MatterEmailController::class, 'history'])->name('email.history');
+        Route::get('email/{emailLog}', [MatterEmailController::class, 'showEmail'])->name('email.show');
+
+        // Matter Attachments
+        Route::get('attachments', [MatterAttachmentController::class, 'index'])->name('attachments.index');
+        Route::post('attachments', [MatterAttachmentController::class, 'store'])->name('attachments.store');
+        Route::get('attachments/{attachment}/download', [MatterAttachmentController::class, 'download'])->name('attachments.download');
+        Route::get('attachments/{attachment}/url', [MatterAttachmentController::class, 'temporaryUrl'])->name('attachments.url');
+        Route::delete('attachments/{attachment}', [MatterAttachmentController::class, 'destroy'])->name('attachments.destroy');
+    });
+
+    // Email Settings (Admin only)
+    Route::middleware('can:admin')->prefix('settings')->name('settings.')->group(function () {
+        Route::get('email', [EmailSettingController::class, 'index'])->name('email');
+        Route::put('email', [EmailSettingController::class, 'update'])->name('email.update');
     });
 
     // Autocomplete routes - some are public for filtering, others require readwrite
@@ -149,6 +174,7 @@ Route::middleware(['auth'])->group(function () {
         Route::apiResource('classifier', App\Http\Controllers\ClassifierController::class);
         Route::resource('renewal', RenewalController::class);
         Route::resource('fee', App\Http\Controllers\FeeController::class);
+        Route::get('template-member/placeholders', [App\Http\Controllers\TemplateMemberController::class, 'placeholders'])->name('template-member.placeholders');
         Route::resource('template-member', App\Http\Controllers\TemplateMemberController::class);
         Route::resource('document', DocumentController::class)->parameters(['document' => 'class']);
         Route::resource('event-class', App\Http\Controllers\EventClassController::class);

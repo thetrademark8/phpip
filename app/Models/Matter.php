@@ -331,6 +331,16 @@ class Matter extends Model
         return $this->belongsToMany(Matter::class, 'classifier', 'lnk_matter_id');
     }
 
+    public function attachments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MatterAttachment::class)->orderBy('created_at', 'desc');
+    }
+
+    public function emailLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(EmailLog::class)->orderBy('created_at', 'desc');
+    }
+
     public function countryInfo()
     {
         return $this->belongsTo(Country::class, 'country');

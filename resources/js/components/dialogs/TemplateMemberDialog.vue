@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogScrollContent class="max-w-2xl">
+    <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
           {{ dialogTitle }}
@@ -131,18 +131,38 @@
             />
           </FormField>
 
-          <!-- Body -->
-          <FormField 
-            :label="t('templateMember.fields.body')" 
-            :error="form.errors.body"
-          >
-            <Textarea
-              v-model="form.body"
-              :disabled="!isEditMode && operation !== 'create'"
-              :placeholder="t('templateMember.placeholders.body')"
-              rows="15"
-            />
-          </FormField>
+          <!-- Body with Placeholders -->
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <!-- Placeholders Panel -->
+            <div v-if="isEditMode || operation === 'create'" class="lg:col-span-1">
+              <FormField :label="t('email.placeholders')">
+                <PlaceholderPanel
+                  :placeholders="placeholders"
+                  @insert="insertPlaceholder"
+                />
+              </FormField>
+            </div>
+
+            <!-- Body Editor -->
+            <div :class="isEditMode || operation === 'create' ? 'lg:col-span-3' : 'lg:col-span-4'">
+              <FormField
+                :label="t('templateMember.fields.body')"
+                :error="form.errors.body"
+              >
+                <TipTapEditor
+                  v-if="isEditMode || operation === 'create'"
+                  ref="editorRef"
+                  v-model="form.body"
+                  :placeholder="t('templateMember.placeholders.body')"
+                />
+                <div
+                  v-else
+                  class="prose prose-sm max-w-none p-4 bg-muted/50 rounded-md min-h-[300px] border"
+                  v-html="form.body || t('templateMember.placeholders.body')"
+                />
+              </FormField>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -188,7 +208,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useForm, router, usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { useTranslatedField } from '@/composables/useTranslation'
@@ -201,6 +221,8 @@ import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
 import DialogSkeleton from '@/components/ui/skeleton/DialogSkeleton.vue'
 import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import FormField from '@/components/ui/form/FormField.vue'
+import TipTapEditor from '@/components/ui/TipTapEditor.vue'
+import PlaceholderPanel from '@/components/email/PlaceholderPanel.vue'
 import {
   Dialog,
   DialogScrollContent,
@@ -211,7 +233,6 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -219,6 +240,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import axios from 'axios'
 
 const props = defineProps({
   open: Boolean,
@@ -242,6 +264,8 @@ const loading = ref(false)
 const isEditMode = ref(false)
 const showDeleteDialog = ref(false)
 const templateMember = ref(null)
+const editorRef = ref(null)
+const placeholders = ref({})
 
 // Check permissions
 const canWrite = computed(() => {
@@ -340,6 +364,28 @@ function populateForm() {
     classDisplay.value = translated(templateMember.value.template_class?.name) || ''
   }
 }
+
+// Fetch available placeholders
+async function fetchPlaceholders() {
+  try {
+    const response = await axios.get('/template-member/placeholders')
+    placeholders.value = response.data
+  } catch (error) {
+    console.error('Failed to load placeholders:', error)
+  }
+}
+
+// Insert placeholder at cursor position in editor
+function insertPlaceholder(placeholder) {
+  if (editorRef.value) {
+    editorRef.value.insertText(placeholder)
+  }
+}
+
+// Fetch placeholders on mount
+onMounted(() => {
+  fetchPlaceholders()
+})
 
 // Toggle between view and edit modes
 function toggleEditMode() {
