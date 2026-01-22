@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-4xl">
+    <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>{{ t('Create National Trademark Matters') }}</DialogTitle>
         <DialogDescription>
@@ -250,7 +250,7 @@
           {{ t('View Family') }}
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -261,7 +261,7 @@ import { useI18n } from 'vue-i18n'
 import { CheckCircle, AlertCircle, XCircle, Loader2 } from 'lucide-vue-next'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-lg">
+    <DialogScrollContent class="max-w-lg">
       <DialogHeader>
         <DialogTitle>Add Title</DialogTitle>
       </DialogHeader>
@@ -36,7 +36,7 @@
           </Button>
         </DialogFooter>
       </form>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -44,7 +44,7 @@
 import { useForm } from '@inertiajs/vue3'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,

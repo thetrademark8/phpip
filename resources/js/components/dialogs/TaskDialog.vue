@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="sm:max-w-lg">
+    <DialogScrollContent class="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle>{{ dialogTitle }}</DialogTitle>
         <DialogDescription>
@@ -19,7 +19,7 @@
           @cancel="$emit('update:open', false)"
         />
       </div>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -28,7 +28,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,

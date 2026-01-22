@@ -8,7 +8,7 @@
         </Button>
       </slot>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[600px]">
+    <DialogScrollContent class="sm:max-w-[600px]">
       <DialogHeader>
         <DialogTitle>Search Matters</DialogTitle>
         <DialogDescription>
@@ -125,7 +125,7 @@
           </Button>
         </div>
       </div>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -138,7 +138,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,

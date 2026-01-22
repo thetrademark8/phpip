@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="sm:max-w-md">
+    <DialogScrollContent class="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{{ title || 'Confirm Action' }}</DialogTitle>
         <DialogDescription v-if="description">
@@ -31,7 +31,7 @@
           {{ confirmText || 'Confirm' }}
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -41,7 +41,7 @@ import { Loader2 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

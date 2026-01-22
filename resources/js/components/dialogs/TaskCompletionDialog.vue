@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-md">
+    <DialogScrollContent class="max-w-md">
       <DialogHeader>
         <DialogTitle>{{ $t('Mark Task as Done') }}</DialogTitle>
         <DialogDescription>
@@ -53,7 +53,7 @@
           </Button>
         </DialogFooter>
       </form>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -64,7 +64,7 @@ import { format } from 'date-fns'
 import { Check, Loader2 } from 'lucide-vue-next'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
+    <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
           {{ operation === 'create' ? t('fees.dialog.createTitle') : t('fees.dialog.editTitle') }}
@@ -296,7 +296,7 @@
           </div>
         </div>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 
   <!-- Delete Confirmation Dialog -->
@@ -320,7 +320,7 @@ import { format } from 'date-fns'
 import axios from 'axios'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,

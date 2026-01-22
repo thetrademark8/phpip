@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-lg">
+    <DialogScrollContent class="max-w-lg">
       <DialogHeader>
         <DialogTitle>{{ $t('Merge Document') }}</DialogTitle>
         <DialogDescription>
@@ -45,7 +45,7 @@
           {{ $t('Cancel') }}
         </Button>
       </DialogFooter>
-    </DialogContent>
+    </DialogScrollContent>
   </Dialog>
 </template>
 
@@ -55,7 +55,7 @@ import { FileText } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import {
   Dialog,
-  DialogContent,
+  DialogScrollContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
