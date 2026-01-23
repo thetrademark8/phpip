@@ -90,7 +90,7 @@
               </div>
             </div>
           </CardHeader>
-          <CardContent class="p-0">
+          <CardContent class="p-0 overflow-x-auto">
             <DashboardTaskList
               :tasks="tasks"
               :permissions="permissions"
@@ -123,7 +123,7 @@
               </div>
             </div>
           </CardHeader>
-          <CardContent class="p-0">
+          <CardContent class="p-0 overflow-x-auto">
             <RenewalList
               :renewals="renewals"
               :permissions="permissions"

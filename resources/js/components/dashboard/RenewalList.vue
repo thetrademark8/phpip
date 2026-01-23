@@ -14,12 +14,20 @@
 
 <script setup>
 import { h } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import { format, parseISO, isPast, isBefore, addDays, formatDistanceToNow, isToday as isTodayDateFns } from 'date-fns'
+import { fr, de, enUS } from 'date-fns/locale'
 import { CalendarDays, Clock, AlertCircle, DollarSign } from 'lucide-vue-next'
 import DataTable from '@/components/ui/DataTable.vue'
 import StatusBadge from '@/components/display/StatusBadge.vue'
-import { useI18n } from 'vue-i18n'
+import { useTranslatedField } from '@/composables/useTranslation.js'
+
+// Date-fns locale mapping
+const dateFnsLocales = { fr, de, en: enUS }
+const getDateLocale = () => {
+  const pageLocale = usePage().props.locale || 'en'
+  return dateFnsLocales[pageLocale] || enUS
+}
 
 const props = defineProps({
   renewals: {
@@ -34,7 +42,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selected'])
 
-const { t } = useI18n()
+const { t, translated } = useTranslatedField()
+
+// Helper function to get matter title
+const getMatterTitle = (matter) => {
+  if (!matter?.titles || matter.titles.length === 0) return null
+  return matter.titles[0]?.value || null
+}
 
 // Table columns definition
 const columns = [
@@ -53,19 +67,33 @@ const columns = [
     }
   },
   {
+    accessorKey: 'matter.titles',
+    header: t('dashboard.renewals.title'),
+    cell: ({ row }) => {
+      const title = getMatterTitle(row.original.matter)
+      if (!title) return h('span', { class: 'text-sm text-muted-foreground italic' }, '-')
+      return h('span', { class: 'text-sm line-clamp-2' }, title)
+    },
+    meta: {
+      headerClass: 'w-[200px]',
+    }
+  },
+  {
     accessorKey: 'info.name',
     header: t('dashboard.renewals.header'),
     cell: ({ row }) => {
       const renewal = row.original
-      
+      const renewalName = translated(renewal.info?.name) || renewal.code || t('dashboard.renewals.renewal')
+      const renewalDetail = translated(renewal.detail)
+
       return h('div', { class: 'space-y-2 py-1' }, [
         // Renewal name and badge
         h('div', { class: 'flex items-center gap-2' }, [
-          h('span', { class: 'font-medium' }, renewal.info?.name || renewal.code || t('dashboard.renewals.renewal')),
+          h('span', { class: 'font-medium' }, renewalName),
           h(StatusBadge, { status: 'open', type: 'renewal' })
         ]),
         // Renewal detail if exists
-        renewal.detail && h('p', { class: 'text-sm text-muted-foreground' }, renewal.detail),
+        renewalDetail && h('p', { class: 'text-sm text-muted-foreground' }, renewalDetail),
         // Cost information
         renewal.cost && h('div', { class: 'flex items-center gap-1 text-sm' }, [
           h(DollarSign, { class: 'h-4 w-4 text-muted-foreground' }),
@@ -155,7 +183,7 @@ const isToday = (date) => {
 const getRelativeTime = (date) => {
   if (!date) return ''
   try {
-    return formatDistanceToNow(parseISO(date), { addSuffix: true })
+    return formatDistanceToNow(parseISO(date), { addSuffix: true, locale: getDateLocale() })
   } catch {
     return date
   }
