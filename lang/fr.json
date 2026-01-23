@@ -1820,5 +1820,10 @@
   "notifications.renewal.footer.automated_notification": "Ceci est une notification automatique de rappel de renouvellement.",
   "notifications.renewal.footer.access_phpip": "Acceder a phpIP",
   "notifications.renewal.footer.generated_on": "Genere le",
-  "notifications.renewal.pluralization.matter_expiring": ":count dossier expire dans :months mois|:count dossiers expirent dans :months mois"
+  "notifications.renewal.pluralization.matter_expiring": ":count dossier expire dans :months mois|:count dossiers expirent dans :months mois",
+  "Search users...": "Rechercher des utilisateurs...",
+  "No user found.": "Aucun utilisateur trouvé.",
+  "No country found.": "Aucun pays trouvé.",
+  "Search events...": "Rechercher des événements...",
+  "No event found.": "Aucun événement trouvé."
 }

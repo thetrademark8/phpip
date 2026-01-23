@@ -1823,5 +1823,10 @@
   "notifications.renewal.footer.automated_notification": "This is an automated renewal reminder notification.",
   "notifications.renewal.footer.access_phpip": "Access phpIP",
   "notifications.renewal.footer.generated_on": "Generated on",
-  "notifications.renewal.pluralization.matter_expiring": ":count matter expiring in :months month|:count matters expiring in :months months"
+  "notifications.renewal.pluralization.matter_expiring": ":count matter expiring in :months month|:count matters expiring in :months months",
+  "Search users...": "Search users...",
+  "No user found.": "No user found.",
+  "No country found.": "No country found.",
+  "Search events...": "Search events...",
+  "No event found.": "No event found."
 }

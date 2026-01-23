@@ -23,15 +23,11 @@
                   :error="addForm.errors.type_code"
                   required
                 >
-                  <AutocompleteInput
+                  <TranslatedSelect
                     v-model="addForm.type_code"
-                    v-model:display-model-value="typeDisplay"
-                    endpoint="/classifier-type/autocomplete/0"
+                    :options="classifierTypeOptions"
                     :placeholder="$t('Select type')"
-                    :min-length="0"
-                    value-key="code"
-                    label-key="type"
-                    @selected="handleTypeSelect"
+                    @update:model-value="handleTypeSelect"
                   />
                 </FormField>
 
@@ -188,9 +184,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { Plus, Trash2, Pencil, Check, X } from 'lucide-vue-next'
+import TranslatedSelect from '@/components/ui/form/TranslatedSelect.vue'
 import { useI18n } from 'vue-i18n'
 import {
   Dialog,
@@ -204,7 +201,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import FormField from '@/components/ui/form/FormField.vue'
-import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 
 const props = defineProps({
   open: {
@@ -226,12 +222,28 @@ const emit = defineEmits(['update:open', 'success'])
 const { t } = useI18n()
 
 // State
-const typeDisplay = ref('')
+const classifierTypeOptions = ref([])
 const removingClassifierId = ref(null)
 const editingClassifierId = ref(null)
 const selectedType = ref(null)
 const isImageType = ref(false)
 const showLinkedMatter = ref(false)
+
+// Load classifier type options when dialog opens
+watch(() => props.open, async (isOpen) => {
+  if (isOpen && classifierTypeOptions.value.length === 0) {
+    try {
+      const response = await fetch('/options/classifier-types/0', {
+        headers: { 'Accept': 'application/json' }
+      })
+      if (response.ok) {
+        classifierTypeOptions.value = await response.json()
+      }
+    } catch (error) {
+      console.error('Error loading classifier type options:', error)
+    }
+  }
+}, { immediate: true })
 
 // Forms
 const addForm = useForm({
@@ -252,11 +264,11 @@ const groupedClassifiers = computed(() => {
   return props.classifiers || {}
 })
 
-function handleTypeSelect(type) {
-  console.log(type)
+function handleTypeSelect(typeCode) {
+  const type = classifierTypeOptions.value.find(t => t.value === typeCode)
   selectedType.value = type
-  isImageType.value = type?.key === 'IMG'
-  showLinkedMatter.value = type?.key === 'LINK'
+  isImageType.value = typeCode === 'IMG'
+  showLinkedMatter.value = typeCode === 'LINK'
 }
 
 function handleImageSelect(event) {

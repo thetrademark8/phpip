@@ -8,15 +8,11 @@
         :error="form.errors.category_code"
         required
       >
-        <AutocompleteInput
+        <TranslatedSelect
           v-model="form.category_code"
-          v-model:display-model-value="categoryDisplay"
-          endpoint="/category/autocomplete"
+          :options="categoryOptions"
           :placeholder="t('Select category')"
-          :min-length="0"
-          value-key="key"
-          label-key="value"
-          @selected="handleCategorySelect"
+          @update:model-value="handleCategoryChange"
         />
       </FormField>
 
@@ -58,13 +54,12 @@
         :error="form.errors.country"
         required
       >
-        <AutocompleteInput
+        <Combobox
           v-model="form.country"
-          v-model:display-model-value="countryDisplay"
-          endpoint="/country/autocomplete"
-          :placeholder="parentMatter?.countryInfo?.name || t('Select country')"
-          value-key="key"
-          label-key="value"
+          :options="countryOptions"
+          :placeholder="t('Select country')"
+          :search-placeholder="t('Search countries...')"
+          :no-results-text="t('No country found.')"
         />
       </FormField>
 
@@ -75,13 +70,12 @@
         name="origin"
         :error="form.errors.origin"
       >
-        <AutocompleteInput
+        <Combobox
           v-model="form.origin"
-          v-model:display-model-value="originDisplay"
-          endpoint="/country/autocomplete"
-          :placeholder="parentMatter?.originInfo?.name || t('Select origin')"
-          value-key="key"
-          label-key="value"
+          :options="countryOptions"
+          :placeholder="t('Select origin')"
+          :search-placeholder="t('Search countries...')"
+          :no-results-text="t('No country found.')"
         />
       </FormField>
 
@@ -92,13 +86,10 @@
         name="type_code"
         :error="form.errors.type_code"
       >
-        <AutocompleteInput
+        <TranslatedSelect
           v-model="form.type_code"
-          endpoint="/type/autocomplete"
-          :placeholder="parentMatter?.type?.type || t('Select type')"
-          :min-length="0"
-          value-key="key"
-          label-key="value"
+          :options="typeOptions"
+          :placeholder="t('Select type')"
         />
       </FormField>
 
@@ -123,13 +114,12 @@
         :error="form.errors.responsible"
         required
       >
-        <AutocompleteInput
+        <Combobox
           v-model="form.responsible"
-          v-model:display-model-value="responsibleDisplay"
-          endpoint="/user/autocomplete"
-          :placeholder="parentMatter?.responsible || currentUser?.name || t('Select responsible')"
-          value-key="key"
-          label-key="value"
+          :options="userOptions"
+          :placeholder="t('Select responsible')"
+          :search-placeholder="t('Search users...')"
+          :no-results-text="t('No user found.')"
         />
       </FormField>
 
@@ -172,7 +162,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { Loader2 } from 'lucide-vue-next'
@@ -181,8 +171,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import FormField from '@/components/ui/form/FormField.vue'
+import TranslatedSelect from '@/components/ui/form/TranslatedSelect.vue'
+import { Combobox } from '@/components/ui/combobox'
 import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
-import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({
   operation: {
@@ -209,11 +200,26 @@ const props = defineProps({
   onCancel: {
     type: Function,
     default: null
+  },
+  categoryOptions: {
+    type: Array,
+    default: () => []
+  },
+  typeOptions: {
+    type: Array,
+    default: () => []
+  },
+  userOptions: {
+    type: Array,
+    default: () => []
+  },
+  countryOptions: {
+    type: Array,
+    default: () => []
   }
 })
 
 const { t } = useI18n()
-const { translated } = useTranslatedField()
 
 // Form setup
 const form = useForm({
@@ -230,12 +236,6 @@ const form = useForm({
   priority: '1' // Default to priority application
 })
 
-// Display values for autocomplete fields
-const categoryDisplay = ref(props.parentMatter?.category?.category ? translated(props.parentMatter.category.category) : '')
-const countryDisplay = ref('')
-const originDisplay = ref('')
-const responsibleDisplay = ref('')
-
 // Priority radio group value
 const priorityValue = computed({
   get: () => form.priority,
@@ -248,11 +248,11 @@ const submitLabel = computed(() => {
   return t('Create')
 })
 
-// Handle category selection
-const handleCategorySelect = async (category) => {
-  if (category && props.operation !== 'child') {
-    // Fetch the next caseref based on the category prefix
-    if (category.prefix) {
+// Handle category selection change
+const handleCategoryChange = async (categoryCode) => {
+  if (categoryCode && props.operation !== 'child') {
+    const category = props.categoryOptions.find(c => c.value === categoryCode)
+    if (category?.prefix) {
       try {
         const response = await fetch(`/matter/new-caseref?term=${category.prefix}`, {
           headers: {
@@ -290,10 +290,10 @@ const handleSubmit = () => {
   })
 }
 
-// Initialize responsible display value
+// Initialize responsible if current user is provided
 watch(() => props.currentUser, (user) => {
-  if (user && !responsibleDisplay.value) {
-    responsibleDisplay.value = user.name
+  if (user && !form.responsible) {
+    form.responsible = user.login
   }
 }, { immediate: true })
 
@@ -313,39 +313,9 @@ watch(() => props.parentMatter, (matter) => {
 }, { immediate: true })
 
 // Fetch caseref when category is pre-selected
-watch(() => props.category, async (categoryCode) => {
-  if (categoryCode && props.operation === 'new') {
-    // First, fetch the category details to get the prefix
-    try {
-      const response = await fetch(`/category/autocomplete?term=${categoryCode}`, {
-        headers: {
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-      if (response.ok) {
-        const categories = await response.json()
-        const category = categories.find(c => c.key === categoryCode)
-        if (category) {
-          categoryDisplay.value = category.value
-          // Now fetch the next caseref
-          const caserefResponse = await fetch(`/matter/new-caseref?term=${category.prefix || categoryCode}`, {
-            headers: {
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest'
-            }
-          })
-          if (caserefResponse.ok) {
-            const data = await caserefResponse.json()
-            if (data && data[0] && data[0].value) {
-              form.caseref = data[0].value
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching category/caseref:', error)
-    }
+onMounted(async () => {
+  if (props.category && props.operation === 'new') {
+    await handleCategoryChange(props.category)
   }
-}, { immediate: true })
+})
 </script>

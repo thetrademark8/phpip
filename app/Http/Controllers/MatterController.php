@@ -8,8 +8,12 @@ use App\Http\Requests\MatterFilterRequest;
 use App\Http\Requests\MergeFileRequest;
 use App\Models\Actor;
 use App\Models\ActorPivot;
+use App\Models\Category;
+use App\Models\Country;
 use App\Models\Event;
 use App\Models\Matter;
+use App\Models\MatterType;
+use App\Models\User;
 use App\Services\DocumentMergeService;
 use App\Services\MatterExportService;
 use App\Services\OPSService;
@@ -25,11 +29,13 @@ class MatterController extends Controller
 {
     public function __construct(
         protected MatterServiceInterface $matterService,
-        protected DocumentMergeService $documentMergeService,
-        protected MatterExportService $matterExportService,
-        protected OPSService $opsService,
-        protected SharePointService $sharePoint
-    ) {}
+        protected DocumentMergeService   $documentMergeService,
+        protected MatterExportService    $matterExportService,
+        protected OPSService             $opsService,
+        protected SharePointService      $sharePoint
+    )
+    {
+    }
 
     public function index(MatterFilterRequest $request)
     {
@@ -55,7 +61,7 @@ class MatterController extends Controller
     public function show(Matter $matter)
     {
         $this->authorize('view', $matter);
-        
+
         // Load all necessary relationships with optimized queries
         $matter->load([
             'tasksPending.info',
@@ -107,6 +113,30 @@ class MatterController extends Controller
             ]);
         }
 
+        // Fetch options for Select/Combobox components in the edit form
+        $categoryOptions = Category::orderBy('code')->get()->map(fn($cat) => [
+            'value' => $cat->code,
+            'label' => $cat->category,
+            'prefix' => $cat->ref_prefix,
+        ]);
+
+        $typeOptions = MatterType::orderBy('code')->get()->map(fn($type) => [
+            'value' => $type->code,
+            'label' => $type->type,
+        ]);
+
+        $userOptions = User::orderBy('name')->get()->map(fn($user) => [
+            'value' => $user->login,
+            'label' => $user->name,
+        ]);
+
+        $countryOptions = Country::orderBy('name')->get()->map(function ($country) {
+            return [
+                'value' => $country->iso,
+                'label' => $country->name,
+            ];
+        });
+
         return Inertia::render('Matter/Show', [
             'matter' => $matter,
             'titles' => $titles,
@@ -114,7 +144,11 @@ class MatterController extends Controller
             'actors' => $actors,
             'statusEvents' => $statusEvents,
             'sharePointLink' => $sharePointLink,
-            'canWrite' => Auth::user()->can('readwrite')
+            'canWrite' => Auth::user()->can('readwrite'),
+            'categoryOptions' => $categoryOptions,
+            'typeOptions' => $typeOptions,
+            'userOptions' => $userOptions,
+            'countryOptions' => $countryOptions,
         ]);
     }
 
@@ -348,7 +382,7 @@ class MatterController extends Controller
     public function storeInternational(Request $request)
     {
         Gate::authorize('readwrite');
-        
+
         $this->validate($request, [
             'parent_id' => 'required|exists:matter,id',
             'countries' => 'required|array|min:1',
@@ -357,11 +391,11 @@ class MatterController extends Controller
 
         $parentMatter = Matter::findOrFail($request->parent_id);
         $service = app(\App\Services\InternationalTrademarkService::class);
-        
+
         try {
             // Create national matters
             $results = $service->createCountryMatters($parentMatter, $request->countries);
-            
+
             return response()->json([
                 'success' => true,
                 'message' => __('National trademark matters created successfully'),
@@ -395,12 +429,12 @@ class MatterController extends Controller
     public function getInternationalCountries(Matter $matter)
     {
         Gate::authorize('readwrite');
-        
+
         $service = app(\App\Services\InternationalTrademarkService::class);
-        
+
         // Validate matter is eligible
         $validation = $service->validateInternationalMatter($matter);
-        
+
         return response()->json([
             'validation' => $validation,
             'available_countries' => $service->getAvailableCountries(),
@@ -415,9 +449,9 @@ class MatterController extends Controller
     public function getOfficialLinks(Matter $matter)
     {
         $linkService = app(\App\Services\LinkGeneratorService::class);
-        
+
         $links = $linkService->getAllLinksForMatter($matter);
-        
+
         return response()->json([
             'links' => $links,
             'matter_info' => [
@@ -837,7 +871,7 @@ class MatterController extends Controller
 
     /**
      * Export a single matter
-     * 
+     *
      * @param Matter $matter
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
@@ -845,7 +879,7 @@ class MatterController extends Controller
     {
         // Check if user can view this matter
         Gate::authorize('view', $matter);
-        
+
         // Export this specific matter
         $matterData = [$matter->toArray()];
         return $this->matterExportService->export($matterData);

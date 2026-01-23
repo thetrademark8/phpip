@@ -20,6 +20,10 @@ class Country extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'name' => 'json',
+    ];
+
     public function getGoesnationalAttribute() // Defines "goesnational" as an attribute
     {
         return in_array($this->iso, ['EP', 'WO', 'EM', 'OA']);

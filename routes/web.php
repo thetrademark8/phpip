@@ -14,6 +14,7 @@
 use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\ClassifierController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\OptionsController;
 use App\Http\Controllers\EmailSettingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatterAttachmentController;
@@ -103,6 +104,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('template-category/autocomplete', [AutocompleteController::class, 'templateCategory']);
         Route::get('template-class/autocomplete', [AutocompleteController::class, 'templateClass']);
         Route::get('template-style/autocomplete', [AutocompleteController::class, 'templateStyle']);
+    });
+
+    // Options routes for Select/Combobox components (full lists for dropdowns)
+    Route::prefix('options')->name('options.')->group(function () {
+        Route::get('categories', [OptionsController::class, 'categories'])->name('categories');
+        Route::get('types', [OptionsController::class, 'types'])->name('types');
+        Route::get('countries', [OptionsController::class, 'countries'])->name('countries');
+        Route::get('users', [OptionsController::class, 'users'])->name('users');
+        Route::get('event-names/{isTask?}', [OptionsController::class, 'eventNames'])->name('event-names');
+        Route::get('classifier-types/{mainDisplay?}', [OptionsController::class, 'classifierTypes'])->name('classifier-types');
     });
 
     // Classifier routes

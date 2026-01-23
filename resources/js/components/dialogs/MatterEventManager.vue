@@ -23,14 +23,12 @@
                   :error="addForm.errors.code"
                   required
                 >
-                  <AutocompleteInput
+                  <Combobox
                     v-model="addForm.code"
-                    v-model:display-model-value="eventDisplay"
-                    endpoint="/event-name/autocomplete/1"
+                    :options="eventOptions"
                     :placeholder="t('Select event')"
-                    :min-length="0"
-                    value-key="key"
-                    label-key="value"
+                    :search-placeholder="t('Search events...')"
+                    :no-results-text="t('No event found.')"
                   />
                 </FormField>
 
@@ -201,7 +199,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import FormField from '@/components/ui/form/FormField.vue'
-import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import { Combobox } from '@/components/ui/combobox'
 import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
 import EventDialog from '@/components/dialogs/EventDialog.vue'
 
@@ -226,10 +224,26 @@ const { t } = useI18n()
 const { translated } = useTranslatedField()
 
 // State
-const eventDisplay = ref('')
+const eventOptions = ref([])
 const removingEventId = ref(null)
 const showEditDialog = ref(false)
 const selectedEvent = ref(null)
+
+// Load event options when dialog opens
+watch(() => props.open, async (isOpen) => {
+  if (isOpen && eventOptions.value.length === 0) {
+    try {
+      const response = await fetch('/options/event-names/0', {
+        headers: { 'Accept': 'application/json' }
+      })
+      if (response.ok) {
+        eventOptions.value = await response.json()
+      }
+    } catch (error) {
+      console.error('Error loading event options:', error)
+    }
+  }
+}, { immediate: true })
 
 // Forms
 const addForm = useForm({

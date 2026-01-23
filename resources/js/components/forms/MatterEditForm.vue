@@ -8,15 +8,10 @@
         :error="form.errors.category_code"
         required
       >
-        <AutocompleteInput
+        <TranslatedSelect
           v-model="form.category_code"
-          v-model:display-model-value="categoryDisplay"
-          endpoint="/category/autocomplete"
+          :options="categoryOptions"
           :placeholder="t('Select category')"
-          :min-length="0"
-          value-key="key"
-          label-key="value"
-          @selected="handleCategorySelect"
         />
       </FormField>
 
@@ -27,14 +22,12 @@
         :error="form.errors.country"
         required
       >
-        <AutocompleteInput
+        <Combobox
           v-model="form.country"
-          v-model:display-model-value="countryDisplay"
-          endpoint="/country/autocomplete"
+          :options="countryOptions"
           :placeholder="t('Select country')"
-          :min-length="0"
-          value-key="key"
-          label-key="value"
+          :search-placeholder="t('Search countries...')"
+          :no-results-text="t('No country found.')"
         />
       </FormField>
 
@@ -69,13 +62,10 @@
         name="type_code"
         :error="form.errors.type_code"
       >
-        <AutocompleteInput
+        <TranslatedSelect
           v-model="form.type_code"
-          v-model:display-model-value="typeDisplay"
-          endpoint="/type/autocomplete"
+          :options="typeOptions"
           :placeholder="t('Select type')"
-          value-key="key"
-          label-key="value"
         />
       </FormField>
 
@@ -85,13 +75,12 @@
         name="responsible"
         :error="form.errors.responsible"
       >
-        <AutocompleteInput
+        <Combobox
           v-model="form.responsible"
-          v-model:display-model-value="responsibleDisplay"
-          endpoint="/user/autocomplete"
+          :options="userOptions"
           :placeholder="t('Select responsible user')"
-          value-key="login"
-          label-key="name"
+          :search-placeholder="t('Search users...')"
+          :no-results-text="t('No user found.')"
         />
       </FormField>
 
@@ -168,15 +157,31 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import FormField from '@/components/ui/form/FormField.vue'
-import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import TranslatedSelect from '@/components/ui/form/TranslatedSelect.vue'
+import { Combobox } from '@/components/ui/combobox'
 import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
-import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({
   matter: {
     type: Object,
     required: true
+  },
+  categoryOptions: {
+    type: Array,
+    default: () => []
+  },
+  typeOptions: {
+    type: Array,
+    default: () => []
+  },
+  userOptions: {
+    type: Array,
+    default: () => []
+  },
+  countryOptions: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -195,7 +200,6 @@ const canDelete = computed(() => {
 })
 
 const { t } = useI18n()
-const { translated } = useTranslatedField()
 
 // Form setup
 const form = useForm({
@@ -208,13 +212,6 @@ const form = useForm({
   expire_date: props.matter.expire_date || '',
   notes: props.matter.notes || ''
 })
-
-// Display values for autocomplete fields
-// The category object has the translated 'category' field
-const categoryDisplay = ref(props.matter.category?.category ? translated(props.matter.category.category) : '')
-const countryDisplay = ref(props.matter.country_info?.name || '')
-const typeDisplay = ref(props.matter.type?.type || '')
-const responsibleDisplay = ref(props.matter.responsible || '')
 
 function handleSubmit() {
   form.put(`/matter/${props.matter.id}`, {
@@ -245,11 +242,5 @@ function handleDelete() {
       showDeleteDialog.value = false
     }
   })
-}
-
-function handleCategorySelect(category) {
-  if (category) {
-    categoryDisplay.value = category.value || category.category || ''
-  }
 }
 </script>

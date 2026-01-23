@@ -12,7 +12,7 @@
             {{ matter.uid }}
           </Link>
           <Badge variant="secondary">{{ translated(matter.category.category) }}</Badge>
-          <span v-if="matter.country_info" class="text-sm">{{ translated(JSON.parse(matter.country_info.name)) }}</span>
+          <span v-if="matter.country_info" class="text-sm">{{ translated(matter.country_info.name) }}</span>
           <Button size="sm" variant="secondary" @click="showCreateChildDialog = true" title="New Child">
             <FilePlus class="h-3 w-3" />
             {{ $t('New Child') }}
@@ -435,6 +435,10 @@
       v-model:open="showEditDialog"
       :matter="matter"
       operation="edit"
+      :category-options="categoryOptions"
+      :type-options="typeOptions"
+      :user-options="userOptions"
+      :country-options="countryOptions"
       @success="handleMatterUpdate"
     />
 
@@ -481,6 +485,10 @@
       v-model:open="showCreateChildDialog"
       :matter="matter"
       operation="child"
+      :category-options="categoryOptions"
+      :type-options="typeOptions"
+      :user-options="userOptions"
+      :country-options="countryOptions"
       @success="handleMatterUpdate"
     />
 
@@ -542,7 +550,11 @@ const props = defineProps({
   actors: Object,
   statusEvents: Array,
   sharePointLink: String,
-  canWrite: Boolean
+  canWrite: Boolean,
+  categoryOptions: { type: Array, default: () => [] },
+  typeOptions: { type: Array, default: () => [] },
+  userOptions: { type: Array, default: () => [] },
+  countryOptions: { type: Array, default: () => [] }
 })
 
 const { t } = useI18n()

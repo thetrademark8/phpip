@@ -7,11 +7,15 @@
           {{ dialogDescription }}
         </DialogDescription>
       </DialogHeader>
-      
+
     <div>
         <MatterEditForm
           v-if="operation === 'edit'"
           :matter="matter"
+          :category-options="categoryOptions"
+          :type-options="typeOptions"
+          :user-options="userOptions"
+          :country-options="countryOptions"
           @success="handleSuccess"
           @cancel="$emit('update:open', false)"
         />
@@ -23,6 +27,10 @@
           :ops-number="opsNumber"
           :category="category"
           :current-user="currentUser"
+          :category-options="categoryOptions"
+          :type-options="typeOptions"
+          :user-options="userOptions"
+          :country-options="countryOptions"
           @success="handleSuccess"
           @cancel="$emit('update:open', false)"
         />
@@ -73,6 +81,22 @@ const props = defineProps({
   currentUser: {
     type: Object,
     default: null
+  },
+  categoryOptions: {
+    type: Array,
+    default: () => []
+  },
+  typeOptions: {
+    type: Array,
+    default: () => []
+  },
+  userOptions: {
+    type: Array,
+    default: () => []
+  },
+  countryOptions: {
+    type: Array,
+    default: () => []
   }
 })
 

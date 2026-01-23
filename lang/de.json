@@ -1723,5 +1723,10 @@
   "notifications.renewal.footer.automated_notification": "Dies ist eine automatische Verlängerungserinnerung.",
   "notifications.renewal.footer.access_phpip": "Auf phpIP zugreifen",
   "notifications.renewal.footer.generated_on": "Generiert am",
-  "notifications.renewal.pluralization.matter_expiring": ":count Akte läuft in :months Monat ab|:count Akten laufen in :months Monaten ab"
+  "notifications.renewal.pluralization.matter_expiring": ":count Akte läuft in :months Monat ab|:count Akten laufen in :months Monaten ab",
+  "Search users...": "Benutzer suchen...",
+  "No user found.": "Kein Benutzer gefunden.",
+  "No country found.": "Kein Land gefunden.",
+  "Search events...": "Ereignisse suchen...",
+  "No event found.": "Kein Ereignis gefunden."
 }
