@@ -69,6 +69,16 @@
             </CardContent>
           </Card>
 
+          <!-- Office Links -->
+          <Card v-if="matter.country_info">
+            <CardHeader class="py-2 px-3 bg-secondary">
+              <h3 class="font-semibold text-sm">{{ $t('Official Links') }}</h3>
+            </CardHeader>
+            <CardContent class="p-3">
+              <OfficeLinks :matter="matter" />
+            </CardContent>
+          </Card>
+
           <!-- Image -->
           <Card v-if="imageClassifier">
             <CardHeader class="py-2 px-3 bg-secondary">
@@ -388,13 +398,6 @@
                   @update="handleActorUpdate"
                   @edit="handleActorEdit"
               />
-            </CardContent>
-          </Card>
-
-          <!-- Office Links -->
-          <Card v-if="matter.country_info">
-            <CardContent class="p-3">
-              <OfficeLinks :matter="matter" />
             </CardContent>
           </Card>
         </div>
