@@ -12,7 +12,7 @@
             {{ matter.uid }}
           </Link>
           <Badge variant="secondary">{{ translated(matter.category.category) }}</Badge>
-          <span v-if="matter.country_info" class="text-sm">{{ matter.country_info.name }}</span>
+          <span v-if="matter.country_info" class="text-sm">{{ translated(JSON.parse(matter.country_info.name)) }}</span>
           <Button size="sm" variant="secondary" @click="showCreateChildDialog = true" title="New Child">
             <FilePlus class="h-3 w-3" />
             {{ $t('New Child') }}
@@ -240,6 +240,16 @@
                       <Link :href="`/matter/${classifier.linked_matter_id}`" class="text-primary hover:underline text-xs">
                         {{ classifier.linked_matter?.uid || classifier.value }}
                       </Link>
+                    </template>
+                    <template v-else-if="isUrl(classifier.value)">
+                      <a
+                        :href="classifier.value"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary hover:underline text-xs break-all"
+                      >
+                        {{ classifier.value }}
+                      </a>
                     </template>
                     <template v-else>
                       {{ classifier.value }}
@@ -586,6 +596,11 @@ const isEligibleForInternational = computed(() => {
 function formatDate(dateString) {
   if (!dateString) return ''
   return format(new Date(dateString), 'dd/MM/yyyy')
+}
+
+function isUrl(value) {
+  if (!value || typeof value !== 'string') return false
+  return value.startsWith('http://') || value.startsWith('https://')
 }
 
 function handleMatterUpdate() {
