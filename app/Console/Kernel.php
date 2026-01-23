@@ -17,6 +17,13 @@ class Kernel extends ConsoleKernel
             ->dailyAt('08:00')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/urgent-notifications.log'));
+
+        // Send matter renewal reminders daily at 8:30 AM
+        // Sends reminders at 6 months, 3 months, and 1 month before expiry
+        $schedule->command('matters:send-renewal-reminders')
+            ->dailyAt('08:30')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/renewal-reminders.log'));
     }
 
     /**
