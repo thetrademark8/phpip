@@ -83,26 +83,29 @@ class LinkGeneratorService
             'number_field' => 'publication'
         ],
         
-        // Design Patent Offices
+        // Design Offices
+        // Example FR: https://data.inpi.fr/dessins_modeles/FR20200885-003
         'INPI_DSG' => [
-            'url' => 'https://data.inpi.fr/dessins-modeles/%s%s',
-            'name' => 'INPI Designs',
+            'url' => 'https://data.inpi.fr/dessins_modeles/%s',
+            'name' => 'INPI Dessins & Modèles',
             'icon' => 'Palette',
             'categories' => ['DSG'],
             'number_field' => 'registration',
-            'requires_country_prefix' => true
+            'number_format' => 'inpi_design_format'
         ],
+        // Example EU: https://euipo.europa.eu/eSearch/#details/designs/007708706-0001
         'EUIPO_DSG' => [
             'url' => 'https://euipo.europa.eu/eSearch/#details/designs/%s',
             'name' => 'EUIPO Designs',
             'icon' => 'Palette',
             'categories' => ['DSG'],
             'number_field' => 'registration',
-            'number_format' => 'pad_zeros_9'
+            'number_format' => 'euipo_design_format'
         ],
+        // Example WO: https://designdb.wipo.int/designdb/hague/fr/showData.jsp?ID=HAGUE.D215987
         'WIPO_DSG' => [
-            'url' => 'https://designdb.wipo.int/designdb/en/showData.jsp?ID=%s',
-            'name' => 'WIPO Design Database',
+            'url' => 'https://designdb.wipo.int/designdb/hague/fr/showData.jsp?ID=HAGUE.%s',
+            'name' => 'WIPO Hague Design Database',
             'icon' => 'Globe',
             'categories' => ['DSG'],
             'number_field' => 'registration',
@@ -315,19 +318,28 @@ class LinkGeneratorService
 
     /**
      * Clean number format (remove spaces, special characters, country prefixes)
+     * Preserves design variant suffixes (e.g., -003, -0001)
      */
     private function cleanNumber(string $number): string
     {
+        // First, extract and preserve any variant suffix (e.g., -003, -0001)
+        $variant = '';
+        if (preg_match('/(\-\d{1,4})$/', $number, $matches)) {
+            $variant = $matches[1];
+            $number = substr($number, 0, -strlen($variant));
+        }
+
         // Remove country prefixes (FR, DE, etc.) at the beginning
         $cleaned = preg_replace('/^[A-Z]{2}/', '', $number);
 
-        // Remove common separators and spaces
-        $cleaned = preg_replace('/[\s\-\.\/]/', '', $cleaned);
+        // Remove common separators and spaces (but not hyphens in the middle)
+        $cleaned = preg_replace('/[\s\.\/]/', '', $cleaned);
 
         // Remove non-alphanumeric characters but keep basic ones
-        $cleaned = preg_replace('/[^\w\-]/', '', $cleaned);
+        $cleaned = preg_replace('/[^\w]/', '', $cleaned);
 
-        return trim($cleaned);
+        // Re-add the variant suffix if it existed
+        return trim($cleaned . $variant);
     }
 
     /**
@@ -336,7 +348,7 @@ class LinkGeneratorService
     private function formatNumberForOffice(string $number, string $office, string $countryCode = ''): string
     {
         $pattern = $this->patterns[$office] ?? null;
-        
+
         if (!$pattern || empty($pattern['number_format'])) {
             return $number;
         }
@@ -348,15 +360,32 @@ class LinkGeneratorService
                     return str_pad($number, 9, '0', STR_PAD_LEFT);
                 }
                 break;
-            
-            case 'wipo_design_format':
-                // WIPO Design format: {country}ID.{number}-0001
-                if (!empty($countryCode)) {
-                    return $countryCode . 'ID.' . $number . '-0001';
+
+            case 'inpi_design_format':
+                // INPI Design format: FR{number} (e.g., FR20200885-003)
+                // If number already contains country prefix, use as-is
+                if (preg_match('/^FR/', $number)) {
+                    return $number;
                 }
-                break;
-            
-            // Add more formatting types as needed
+                return 'FR' . $number;
+
+            case 'euipo_design_format':
+                // EUIPO Design format: {9-digit-number}-{variant} (e.g., 007708706-0001)
+                // If number already contains hyphen (variant), pad the base number
+                if (str_contains($number, '-')) {
+                    $parts = explode('-', $number);
+                    $baseNumber = str_pad($parts[0], 9, '0', STR_PAD_LEFT);
+                    return $baseNumber . '-' . $parts[1];
+                }
+                // No variant, pad number and add default variant
+                return str_pad($number, 9, '0', STR_PAD_LEFT) . '-0001';
+
+            case 'wipo_design_format':
+                // WIPO Hague Design format: D{number} (e.g., D215987 for HAGUE.D215987)
+                // Remove any DM/ or D prefix if present
+                $cleanNumber = preg_replace('/^(DM\/|D)/', '', $number);
+                return 'D' . $cleanNumber;
+
             default:
                 break;
         }
@@ -385,12 +414,12 @@ class LinkGeneratorService
             'EPO' => '/^\d+$/', // Numeric
             'USPTO_PAT' => '/^\d{7,8}$/', // 7-8 digits for patents
             
-            // Design Patent validation patterns
-            'INPI_DSG' => '/^\d{6,8}$/', // 6-8 digits for French designs
-            'EUIPO_DSG' => '/^\d{6,9}$/', // 6-9 digits for EU designs
-            'WIPO_DSG' => '/^(DM\/)?\d{6}$/', // Optional DM/ prefix + 6 digits
-            'USPTO_DSG' => '/^D?\d{6,7}$/', // Optional D prefix + 6-7 digits
-            'DPMA_DSG' => '/^\d{10,12}$/' // 10-12 digits for German designs
+            // Design validation patterns (flexible to handle various formats)
+            'INPI_DSG' => '/^(FR)?\d{6,10}(\-\d{1,3})?$/', // Optional FR prefix + 6-10 digits + optional variant
+            'EUIPO_DSG' => '/^\d{6,9}(\-\d{4})?$/', // 6-9 digits + optional variant (e.g., -0001)
+            'WIPO_DSG' => '/^(DM\/|D)?\d{5,7}$/', // Optional DM/ or D prefix + 5-7 digits
+            'USPTO_DSG' => '/^D?\d{6,8}$/', // Optional D prefix + 6-8 digits
+            'DPMA_DSG' => '/^\d{8,14}$/' // 8-14 digits for German designs
         ];
 
         $pattern = $validationPatterns[$office] ?? '/^.+$/'; // Default: any non-empty
