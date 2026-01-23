@@ -184,6 +184,8 @@
   "Alt. ref": "Réf. alt.",
   "Term adjust (days)": "Ajustement de terme (jours)",
   "Delete Matter": "Supprimer le dossier",
+  "Are you sure you want to delete matter {uid}? This action cannot be undone and will delete all associated events, tasks, and documents.": "Êtes-vous sûr de vouloir supprimer le dossier {uid} ? Cette action est irréversible et supprimera tous les événements, tâches et documents associés.",
+  "Matter :uid deleted successfully": "Le dossier :uid a été supprimé avec succès",
   "Create matter": "Créer un dossier",
   "Count": "Nombre",
   "New": "Nouveau",

@@ -180,6 +180,8 @@
   "Alt. ref": "Alt. Ref.",
   "Term adjust (days)": "Laufzeitanpassung (Tage)",
   "Delete Matter": "Akte löschen",
+  "Are you sure you want to delete matter {uid}? This action cannot be undone and will delete all associated events, tasks, and documents.": "Sind Sie sicher, dass Sie die Akte {uid} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden und löscht alle zugehörigen Ereignisse, Aufgaben und Dokumente.",
+  "Matter :uid deleted successfully": "Akte :uid wurde erfolgreich gelöscht",
   "Create matter": "Akte erstellen",
   "Count": "Anzahl",
   "New": "Neu",

@@ -786,9 +786,11 @@ class MatterController extends Controller
     public function destroy(Matter $matter)
     {
         Gate::authorize('readwrite');
+
+        $uid = $matter->uid;
         $matter->delete();
 
-        return $matter;
+        return to_route('matter.index')->with('success', __('Matter :uid deleted successfully', ['uid' => $uid]));
     }
 
     /**

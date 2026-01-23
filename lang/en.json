@@ -184,6 +184,8 @@
   "Alt. ref": "Alt. ref",
   "Term adjust (days)": "Term adjust (days)",
   "Delete Matter": "Delete Matter",
+  "Are you sure you want to delete matter {uid}? This action cannot be undone and will delete all associated events, tasks, and documents.": "Are you sure you want to delete matter {uid}? This action cannot be undone and will delete all associated events, tasks, and documents.",
+  "Matter :uid deleted successfully": "Matter :uid deleted successfully",
   "Create matter": "Create matter",
   "Count": "Count",
   "New": "New",

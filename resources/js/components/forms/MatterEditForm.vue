@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="handleSubmit">
-    <div class="space-y-4">
+    <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
       <!-- Category -->
       <FormField
         :label="t('Category')"
@@ -122,29 +122,55 @@
     </div>
 
     <!-- Form Actions -->
-    <div class="flex justify-end gap-3 mt-6">
-      <Button type="button" variant="outline" @click="handleCancel">
-        {{ t('Cancel') }}
+    <div class="flex justify-between gap-3 mt-6 pt-4 border-t">
+      <Button
+        v-if="canDelete"
+        type="button"
+        variant="destructive"
+        @click="showDeleteDialog = true"
+        :disabled="form.processing || isDeleting"
+      >
+        <Trash2 class="mr-2 h-4 w-4" />
+        {{ t('Delete') }}
       </Button>
-      <Button type="submit" :disabled="form.processing">
-        <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
-        {{ form.processing ? t('Saving...') : t('Save Changes') }}
-      </Button>
+      <div v-else></div>
+
+      <div class="flex gap-3">
+        <Button type="button" variant="outline" @click="handleCancel" :disabled="form.processing || isDeleting">
+          {{ t('Cancel') }}
+        </Button>
+        <Button type="submit" :disabled="form.processing || isDeleting">
+          <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+          {{ form.processing ? t('Saving...') : t('Save Changes') }}
+        </Button>
+      </div>
     </div>
   </form>
+
+  <!-- Delete Confirmation Dialog -->
+  <ConfirmDialog
+    v-model:open="showDeleteDialog"
+    :title="t('Delete Matter')"
+    :message="t('Are you sure you want to delete matter {uid}? This action cannot be undone and will delete all associated events, tasks, and documents.', { uid: matter.uid })"
+    :confirm-text="t('Delete')"
+    :cancel-text="t('Cancel')"
+    type="destructive"
+    @confirm="handleDelete"
+  />
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
+import { useForm, usePage, router } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
-import { Loader2 } from 'lucide-vue-next'
+import { Loader2, Trash2 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import FormField from '@/components/ui/form/FormField.vue'
 import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import DatePicker from '@/components/ui/date-picker/DatePicker.vue'
+import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue'
 import { useTranslatedField } from '@/composables/useTranslation'
 
 const props = defineProps({
@@ -154,7 +180,19 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['success', 'cancel'])
+const emit = defineEmits(['success', 'cancel', 'deleted'])
+
+const page = usePage()
+
+// Delete state
+const showDeleteDialog = ref(false)
+const isDeleting = ref(false)
+
+// Check if user can delete (not CLI role)
+const canDelete = computed(() => {
+  const user = page.props.auth?.user
+  return user?.role !== 'CLI'
+})
 
 const { t } = useI18n()
 const { translated } = useTranslatedField()
@@ -188,6 +226,25 @@ function handleSubmit() {
 
 function handleCancel() {
   emit('cancel')
+}
+
+function handleDelete() {
+  isDeleting.value = true
+
+  router.delete(`/matter/${props.matter.id}`, {
+    onSuccess: () => {
+      emit('deleted')
+      // Redirect to matters list after deletion
+      router.visit('/matter')
+    },
+    onError: (errors) => {
+      console.error('Delete matter error:', errors)
+      isDeleting.value = false
+    },
+    onFinish: () => {
+      showDeleteDialog.value = false
+    }
+  })
 }
 
 function handleCategorySelect(category) {
