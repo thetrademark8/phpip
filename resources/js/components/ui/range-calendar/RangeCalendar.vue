@@ -1,6 +1,8 @@
 <script setup>
+import { ref, watch } from "vue";
 import { reactiveOmit } from "@vueuse/core";
 import { RangeCalendarRoot, useForwardPropsEmits } from "reka-ui";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import { cn } from "@/lib/utils";
 import {
   RangeCalendarCell,
@@ -15,6 +17,7 @@ import {
   RangeCalendarNextButton,
   RangeCalendarPrevButton,
 } from ".";
+import CalendarMonthYearSelect from "@/components/ui/calendar/CalendarMonthYearSelect.vue";
 
 const props = defineProps({
   defaultValue: { type: null, required: false },
@@ -43,23 +46,53 @@ const props = defineProps({
   asChild: { type: Boolean, required: false },
   as: { type: [String, Object, Function], required: false },
   class: { type: null, required: false },
+  showMonthYearSelect: { type: Boolean, required: false, default: false },
+  minYear: { type: Number, required: false },
+  maxYear: { type: Number, required: false },
 });
 const emits = defineEmits(["update:modelValue", "update:placeholder"]);
 
-const delegatedProps = reactiveOmit(props, "class");
+const delegatedProps = reactiveOmit(props, "class", "showMonthYearSelect", "minYear", "maxYear", "placeholder");
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
+
+// Local placeholder that we control
+const localPlaceholder = ref(props.placeholder ?? props.defaultPlaceholder ?? today(getLocalTimeZone()));
+
+// Sync with external placeholder prop if provided
+watch(() => props.placeholder, (val) => {
+  if (val) localPlaceholder.value = val;
+});
+
+// When local placeholder changes, emit to parent
+watch(localPlaceholder, (val) => {
+  emits("update:placeholder", val);
+});
+
+// Simple function to update placeholder - called by CalendarMonthYearSelect
+function setPlaceholder(newDate) {
+  localPlaceholder.value = newDate;
+}
 </script>
 
 <template>
   <RangeCalendarRoot
     v-slot="{ grid, weekDays }"
+    v-model:placeholder="localPlaceholder"
     data-slot="range-calendar"
     :class="cn('p-3', props.class)"
     v-bind="forwarded"
   >
     <RangeCalendarHeader>
-      <RangeCalendarHeading />
+      <CalendarMonthYearSelect
+        v-if="showMonthYearSelect"
+        :placeholder="localPlaceholder"
+        :locale="locale"
+        :min-year="minYear"
+        :max-year="maxYear"
+        @update:placeholder="setPlaceholder"
+      />
+      <RangeCalendarHeading v-else />
 
       <div class="flex items-center gap-1">
         <RangeCalendarPrevButton />

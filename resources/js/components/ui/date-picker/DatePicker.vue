@@ -16,6 +16,7 @@
     <PopoverContent class="w-auto p-0" align="start">
       <Calendar
         v-model="calendarValue"
+        show-month-year-select
         :placeholder="placeholderDate"
         :locale="locale"
         initial-focus
