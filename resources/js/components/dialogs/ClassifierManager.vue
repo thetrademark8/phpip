@@ -293,7 +293,6 @@ function handleAddClassifier() {
       forceFormData: true,
       onSuccess: () => {
         addForm.reset()
-        typeDisplay.value = ''
         selectedType.value = null
         isImageType.value = false
         showLinkedMatter.value = false
@@ -307,7 +306,6 @@ function handleAddClassifier() {
     }), {
       onSuccess: () => {
         addForm.reset()
-        typeDisplay.value = ''
         selectedType.value = null
         isImageType.value = false
         showLinkedMatter.value = false
