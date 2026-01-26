@@ -241,6 +241,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import axios from 'axios'
+import {Textarea} from "@/components/ui/textarea/index.js";
 
 const props = defineProps({
   open: Boolean,

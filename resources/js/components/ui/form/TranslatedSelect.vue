@@ -6,7 +6,7 @@
     <SelectContent>
       <SelectItem
         v-if="allowClear"
-        value=""
+        value="__CLEAR__"
         class="text-muted-foreground"
       >
         {{ clearLabel }}
@@ -33,6 +33,8 @@ import {
 } from '@/components/ui/select'
 import { useTranslatedField } from '@/composables/useTranslation'
 
+const CLEAR_VALUE = '__CLEAR__'
+
 const props = defineProps({
   modelValue: { type: [String, Number], default: '' },
   options: { type: Array, default: () => [] },
@@ -47,8 +49,8 @@ const emit = defineEmits(['update:modelValue'])
 const { translated } = useTranslatedField()
 
 const internalValue = computed({
-  get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value)
+  get: () => props.modelValue || undefined,
+  set: (value) => emit('update:modelValue', value === CLEAR_VALUE ? '' : value)
 })
 
 function getTranslatedLabel(option) {

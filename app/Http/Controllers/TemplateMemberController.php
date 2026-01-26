@@ -119,6 +119,11 @@ class TemplateMemberController extends Controller
         $request->merge(['updater' => Auth::user()->login]);
         $templateMember->update($request->except(['_token', '_method']));
 
+        if ($request->header('X-Inertia')) {
+            return redirect()->back()
+                ->with('success', 'Template member updated successfully.');
+        }
+
         return $templateMember;
     }
 

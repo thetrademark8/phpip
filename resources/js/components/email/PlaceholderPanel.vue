@@ -20,7 +20,7 @@
     </div>
 
     <!-- Content area -->
-    <div class="h-[350px] overflow-y-auto space-y-1">
+    <div class="overflow-y-auto space-y-1">
       <!-- Flat search results when searching -->
       <template v-if="searchQuery">
         <div v-if="filteredPlaceholders.length === 0" class="text-sm text-muted-foreground py-4 text-center">
