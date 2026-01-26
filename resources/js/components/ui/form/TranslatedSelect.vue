@@ -5,6 +5,13 @@
     </SelectTrigger>
     <SelectContent>
       <SelectItem
+        v-if="allowClear"
+        value=""
+        class="text-muted-foreground"
+      >
+        {{ clearLabel }}
+      </SelectItem>
+      <SelectItem
         v-for="option in options"
         :key="option.value"
         :value="option.value"
@@ -31,6 +38,8 @@ const props = defineProps({
   options: { type: Array, default: () => [] },
   placeholder: { type: String, default: 'Select...' },
   disabled: { type: Boolean, default: false },
+  allowClear: { type: Boolean, default: false },
+  clearLabel: { type: String, default: '-- Clear --' },
 })
 
 const emit = defineEmits(['update:modelValue'])

@@ -45,6 +45,9 @@
             <CardContent>
               <MatterFilters
                 :filters="filters"
+                :category-options="props.categoryOptions"
+                :country-options="props.countryOptions"
+                :status-options="props.statusOptions"
                 @update:filters="handleFilterUpdate"
               />
             </CardContent>
@@ -138,6 +141,9 @@ const props = defineProps({
   filters: Object,
   sort: String,
   direction: String,
+  categoryOptions: Array,
+  countryOptions: Array,
+  statusOptions: Array,
 })
 
 const { t } = useI18n()

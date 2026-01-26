@@ -1825,5 +1825,7 @@
   "No user found.": "Aucun utilisateur trouvé.",
   "No country found.": "Aucun pays trouvé.",
   "Search events...": "Rechercher des événements...",
-  "No event found.": "Aucun événement trouvé."
+  "No event found.": "Aucun événement trouvé.",
+  "Search statuses...": "Rechercher des statuts...",
+  "No status found.": "Aucun statut trouvé."
 }

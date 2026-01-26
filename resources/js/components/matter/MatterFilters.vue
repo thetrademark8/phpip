@@ -45,15 +45,13 @@
       <!-- Category -->
       <div class="space-y-2">
         <Label htmlFor="cat-filter">{{ t('matter.filters.labels.category') }}</Label>
-        <AutocompleteInput
+        <TranslatedSelect
           id="cat-filter"
           :placeholder="t('matter.filters.placeholders.category')"
           :model-value="props.filters.Cat"
-          @update:model-value="debouncedUpdate('Cat', $event)"
-          endpoint="/category/autocomplete"
-          value-key="key"
-          label-key="key"
-          class="uppercase"
+          @update:model-value="updateFilter('Cat', $event)"
+          :options="props.categoryOptions"
+          :allow-clear="true"
         />
       </div>
 
@@ -100,15 +98,15 @@
       <!-- Country -->
       <div class="space-y-2">
         <Label htmlFor="country-filter">{{ t('matter.filters.labels.country') }}</Label>
-        <AutocompleteInput
+        <Combobox
           id="country-filter"
           :placeholder="t('matter.filters.placeholders.country')"
           :model-value="props.filters.country"
-          @update:model-value="debouncedUpdate('country', $event)"
-          endpoint="/country/autocomplete"
-          value-key="iso"
-          label-key="name"
-          class="uppercase"
+          @update:model-value="updateFilter('country', $event)"
+          :options="props.countryOptions"
+          :search-placeholder="t('Search countries...')"
+          :empty-text="t('No country found.')"
+          :allow-clear="true"
         />
       </div>
 
@@ -127,14 +125,15 @@
       <!-- Status -->
       <div class="space-y-2">
         <Label htmlFor="status-filter">{{ t('matter.filters.labels.status') }}</Label>
-        <AutocompleteInput
+        <Combobox
           id="status-filter"
           :placeholder="t('matter.filters.placeholders.status')"
           :model-value="props.filters.Status"
-          @update:model-value="debouncedUpdate('Status', $event)"
-          endpoint="/status-event/autocomplete"
-          value-key="value"
-          label-key="value"
+          @update:model-value="updateFilter('Status', $event)"
+          :options="props.statusOptions"
+          :search-placeholder="t('Search statuses...')"
+          :empty-text="t('No status found.')"
+          :allow-clear="true"
         />
       </div>
 
@@ -237,11 +236,25 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { DateRangeFilter } from '@/components/ui/date-picker'
 import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import TranslatedSelect from '@/components/ui/form/TranslatedSelect.vue'
+import Combobox from '@/components/ui/combobox/Combobox.vue'
 
 const props = defineProps({
   filters: {
     type: Object,
     required: true,
+  },
+  categoryOptions: {
+    type: Array,
+    default: () => [],
+  },
+  countryOptions: {
+    type: Array,
+    default: () => [],
+  },
+  statusOptions: {
+    type: Array,
+    default: () => [],
   },
 })
 

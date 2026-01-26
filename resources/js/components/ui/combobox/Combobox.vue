@@ -34,23 +34,36 @@
             <Loader2 class="mx-auto h-4 w-4 animate-spin" />
           </div>
           <div
-            v-else-if="filteredOptions.length === 0"
+            v-else-if="filteredOptions.length === 0 && !allowClear"
             class="py-6 text-center text-sm text-muted-foreground"
           >
             {{ noResultsText }}
           </div>
-          <button
-            v-for="option in filteredOptions"
-            :key="option.value"
-            type="button"
-            class="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
-            @click="selectOption(option)"
-          >
-            <Check
-              :class="cn('mr-2 h-4 w-4', modelValue === option.value ? 'opacity-100' : 'opacity-0')"
-            />
-            <span class="truncate">{{ getLabel(option) }}</span>
-          </button>
+          <template v-else>
+            <button
+              v-if="allowClear"
+              type="button"
+              class="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground text-muted-foreground"
+              @click="clearSelection"
+            >
+              <Check
+                :class="cn('mr-2 h-4 w-4', !modelValue ? 'opacity-100' : 'opacity-0')"
+              />
+              <span class="truncate">{{ clearLabel }}</span>
+            </button>
+            <button
+              v-for="option in filteredOptions"
+              :key="option.value"
+              type="button"
+              class="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+              @click="selectOption(option)"
+            >
+              <Check
+                :class="cn('mr-2 h-4 w-4', modelValue === option.value ? 'opacity-100' : 'opacity-0')"
+              />
+              <span class="truncate">{{ getLabel(option) }}</span>
+            </button>
+          </template>
         </div>
       </div>
     </PopoverContent>
@@ -73,6 +86,8 @@ const props = defineProps({
   noResultsText: { type: String, default: 'No results found.' },
   disabled: { type: Boolean, default: false },
   searchEndpoint: { type: String, default: '' },
+  allowClear: { type: Boolean, default: false },
+  clearLabel: { type: String, default: '-- Clear --' },
 })
 
 const emit = defineEmits(['update:modelValue', 'selected'])
@@ -115,6 +130,13 @@ function getLabel(option) {
 function selectOption(option) {
   emit('update:modelValue', option.value)
   emit('selected', option)
+  open.value = false
+  searchQuery.value = ''
+}
+
+function clearSelection() {
+  emit('update:modelValue', '')
+  emit('selected', null)
   open.value = false
   searchQuery.value = ''
 }

@@ -135,4 +135,27 @@ class OptionsController extends Controller
 
         return response()->json($types);
     }
+
+    /**
+     * Get status event names for Combobox (status_event = 1).
+     */
+    public function statuses(Request $request): JsonResponse
+    {
+        $query = EventName::where('status_event', 1)->orderBy('name');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereJsonLike('name', $search)
+                    ->orWhereLike('code', "{$search}%");
+            });
+        }
+
+        $statuses = $query->get()->map(fn ($event) => [
+            'value' => $event->code,
+            'label' => $event->name,
+        ]);
+
+        return response()->json($statuses);
+    }
 }

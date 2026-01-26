@@ -114,6 +114,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users', [OptionsController::class, 'users'])->name('users');
         Route::get('event-names/{isTask?}', [OptionsController::class, 'eventNames'])->name('event-names');
         Route::get('classifier-types/{mainDisplay?}', [OptionsController::class, 'classifierTypes'])->name('classifier-types');
+        Route::get('statuses', [OptionsController::class, 'statuses'])->name('statuses');
     });
 
     // Classifier routes

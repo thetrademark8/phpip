@@ -11,6 +11,7 @@ use App\Models\ActorPivot;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Event;
+use App\Models\EventName;
 use App\Models\Matter;
 use App\Models\MatterType;
 use App\Models\User;
@@ -50,11 +51,30 @@ class MatterController extends Controller
         $matters = $this->matterService->searchMatters($filters, $options);
         $matters->withQueryString();
 
+        // Fetch options for filter dropdowns
+        $categoryOptions = Category::orderBy('code')->get()->map(fn($cat) => [
+            'value' => $cat->code,
+            'label' => $cat->category,
+        ]);
+
+        $countryOptions = Country::orderBy('name')->get()->map(fn($country) => [
+            'value' => $country->iso,
+            'label' => $country->name,
+        ]);
+
+        $statusOptions = EventName::where('status_event', 1)->orderBy('name')->get()->map(fn($event) => [
+            'value' => $event->code,
+            'label' => $event->name,
+        ]);
+
         return Inertia::render('Matter/Index', [
             'matters' => $matters,
             'filters' => $request->getAllParameters(),
             'sort' => $options['sortkey'],
             'direction' => $options['sortdir'],
+            'categoryOptions' => $categoryOptions,
+            'countryOptions' => $countryOptions,
+            'statusOptions' => $statusOptions,
         ]);
     }
 
