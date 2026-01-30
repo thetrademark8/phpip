@@ -29,22 +29,16 @@ class RuleController extends Controller
         $baseLocale = substr($locale, 0, 2);
 
         if (! is_null($Task)) {
-            $rule = $rule->whereHas('taskInfo', function ($q) use ($Task) {
-                $q->whereJsonLike('name', $Task);
-            });
+            $rule = $rule->where('task', $Task);
         }
         if (! is_null($Trigger)) {
-            $rule = $rule->whereHas('trigger', function ($q) use ($Trigger) {
-                $q->whereJsonLike('name', $Trigger);
-            });
+            $rule = $rule->where('trigger_event', $Trigger);
         }
         if (! is_null($Country)) {
             $rule = $rule->whereLike('for_country', $Country.'%');
         }
         if (! is_null($Category)) {
-            $rule = $rule->whereHas('category', function ($q) use ($Category) {
-                $q->whereJsonLike('category', $Category);
-            });
+            $rule = $rule->where('for_category', $Category);
         }
 
         if (! is_null($Detail)) {
@@ -52,9 +46,7 @@ class RuleController extends Controller
         }
 
         if (! is_null($Type)) {
-            $rule = $rule->whereHas('type', function ($q) use ($Type) {
-                $q->whereJsonLike('type', $Type);
-            });
+            $rule = $rule->where('for_type', $Type);
         }
         if (! is_null($Origin)) {
             $rule = $rule->whereLike('for_origin', "{$Origin}%");
