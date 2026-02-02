@@ -1,24 +1,54 @@
 <template>
-  <DataTable
-    :columns="columns"
-    :data="renewals"
-    :loading="false"
-    :selectable="permissions.canWrite"
-    :show-pagination="false"
-    :empty-message="t('dashboard.renewals.no_renewals_found')"
-    :get-row-id="(row) => row.id"
-    :get-row-class="getRowClass"
-    @update:selected="handleSelection"
-  />
+  <div>
+    <DataTable
+      :columns="columns"
+      :data="paginatedRenewals"
+      :loading="false"
+      :selectable="permissions.canWrite"
+      :show-pagination="false"
+      :empty-message="t('dashboard.renewals.no_renewals_found')"
+      :get-row-id="(row) => row.id"
+      :get-row-class="getRowClass"
+      @update:selected="handleSelection"
+    />
+
+    <!-- Pagination Controls -->
+    <div v-if="renewals.length > perPage" class="flex items-center justify-between px-4 py-3 border-t">
+      <p class="text-sm text-muted-foreground">
+        {{ t('dashboard.pagination.showing', { from: paginationFrom, to: paginationTo, total: renewals.length }) }}
+      </p>
+      <div class="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          <ChevronLeft class="h-4 w-4" />
+          {{ t('dashboard.pagination.previous') }}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          :disabled="currentPage >= totalPages"
+          @click="currentPage++"
+        >
+          {{ t('dashboard.pagination.next') }}
+          <ChevronRight class="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { h } from 'vue'
+import { h, ref, computed } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import { format, parseISO, isPast, isBefore, addDays, formatDistanceToNow, isToday as isTodayDateFns } from 'date-fns'
 import { fr, de, enUS } from 'date-fns/locale'
-import { CalendarDays, Clock, AlertCircle, DollarSign } from 'lucide-vue-next'
+import { CalendarDays, Clock, AlertCircle, DollarSign, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import DataTable from '@/components/ui/DataTable.vue'
+import { Button } from '@/components/ui/button'
 import StatusBadge from '@/components/display/StatusBadge.vue'
 import { useTranslatedField } from '@/composables/useTranslation.js'
 
@@ -37,12 +67,30 @@ const props = defineProps({
   permissions: {
     type: Object,
     required: true
+  },
+  perPage: {
+    type: Number,
+    default: 10
   }
 })
 
 const emit = defineEmits(['update:selected'])
 
 const { t, translated } = useTranslatedField()
+
+// Pagination state
+const currentPage = ref(1)
+
+const totalPages = computed(() => Math.ceil(props.renewals.length / props.perPage))
+
+const paginatedRenewals = computed(() => {
+  const start = (currentPage.value - 1) * props.perPage
+  const end = start + props.perPage
+  return props.renewals.slice(start, end)
+})
+
+const paginationFrom = computed(() => (currentPage.value - 1) * props.perPage + 1)
+const paginationTo = computed(() => Math.min(currentPage.value * props.perPage, props.renewals.length))
 
 // Helper function to get matter title
 const getMatterTitle = (matter) => {

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasTranslationsExtended;
 use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
+    use HasTranslationsExtended;
+
     protected $table = 'country';
 
     protected $primaryKey = 'iso';
@@ -20,9 +23,7 @@ class Country extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'name' => 'json',
-    ];
+    public $translatable = ['name'];
 
     public function getGoesnationalAttribute() // Defines "goesnational" as an attribute
     {

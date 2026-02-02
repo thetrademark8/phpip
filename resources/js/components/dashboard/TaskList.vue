@@ -1,24 +1,54 @@
 <template>
-  <DataTable
-      :columns="columns"
-      :data="tasks"
-      :loading="false"
-      :selectable="permissions.canWrite"
-      :show-pagination="false"
-      :empty-message="t('dashboard.tasks.no_tasks_found')"
-      :get-row-id="(row) => row.id"
-      :get-row-class="getRowClass"
-      @update:selected="handleSelection"
-  />
+  <div>
+    <DataTable
+        :columns="columns"
+        :data="paginatedTasks"
+        :loading="false"
+        :selectable="permissions.canWrite"
+        :show-pagination="false"
+        :empty-message="t('dashboard.tasks.no_tasks_found')"
+        :get-row-id="(row) => row.id"
+        :get-row-class="getRowClass"
+        @update:selected="handleSelection"
+    />
+
+    <!-- Pagination Controls -->
+    <div v-if="tasks.length > perPage" class="flex items-center justify-between px-4 py-3 border-t">
+      <p class="text-sm text-muted-foreground">
+        {{ t('dashboard.pagination.showing', { from: paginationFrom, to: paginationTo, total: tasks.length }) }}
+      </p>
+      <div class="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          <ChevronLeft class="h-4 w-4" />
+          {{ t('dashboard.pagination.previous') }}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          :disabled="currentPage >= totalPages"
+          @click="currentPage++"
+        >
+          {{ t('dashboard.pagination.next') }}
+          <ChevronRight class="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import {h, computed} from 'vue'
+import {h, computed, ref} from 'vue'
 import {Link, usePage} from '@inertiajs/vue3'
 import {format, parseISO, isPast, isBefore, addDays, formatDistanceToNow} from 'date-fns'
 import {fr, de, enUS} from 'date-fns/locale'
-import {CalendarDays, Clock, AlertCircle} from 'lucide-vue-next'
+import {CalendarDays, Clock, AlertCircle, ChevronLeft, ChevronRight} from 'lucide-vue-next'
 import DataTable from '@/components/ui/DataTable.vue'
+import { Button } from '@/components/ui/button'
 import StatusBadge from '@/components/display/StatusBadge.vue'
 import { useTranslatedField } from '@/composables/useTranslation.js'
 
@@ -37,12 +67,30 @@ const props = defineProps({
   permissions: {
     type: Object,
     required: true
+  },
+  perPage: {
+    type: Number,
+    default: 10
   }
 })
 
 const emit = defineEmits(['update:selected'])
 
 const { t, translated } = useTranslatedField()
+
+// Pagination state
+const currentPage = ref(1)
+
+const totalPages = computed(() => Math.ceil(props.tasks.length / props.perPage))
+
+const paginatedTasks = computed(() => {
+  const start = (currentPage.value - 1) * props.perPage
+  const end = start + props.perPage
+  return props.tasks.slice(start, end)
+})
+
+const paginationFrom = computed(() => (currentPage.value - 1) * props.perPage + 1)
+const paginationTo = computed(() => Math.min(currentPage.value * props.perPage, props.tasks.length))
 
 // Helper function to get matter title
 const getMatterTitle = (matter) => {

@@ -185,31 +185,15 @@ class HomeController extends Controller
             })
             ->count();
         
-        // Task completion rate (last 30 days)
-        $completedTasks = Task::where('done', 1)
-            ->where('done_date', '>=', $now->copy()->subDays(30))
-            ->count();
-        
-        $totalTasksLast30Days = Task::where(function ($query) use ($now) {
-                $query->where('done', 1)
-                    ->where('done_date', '>=', $now->copy()->subDays(30));
-            })
-            ->orWhere(function ($query) use ($now) {
-                $query->where('done', 0)
-                    ->where('created_at', '>=', $now->copy()->subDays(30));
-            })
-            ->count();
-        
-        $taskCompletionRate = $totalTasksLast30Days > 0 
-            ? round(($completedTasks / $totalTasksLast30Days) * 100)
-            : 0;
-        
+        // Matters created this year
+        $mattersCreatedThisYear = Matter::whereYear('created_at', $now->year)->count();
+
         return [
             'totalActiveMatters' => $totalActiveMatters,
             'activeMattersChange' => $activeMattersChange,
             'overdueTasks' => $overdueTasks,
             'upcomingRenewals' => $upcomingRenewals,
-            'taskCompletionRate' => $taskCompletionRate,
+            'mattersCreatedThisYear' => $mattersCreatedThisYear,
         ];
     }
 
