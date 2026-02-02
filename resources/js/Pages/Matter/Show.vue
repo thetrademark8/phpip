@@ -397,6 +397,7 @@
                   :compact="true"
                   @update="handleActorUpdate"
                   @edit="handleActorEdit"
+                  @remove="handleActorRemove"
               />
             </CardContent>
           </Card>
@@ -638,6 +639,17 @@ function handleActorUpdate() {
 function handleActorEdit(actor) {
   selectedActor.value = actor
   showActorEditDialog.value = true
+}
+
+function handleActorRemove(actor) {
+  if (confirm(t('Remove {name} from this matter?', { name: actor.display_name || actor.name }))) {
+    router.delete(`/actor-pivot/${actor.id}`, {
+      preserveScroll: true,
+      onSuccess: () => {
+        router.reload({ only: ['matter', 'actors'] })
+      }
+    })
+  }
 }
 
 function handleNotesUpdate() {
