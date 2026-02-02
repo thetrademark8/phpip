@@ -39,6 +39,7 @@ class PlaceholderService
             '{{matter.title}}' => __('email.placeholder.matter_title'),
             '{{matter.filing_date}}' => __('email.placeholder.matter_filing_date'),
             '{{matter.filing_number}}' => __('email.placeholder.matter_filing_number'),
+            '{{matter.priority_date}}' => __('email.placeholder.matter_priority_date'),
             '{{matter.registration_date}}' => __('email.placeholder.matter_registration_date'),
             '{{matter.registration_number}}' => __('email.placeholder.matter_registration_number'),
             '{{matter.publication_date}}' => __('email.placeholder.matter_publication_date'),
@@ -117,6 +118,7 @@ class PlaceholderService
             $values['{{matter.title}}'] = $this->matter->titles->first()?->value;
             $values['{{matter.filing_date}}'] = $this->matter->filing?->event_date?->isoFormat('L');
             $values['{{matter.filing_number}}'] = $this->matter->filing?->detail;
+            $values['{{matter.priority_date}}'] = $this->matter->priority()->first()?->event_date?->isoFormat('L');
             $values['{{matter.registration_date}}'] = ($this->matter->grant ?? $this->matter->registration)?->event_date?->isoFormat('L');
             $values['{{matter.registration_number}}'] = ($this->matter->grant ?? $this->matter->registration)?->detail;
             $values['{{matter.publication_date}}'] = $this->matter->publication?->event_date?->isoFormat('L');

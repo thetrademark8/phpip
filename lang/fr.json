@@ -1744,6 +1744,7 @@
   "email.placeholder.matter_title": "Titre du dossier",
   "email.placeholder.matter_filing_date": "Date de dépôt",
   "email.placeholder.matter_filing_number": "Numéro de dépôt",
+  "email.placeholder.matter_priority_date": "Date de priorité",
   "email.placeholder.matter_registration_date": "Date d'enregistrement",
   "email.placeholder.matter_registration_number": "Numéro d'enregistrement",
   "email.placeholder.matter_publication_date": "Date de publication",

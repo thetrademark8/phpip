@@ -1747,6 +1747,7 @@
   "email.placeholder.matter_title": "Matter title",
   "email.placeholder.matter_filing_date": "Filing date",
   "email.placeholder.matter_filing_number": "Filing number",
+  "email.placeholder.matter_priority_date": "Priority date",
   "email.placeholder.matter_registration_date": "Registration date",
   "email.placeholder.matter_registration_number": "Registration number",
   "email.placeholder.matter_publication_date": "Publication date",

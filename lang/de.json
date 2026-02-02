@@ -1647,6 +1647,7 @@
   "email.placeholder.matter_title": "Aktentitel",
   "email.placeholder.matter_filing_date": "Anmeldedatum",
   "email.placeholder.matter_filing_number": "Anmeldenummer",
+  "email.placeholder.matter_priority_date": "Prioritätsdatum",
   "email.placeholder.matter_registration_date": "Eintragungsdatum",
   "email.placeholder.matter_registration_number": "Eintragungsnummer",
   "email.placeholder.matter_publication_date": "Veröffentlichungsdatum",
