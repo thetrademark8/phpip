@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(MatterController::class)->prefix('matter')->name('matter.')->group(function () {
         Route::get('autocomplete', [AutocompleteController::class, 'matter'])->name('autocomplete');
         Route::get('new-caseref', [AutocompleteController::class, 'newCaseref'])->name('new-caseref');
+        Route::get('form-options', 'getFormOptions')->name('form-options');
         Route::post('search', [MatterSearchController::class, 'search'])->name('search');
         Route::get('search', 'search')->name('search.ajax');
         Route::get('export', 'export')->name('export');

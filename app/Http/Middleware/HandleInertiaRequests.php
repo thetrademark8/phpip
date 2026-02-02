@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use App\Helpers\PermissionHelper;
 use App\Models\Category;
+use App\Models\Country;
+use App\Models\MatterType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 

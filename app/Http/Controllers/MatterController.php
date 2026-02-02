@@ -1061,4 +1061,40 @@ class MatterController extends Controller
             }),
         ]);
     }
+
+    /**
+     * Get form options for matter creation/edit dialogs.
+     */
+    public function getFormOptions()
+    {
+        $categoryOptions = Category::orderBy('code')->get()->map(fn($cat) => [
+            'value' => $cat->code,
+            'label' => $cat->category,
+            'prefix' => $cat->ref_prefix,
+        ]);
+
+        $typeOptions = MatterType::orderBy('code')->get()->map(fn($type) => [
+            'value' => $type->code,
+            'label' => $type->type,
+        ]);
+
+        $userOptions = User::orderBy('name')->get()->map(fn($user) => [
+            'value' => $user->login,
+            'label' => $user->name,
+        ]);
+
+        $countryOptions = Country::orderBy('name')->get()->map(function ($country) {
+            return [
+                'value' => $country->iso,
+                'label' => $country->name,
+            ];
+        });
+
+        return response()->json([
+            'categoryOptions' => $categoryOptions,
+            'typeOptions' => $typeOptions,
+            'userOptions' => $userOptions,
+            'countryOptions' => $countryOptions,
+        ]);
+    }
 }
