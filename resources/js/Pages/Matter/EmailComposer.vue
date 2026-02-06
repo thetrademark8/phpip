@@ -212,7 +212,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import MainLayout from '@/Layouts/MainLayout.vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -253,6 +253,11 @@ const props = defineProps({
 
 // Form state via composable
 const { form, isDirty, canSend, loadTemplate, resetAfterSend } = useEmailForm()
+
+// DEBUG: Watch form.attachment_ids
+watch(() => form.attachment_ids, (newVal) => {
+  console.log('[EmailComposer] form.attachment_ids changed:', newVal)
+}, { deep: true })
 
 // Local state
 const editorRef = ref(null)
@@ -347,6 +352,16 @@ const sendEmail = async () => {
   sending.value = true
   showPreview.value = false
   showConfirmSend.value = false
+
+  // DEBUG: Log what we're sending
+  console.log('[EmailComposer] Sending email with data:', {
+    recipient_ids: form.recipient_ids,
+    subject: form.subject,
+    cc: form.cc,
+    bcc: form.bcc,
+    attachment_ids: form.attachment_ids,
+    template_id: form.template_id,
+  })
 
   try {
     const response = await axios.post(`/matter/${props.matter.id}/email/send`, {

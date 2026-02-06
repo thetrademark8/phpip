@@ -30,18 +30,28 @@
     </div>
 
     <!-- Existing Attachments -->
-    <div v-if="attachments.length > 0" class="space-y-2 max-h-[200px] overflow-y-auto">
+    <CheckboxGroupRoot
+      v-if="attachments.length > 0"
+      v-model="selectedIds"
+      class="space-y-2 max-h-[200px] overflow-y-auto"
+    >
       <div
         v-for="attachment in attachments"
         :key="attachment.id"
         class="flex items-center justify-between p-2 border rounded-md"
       >
         <div class="flex items-center gap-2 flex-1 min-w-0">
-          <Checkbox
+          <CheckboxRoot
             :id="`attachment-${attachment.id}`"
-            :checked="isSelected(attachment.id)"
-            @update:checked="(checked) => toggleAttachment(attachment.id, checked)"
-          />
+            :value="attachment.id"
+            :class="cn(
+              'peer border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50'
+            )"
+          >
+            <CheckboxIndicator class="flex items-center justify-center text-current transition-none">
+              <Check class="size-3.5" />
+            </CheckboxIndicator>
+          </CheckboxRoot>
           <label :for="`attachment-${attachment.id}`" class="flex items-center gap-2 cursor-pointer min-w-0 flex-1">
             <FileIcon class="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span class="text-sm truncate">{{ attachment.original_name }}</span>
@@ -69,7 +79,7 @@
           </Button>
         </div>
       </div>
-    </div>
+    </CheckboxGroupRoot>
 
     <div v-else class="text-sm text-muted-foreground py-2">
       {{ $t('email.noAttachments') }}
@@ -79,10 +89,11 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { CheckboxGroupRoot, CheckboxRoot, CheckboxIndicator } from 'reka-ui'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Upload, FileIcon, Download, Trash2, Loader2, AlertCircle, X } from 'lucide-vue-next'
+import { Upload, FileIcon, Download, Trash2, Loader2, AlertCircle, X, Check } from 'lucide-vue-next'
 import { useAsyncUpload } from '@/composables/useAsyncUpload'
+import { cn } from '@/lib/utils'
 
 const props = defineProps({
   attachments: {
@@ -107,10 +118,11 @@ const uploadError = ref(null)
 // Use composable for proper async upload handling
 const { uploading, uploadFile } = useAsyncUpload(props.matterId)
 
-// Use Set for O(1) lookup
-const selectedSet = computed(() => new Set(props.modelValue))
-
-const isSelected = (id) => selectedSet.value.has(id)
+// Computed for v-model binding with CheckboxGroupRoot
+const selectedIds = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('update:modelValue', value),
+})
 
 const triggerUpload = () => {
   fileInput.value?.click()
@@ -135,13 +147,6 @@ const handleFileUpload = async (event) => {
 
   // Reset file input
   event.target.value = ''
-}
-
-const toggleAttachment = (id, checked) => {
-  const newValue = checked
-    ? [...props.modelValue, id]
-    : props.modelValue.filter(i => i !== id)
-  emit('update:modelValue', newValue)
 }
 
 const downloadAttachment = (attachment) => {
