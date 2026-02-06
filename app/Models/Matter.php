@@ -585,19 +585,63 @@ class Matter extends Model
                             $query->whereRaw("tmcl.value COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Filed':
-                            $query->whereLike('fil.event_date', "$value%");
+                            if (is_array($value)) {
+                                // Handle date range filter
+                                if (! empty($value['from'])) {
+                                    $query->where('fil.event_date', '>=', $value['from']);
+                                }
+                                if (! empty($value['to'])) {
+                                    $query->where('fil.event_date', '<=', $value['to']);
+                                }
+                            } else {
+                                $query->whereLike('fil.event_date', "$value%");
+                            }
                             break;
                         case 'FilNo':
                             $query->whereRaw("fil.detail COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Published':
-                            $query->whereLike('pub.event_date', "$value%");
+                            if (is_array($value)) {
+                                // Handle date range filter
+                                if (! empty($value['from'])) {
+                                    $query->where('pub.event_date', '>=', $value['from']);
+                                }
+                                if (! empty($value['to'])) {
+                                    $query->where('pub.event_date', '<=', $value['to']);
+                                }
+                            } else {
+                                $query->whereLike('pub.event_date', "$value%");
+                            }
                             break;
                         case 'registration_date':
-                            $query->where(function ($q) use ($value) {
-                                $q->whereLike('grt.event_date', "$value%")
-                                    ->orWhereLike('reg.event_date', "$value%");
-                            });
+                            if (is_array($value)) {
+                                // Handle date range filter for registration date (GRT or REG event)
+                                $query->where(function ($q) use ($value) {
+                                    $q->where(function ($sub) use ($value) {
+                                        $sub->whereNotNull('grt.event_date');
+                                        if (! empty($value['from'])) {
+                                            $sub->where('grt.event_date', '>=', $value['from']);
+                                        }
+                                        if (! empty($value['to'])) {
+                                            $sub->where('grt.event_date', '<=', $value['to']);
+                                        }
+                                    })->orWhere(function ($sub) use ($value) {
+                                        $sub->whereNull('grt.event_date')
+                                            ->whereNotNull('reg.event_date');
+                                        if (! empty($value['from'])) {
+                                            $sub->where('reg.event_date', '>=', $value['from']);
+                                        }
+                                        if (! empty($value['to'])) {
+                                            $sub->where('reg.event_date', '<=', $value['to']);
+                                        }
+                                    });
+                                });
+                            } else {
+                                $query->where(function ($q) use ($value) {
+                                    $q->whereLike('grt.event_date', "$value%")
+                                        ->orWhereLike('reg.event_date', "$value%");
+                                });
+                            }
                             break;
                         case 'registration_number':
                             $query->where(function ($q) use ($value) {

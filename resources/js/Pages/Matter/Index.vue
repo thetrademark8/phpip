@@ -356,10 +356,9 @@ function applyFilters() {
 }
 
 function clearFilters() {
-  loading.value = true
-  
-  MatterFilterService.clearFilters(filters.value)
-    .finally(() => { loading.value = false })
+  // Reset local filter state using the composable's clearFilters
+  // The watcher will then trigger applyFilters with the cleared values
+  clearAllFilters()
 }
 
 function saveFilterState(open) {

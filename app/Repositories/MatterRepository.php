@@ -430,6 +430,7 @@ class MatterRepository implements MatterRepositoryInterface
                 'Client' => $query->whereRaw('LOWER(IFNULL(cli.name, clic.name)) LIKE ?', ["$lowerValue%"]),
                 'ClRef' => $query->whereRaw('LOWER(IFNULL(clilnk.actor_ref, cliclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
                 'Applicant' => $query->whereRaw('LOWER(app.name) LIKE ?', ["$lowerValue%"]),
+                'Owner' => $query->whereRaw('LOWER(IFNULL(own.name, ownc.name)) LIKE ?', ["%$lowerValue%"]),
                 'Agent' => $query->whereRaw('LOWER(IFNULL(agt.name, agtc.name)) LIKE ?', ["$lowerValue%"]),
                 'AgtRef' => $query->whereRaw('LOWER(IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
                 'Title' => $query->whereRaw('LOWER(concat_ws(" ", tit1.value, tit2.value, tit3.value)) LIKE ?', ["%$lowerValue%"]),
@@ -443,10 +444,11 @@ class MatterRepository implements MatterRepositoryInterface
                         ->orWhereLike('reg.event_date', "$value%");
                 }),
                 'registration_date' => $this->applyRegistrationDateFilter($query, $value),
-                'GrtNo' => $query->where(function ($q) use ($lowerValue) {
-                    $q->whereRaw('LOWER(grt.detail) LIKE ?', ["$lowerValue%"])
-                        ->orWhereRaw('LOWER(reg.detail) LIKE ?', ["$lowerValue%"]);
+                'GrtNo', 'registration_number' => $query->where(function ($q) use ($lowerValue) {
+                    $q->whereRaw('LOWER(grt.detail) LIKE ?', ["%$lowerValue%"])
+                        ->orWhereRaw('LOWER(reg.detail) LIKE ?', ["%$lowerValue%"]);
                 }),
+                'classes' => $query->whereRaw('LOWER(tmcl.value) LIKE ?', ["%$lowerValue%"]),
                 'responsible' => $query->where(function ($q) use ($lowerValue) {
                     $q->whereRaw('LOWER(matter.responsible) LIKE ?', ["$lowerValue%"])
                         ->orWhereRaw('LOWER(del.login) LIKE ?', ["$lowerValue%"]);

@@ -47,18 +47,35 @@ class MatterExportRequest extends FormRequest
             'Client' => 'nullable|string',
             'ClRef' => 'nullable|string',
             'Applicant' => 'nullable|string',
+            'Owner' => 'nullable|string',
             'Agent' => 'nullable|string',
             'AgtRef' => 'nullable|string',
             'Title' => 'nullable|string',
             'Inventor1' => 'nullable|string',
-            'Filed' => 'nullable|string',
             'FilNo' => 'nullable|string',
-            'Published' => 'nullable|string',
             'PubNo' => 'nullable|string',
-            'Granted' => 'nullable|string',
             'GrtNo' => 'nullable|string',
             'responsible' => 'nullable|string',
             'Ctnr' => 'nullable|string',
+            'classes' => 'nullable|string',
+            'registration_number' => 'nullable|string',
+
+            // Date range filters (support both single date and { from, to } object)
+            'Filed' => 'nullable|array',
+            'Filed.from' => 'nullable|date',
+            'Filed.to' => 'nullable|date',
+            'Published' => 'nullable|array',
+            'Published.from' => 'nullable|date',
+            'Published.to' => 'nullable|date',
+            'Granted' => 'nullable|array',
+            'Granted.from' => 'nullable|date',
+            'Granted.to' => 'nullable|date',
+            'registration_date' => 'nullable|array',
+            'registration_date.from' => 'nullable|date',
+            'registration_date.to' => 'nullable|date',
+
+            // Boolean filters
+            'include_dead' => 'nullable|boolean',
         ];
     }
 }
