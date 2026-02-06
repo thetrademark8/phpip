@@ -85,6 +85,13 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('can:admin')->prefix('settings')->name('settings.')->group(function () {
         Route::get('email', [EmailSettingController::class, 'index'])->name('email');
         Route::put('email', [EmailSettingController::class, 'update'])->name('email.update');
+
+        // TeamLeader Integration
+        Route::get('teamleader', [App\Http\Controllers\TeamLeaderController::class, 'index'])->name('teamleader.index');
+        Route::get('teamleader/authenticate', [App\Http\Controllers\TeamLeaderController::class, 'authenticate'])->name('teamleader.authenticate');
+        Route::get('teamleader/callback', [App\Http\Controllers\TeamLeaderController::class, 'callback'])->name('teamleader.callback');
+        Route::post('teamleader/disconnect', [App\Http\Controllers\TeamLeaderController::class, 'disconnect'])->name('teamleader.disconnect');
+        Route::post('teamleader/test', [App\Http\Controllers\TeamLeaderController::class, 'testConnection'])->name('teamleader.test');
     });
 
     // Autocomplete routes - some are public for filtering, others require readwrite

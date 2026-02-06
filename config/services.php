@@ -51,4 +51,10 @@ return [
         ),
     ],
 
+    'teamleader' => [
+        'enabled' => env('TEAMLEADER_ENABLED', false),
+        'client_id' => env('TEAMLEADER_CLIENT_ID'),
+        'client_secret' => env('TEAMLEADER_CLIENT_SECRET'),
+    ],
+
 ];
