@@ -6,10 +6,8 @@ use App\Models\Actor;
 use App\Models\EmailLog;
 use App\Models\EmailSetting;
 use App\Models\Matter;
-use App\Models\MatterAttachment;
 use App\Models\TemplateMember;
 use App\Notifications\MatterEmailNotification;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -61,19 +59,15 @@ class EmailService
         ]);
 
         try {
-            // Get attachment files
-            $attachments = ! empty($attachmentIds)
-                ? MatterAttachment::whereIn('id', $attachmentIds)->get()
-                : collect();
-
-            // Send notification
+            // Send notification - pass attachment IDs directly
+            // The notification will reload models from DB to avoid serialization issues
             $recipient->notify(new MatterEmailNotification(
                 $emailLog,
                 $resolvedSubject,
                 $resolvedBody,
                 $cc,
                 $bcc,
-                $attachments
+                $attachmentIds
             ));
 
             $emailLog->update([

@@ -9,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,7 +26,11 @@ class MatterEmailNotification extends Notification implements ShouldQueue
 
     protected array $bcc;
 
-    protected Collection $attachments;
+    /**
+     * Store attachment IDs instead of Collection to avoid serialization issues.
+     * Models will be reloaded in toMail() when the notification is processed.
+     */
+    protected array $attachmentIds;
 
     public function __construct(
         EmailLog $emailLog,
@@ -35,14 +38,14 @@ class MatterEmailNotification extends Notification implements ShouldQueue
         string $body,
         array $cc,
         array $bcc,
-        Collection $attachments
+        array $attachmentIds
     ) {
         $this->emailLog = $emailLog;
         $this->subject = $subject;
         $this->body = $body;
         $this->cc = $cc;
         $this->bcc = $bcc;
-        $this->attachments = $attachments;
+        $this->attachmentIds = $attachmentIds;
     }
 
     /**
@@ -79,15 +82,20 @@ class MatterEmailNotification extends Notification implements ShouldQueue
             }
         }
 
-        // Add attachments
-        foreach ($this->attachments as $attachment) {
-            if ($attachment instanceof MatterAttachment) {
+        // Add attachments - reload from database to avoid serialization issues
+        if (! empty($this->attachmentIds)) {
+            $attachments = MatterAttachment::whereIn('id', $this->attachmentIds)->get();
+
+            foreach ($attachments as $attachment) {
                 $contents = Storage::disk($attachment->disk)->get($attachment->path);
-                $message->attachData(
-                    $contents,
-                    $attachment->original_name,
-                    ['mime' => $attachment->mime_type]
-                );
+
+                if ($contents !== null && $contents !== false) {
+                    $message->attachData(
+                        $contents,
+                        $attachment->original_name,
+                        ['mime' => $attachment->mime_type]
+                    );
+                }
             }
         }
 
