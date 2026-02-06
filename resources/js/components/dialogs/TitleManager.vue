@@ -139,7 +139,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { Plus, Trash2, Pencil, Check, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
@@ -181,12 +181,20 @@ const typeDisplay = ref('')
 const removingTitleId = ref(null)
 const editingTitleId = ref(null)
 
+// Compute the correct matter_id (use container if exists, otherwise use matter itself)
+const targetMatterId = computed(() => props.matter.container_id || props.matter.id)
+
 // Forms
 const addForm = useForm({
-  matter_id: props.matter.container_id || props.matter.id,
+  matter_id: targetMatterId.value,
   type_code: '',
   value: ''
 })
+
+// Update matter_id when matter prop changes (e.g., navigating to different matter)
+watch(targetMatterId, (newMatterId) => {
+  addForm.matter_id = newMatterId
+}, { immediate: false })
 
 const editForm = useForm({
   value: ''

@@ -229,6 +229,9 @@ const selectedType = ref(null)
 const isImageType = ref(false)
 const showLinkedMatter = ref(false)
 
+// Compute the correct matter_id (use container if exists, otherwise use matter itself)
+const targetMatterId = computed(() => props.matter.container_id ?? props.matter.id)
+
 // Load classifier type options when dialog opens
 watch(() => props.open, async (isOpen) => {
   if (isOpen && classifierTypeOptions.value.length === 0) {
@@ -247,13 +250,18 @@ watch(() => props.open, async (isOpen) => {
 
 // Forms
 const addForm = useForm({
-  matter_id: props.matter.container_id ?? props.matter.id,
+  matter_id: targetMatterId.value,
   type_code: '',
   value: '',
   lnk_matter_id: '',
   display_order: 0,
   image: null
 })
+
+// Update matter_id when matter prop changes (e.g., navigating to different matter)
+watch(targetMatterId, (newMatterId) => {
+  addForm.matter_id = newMatterId
+}, { immediate: false })
 
 const editForm = useForm({
   value: ''
