@@ -39,32 +39,41 @@ export const DEFAULT_FILTERS = {
   // Boolean fields
   Ctnr: false,
   include_dead: false,
-  
+
   // Core fields
   tab: 0,
   display_with: '',
   sortkey: 'id',
   sortdir: 'desc',
-  
+
   // Text fields
   Ref: '',
   Cat: '',
+  country: '',
   Status: '',
   Client: '',
   ClRef: '',
+  Owner: '',
   Applicant: '',
   Agent: '',
   AgtRef: '',
   Title: '',
   Inventor1: '',
   responsible: '',
-  
-  // Date fields
+  classes: '',
+
+  // Simple date/text fields
   Status_date: '',
-  Filed: '',
   FilNo: '',
-  Published: '',
   PubNo: '',
   Granted: '',
   GrtNo: '',
+
+  // Date range fields (used with DateRangeFilter component)
+  Filed: { from: null, to: null },
+  Published: { from: null, to: null },
+  registration_date: { from: null, to: null },
+
+  // Registration fields
+  registration_number: '',
 }
