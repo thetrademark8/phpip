@@ -878,8 +878,8 @@ class MatterController extends Controller
         // @TODO rewrite the filter method to use the new query builder
         // Retrieve the filtered matters and convert them to an array.
         $export = Matter::filter(
-            $request->input('sortkey', 'caseref'),
-            $request->input('sortdir', 'asc'),
+            $request->input('sortkey', 'id'),
+            $request->input('sortdir', 'desc'),
             $filters,
             $request->display_with,
             $request->include_dead

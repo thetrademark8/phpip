@@ -124,8 +124,8 @@ class MatterFilterRequest extends FormRequest
     public function getOptions(): array
     {
         // Use new sort/direction parameters if available, fallback to sortkey/sortdir
-        $sortField = $this->input('sort') ?: $this->input('sortkey', 'caseref');
-        $sortDirection = $this->input('direction') ?: $this->input('sortdir', 'asc');
+        $sortField = $this->input('sort') ?: $this->input('sortkey', 'id');
+        $sortDirection = $this->input('direction') ?: $this->input('sortdir', 'desc');
         
         return [
             'sortkey' => $sortField,

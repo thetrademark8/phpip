@@ -26,8 +26,8 @@ class MatterExportRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->mergeIfMissing([
-            'sortkey' => 'caseref',
-            'sortdir' => 'asc',
+            'sortkey' => 'id',
+            'sortdir' => 'desc',
         ]);
     }
 
