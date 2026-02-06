@@ -46,22 +46,33 @@ class MatterExportService
         // Write each row of matters to the CSV file.
         // Extract only the columns that match the table interface, in the same order
         foreach ($matters as $matter) {
-            // Determine registration date (Granted or Registration_DP)
-            $registrationDate = $matter['Granted'] ?? $matter['Registration_DP'] ?? '';
+            // Determine registration date - handle both naming conventions
+            // Matter::filter() uses 'registration_date', MatterRepository uses 'Granted'
+            $registrationDate = $matter['Granted'] ?? $matter['registration_date'] ?? $matter['Registration_DP'] ?? '';
+
+            // Determine registration number - handle both naming conventions
+            // Matter::filter() uses 'registration_number', MatterRepository uses 'GrtNo'
+            $registrationNumber = $matter['GrtNo'] ?? $matter['registration_number'] ?? '';
+
+            // Owner - handle both naming conventions
+            $owner = $matter['owner_name'] ?? $matter['Owner'] ?? '';
+
+            // Country - prefer full name, fallback to ISO code
+            $country = $matter['country_name'] ?? $matter['country'] ?? '';
 
             $row = [
                 $matter['Ref'] ?? '',                    // Reference
                 $matter['Cat'] ?? '',                    // Category
-                $matter['country_name'] ?? '',           // Country (full name)
+                $country,                                // Country (full name or code)
                 $matter['Title'] ?? ($matter['Title2'] ?? ''), // Title
                 $matter['classes'] ?? '',                // Classes
                 $matter['Client'] ?? '',                 // Client
-                $matter['owner_name'] ?? '',             // Owner
+                $owner,                                  // Owner
                 $matter['Status'] ?? '',                 // Status
                 $matter['Filed'] ?? '',                  // Filed Date
                 $matter['FilNo'] ?? '',                  // Filed Number
                 $registrationDate,                       // Registration Date
-                $matter['GrtNo'] ?? '',                  // Registration Number
+                $registrationNumber,                     // Registration Number
                 $matter['renewal_due'] ?? '',            // Renewal Due
             ];
             // Remove utf8_decode to preserve UTF-8 encoding (BOM handles encoding)

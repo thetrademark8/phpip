@@ -370,6 +370,7 @@ class Matter extends Model
         $query = Matter::select(
             'matter.uid AS Ref',
             'matter.country AS country',
+            DB::raw("COALESCE(country.name_$baseLocale, country.name) AS country_name"),
             'matter.category_code AS Cat',
             'matter.origin',
             DB::raw("GROUP_CONCAT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(event_name.name, '$.\"$baseLocale\"')) SEPARATOR '|') AS Status"),
@@ -389,6 +390,7 @@ class Matter extends Model
             DB::raw('COALESCE(grt.event_date, reg.event_date) AS registration_date'),
             DB::raw('COALESCE(grt.detail, reg.detail) AS registration_number'),
             DB::raw("GROUP_CONCAT(DISTINCT tmcl.value ORDER BY tmcl.value SEPARATOR ', ') AS classes"),
+            DB::raw("COALESCE((SELECT MIN(t.due_date) FROM task t INNER JOIN event e ON t.trigger_id = e.id WHERE e.matter_id = matter.id AND t.code = 'REN' AND t.done_date IS NULL), matter.expire_date) AS renewal_due"),
             'matter.id',
             'matter.container_id',
             'matter.parent_id',
@@ -402,6 +404,10 @@ class Matter extends Model
             'matter_category',
             'matter.category_code',
             'matter_category.code'
+        )->leftJoin(
+            'country',
+            'matter.country',
+            'country.iso'
         )->leftJoin(
             DB::raw('matter_actor_lnk clilnk JOIN actor cli ON cli.id = clilnk.actor_id'),
             function ($join) {
