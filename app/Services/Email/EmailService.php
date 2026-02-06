@@ -8,6 +8,7 @@ use App\Models\EmailSetting;
 use App\Models\Matter;
 use App\Models\TemplateMember;
 use App\Notifications\MatterEmailNotification;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
