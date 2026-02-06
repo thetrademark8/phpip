@@ -66,9 +66,12 @@ class CompanyHandler
 
         $primaryAddress = $data['primary_address'] ?? ($fallbackAddress['address'] ?? null);
 
+        // Truncate display_name to 30 characters (DB constraint)
+        $displayName = mb_substr($data['name'], 0, 30);
+
         $actorData = [
             'name' => $data['name'],
-            'display_name' => $data['name'],
+            'display_name' => $displayName,
             'email' => $primaryEmail['email'] ?? null,
             'VAT_number' => $data['vat_number'] ?? null,
             'phone' => $primaryPhone['number'] ?? null,
@@ -81,15 +84,33 @@ class CompanyHandler
         $actor = $reference?->actor;
 
         if (!$actor) {
-            $actor = Actor::where('display_name', $actorData['display_name'])
-                ->orWhere('name', $actorData['name'])
-                ->first();
+            // Search using truncated display_name (exact match for unique constraint)
+            $actor = Actor::where('display_name', $displayName)->first();
+
+            // If not found by display_name, try by full name
+            if (!$actor) {
+                $actor = Actor::where('name', $data['name'])->first();
+            }
         }
 
-        if ($actor) {
-            $actor->update($actorData);
-        } else {
-            $actor = Actor::create($actorData);
+        try {
+            if ($actor) {
+                $actor->update($actorData);
+            } else {
+                $actor = Actor::create($actorData);
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Handle duplicate key - find existing and update
+            if ($e->getCode() === '23000') {
+                $actor = Actor::where('display_name', $displayName)->first();
+                if ($actor) {
+                    $actor->update($actorData);
+                } else {
+                    throw $e;
+                }
+            } else {
+                throw $e;
+            }
         }
 
         if (!$reference) {
