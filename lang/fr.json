@@ -1862,5 +1862,7 @@
   "teamleader.help.sync_companies": "Synchronisation automatique des entreprises de TeamLeader vers les Acteurs",
   "teamleader.help.sync_contacts": "Synchronisation automatique des contacts de TeamLeader vers les Acteurs",
   "teamleader.help.realtime_updates": "Recevez des mises à jour en temps réel via webhooks lorsque les données changent dans TeamLeader",
-  "teamleader.help.config_note": "La configuration est gérée via les variables d'environnement. Contactez votre administrateur pour obtenir de l'aide."
+  "teamleader.help.config_note": "La configuration est gérée via les variables d'environnement. Contactez votre administrateur pour obtenir de l'aide.",
+
+  "Integrations": "Intégrations"
 }

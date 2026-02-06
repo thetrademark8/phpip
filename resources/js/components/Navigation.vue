@@ -144,6 +144,15 @@
                 <DropdownMenuItem as-child class="pl-6">
                   <Link href="/classifier_type">{{ $t('Classifier types') }}</Link>
                 </DropdownMenuItem>
+
+                <!-- Integrations Section (only if any integration is enabled) -->
+                <template v-if="$page.props.app.teamleader_enabled">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>{{ $t('Integrations') }}</DropdownMenuLabel>
+                  <DropdownMenuItem v-if="$page.props.app.teamleader_enabled" as-child>
+                    <Link href="/settings/teamleader">TeamLeader</Link>
+                  </DropdownMenuItem>
+                </template>
               </DropdownMenuContent>
             </DropdownMenu>
 

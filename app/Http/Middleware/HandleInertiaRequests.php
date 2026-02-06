@@ -80,6 +80,7 @@ class HandleInertiaRequests extends Middleware
                 'name' => config('app.name'),
                 'company_name' => config('app.company_name'),
                 'company_logo' => config('app.company_logo'),
+                'teamleader_enabled' => config('services.teamleader.enabled', false),
             ],
             'matter_categories' => cache()->remember('matter_categories_nav', now()->addHours(1), function () {
                 return Category::whereColumn('code', 'display_with')
