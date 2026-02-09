@@ -823,7 +823,7 @@ class MatterController extends Controller
             [
                 'term_adjust' => 'numeric',
                 'idx' => 'numeric|nullable',
-                'expire_date' => 'date',
+                'expire_date' => 'nullable|date',
             ]
         );
         $request->merge(['updater' => Auth::user()->login]);
