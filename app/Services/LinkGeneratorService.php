@@ -83,14 +83,14 @@ class LinkGeneratorService
             'number_field' => 'publication'
         ],
         
-        // Design Offices
+        // Design Offices (DP = Design Patent category code)
         // Example FR: https://data.inpi.fr/dessins_modeles/FR20200885-003
         'INPI_DSG' => [
             'url' => 'https://data.inpi.fr/dessins_modeles/%s',
             'name' => 'INPI Dessins & Modèles',
             'icon' => 'Palette',
-            'categories' => ['DSG'],
-            'number_field' => 'registration',
+            'categories' => ['DP', 'DSG'],
+            'number_field' => 'filing', // Use filing number for French designs
             'number_format' => 'inpi_design_format'
         ],
         // Example EU: https://euipo.europa.eu/eSearch/#details/designs/007708706-0001
@@ -98,8 +98,8 @@ class LinkGeneratorService
             'url' => 'https://euipo.europa.eu/eSearch/#details/designs/%s',
             'name' => 'EUIPO Designs',
             'icon' => 'Palette',
-            'categories' => ['DSG'],
-            'number_field' => 'registration',
+            'categories' => ['DP', 'DSG'],
+            'number_field' => 'filing', // Use filing/application number for EU designs
             'number_format' => 'euipo_design_format'
         ],
         // Example WO: https://designdb.wipo.int/designdb/hague/fr/showData.jsp?ID=HAGUE.D215987
@@ -107,7 +107,7 @@ class LinkGeneratorService
             'url' => 'https://designdb.wipo.int/designdb/hague/fr/showData.jsp?ID=HAGUE.%s',
             'name' => 'WIPO Hague Design Database',
             'icon' => 'Globe',
-            'categories' => ['DSG'],
+            'categories' => ['DP', 'DSG'],
             'number_field' => 'registration',
             'number_format' => 'wipo_design_format'
         ],
@@ -115,14 +115,14 @@ class LinkGeneratorService
             'url' => 'https://ppubs.uspto.gov/dirsearch-public/print/downloadPdf/D%s',
             'name' => 'USPTO Design Patents',
             'icon' => 'FileText',
-            'categories' => ['DSG'],
+            'categories' => ['DP', 'DSG'],
             'number_field' => 'publication'
         ],
         'DPMA_DSG' => [
             'url' => 'https://register.dpma.de/DPMAregister/gsm/basis?AKZ=%s',
             'name' => 'DPMA Designs',
             'icon' => 'FileText',
-            'categories' => ['DSG'],
+            'categories' => ['DP', 'DSG'],
             'number_field' => 'filing'
         ]
     ];
@@ -234,8 +234,8 @@ class LinkGeneratorService
      */
     public function detectOfficeFromCountry(string $country, string $category): ?string
     {
-        // Handle Design Patents specifically
-        if ($category === 'DSG') {
+        // Handle Design Patents specifically (DP is the category code used in this system)
+        if ($category === 'DSG' || $category === 'DP') {
             switch ($country) {
                 case 'FR':
                     return 'INPI_DSG';
