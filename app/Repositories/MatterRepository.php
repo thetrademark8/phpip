@@ -299,7 +299,7 @@ class MatterRepository implements MatterRepositoryInterface
             })
             ->leftJoin('classifier AS tmcl', function ($join) {
                 $join->on(DB::raw('IFNULL(matter.container_id, matter.id)'), '=', 'tmcl.matter_id')
-                     ->where('tmcl.type_code', 'NICE');
+                     ->whereIn('tmcl.type_code', ['NICE', 'TMCL']);
             })
             ->leftJoin(DB::raw('event status JOIN event_name ON event_name.code = status.code AND event_name.status_event = 1'), 'matter.id', 'status.matter_id')
             ->leftJoin(DB::raw('event e2 JOIN event_name en2 ON e2.code = en2.code AND en2.status_event = 1'), function ($join) {

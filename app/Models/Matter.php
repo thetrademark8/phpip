@@ -489,7 +489,8 @@ class Matter extends Model
         )->leftJoin(
             'classifier AS tmcl',
             function ($join) {
-                $join->on('matter.id', 'tmcl.matter_id')->where('tmcl.type_code', 'TMCL');
+                $join->on(DB::raw('IFNULL(matter.container_id, matter.id)'), '=', 'tmcl.matter_id')
+                     ->whereIn('tmcl.type_code', ['NICE', 'TMCL']);
             }
         )->leftJoin(
             DB::raw('event status JOIN event_name ON event_name.code = status.code AND event_name.status_event = 1'),
