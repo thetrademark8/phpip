@@ -70,9 +70,11 @@ class AppServiceProvider extends ServiceProvider
                 $locale = substr($locale, 0, 2);
             }
 
+            // Use LOWER() for case-insensitive search and utf8mb4_unicode_ci for broader compatibility
+            // Search with contains pattern (%value%) instead of prefix (value%)
             return $this->whereRaw(
-                "JSON_UNQUOTE(JSON_EXTRACT($column, '$.$locale')) COLLATE utf8mb4_0900_ai_ci LIKE ?",
-                ["$value%"]
+                "LOWER(JSON_UNQUOTE(JSON_EXTRACT($column, '$.\"$locale\"'))) LIKE LOWER(?)",
+                ["%$value%"]
             );
         });
     }
