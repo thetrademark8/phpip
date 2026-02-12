@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\TeamLeader\TeamLeaderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -73,5 +74,43 @@ class TeamLeaderController extends Controller
 
         return redirect()->route('settings.teamleader.index')
             ->with('error', $result['message']);
+    }
+
+    public function diagnostics(): Response
+    {
+        $diagnostics = $this->teamLeaderService->getDiagnostics();
+
+        return Inertia::render('Settings/TeamLeader/Index', [
+            'status' => $this->teamLeaderService->getConnectionStatus(),
+            'enabled' => $this->teamLeaderService->isEnabled(),
+            'diagnostics' => $diagnostics,
+        ]);
+    }
+
+    public function reRegisterWebhook(): RedirectResponse
+    {
+        $result = $this->teamLeaderService->reRegisterWebhook();
+
+        if ($result['success']) {
+            return redirect()->route('settings.teamleader.index')
+                ->with('success', $result['message']);
+        }
+
+        return redirect()->route('settings.teamleader.index')
+            ->with('error', $result['message']);
+    }
+
+    public function triggerSync(): RedirectResponse
+    {
+        if (!$this->teamLeaderService->isConnected()) {
+            return redirect()->route('settings.teamleader.index')
+                ->with('error', 'Not connected to TeamLeader');
+        }
+
+        Artisan::call('teamleader:sync', ['--force' => true]);
+        $output = Artisan::output();
+
+        return redirect()->route('settings.teamleader.index')
+            ->with('success', 'Sync completed. ' . trim($output));
     }
 }

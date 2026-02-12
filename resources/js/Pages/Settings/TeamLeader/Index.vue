@@ -104,6 +104,17 @@
               v-if="status.connected"
               variant="outline"
               :disabled="isLoading"
+              @click="runDiagnostics"
+            >
+              <RefreshCw v-if="isDiagnosticsLoading" class="mr-2 h-4 w-4 animate-spin" />
+              <Stethoscope v-else class="mr-2 h-4 w-4" />
+              {{ $t('teamleader.actions.diagnostics') }}
+            </Button>
+
+            <Button
+              v-if="status.connected"
+              variant="outline"
+              :disabled="isLoading"
               @click="testConnection"
             >
               <RefreshCw v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
@@ -130,6 +141,188 @@
               {{ $t('teamleader.actions.connect') }}
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      <!-- Diagnostics Card -->
+      <Card v-if="diagnostics">
+        <CardHeader class="pb-4">
+          <CardTitle class="text-xl font-semibold flex items-center gap-2">
+            <Stethoscope class="h-5 w-5 text-primary" />
+            {{ $t('teamleader.diagnostics.title') }}
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="pt-0 space-y-6">
+
+          <!-- Token Diagnostics -->
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold flex items-center gap-2">
+              <Key class="h-4 w-4" />
+              {{ $t('teamleader.diagnostics.token') }}
+            </h3>
+            <div class="rounded-lg border p-4 space-y-2">
+              <div class="flex items-center gap-2">
+                <Badge :variant="tokenDiagVariant">
+                  {{ diagnostics.token.status }}
+                </Badge>
+                <span v-if="diagnostics.token.message" class="text-sm text-muted-foreground">
+                  {{ diagnostics.token.message }}
+                </span>
+              </div>
+              <div v-if="diagnostics.token.expires_in_minutes != null" class="text-xs text-muted-foreground">
+                {{ $t('teamleader.diagnostics.expires_in') }}: {{ diagnostics.token.expires_in_minutes }} min
+              </div>
+              <div v-if="diagnostics.token.refresh_attempted" class="text-xs">
+                <Badge :variant="diagnostics.token.refresh_success ? 'default' : 'destructive'" class="text-xs">
+                  {{ diagnostics.token.refresh_success ? $t('teamleader.diagnostics.refresh_ok') : $t('teamleader.diagnostics.refresh_failed') }}
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          <!-- Webhook Diagnostics -->
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold flex items-center gap-2">
+              <Webhook class="h-4 w-4" />
+              {{ $t('teamleader.diagnostics.webhook') }}
+            </h3>
+            <div class="rounded-lg border p-4 space-y-3">
+              <div class="flex items-center gap-2">
+                <Badge :variant="webhookDiagVariant">
+                  {{ diagnostics.webhook.status }}
+                </Badge>
+                <span class="text-sm text-muted-foreground">{{ diagnostics.webhook.message }}</span>
+              </div>
+
+              <!-- Webhook URL info -->
+              <div v-if="diagnostics.webhook.url" class="text-xs text-muted-foreground">
+                URL: <code class="bg-muted px-1 py-0.5 rounded">{{ diagnostics.webhook.url }}</code>
+              </div>
+
+              <!-- Event types registered -->
+              <div v-if="diagnostics.webhook.types?.length" class="text-xs text-muted-foreground">
+                <span class="font-medium">{{ $t('teamleader.diagnostics.registered_events') }}:</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <Badge v-for="eventType in diagnostics.webhook.types" :key="eventType" variant="outline" class="text-xs">
+                    {{ eventType }}
+                  </Badge>
+                </div>
+              </div>
+
+              <!-- Missing remote warning -->
+              <Alert v-if="diagnostics.webhook.status === 'missing_remote'" variant="destructive" class="mt-2">
+                <AlertCircle class="h-4 w-4" />
+                <AlertDescription class="text-sm">
+                  {{ $t('teamleader.diagnostics.webhook_missing_remote') }}
+                  <div v-if="diagnostics.webhook.expected_url" class="mt-1 text-xs">
+                    {{ $t('teamleader.diagnostics.expected_url') }}: <code class="bg-muted px-1 py-0.5 rounded">{{ diagnostics.webhook.expected_url }}</code>
+                  </div>
+                  <div v-if="diagnostics.webhook.registered_webhooks?.length" class="mt-1 text-xs">
+                    {{ $t('teamleader.diagnostics.found_webhooks') }}:
+                    <ul class="list-disc list-inside mt-1">
+                      <li v-for="url in diagnostics.webhook.registered_webhooks" :key="url">{{ url }}</li>
+                    </ul>
+                  </div>
+                </AlertDescription>
+              </Alert>
+
+              <!-- Re-register button -->
+              <Button
+                v-if="diagnostics.webhook.status !== 'active'"
+                variant="outline"
+                size="sm"
+                :disabled="isLoading"
+                @click="reRegisterWebhook"
+              >
+                <RefreshCw v-if="isReRegisterLoading" class="mr-2 h-3 w-3 animate-spin" />
+                <RotateCcw v-else class="mr-2 h-3 w-3" />
+                {{ $t('teamleader.actions.re_register_webhook') }}
+              </Button>
+            </div>
+          </div>
+
+          <!-- API Diagnostics -->
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold flex items-center gap-2">
+              <Globe class="h-4 w-4" />
+              {{ $t('teamleader.diagnostics.api') }}
+            </h3>
+            <div class="rounded-lg border p-4 space-y-2">
+              <div class="flex items-center gap-2">
+                <Badge :variant="apiDiagVariant">
+                  {{ diagnostics.api.status }}
+                </Badge>
+                <span class="text-sm text-muted-foreground">{{ diagnostics.api.message }}</span>
+              </div>
+
+              <div v-if="diagnostics.api.user" class="text-xs text-muted-foreground">
+                {{ $t('teamleader.diagnostics.authenticated_as') }}: {{ diagnostics.api.user }}
+              </div>
+
+              <div v-if="diagnostics.api.rate_limit" class="text-xs text-muted-foreground">
+                {{ $t('teamleader.diagnostics.rate_limit') }}: {{ diagnostics.api.rate_limit.remaining }}/{{ diagnostics.api.rate_limit.limit }}
+              </div>
+
+              <div v-if="diagnostics.api.contacts_total_on_teamleader != null" class="text-xs text-muted-foreground">
+                {{ $t('teamleader.diagnostics.contacts_on_tl') }}: <strong>{{ diagnostics.api.contacts_total_on_teamleader }}</strong>
+              </div>
+
+              <div v-if="diagnostics.api.contacts_accessible === false" class="mt-1">
+                <Alert variant="destructive">
+                  <AlertCircle class="h-4 w-4" />
+                  <AlertDescription class="text-sm">
+                    {{ $t('teamleader.diagnostics.contacts_api_error') }}
+                    <code v-if="diagnostics.api.contacts_error" class="block mt-1 text-xs bg-muted p-2 rounded">{{ diagnostics.api.contacts_error }}</code>
+                  </AlertDescription>
+                </Alert>
+              </div>
+
+              <div v-if="diagnostics.api.http_status" class="text-xs text-muted-foreground">
+                HTTP {{ diagnostics.api.http_status }}
+                <code v-if="diagnostics.api.response_body" class="block mt-1 bg-muted p-2 rounded whitespace-pre-wrap">{{ diagnostics.api.response_body }}</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sync Stats -->
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold flex items-center gap-2">
+              <Database class="h-4 w-4" />
+              {{ $t('teamleader.diagnostics.sync_stats') }}
+            </h3>
+            <div class="rounded-lg border p-4 space-y-2">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-xs text-muted-foreground">{{ $t('teamleader.diagnostics.total_synced') }}</p>
+                  <p class="text-lg font-semibold">{{ diagnostics.sync_stats.total_synced_records }}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-muted-foreground">{{ $t('teamleader.diagnostics.synced_7_days') }}</p>
+                  <p class="text-lg font-semibold">{{ diagnostics.sync_stats.synced_last_7_days }}</p>
+                </div>
+              </div>
+              <div v-if="diagnostics.sync_stats.last_sync_at" class="text-xs text-muted-foreground">
+                {{ $t('teamleader.diagnostics.last_sync') }}: {{ formatDate(diagnostics.sync_stats.last_sync_at) }}
+              </div>
+              <div v-else class="text-xs text-muted-foreground italic">
+                {{ $t('teamleader.diagnostics.never_synced') }}
+              </div>
+
+              <!-- Manual sync button -->
+              <Separator class="my-2" />
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="isLoading"
+                @click="triggerSync"
+              >
+                <RefreshCw v-if="isSyncLoading" class="mr-2 h-3 w-3 animate-spin" />
+                <ArrowDownToLine v-else class="mr-2 h-3 w-3" />
+                {{ $t('teamleader.actions.manual_sync') }}
+              </Button>
+            </div>
+          </div>
+
         </CardContent>
       </Card>
 
@@ -181,7 +374,12 @@ import {
   ExternalLink,
   HelpCircle,
   AlertCircle,
-  AlertTriangle
+  AlertTriangle,
+  Stethoscope,
+  Globe,
+  Database,
+  RotateCcw,
+  ArrowDownToLine
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -192,12 +390,19 @@ const props = defineProps({
   enabled: {
     type: Boolean,
     default: false
+  },
+  diagnostics: {
+    type: Object,
+    default: null
   }
 })
 
 const { t } = useI18n()
 const page = usePage()
 const isLoading = ref(false)
+const isDiagnosticsLoading = ref(false)
+const isReRegisterLoading = ref(false)
+const isSyncLoading = ref(false)
 
 const statusBackgroundClass = computed(() => {
   return props.status.connected
@@ -209,6 +414,30 @@ const statusIconClass = computed(() => {
   return props.status.connected
     ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400'
     : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+})
+
+const tokenDiagVariant = computed(() => {
+  if (!props.diagnostics?.token) return 'secondary'
+  const s = props.diagnostics.token.status
+  if (s === 'valid' || s === 'refreshed') return 'default'
+  if (s === 'expired') return 'destructive'
+  return 'secondary'
+})
+
+const webhookDiagVariant = computed(() => {
+  if (!props.diagnostics?.webhook) return 'secondary'
+  const s = props.diagnostics.webhook.status
+  if (s === 'active') return 'default'
+  if (s === 'missing_remote' || s === 'error') return 'destructive'
+  return 'secondary'
+})
+
+const apiDiagVariant = computed(() => {
+  if (!props.diagnostics?.api) return 'secondary'
+  const s = props.diagnostics.api.status
+  if (s === 'ok') return 'default'
+  if (s === 'error') return 'destructive'
+  return 'secondary'
 })
 
 const formatDate = (dateString) => {
@@ -242,5 +471,38 @@ const testConnection = () => {
       isLoading.value = false
     }
   })
+}
+
+const runDiagnostics = () => {
+  isDiagnosticsLoading.value = true
+  router.get(route('settings.teamleader.diagnostics'), {}, {
+    onFinish: () => {
+      isDiagnosticsLoading.value = false
+    }
+  })
+}
+
+const reRegisterWebhook = () => {
+  isReRegisterLoading.value = true
+  isLoading.value = true
+  router.post(route('settings.teamleader.reRegisterWebhook'), {}, {
+    onFinish: () => {
+      isReRegisterLoading.value = false
+      isLoading.value = false
+    }
+  })
+}
+
+const triggerSync = () => {
+  if (confirm(t('teamleader.confirm_sync'))) {
+    isSyncLoading.value = true
+    isLoading.value = true
+    router.post(route('settings.teamleader.sync'), {}, {
+      onFinish: () => {
+        isSyncLoading.value = false
+        isLoading.value = false
+      }
+    })
+  }
 }
 </script>

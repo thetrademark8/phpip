@@ -92,6 +92,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('teamleader/callback', [App\Http\Controllers\TeamLeaderController::class, 'callback'])->name('teamleader.callback');
         Route::post('teamleader/disconnect', [App\Http\Controllers\TeamLeaderController::class, 'disconnect'])->name('teamleader.disconnect');
         Route::post('teamleader/test', [App\Http\Controllers\TeamLeaderController::class, 'testConnection'])->name('teamleader.test');
+        Route::get('teamleader/diagnostics', [App\Http\Controllers\TeamLeaderController::class, 'diagnostics'])->name('teamleader.diagnostics');
+        Route::post('teamleader/re-register-webhook', [App\Http\Controllers\TeamLeaderController::class, 'reRegisterWebhook'])->name('teamleader.reRegisterWebhook');
+        Route::post('teamleader/sync', [App\Http\Controllers\TeamLeaderController::class, 'triggerSync'])->name('teamleader.sync');
     });
 
     // Autocomplete routes - some are public for filtering, others require readwrite
