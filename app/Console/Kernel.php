@@ -12,18 +12,30 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Send urgent task notifications daily at 8:00 AM
         $schedule->command('tasks:send-urgent-notifications')
             ->dailyAt('08:00')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/urgent-notifications.log'));
 
-        // Send matter renewal reminders daily at 8:30 AM
-        // Sends reminders at 6 months, 3 months, and 1 month before expiry
+        $schedule->command('tasks:send-due-email')
+            ->weeklyOn(1, '6:00')
+            ->onOneServer()
+            ->withoutOverlapping();
+
         $schedule->command('matters:send-renewal-reminders')
             ->dailyAt('08:30')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/renewal-reminders.log'));
+
+        $schedule->command('tasks:renewr-sync')
+            ->weeklyOn(1, '3:00')
+            ->onOneServer()
+            ->withoutOverlapping();
+
+        $schedule->command('teamleader:refresh-token')
+            ->everyFifteenMinutes()
+            ->onOneServer()
+            ->withoutOverlapping();
     }
 
     /**

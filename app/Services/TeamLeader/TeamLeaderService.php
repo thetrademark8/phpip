@@ -44,6 +44,15 @@ class TeamLeaderService
         return $this->token && $this->token->isValid();
     }
 
+    public function isTokenExpiringSoon(int $minutesThreshold = 30): bool
+    {
+        if (!$this->token || !$this->token->expires_at) {
+            return true;
+        }
+
+        return $this->token->expires_at->lte(now()->addMinutes($minutesThreshold));
+    }
+
     public function getConnectionStatus(): array
     {
         return [
