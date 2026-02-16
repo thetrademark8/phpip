@@ -51,11 +51,10 @@
                         class="flex items-center space-x-2 cursor-pointer hover:bg-muted/50 p-2 rounded"
                       >
                         <Checkbox
-                          :checked="selectedCountries.includes(country.iso)"
-                          @update:model-value="toggleCountry(country.iso)"
+                          v-model:model-value="checkedCountries[country.iso]"
                         />
                         <span class="text-sm">
-                          {{ country.name }} ({{ country.iso }})
+                          {{ translated(country.name) }} ({{ country.iso }})
                         </span>
                         <Badge v-if="existingMatters[country.iso]" variant="secondary" class="ml-auto">
                           {{ t('Exists') }}
@@ -255,7 +254,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { router, Link } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { CheckCircle, AlertCircle, XCircle, Loader2 } from 'lucide-vue-next'
@@ -274,6 +273,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import FormField from '@/components/ui/form/FormField.vue'
+import {useTranslatedField} from "@/composables/useTranslation.js";
 
 const props = defineProps({
   open: {
@@ -288,7 +288,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:open', 'success'])
 
-const { t } = useI18n()
+const { translated, t } = useTranslatedField();
 
 // State
 const loading = ref(false)
@@ -297,7 +297,7 @@ const existingMatters = ref({})
 const validationData = ref(null)
 const estimation = ref(null)
 const countrySearch = ref('')
-const selectedCountries = ref([])
+const checkedCountries = reactive({})
 const isCreating = ref(false)
 const creationProgress = ref(0)
 const currentCountry = ref('')
@@ -316,49 +316,44 @@ const filteredCountries = computed(() => {
   
   const search = countrySearch.value.toLowerCase()
   return availableCountries.value.filter(country => 
-    country.name.toLowerCase().includes(search) ||
+    translated(country.name).toLowerCase().includes(search) ||
     country.iso.toLowerCase().includes(search)
   )
 })
 
+const selectedCountries = computed(() =>
+  Object.keys(checkedCountries).filter(iso => checkedCountries[iso])
+)
+
 const canCreate = computed(() => {
-  return selectedCountries.value.length > 0 && 
-         validationData.value?.valid && 
+  return selectedCountries.value.length > 0 &&
+         validationData.value?.valid &&
          !isCreating.value &&
          !creationResults.value
 })
 
 // Methods
-function toggleCountry(countryIso) {
-  const index = selectedCountries.value.indexOf(countryIso)
-  if (index > -1) {
-    selectedCountries.value.splice(index, 1)
-  } else {
-    selectedCountries.value.push(countryIso)
-  }
-}
-
 function selectCommonCountries() {
   const common = ['US', 'EP', 'CN', 'JP']
-  selectedCountries.value = [
-    ...new Set([
-      ...selectedCountries.value,
-      ...common.filter(iso => 
-        availableCountries.value.some(c => c.iso === iso) &&
-        !existingMatters.value[iso]
-      )
-    ])
-  ]
+  common.forEach(iso => {
+    if (availableCountries.value.some(c => c.iso === iso) && !existingMatters.value[iso]) {
+      checkedCountries[iso] = true
+    }
+  })
 }
 
 function selectAll() {
-  selectedCountries.value = availableCountries.value
-    .filter(country => !existingMatters.value[country.iso])
-    .map(country => country.iso)
+  availableCountries.value.forEach(country => {
+    if (!existingMatters.value[country.iso]) {
+      checkedCountries[country.iso] = true
+    }
+  })
 }
 
 function clearSelection() {
-  selectedCountries.value = []
+  Object.keys(checkedCountries).forEach(iso => {
+    checkedCountries[iso] = false
+  })
 }
 
 function getCountryName(iso) {
@@ -436,7 +431,7 @@ function viewFamily() {
 function closeDialog() {
   emit('update:open', false)
   // Reset state when closing
-  selectedCountries.value = []
+  Object.keys(checkedCountries).forEach(iso => delete checkedCountries[iso])
   creationResults.value = null
   countrySearch.value = ''
 }
@@ -447,6 +442,10 @@ watch(() => props.open, (isOpen) => {
     loadCountryData()
   }
 })
+
+watch(checkedCountries, (newCheckedCountries) => console.log(newCheckedCountries.value), {
+  deep: true
+});
 
 // Update estimation when selection changes
 watch(selectedCountries, (newSelection) => {

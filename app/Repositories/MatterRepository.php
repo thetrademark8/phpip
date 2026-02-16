@@ -425,7 +425,7 @@ class MatterRepository implements MatterRepositoryInterface
                 }),
                 'Cat' => $query->whereLike('matter.category_code', "$value%"),
                 'country' => $query->whereLike('matter.country', "$value%"),
-                'Status' => $query->whereJsonLike('event_name.name', $value),
+                'Status' => $query->where('event_name.code', $value),
                 'Status_date' => $query->whereLike('status.event_date', "$value%"),
                 'Client' => $query->whereRaw('LOWER(IFNULL(cli.name, clic.name)) LIKE ?', ["$lowerValue%"]),
                 'ClRef' => $query->whereRaw('LOWER(IFNULL(clilnk.actor_ref, cliclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
