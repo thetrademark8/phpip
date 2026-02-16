@@ -1891,5 +1891,30 @@
   "teamleader.diagnostics.last_sync": "Last sync",
   "teamleader.diagnostics.never_synced": "No sync recorded yet",
 
-  "Integrations": "Integrations"
+  "Integrations": "Integrations",
+
+  "Email Settings": "Email Settings",
+  "Manage email branding, signature and logo for outgoing emails": "Manage email branding, signature and logo for outgoing emails",
+  "Company Logo": "Company Logo",
+  "Upload a logo to display in email signatures": "Upload a logo to display in email signatures",
+  "Upload Logo": "Upload Logo",
+  "Uploading...": "Uploading...",
+  "Current Logo": "Current Logo",
+  "No logo uploaded": "No logo uploaded",
+  "Accepted formats: PNG, JPG, SVG, GIF (max 2MB)": "Accepted formats: PNG, JPG, SVG, GIF (max 2MB)",
+  "Email Signature": "Email Signature",
+  "HTML signature text displayed under the logo in all outgoing emails": "HTML signature text displayed under the logo in all outgoing emails",
+  "Email Header": "Email Header",
+  "HTML content displayed at the top of matter emails": "HTML content displayed at the top of matter emails",
+  "Email Footer": "Email Footer",
+  "HTML content displayed at the bottom of matter emails, before the signature": "HTML content displayed at the bottom of matter emails, before the signature",
+  "Save Settings": "Save Settings",
+  "Saving...": "Saving...",
+  "Settings saved successfully": "Settings saved successfully",
+  "Preview": "Preview",
+  "Email Preview": "Email Preview",
+  "This is a preview of your email branding.": "This is a preview of your email branding.",
+  "The header, footer and signature will appear on all outgoing emails.": "The header, footer and signature will appear on all outgoing emails.",
+  "Logo uploaded successfully": "Logo uploaded successfully",
+  "Settings": "Settings"
 }

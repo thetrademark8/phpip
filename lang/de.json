@@ -1791,5 +1791,30 @@
   "teamleader.diagnostics.last_sync": "Letzte Synchronisierung",
   "teamleader.diagnostics.never_synced": "Noch keine Synchronisierung aufgezeichnet",
 
-  "Integrations": "Integrationen"
+  "Integrations": "Integrationen",
+
+  "Email Settings": "E-Mail-Einstellungen",
+  "Manage email branding, signature and logo for outgoing emails": "E-Mail-Branding, Signatur und Logo für ausgehende E-Mails verwalten",
+  "Company Logo": "Firmenlogo",
+  "Upload a logo to display in email signatures": "Logo hochladen, das in E-Mail-Signaturen angezeigt wird",
+  "Upload Logo": "Logo hochladen",
+  "Uploading...": "Wird hochgeladen...",
+  "Current Logo": "Aktuelles Logo",
+  "No logo uploaded": "Kein Logo hochgeladen",
+  "Accepted formats: PNG, JPG, SVG, GIF (max 2MB)": "Akzeptierte Formate: PNG, JPG, SVG, GIF (max. 2 MB)",
+  "Email Signature": "E-Mail-Signatur",
+  "HTML signature text displayed under the logo in all outgoing emails": "HTML-Signaturtext, der unter dem Logo in allen ausgehenden E-Mails angezeigt wird",
+  "Email Header": "E-Mail-Kopfzeile",
+  "HTML content displayed at the top of matter emails": "HTML-Inhalt, der oben in Akten-E-Mails angezeigt wird",
+  "Email Footer": "E-Mail-Fußzeile",
+  "HTML content displayed at the bottom of matter emails, before the signature": "HTML-Inhalt, der unten in Akten-E-Mails vor der Signatur angezeigt wird",
+  "Save Settings": "Einstellungen speichern",
+  "Saving...": "Wird gespeichert...",
+  "Settings saved successfully": "Einstellungen erfolgreich gespeichert",
+  "Preview": "Vorschau",
+  "Email Preview": "E-Mail-Vorschau",
+  "This is a preview of your email branding.": "Dies ist eine Vorschau Ihres E-Mail-Brandings.",
+  "The header, footer and signature will appear on all outgoing emails.": "Kopfzeile, Fußzeile und Signatur werden in allen ausgehenden E-Mails angezeigt.",
+  "Logo uploaded successfully": "Logo erfolgreich hochgeladen",
+  "Settings": "Einstellungen"
 }

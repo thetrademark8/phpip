@@ -101,12 +101,14 @@ $tasksByResponsible = $tasks->groupBy('matter.responsible')->map(function($tasks
 @endcomponent
 @endif
 
+@include('email.partials.signature')
+
 {{-- Footer --}}
 @slot('footer')
 @component('mail::footer')
 {{ __('notifications.tasks.footer.system_summary') }}
 
-[{{ __('notifications.tasks.footer.access_phpip') }}]({{ $phpip_url }}) | 
+[{{ __('notifications.tasks.footer.access_phpip') }}]({{ $phpip_url }}) |
 {{ __('notifications.tasks.footer.generated_on') }} {{ now()->format('d/m/Y H:i') }}
 
 ---

@@ -1888,5 +1888,30 @@
   "teamleader.diagnostics.last_sync": "Dernière synchronisation",
   "teamleader.diagnostics.never_synced": "Aucune synchronisation enregistrée",
 
-  "Integrations": "Intégrations"
+  "Integrations": "Intégrations",
+
+  "Email Settings": "Paramètres e-mail",
+  "Manage email branding, signature and logo for outgoing emails": "Gérer la marque, la signature et le logo des e-mails sortants",
+  "Company Logo": "Logo de l'entreprise",
+  "Upload a logo to display in email signatures": "Télécharger un logo à afficher dans les signatures d'e-mails",
+  "Upload Logo": "Télécharger le logo",
+  "Uploading...": "Téléchargement...",
+  "Current Logo": "Logo actuel",
+  "No logo uploaded": "Aucun logo téléchargé",
+  "Accepted formats: PNG, JPG, SVG, GIF (max 2MB)": "Formats acceptés : PNG, JPG, SVG, GIF (max 2 Mo)",
+  "Email Signature": "Signature e-mail",
+  "HTML signature text displayed under the logo in all outgoing emails": "Texte de signature HTML affiché sous le logo dans tous les e-mails sortants",
+  "Email Header": "En-tête d'e-mail",
+  "HTML content displayed at the top of matter emails": "Contenu HTML affiché en haut des e-mails de dossier",
+  "Email Footer": "Pied de page d'e-mail",
+  "HTML content displayed at the bottom of matter emails, before the signature": "Contenu HTML affiché en bas des e-mails de dossier, avant la signature",
+  "Save Settings": "Enregistrer les paramètres",
+  "Saving...": "Enregistrement...",
+  "Settings saved successfully": "Paramètres enregistrés avec succès",
+  "Preview": "Aperçu",
+  "Email Preview": "Aperçu de l'e-mail",
+  "This is a preview of your email branding.": "Ceci est un aperçu de votre image de marque e-mail.",
+  "The header, footer and signature will appear on all outgoing emails.": "L'en-tête, le pied de page et la signature apparaîtront sur tous les e-mails sortants.",
+  "Logo uploaded successfully": "Logo téléchargé avec succès",
+  "Settings": "Paramètres"
 }

@@ -70,6 +70,8 @@ $urgencyIcon = match($reminderType) {
 {{ __('notifications.renewal.buttons.view_matters') }}
 @endcomponent
 
+@include('email.partials.signature')
+
 {{-- Footer --}}
 @slot('footer')
 @component('mail::footer')

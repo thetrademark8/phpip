@@ -84,5 +84,6 @@
     <p>{{ __('Thank you for your business.') }}</p>
     <p>{{ __('Best regards') }},</p>
     <p>{{ Auth::user()->name ?? config('app.name') }}</p>
+    @include('email.partials.signature')
 </body>
 </html>

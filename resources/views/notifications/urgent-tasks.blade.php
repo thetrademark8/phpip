@@ -76,12 +76,14 @@ $daysRemaining = (int) round(now()->diffInDays($task->due_date, false));
 @endcomponent
 @endif
 
+@include('email.partials.signature')
+
 {{-- Footer --}}
 @slot('footer')
 @component('mail::footer')
 {{ __('notifications.tasks.footer.automated_notification') }}
 
-[{{ __('notifications.tasks.footer.access_phpip') }}]({{ $phpip_url }}) | 
+[{{ __('notifications.tasks.footer.access_phpip') }}]({{ $phpip_url }}) |
 {{ __('notifications.tasks.footer.generated_on') }} {{ now()->format('d/m/Y H:i') }}
 @endcomponent
 @endslot

@@ -116,8 +116,18 @@ class EmailService
     {
         $header = EmailSetting::get('email_header', '');
         $footer = EmailSetting::get('email_footer', '');
+        $signature = self::renderSignature();
 
-        return $header . $body . $footer;
+        return $header . $body . $footer . $signature;
+    }
+
+    /**
+     * Render the email signature HTML (logo + custom signature text).
+     * Used by applyBranding() and available for Blade templates.
+     */
+    public static function renderSignature(): string
+    {
+        return view('email.partials.signature')->render();
     }
 
     /**

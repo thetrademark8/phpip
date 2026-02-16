@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('can:admin')->prefix('settings')->name('settings.')->group(function () {
         Route::get('email', [EmailSettingController::class, 'index'])->name('email');
         Route::put('email', [EmailSettingController::class, 'update'])->name('email.update');
+        Route::post('email/upload-logo', [EmailSettingController::class, 'uploadLogo'])->name('email.uploadLogo');
+        Route::get('email/preview', [EmailSettingController::class, 'preview'])->name('email.preview');
 
         // TeamLeader Integration
         Route::get('teamleader', [App\Http\Controllers\TeamLeaderController::class, 'index'])->name('teamleader.index');
