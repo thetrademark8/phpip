@@ -123,11 +123,15 @@ class OptionsController extends Controller
     /**
      * Get classifier types for Select dropdown.
      */
-    public function classifierTypes(Request $request, int $mainDisplay = 0): JsonResponse
+    public function classifierTypes(Request $request, ?int $mainDisplay = null): JsonResponse
     {
-        $types = ClassifierType::where('main_display', $mainDisplay)
-            ->orderBy('type')
-            ->get()
+        $query = ClassifierType::orderBy('type');
+
+        if ($mainDisplay !== null) {
+            $query->where('main_display', $mainDisplay);
+        }
+
+        $types = $query->get()
             ->map(fn ($type) => [
                 'value' => $type->code,
                 'label' => $type->type,

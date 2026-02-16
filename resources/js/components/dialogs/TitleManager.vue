@@ -23,14 +23,12 @@
                   :error="addForm.errors.type_code"
                   required
                 >
-                  <AutocompleteInput
+                  <Combobox
                     v-model="addForm.type_code"
-                    v-model:display-model-value="typeDisplay"
-                    endpoint="/classifier-type/autocomplete/1"
+                    :options="titleTypeOptions"
                     :placeholder="$t('Select type')"
-                    :min-length="0"
-                    value-key="code"
-                    label-key="type"
+                    :search-placeholder="$t('Search type...')"
+                    :no-results-text="$t('No type found.')"
                   />
                 </FormField>
 
@@ -155,7 +153,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import FormField from '@/components/ui/form/FormField.vue'
-import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import { Combobox } from '@/components/ui/combobox'
 
 const props = defineProps({
   open: {
@@ -177,12 +175,28 @@ const emit = defineEmits(['update:open', 'success'])
 const { t } = useI18n()
 
 // State
-const typeDisplay = ref('')
+const titleTypeOptions = ref([])
 const removingTitleId = ref(null)
 const editingTitleId = ref(null)
 
 // Compute the correct matter_id (use container if exists, otherwise use matter itself)
 const targetMatterId = computed(() => props.matter.container_id || props.matter.id)
+
+// Load title type options when dialog opens
+watch(() => props.open, async (isOpen) => {
+  if (isOpen && titleTypeOptions.value.length === 0) {
+    try {
+      const response = await fetch('/options/classifier-types/1', {
+        headers: { 'Accept': 'application/json' }
+      })
+      if (response.ok) {
+        titleTypeOptions.value = await response.json()
+      }
+    } catch (error) {
+      console.error('Error loading title type options:', error)
+    }
+  }
+}, { immediate: true })
 
 // Forms
 const addForm = useForm({
@@ -210,7 +224,6 @@ function handleAddTitle() {
     onSuccess: () => {
       // Reset form
       addForm.reset()
-      typeDisplay.value = ''
       
       // Reload matter data
       emit('success')

@@ -23,10 +23,12 @@
                   :error="addForm.errors.type_code"
                   required
                 >
-                  <TranslatedSelect
+                  <Combobox
                     v-model="addForm.type_code"
                     :options="classifierTypeOptions"
                     :placeholder="$t('Select type')"
+                    :search-placeholder="$t('Search type...')"
+                    :no-results-text="$t('No type found.')"
                     @update:model-value="handleTypeSelect"
                   />
                 </FormField>
@@ -187,7 +189,7 @@
 import { ref, computed, watch } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import { Plus, Trash2, Pencil, Check, X } from 'lucide-vue-next'
-import TranslatedSelect from '@/components/ui/form/TranslatedSelect.vue'
+import { Combobox } from '@/components/ui/combobox'
 import { useI18n } from 'vue-i18n'
 import {
   Dialog,
@@ -236,7 +238,7 @@ const targetMatterId = computed(() => props.matter.container_id ?? props.matter.
 watch(() => props.open, async (isOpen) => {
   if (isOpen && classifierTypeOptions.value.length === 0) {
     try {
-      const response = await fetch('/options/classifier-types/0', {
+      const response = await fetch('/options/classifier-types', {
         headers: { 'Accept': 'application/json' }
       })
       if (response.ok) {
