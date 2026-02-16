@@ -155,20 +155,14 @@ class InternationalTrademarkService
     }
 
     /**
-     * Copy events from source to target matter (simplified version for testing)
+     * Copy events from source to target matter
      */
     private function copyEvents(Matter $source, Matter $target): void
     {
-        // For now, only create the mandatory linking events
-        // TODO: Add proper event copying after basic creation works
-        
-        // Create "entered national phase" event (exact pattern from storeN)
-        $target->events()->create([
-            'code' => 'ENT',
-            'event_date' => now()
-        ]);
+        // Remove the "CRE" event auto-created by the matter_after_insert trigger
+        $target->events()->where('code', 'CRE')->delete();
 
-        // Create "parent filed" event linking to international matter (exact pattern from storeN)
+        // Create "parent filed" event linking to international matter
         $target->events()->create([
             'code' => 'PFIL',
             'alt_matter_id' => $source->id
