@@ -406,15 +406,25 @@ class MatterController extends Controller
         $this->validate($request, [
             'parent_id' => 'required|exists:matter,id',
             'countries' => 'required|array|min:1',
-            'countries.*' => 'string|exists:country,iso'
+            'countries.*' => 'string|exists:country,iso',
+            'copy_options' => 'sometimes|array',
+            'copy_options.actors' => 'sometimes|boolean',
+            'copy_options.classifiers' => 'sometimes|boolean',
+            'copy_options.events' => 'sometimes|boolean',
         ]);
 
         $parentMatter = Matter::findOrFail($request->parent_id);
         $service = app(\App\Services\InternationalTrademarkService::class);
 
+        $copyOptions = $request->input('copy_options', [
+            'actors' => true,
+            'classifiers' => true,
+            'events' => true,
+        ]);
+
         try {
             // Create national matters
-            $results = $service->createCountryMatters($parentMatter, $request->countries);
+            $results = $service->createCountryMatters($parentMatter, $request->countries, $copyOptions);
 
             return response()->json([
                 'success' => true,

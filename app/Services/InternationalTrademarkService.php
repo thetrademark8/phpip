@@ -18,8 +18,14 @@ class InternationalTrademarkService
      * @param array $countries Array of ISO country codes
      * @return array Results with created/skipped matters
      */
-    public function createCountryMatters(Matter $internationalMatter, array $countries): array
+    public function createCountryMatters(Matter $internationalMatter, array $countries, array $copyOptions = []): array
     {
+        $copyOptions = array_merge([
+            'actors' => true,
+            'classifiers' => true,
+            'events' => true,
+        ], $copyOptions);
+
         // Validate international matter
         $validation = $this->validateInternationalMatter($internationalMatter);
         if (!empty($validation['errors'])) {
@@ -49,7 +55,7 @@ class InternationalTrademarkService
                 }
 
                 // Create national matter
-                $nationalMatter = $this->createSingleNationalMatter($internationalMatter, $countryIso);
+                $nationalMatter = $this->createSingleNationalMatter($internationalMatter, $countryIso, $copyOptions);
                 
                 $results['created'][] = [
                     'country' => $countryIso,
@@ -85,14 +91,16 @@ class InternationalTrademarkService
     /**
      * Create a single national matter from international trademark
      */
-    private function createSingleNationalMatter(Matter $internationalMatter, string $countryIso): Matter
+    private function createSingleNationalMatter(Matter $internationalMatter, string $countryIso, array $copyOptions): Matter
     {
+        $containerId = $internationalMatter->container_id ?? $internationalMatter->id;
+
         // Prepare data for new matter (based on storeN pattern)
         $newMatterData = [
             'country' => $countryIso,
             // Intelligent origin logic: set to 'WO' only if parent is from WO or already WO-derived
-            'origin' => ($internationalMatter->country === 'WO' || $internationalMatter->origin === 'WO') 
-                ? 'WO' 
+            'origin' => ($internationalMatter->country === 'WO' || $internationalMatter->origin === 'WO')
+                ? 'WO'
                 : $internationalMatter->origin,
             'caseref' => $internationalMatter->caseref,
             'idx' => $internationalMatter->idx,
@@ -103,32 +111,46 @@ class InternationalTrademarkService
             'creator' => Auth::user()?->login ?? 'system',
             'expire_date' => $internationalMatter->expire_date,
             'parent_id' => $internationalMatter->id,
-            'container_id' => $internationalMatter->container_id ?? $internationalMatter->id,
+            'container_id' => $containerId,
         ];
 
         // Create new matter
         $nationalMatter = Matter::create($newMatterData);
 
-        // Copy data from parent matter
-        $this->duplicateMatterData($internationalMatter, $nationalMatter);
+        // Copy data from parent matter, respecting copy_options
+        $this->duplicateMatterData($internationalMatter, $nationalMatter, $copyOptions);
 
         return $nationalMatter;
     }
 
     /**
      * Duplicate core matter data from source to target
+     *
+     * Note: actors and classifiers with shared=1 on the container are automatically
+     * inherited via container_id (through DB views). We only copy actors/classifiers
+     * that are specific to the source matter (not inherited from container).
      */
-    public function duplicateMatterData(Matter $source, Matter $target): void
+    public function duplicateMatterData(Matter $source, Matter $target, array $copyOptions = []): void
     {
-        DB::transaction(function () use ($source, $target) {
-            // 1. Copy shared events (adapted from storeN)
+        $copyOptions = array_merge([
+            'actors' => true,
+            'classifiers' => true,
+            'events' => true,
+        ], $copyOptions);
+
+        DB::transaction(function () use ($source, $target, $copyOptions) {
+            // Always create linking events (ENT + PFIL) regardless of copy_options
             $this->copyEvents($source, $target);
 
-            // 2. Copy actors with their roles (adapted from store method)
-            $this->copyActors($source, $target);
+            // Only copy actors that are NOT already inherited from the container
+            if ($copyOptions['actors']) {
+                $this->copyActors($source, $target);
+            }
 
-            // 3. Copy classifiers (titles, NICE classes, etc.)
-            $this->copyClassifiers($source, $target);
+            // Only copy classifiers that are NOT already inherited from the container
+            if ($copyOptions['classifiers']) {
+                $this->copyClassifiers($source, $target);
+            }
         });
     }
 
@@ -154,52 +176,93 @@ class InternationalTrademarkService
     }
 
     /**
-     * Copy actors from source to target matter
+     * Copy actors from source to target matter.
+     *
+     * Actors with shared=1 on the container are automatically inherited via
+     * container_id (DB view MatterActors). We only copy non-shared actors
+     * that are specific to the source matter itself.
      */
     private function copyActors(Matter $source, Matter $target): void
     {
-        // Get actors from the container if source has one, otherwise from source itself
-        $containerMatter = $source->container ?? $source;
-        
-        if ($containerMatter->actorPivot->count() > 0) {
-            foreach ($containerMatter->actorPivot as $actorLink) {
-                $target->actorPivot()->create([
-                    'actor_id' => $actorLink->actor_id,
-                    'role' => $actorLink->role,
-                    'shared' => 1, // Mark as shared from parent
-                    'display_order' => $actorLink->display_order,
-                    'actor_ref' => $actorLink->actor_ref,
-                    'date_start' => $actorLink->date_start,
-                    'date_end' => $actorLink->date_end,
-                    'rate' => $actorLink->rate,
-                    'creator' => Auth::user()?->login ?? 'system'
-                ]);
+        // If the target has a container_id, shared actors from the container
+        // are already inherited via the DB view — don't copy them again.
+        // Only copy actors that belong directly to the source (not its container)
+        // and that are NOT shared (shared ones are inherited).
+        $actorsToCheck = $source->actorPivot;
+
+        foreach ($actorsToCheck as $actorLink) {
+            // Skip shared actors — they're inherited from the container automatically
+            if ($actorLink->shared && $target->container_id) {
+                continue;
             }
+
+            // Skip if this exact actor+role already exists on the target
+            $exists = $target->actorPivot()
+                ->where('actor_id', $actorLink->actor_id)
+                ->where('role', $actorLink->role)
+                ->exists();
+
+            if ($exists) {
+                continue;
+            }
+
+            $target->actorPivot()->create([
+                'actor_id' => $actorLink->actor_id,
+                'role' => $actorLink->role,
+                'shared' => $actorLink->shared,
+                'display_order' => $actorLink->display_order,
+                'actor_ref' => $actorLink->actor_ref,
+                'date_start' => $actorLink->date_start,
+                'date_end' => $actorLink->date_end,
+                'rate' => $actorLink->rate,
+                'creator' => Auth::user()?->login ?? 'system'
+            ]);
         }
     }
 
     /**
-     * Copy classifiers from source to target matter
+     * Copy classifiers from source to target matter.
+     *
+     * Classifiers on the container are automatically inherited via container_id
+     * (DB view MatterClassifiers uses IFNULL(container_id, id)). We only copy
+     * classifiers that are specific to the source matter itself.
      */
     private function copyClassifiers(Matter $source, Matter $target): void
     {
-        // Copy classifiers from container (main display and regular)
-        $containerMatter = $source->container ?? $source;
-        
-        if ($containerMatter->classifiersNative->count() > 0) {
-            $classifiersData = $containerMatter->classifiersNative->map(function ($classifier) {
-                return [
-                    'type_code' => $classifier->type_code,
-                    'value' => $classifier->value,
-                    'url' => $classifier->url,
-                    'value_id' => $classifier->value_id,
-                    'display_order' => $classifier->display_order,
-                    'lnk_matter_id' => $classifier->lnk_matter_id,
-                    'creator' => Auth::user()?->login ?? 'system'
-                ];
-            })->toArray();
+        // If the target has a container_id, classifiers from the container
+        // are already inherited via the DB view — only copy source-specific ones.
+        // Only copy classifiers that belong directly to the source (not its container).
+        if ($target->container_id && $source->id !== $target->container_id) {
+            // Source is not the container — copy its own classifiers
+            $classifiers = $source->classifiersNative;
+        } elseif ($target->container_id && $source->id === $target->container_id) {
+            // Source IS the container — classifiers are inherited, nothing to copy
+            return;
+        } else {
+            // No container — copy all classifiers from source
+            $classifiers = $source->classifiersNative;
+        }
 
-            $target->classifiersNative()->createMany($classifiersData);
+        foreach ($classifiers as $classifier) {
+            // Skip if this exact classifier already exists on the target
+            $exists = $target->classifiersNative()
+                ->where('type_code', $classifier->type_code)
+                ->where('value', $classifier->value)
+                ->exists();
+
+            if ($exists) {
+                continue;
+            }
+
+            $target->classifiersNative()->create([
+                'type_code' => $classifier->type_code,
+                'value' => $classifier->value,
+                'url' => $classifier->url,
+                'value_id' => $classifier->value_id,
+                'display_order' => $classifier->display_order,
+                'lnk_matter_id' => $classifier->lnk_matter_id,
+                'creator' => Auth::user()?->login ?? 'system'
+            ]);
         }
     }
 

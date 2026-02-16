@@ -177,48 +177,39 @@
                   <dt class="font-medium text-muted-foreground text-xs">Family:</dt>
                   <dd class="ml-2 space-y-1">
                     <Link
-                      v-for="familyMatter in matter.family.slice(0, 5)"
+                      v-for="familyMatter in matter.family"
                       :key="familyMatter.id"
                       :href="`/matter/${familyMatter.id}`"
                       class="block text-primary hover:underline text-xs"
                     >
                       {{ familyMatter.uid }}
                     </Link>
-                    <div v-if="matter.family.length > 5" class="text-xs text-muted-foreground">
-                      +{{ matter.family.length - 5 }} more
-                    </div>
                   </dd>
                 </div>
                 <div v-if="matter.linked_by && matter.linked_by.length > 0" class="flex flex-col">
                   <dt class="font-medium text-muted-foreground text-xs">Linked:</dt>
                   <dd class="ml-2 space-y-1">
                     <Link
-                      v-for="linked in matter.linked_by.slice(0, 3)"
+                      v-for="linked in matter.linked_by"
                       :key="linked.id"
                       :href="`/matter/${linked.id}`"
                       class="block text-primary hover:underline text-xs"
                     >
                       {{ linked.uid }}
                     </Link>
-                    <div v-if="matter.linked_by.length > 3" class="text-xs text-muted-foreground">
-                      +{{ matter.linked_by.length - 3 }} more
-                    </div>
                   </dd>
                 </div>
                 <div v-if="matter.priority_to && matter.priority_to.length > 0" class="flex flex-col">
                   <dt class="font-medium text-muted-foreground text-xs">Priority:</dt>
                   <dd class="ml-2 space-y-1">
                     <Link
-                      v-for="priority in matter.priority_to.slice(0, 3)"
+                      v-for="priority in matter.priority_to"
                       :key="priority.id"
                       :href="`/matter/${priority.id}`"
                       class="block text-primary hover:underline text-xs"
                     >
                       {{ priority.uid }}
                     </Link>
-                    <div v-if="matter.priority_to.length > 3" class="text-xs text-muted-foreground">
-                      +{{ matter.priority_to.length - 3 }} more
-                    </div>
                   </dd>
                 </div>
               </dl>

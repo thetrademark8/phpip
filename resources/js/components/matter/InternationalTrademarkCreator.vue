@@ -128,15 +128,15 @@
                   <h4 class="font-medium mb-2">{{ t('Data to copy from') }} {{ matter.uid }}:</h4>
                   <div class="grid gap-3">
                     <label class="flex items-center space-x-2">
-                      <Checkbox v-model="copyOptions.actors" />
+                      <Checkbox v-model:model-value="copyOptions.actors" />
                       <span class="text-sm">{{ t('Actors (Applicants, Agents)') }}</span>
                     </label>
                     <label class="flex items-center space-x-2">
-                      <Checkbox v-model="copyOptions.classifiers" />
+                      <Checkbox v-model:model-value="copyOptions.classifiers" />
                       <span class="text-sm">{{ t('Classifications (NICE, Titles)') }}</span>
                     </label>
                     <label class="flex items-center space-x-2">
-                      <Checkbox v-model="copyOptions.events" />
+                      <Checkbox v-model:model-value="copyOptions.events" />
                       <span class="text-sm">{{ t('Events (Filing, Registration)') }}</span>
                     </label>
                   </div>
