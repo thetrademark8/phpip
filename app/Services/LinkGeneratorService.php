@@ -108,7 +108,7 @@ class LinkGeneratorService
             'name' => 'WIPO Hague Design Database',
             'icon' => 'Globe',
             'categories' => ['DP', 'DSG'],
-            'number_field' => 'filing',
+            'number_field' => 'registration',
             'number_format' => 'wipo_design_format'
         ],
         'USPTO_DSG' => [
@@ -329,8 +329,8 @@ class LinkGeneratorService
             $number = substr($number, 0, -strlen($variant));
         }
 
-        // Remove country prefixes (FR, DE, etc.) at the beginning
-        $cleaned = preg_replace('/^[A-Z]{2}/', '', $number);
+        // Remove country prefixes (FR, DE, etc.) only when followed by digits
+        $cleaned = preg_replace('/^[A-Z]{2}(?=\d)/', '', $number);
 
         // Remove common separators and spaces (but not hyphens in the middle)
         $cleaned = preg_replace('/[\s\.\/]/', '', $cleaned);
@@ -382,8 +382,8 @@ class LinkGeneratorService
 
             case 'wipo_design_format':
                 // WIPO Hague Design format: D{number} (e.g., D215987 for HAGUE.D215987)
-                // Remove any DM/ or D prefix if present
-                $cleanNumber = preg_replace('/^(DM\/|D)/', '', $number);
+                // Handle various input formats: WIPO171702, DM/215987, DM215987, D215987, 215987
+                $cleanNumber = preg_replace('/^(WIPO|DM\/|DM|D)/', '', $number);
                 return 'D' . $cleanNumber;
 
             default:
@@ -417,7 +417,7 @@ class LinkGeneratorService
             // Design validation patterns (flexible to handle various formats)
             'INPI_DSG' => '/^(FR)?\d{6,10}(\-\d{1,3})?$/', // Optional FR prefix + 6-10 digits + optional variant
             'EUIPO_DSG' => '/^\d{6,9}(\-\d{4})?$/', // 6-9 digits + optional variant (e.g., -0001)
-            'WIPO_DSG' => '/^(DM\/|D)?\d{5,7}$/', // Optional DM/ or D prefix + 5-7 digits
+            'WIPO_DSG' => '/^(WIPO|DM|D)?\d{5,7}$/', // Optional WIPO/DM/D prefix + 5-7 digits
             'USPTO_DSG' => '/^D?\d{6,8}$/', // Optional D prefix + 6-8 digits
             'DPMA_DSG' => '/^\d{8,14}$/' // 8-14 digits for German designs
         ];

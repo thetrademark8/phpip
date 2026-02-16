@@ -255,13 +255,13 @@ class Matter extends Model
     public function grant()
     {
         return $this->hasOne(Event::class)
-            ->whereIn('code', ['GRT', 'REG'])->withDefault();
+            ->whereIn('code', ['GRT', 'REG', 'REGDM'])->withDefault();
     }
 
     public function registration()
     {
         return $this->hasOne(Event::class)
-            ->whereCode('REG')->withDefault();
+            ->whereIn('code', ['REG', 'REGDM'])->withDefault();
     }
 
     public function entered()
