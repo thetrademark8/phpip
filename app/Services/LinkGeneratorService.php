@@ -108,7 +108,7 @@ class LinkGeneratorService
             'name' => 'WIPO Hague Design Database',
             'icon' => 'Globe',
             'categories' => ['DP', 'DSG'],
-            'number_field' => 'registration',
+            'number_field' => 'filing',
             'number_format' => 'wipo_design_format'
         ],
         'USPTO_DSG' => [
