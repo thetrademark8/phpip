@@ -320,25 +320,6 @@
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader class="py-2 px-3" :class="matter.renewals_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'">
-                <h3 class="font-semibold text-sm flex items-center justify-between">
-                  {{ $t('Renewals') }}
-                  <Badge :variant="matter.renewals_pending.length > 0 ? 'warning' : 'secondary'">{{ matter.renewals_pending.length }}</Badge>
-                </h3>
-              </CardHeader>
-              <CardContent class="p-3 overflow-y-auto">
-                <RenewalsTab
-                  v-if="matter.renewals_pending.length > 0"
-                  :renewals="matter.renewals_pending"
-                  :matter-id="matter.id"
-                  :compact="true"
-                />
-                <div v-else class="text-center py-4 text-sm text-muted-foreground">
-                  {{ $t('No pending renewals') }}
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           <!-- Notes -->
@@ -390,6 +371,27 @@
                   @edit="handleActorEdit"
                   @remove="handleActorRemove"
               />
+            </CardContent>
+          </Card>
+
+          <!-- Renewals -->
+          <Card>
+            <CardHeader class="py-2 px-3" :class="matter.renewals_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'">
+              <h3 class="font-semibold text-sm flex items-center justify-between">
+                {{ $t('Renewals') }}
+                <Badge :variant="matter.renewals_pending.length > 0 ? 'warning' : 'secondary'">{{ matter.renewals_pending.length }}</Badge>
+              </h3>
+            </CardHeader>
+            <CardContent class="p-3 overflow-y-auto">
+              <RenewalsTab
+                v-if="matter.renewals_pending.length > 0"
+                :renewals="matter.renewals_pending"
+                :matter-id="matter.id"
+                :compact="true"
+              />
+              <div v-else class="text-center py-4 text-sm text-muted-foreground">
+                {{ $t('No pending renewals') }}
+              </div>
             </CardContent>
           </Card>
         </div>
