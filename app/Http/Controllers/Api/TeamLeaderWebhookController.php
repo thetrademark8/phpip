@@ -23,17 +23,35 @@ class TeamLeaderWebhookController extends Controller
 
     public function handle(Request $request): JsonResponse
     {
-        $type = $request->input('type');
-        $data = $request->input('data', []);
+        $payload = $request->all();
+
+        Log::info('TeamLeader webhook received', ['payload' => $payload]);
+
+        // Teamleader sends either "type" at root level, or the event type can be inferred
+        $type = $payload['type'] ?? null;
 
         if (!$type) {
+            Log::warning('TeamLeader: Missing event type', ['payload' => $payload]);
             return response()->json(['error' => 'Missing event type'], 400);
         }
 
-        Log::info('TeamLeader webhook received', [
-            'type' => $type,
-            'data' => $data,
-        ]);
+        // Build the data array with the subject ID
+        // Teamleader webhooks send: { "subject": { "type": "contact", "id": "uuid" }, "type": "contact.added" }
+        // Our handlers expect: { "id": "uuid" }
+        $data = $payload['data'] ?? [];
+        $subject = $payload['subject'] ?? [];
+
+        if (!isset($data['id']) && isset($subject['id'])) {
+            $data['id'] = $subject['id'];
+        }
+
+        if (!isset($data['id'])) {
+            Log::error('TeamLeader: No entity ID found in webhook payload', [
+                'type' => $type,
+                'payload' => $payload,
+            ]);
+            return response()->json(['error' => 'No entity ID in payload'], 400);
+        }
 
         [$entity, $action] = $this->parseEventType($type);
 
@@ -64,14 +82,14 @@ class TeamLeaderWebhookController extends Controller
 
             Log::info('TeamLeader webhook processed', [
                 'type' => $type,
-                'entity' => $entity,
-                'action' => $action,
+                'id' => $data['id'],
             ]);
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             Log::error('TeamLeader webhook error', [
                 'type' => $type,
+                'id' => $data['id'] ?? null,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
