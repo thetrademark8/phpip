@@ -577,7 +577,7 @@ const tmClasses = computed(() =>
 )
 
 const recentEvents = computed(() =>
-  props.matter.events?.slice(0, 10) || []
+  [...(props.matter.events || [])].reverse().slice(0, 10)
 )
 
 const attributeClassifiers = computed(() => {
