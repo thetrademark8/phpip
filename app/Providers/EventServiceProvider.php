@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Events\MatterStatusChanged;
+use App\Listeners\AddGlobalBcc;
 use App\Listeners\HandleStatusChange;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Mail\Events\MessageSending;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MatterStatusChanged::class => [
             HandleStatusChange::class,
+        ],
+        MessageSending::class => [
+            AddGlobalBcc::class,
         ],
     ];
 
