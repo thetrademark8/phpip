@@ -177,12 +177,9 @@ const columns = [
       const IconComponent = overdue ? AlertCircle : (dueSoon || dueToday) ? Clock : CalendarDays
       const dateColor = overdue ? 'text-destructive' : (dueSoon || dueToday) ? 'text-warning-foreground' : 'text-muted-foreground'
 
-      return h('div', {class: 'flex flex-col gap-1'}, [
-        h('div', {class: `flex items-center gap-1.5 ${dateColor}`}, [
-          h(IconComponent, {class: 'h-4 w-4'}),
-          h('span', {class: 'text-sm font-medium'}, formatDate(date))
-        ]),
-        h('span', {class: 'text-xs text-muted-foreground'}, getRelativeTime(date))
+      return h('div', {class: `flex items-center gap-1.5 ${dateColor}`}, [
+        h(IconComponent, {class: 'h-4 w-4'}),
+        h('span', {class: 'text-sm font-medium'}, formatDate(date))
       ])
     },
     meta: {
