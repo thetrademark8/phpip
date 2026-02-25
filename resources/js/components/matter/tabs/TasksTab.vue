@@ -3,8 +3,8 @@
       :data="tasks"
       :columns="columns"
       :loading="false"
-      :show-pagination="tasks.length > 3"
-      :page-size="10"
+      :show-pagination="tasks.length > 5"
+      :page-size="5"
       :empty-message="$t('No tasks found')"
   />
 
