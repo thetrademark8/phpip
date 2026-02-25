@@ -227,11 +227,152 @@ class CsvImportService
     }
 
     /**
+     * Upsert data from a CSV file into a database table.
+     * Inserts new rows and updates existing ones based on the unique key.
+     *
+     * For simple string keys (e.g. primary key 'code'), uses batch DB::upsert().
+     * For composite array keys, uses row-by-row updateOrInsert() which handles
+     * nullable columns correctly and doesn't require a unique DB index.
+     *
+     * @param string $filePath Path to the CSV file
+     * @param string $table Target database table
+     * @param string|array $uniqueKey Column(s) used for upsert matching
+     * @param array $excludeColumns Columns to exclude from import
+     * @param array $translatableColumns Columns that should be converted to JSON format
+     * @param callable|null $rowTransformer Optional callback to transform each row
+     * @param string $delimiter CSV delimiter character
+     * @return array{inserted: int, updated: int, errors: int}
+     */
+    public function upsertFromCsv(
+        string $filePath,
+        string $table,
+        string|array $uniqueKey,
+        array $excludeColumns = [],
+        array $translatableColumns = [],
+        ?callable $rowTransformer = null,
+        string $delimiter = ','
+    ): array {
+        $stats = ['inserted' => 0, 'updated' => 0, 'errors' => 0];
+
+        $handle = fopen($filePath, 'r');
+        if ($handle === false) {
+            Log::error("CsvImportService: Unable to open file {$filePath}");
+            return $stats;
+        }
+
+        $headers = fgetcsv($handle, 0, $delimiter);
+        if ($headers === false) {
+            fclose($handle);
+            Log::error("CsvImportService: Unable to read headers from {$filePath}");
+            return $stats;
+        }
+
+        // Clean headers (remove BOM if present)
+        $headers[0] = preg_replace('/^\xEF\xBB\xBF/', '', $headers[0]);
+        $headers = array_map('trim', $headers);
+
+        $uniqueKeyArray = is_array($uniqueKey) ? $uniqueKey : [$uniqueKey];
+        $useCompositeMatch = is_array($uniqueKey);
+
+        // For simple keys, pre-fetch existing keys for batch upsert tracking
+        if (!$useCompositeMatch) {
+            $existingKeys = $this->getExistingKeys($table, $uniqueKey);
+        }
+
+        $batch = [];
+        $batchSize = 500;
+        $rowNumber = 1;
+
+        while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+            $rowNumber++;
+
+            try {
+                if (count($row) === 1 && empty($row[0])) {
+                    continue;
+                }
+
+                if (count($headers) !== count($row)) {
+                    Log::warning("CsvImportService: Row {$rowNumber} has mismatched column count");
+                    $stats['errors']++;
+                    continue;
+                }
+
+                $data = array_combine($headers, $row);
+                $data = $this->transformRow($data, $translatableColumns);
+
+                if ($rowTransformer !== null) {
+                    $data = $rowTransformer($data);
+                }
+
+                foreach ($excludeColumns as $col) {
+                    unset($data[$col]);
+                }
+
+                if ($useCompositeMatch) {
+                    // Row-by-row upsert using composite match columns.
+                    // Uses updateOrInsert which handles NULLs with IS NULL.
+                    $matchConditions = [];
+                    foreach ($uniqueKeyArray as $col) {
+                        $matchConditions[$col] = $data[$col];
+                    }
+                    $updateData = array_diff_key($data, $matchConditions);
+
+                    $existed = DB::table($table)->where($matchConditions)->exists();
+                    DB::table($table)->updateOrInsert($matchConditions, $updateData);
+
+                    if ($existed) {
+                        $stats['updated']++;
+                    } else {
+                        $stats['inserted']++;
+                    }
+                } else {
+                    // Batch upsert for simple primary key
+                    $keyValue = $this->extractKeyValue($data, $uniqueKey);
+                    if ($existingKeys->contains($keyValue)) {
+                        $stats['updated']++;
+                    } else {
+                        $stats['inserted']++;
+                        $existingKeys->push($keyValue);
+                    }
+
+                    $batch[] = $data;
+
+                    if (count($batch) >= $batchSize) {
+                        $updateColumns = array_diff(array_keys($batch[0]), $uniqueKeyArray);
+                        DB::table($table)->upsert($batch, $uniqueKeyArray, array_values($updateColumns));
+                        $batch = [];
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
+                $stats['errors']++;
+            }
+        }
+
+        // Flush remaining batch (simple key mode only)
+        if (!empty($batch)) {
+            try {
+                $updateColumns = array_diff(array_keys($batch[0]), $uniqueKeyArray);
+                DB::table($table)->upsert($batch, $uniqueKeyArray, array_values($updateColumns));
+            } catch (\Exception $e) {
+                Log::error("CsvImportService: Error flushing batch: " . $e->getMessage());
+                $stats['errors'] += count($batch);
+                $stats['inserted'] = max(0, $stats['inserted'] - count($batch));
+                $stats['updated'] = max(0, $stats['updated'] - count($batch));
+            }
+        }
+
+        fclose($handle);
+
+        return $stats;
+    }
+
+    /**
      * Preview the contents of a CSV file without importing.
      *
      * @return array{headers: array, rows: array, total: int}
      */
-    public function preview(string $filePath, int $limit = 10): array
+    public function preview(string $filePath, int $limit = 10, string $delimiter = self::DELIMITER): array
     {
         $result = ['headers' => [], 'rows' => [], 'total' => 0];
 
@@ -241,7 +382,7 @@ class CsvImportService
         }
 
         // Parse headers
-        $headers = fgetcsv($handle, 0, self::DELIMITER);
+        $headers = fgetcsv($handle, 0, $delimiter);
         if ($headers === false) {
             fclose($handle);
             return $result;
@@ -252,7 +393,7 @@ class CsvImportService
 
         // Read rows
         $count = 0;
-        while (($row = fgetcsv($handle, 0, self::DELIMITER)) !== false) {
+        while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
             $count++;
             if (count($result['rows']) < $limit) {
                 $result['rows'][] = array_combine($result['headers'], $row);

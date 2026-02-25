@@ -1,0 +1,178 @@
+"code","name","category","country","is_task","status_event","default_responsible","use_matter_resp","unique","killer","notes","creator","updater","created_at","updated_at"
+"ABA","{
+    ""en"": ""Abandoned"",
+    ""fr"": ""Abandonné"",
+    ""de"": ""Aufgegeben""
+}",NULL,NULL,"0","1",NULL,"0","1","1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"ALL","{
+    ""en"": ""Allowance"",
+    ""fr"": ""Intention délivrance"",
+    ""de"": ""Zulassung""
+}","TM",NULL,"0","1",NULL,"0","0","0","Use also for R71.3 in EP","system","claire.yam","2024-03-08 11:26:57","2025-11-26 18:19:30"
+"APL","{
+    ""en"": ""Appeal"",
+    ""fr"": ""Recours"",
+    ""de"": ""Beschwerde""
+}",NULL,NULL,"0","1",NULL,"1","0","0","Appeal or other remedy filed","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"CAN","{
+    ""en"": ""Cancelled"",
+    ""fr"": ""Annulé"",
+    ""de"": ""Storniert""
+}","TM",NULL,"0","1",NULL,"0","0","1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"CLO","{
+    ""en"": ""Closed"",
+    ""fr"": ""Clôturé"",
+    ""de"": ""Geschlossen""
+}","LTG",NULL,"0","1",NULL,"0","0","1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"COM","{
+    ""en"": ""Communication"",
+    ""fr"": ""Communication"",
+    ""de"": ""Mitteilung""
+}",NULL,NULL,"0","0",NULL,"0","0","0","Communication regarding administrative or formal matters (missing parts, irregularities...)","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"CRE","{
+    ""en"": ""Created"",
+    ""fr"": ""Création"",
+    ""de"": ""Erstellt""
+}",NULL,NULL,"0","0",NULL,"0","1","0","Creation date of matter - for attaching tasks necessary before anything else","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"DAPL","{
+    ""en"": ""Decision on Appeal"",
+    ""fr"": ""Décision sur recours"",
+    ""de"": ""Beschwerdeentscheidung""
+}",NULL,NULL,"0","0",NULL,"0","0","0","State outcome in detail field","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"EXA","{
+    ""en"": ""Examiner Action"",
+    ""fr"": ""Notification d'examen"",
+    ""de"": ""Prüferbescheid""
+}",NULL,NULL,"0","0",NULL,"0","0","0","AKA Office Action, i.e. anything related to substantive examination","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"EXP","{
+    ""en"": ""Expiry"",
+    ""fr"": ""Expiration"",
+    ""de"": ""Ablauf""
+}",NULL,NULL,"0","1",NULL,"0","1","1","Do not use nor change - present for internal functionality","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"FAP","{
+    ""en"": ""File Notice of Appeal"",
+    ""fr"": ""Déposer avis de recours"",
+    ""de"": ""Beschwerde einlegen""
+}",NULL,NULL,"1","0",NULL,"1","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"FBY","{
+    ""en"": ""File by"",
+    ""fr"": ""Déposer avant le"",
+    ""de"": ""Einreichen bis""
+}",NULL,NULL,"1","0",NULL,"0","1","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"FIL","{
+    ""en"": ""Filed"",
+    ""fr"": ""Déposé"",
+    ""de"": ""Eingereicht""
+}",NULL,NULL,"0","1",NULL,"0","1","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"FOP","{
+    ""en"": ""File Opposition"",
+    ""fr"": ""Déposer opposition"",
+    ""de"": ""Einspruch einlegen""
+}","OP",NULL,"1","0",NULL,"1","1","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"INV","{
+    ""en"": ""Invalidated"",
+    ""fr"": ""Invalidé"",
+    ""de"": ""Für ungültig erklärt""
+}","TM",NULL,"0","1",NULL,"0","0","1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"LAP","{
+    ""en"": ""Lapsed"",
+    ""fr"": ""Déchu"",
+    ""de"": ""Verfallen""
+}",NULL,NULL,"0","1",NULL,"0","1","1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"OPP","{
+    ""en"": ""Opposition"",
+    ""fr"": ""Opposition"",
+    ""de"": ""Einspruch""
+}",NULL,"NULL","0","1",NULL,"0","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PDES","{
+    ""en"": ""Post designation"",
+    ""fr"": ""Désignation postérieure"",
+    ""de"": ""Nachträgliche Benennung""
+}","TM","WO","0","1",NULL,"0","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PFIL","{
+    ""en"": ""Parent Filed"",
+    ""fr"": ""Dépôt parent"",
+    ""de"": ""Stammanmeldung eingereicht""
+}",NULL,NULL,"0","1",NULL,"0","1","0","Filing date of the parent (use only when the matter type is defined). Use as link to the parent matter.","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PR","{
+    ""en"": ""Publication of Reg."",
+    ""fr"": ""Publication enreg."",
+    ""de"": ""Veröffentlichung Reg.""
+}","TM",NULL,"0","1",NULL,"0","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PREP","{
+    ""en"": ""Prepare"",
+    ""fr"": ""Préparer"",
+    ""de"": ""Vorbereiten""
+}",NULL,NULL,"1","0",NULL,"1","0","0","Any further action to be done by the responsible (comments, pre-handling, ...)","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PRI","{
+    ""en"": ""Priority Claim"",
+    ""fr"": ""Revendication priorité"",
+    ""de"": ""Prioritätsanspruch""
+}",NULL,NULL,"0","1",NULL,"0","0","0","Use as link to the priority matter","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PRID","{
+    ""en"": ""Priority Deadline"",
+    ""fr"": ""Délai priorité"",
+    ""de"": ""Prioritätsfrist""
+}",NULL,NULL,"1","1",NULL,"0","1","0",NULL,"system","claire.yam","2024-03-08 11:26:57","2024-03-27 14:26:57"
+"PROD","{
+    ""en"": ""Produce"",
+    ""fr"": ""Produire"",
+    ""de"": ""Erstellen\/Einreichen""
+}",NULL,NULL,"1","0",NULL,"0","0","0","Any further documents to be filed (inventor designation, priority document, missing parts...)","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PUB","{
+    ""en"": ""Published"",
+    ""fr"": ""Publié"",
+    ""de"": ""Veröffentlicht""
+}",NULL,NULL,"0","1",NULL,"0","0","0","For EP, this means publication WITH the search report (A1 publ.)","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"REC","{
+    ""en"": ""Received"",
+    ""fr"": ""Reçu"",
+    ""de"": ""Empfangen""
+}",NULL,NULL,"0","1",NULL,"0","1","0","Date the case was received from the client","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"REF","{
+    ""en"": ""Refused"",
+    ""fr"": ""Refusé"",
+    ""de"": ""Zurückgewiesen""
+}",NULL,NULL,"0","1",NULL,"0","0","0","This is the final decision, that can only be appealed - do not mistake with an exam report","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"REG","{
+    ""en"": ""Registration"",
+    ""fr"": ""Enregistrement"",
+    ""de"": ""Registrierung""
+}","TM",NULL,"0","1",NULL,"0","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"REGDM","{""en"": ""Registration DP""}","DP",NULL,"0","1",NULL,"0","0","0",NULL,"claire.yam",NULL,"2024-04-02 15:06:56","2024-04-02 15:06:56"
+"REM","{
+    ""en"": ""Reminder"",
+    ""fr"": ""Rappel"",
+    ""de"": ""Erinnerung""
+}",NULL,NULL,"1","0",NULL,"0","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"REN","{
+    ""en"": ""Renewal"",
+    ""fr"": ""Renouvellement"",
+    ""de"": ""Verlängerung""
+}",NULL,NULL,"1","0",NULL,"0","0","0","AKA Annuity","system","claire.yam","2024-03-08 11:26:57","2024-03-27 10:11:17"
+"REP","{
+    ""en"": ""Respond"",
+    ""fr"": ""Répondre"",
+    ""de"": ""Erwidern""
+}",NULL,NULL,"1","0",NULL,"1","0","0","Use for any response","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"SEND","{""en"": ""Send""}",NULL,NULL,"1","0","gestion.yamark","1","0","0",NULL,"claire.yam","claire.yam","2024-03-27 10:10:52","2024-03-27 10:24:33"
+"SOL","{
+    ""en"": ""Sold"",
+    ""fr"": ""Vendu"",
+    ""de"": ""Verkauft""
+}",NULL,NULL,"0","1",NULL,"1","0","0",NULL,"system","claire.yam","2024-03-08 11:26:57","2026-01-21 14:38:26"
+"SUS","{
+    ""en"": ""Suspended"",
+    ""fr"": ""Suspendu"",
+    ""de"": ""Ausgesetzt""
+}",NULL,NULL,"0","1",NULL,"0","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TRF","{
+    ""en"": ""Transformation"",
+    ""fr"": ""Transformation"",
+    ""de"": ""Transformation""
+}",NULL,NULL,"0","1",NULL,"0","1","1","Case no longer followed","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"WAT","{
+    ""en"": ""Watch"",
+    ""fr"": ""Surveiller"",
+    ""de"": ""Überwachen""
+}",NULL,NULL,"1","0",NULL,"1","0","0",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"

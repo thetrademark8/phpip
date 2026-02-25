@@ -1,0 +1,51 @@
+"code","type","main_display","for_category","display_order","notes","creator","updater","created_at","updated_at"
+"AGR","{
+    ""en"": ""Agreement"",
+    ""fr"": ""Accord"",
+    ""de"": ""Vereinbarung""
+}","0",NULL,"127",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"DESC","{
+    ""en"": ""Description"",
+    ""fr"": ""Description"",
+    ""de"": ""Beschreibung""
+}","1",NULL,"1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"IMG","{
+    ""en"": ""Image"",
+    ""fr"": ""Image"",
+    ""de"": ""Bild""
+}","0",NULL,"127",NULL,NULL,NULL,NULL,NULL
+"LNK","{
+    ""en"": ""Link"",
+    ""fr"": ""Lien"",
+    ""de"": ""Link""
+}","0",NULL,"1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"PROD","{
+    ""en"": ""Product"",
+    ""fr"": ""Produit"",
+    ""de"": ""Produkt""
+}","0",NULL,"127",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TIT","{
+    ""en"": ""Title"",
+    ""fr"": ""Titre"",
+    ""de"": ""Titel""
+}","1",NULL,"1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TITAL","{
+    ""en"": ""Alt. Title"",
+    ""fr"": ""Titre alternatif"",
+    ""de"": ""Alternativer Titel""
+}","1","PAT","4",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TM","{
+    ""en"": ""Trademark"",
+    ""fr"": ""Marque"",
+    ""de"": ""Marke""
+}","1","TM","1",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TMCL","{
+    ""en"": ""Class (TM)"",
+    ""fr"": ""Classe (Marque)"",
+    ""de"": ""Klasse (Marke)""
+}","0","TM","2",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TMTYP","{
+    ""en"": ""Type (TM)"",
+    ""fr"": ""Type (Marque)"",
+    ""de"": ""Typ (Marke)""
+}","0","TM","3",NULL,"system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"

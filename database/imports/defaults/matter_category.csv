@@ -1,0 +1,37 @@
+"code","ref_prefix","category","display_with","creator","updater","created_at","updated_at"
+"DP","DP-","{""en"": ""Design Patent""}","DP","system",NULL,"2024-03-08 11:27:30","2024-03-08 11:27:30"
+"LTG","LTG","{
+    ""en"": ""Litigation"",
+    ""fr"": ""Contentieux"",
+    ""de"": ""Rechtsstreit""
+}","LTG","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"OTH","OTH","{
+    ""en"": ""Others"",
+    ""fr"": ""Autres"",
+    ""de"": ""Sonstige""
+}","OTH","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"SO","PAT","{
+    ""en"": ""Soleau Envelop"",
+    ""fr"": ""Enveloppe Soleau"",
+    ""de"": ""Soleau-Umschlag""
+}","PAT","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"SR","SR-","{
+    ""en"": ""Search"",
+    ""fr"": ""Recherche"",
+    ""de"": ""Recherche""
+}","LTG","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TM","TM-","{
+    ""en"": ""Trademark"",
+    ""fr"": ""Marque"",
+    ""de"": ""Marke""
+}","TM","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"TMOP","TOP","{
+    ""en"": ""Opposition (TM)"",
+    ""fr"": ""Opposition (Marque)"",
+    ""de"": ""Widerspruch (Marke)""
+}","TM","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
+"WAT","WAT","{
+    ""en"": ""Watch"",
+    ""fr"": ""Surveillance"",
+    ""de"": ""Überwachung""
+}","TM","system",NULL,"2024-03-08 11:26:57","2024-03-08 11:26:57"
