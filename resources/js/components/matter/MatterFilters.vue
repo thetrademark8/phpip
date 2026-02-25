@@ -225,6 +225,21 @@
           @update:model-value="debouncedUpdate('Agent', $event)"
         />
       </div>
+
+      <!-- Contact -->
+      <div class="space-y-2">
+        <Label htmlFor="contact-filter">{{ t('matter.filters.labels.contact') }}</Label>
+        <AutocompleteInput
+          id="contact-filter"
+          :placeholder="t('matter.filters.placeholders.contact')"
+          :model-value="props.filters.Contact"
+          @update:model-value="debouncedUpdate('Contact', $event)"
+          endpoint="/actor/autocomplete"
+          value-key="value"
+          label-key="value"
+          allow-free-text
+        />
+      </div>
     </div>
   </div>
 </template>

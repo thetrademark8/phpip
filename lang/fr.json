@@ -847,6 +847,8 @@
   "matter.filters.placeholders.client": "Rechercher un client...",
   "matter.filters.placeholders.clientReference": "Réf. client...",
   "matter.filters.placeholders.agent": "Rechercher un agent...",
+  "matter.filters.labels.contact": "Contact",
+  "matter.filters.placeholders.contact": "Rechercher un contact...",
   "matter.filters.placeholders.title": "Rechercher un titre...",
   "matter.filters.placeholders.selectDate": "Sélectionner une date...",
   "matter.filters.placeholders.filingNumber": "Numéro de dépôt...",

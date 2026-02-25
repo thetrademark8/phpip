@@ -467,6 +467,11 @@ class Matter extends Model
                 $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'dellnk.matter_id')->where('dellnk.role', 'DEL');
             }
         )->leftJoin(
+            DB::raw('matter_actor_lnk cntlnk JOIN actor cnt ON cnt.id = cntlnk.actor_id'),
+            function ($join) {
+                $join->on('matter.id', 'cntlnk.matter_id')->where('cntlnk.role', 'CNT');
+            }
+        )->leftJoin(
             'event AS fil',
             function ($join) {
                 $join->on('matter.id', 'fil.matter_id')->where('fil.code', 'FIL');
@@ -584,6 +589,9 @@ class Matter extends Model
                             break;
                         case 'Agent':
                             $query->whereRaw("IFNULL(IFNULL(agt.display_name, agt.name), IFNULL(agtc.display_name, agtc.name)) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            break;
+                        case 'Contact':
+                            $query->whereRaw("IFNULL(cnt.display_name, cnt.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Title':
                             $query->whereRaw("concat_ws(' ', tit1.value, tit2.value, tit3.value) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);

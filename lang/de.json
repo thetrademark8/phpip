@@ -848,6 +848,8 @@
   "matter.filters.placeholders.client": "Mandant suchen...",
   "matter.filters.placeholders.clientReference": "Mandantenref...",
   "matter.filters.placeholders.agent": "Vertreter suchen...",
+  "matter.filters.labels.contact": "Kontakt",
+  "matter.filters.placeholders.contact": "Kontakt suchen...",
   "matter.filters.placeholders.title": "Titel suchen...",
   "matter.filters.placeholders.selectDate": "Datum wählen...",
   "matter.filters.placeholders.filingNumber": "Anmeldenummer...",

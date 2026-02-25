@@ -279,6 +279,9 @@ class MatterRepository implements MatterRepositoryInterface
             ->leftJoin(DB::raw('matter_actor_lnk dellnk JOIN actor del ON del.id = dellnk.actor_id'), function ($join) {
                 $join->on(DB::raw('ifnull(matter.container_id, matter.id)'), 'dellnk.matter_id')->where('dellnk.role', 'DEL');
             })
+            ->leftJoin(DB::raw('matter_actor_lnk cntlnk JOIN actor cnt ON cnt.id = cntlnk.actor_id'), function ($join) {
+                $join->on('matter.id', 'cntlnk.matter_id')->where('cntlnk.role', 'CNT');
+            })
             ->leftJoin('event AS fil', function ($join) {
                 $join->on('matter.id', 'fil.matter_id')->where('fil.code', 'FIL');
             })
@@ -432,6 +435,7 @@ class MatterRepository implements MatterRepositoryInterface
                 'Applicant' => $query->whereRaw('LOWER(IFNULL(app.display_name, app.name)) LIKE ?', ["%$lowerValue%"]),
                 'Owner' => $query->whereRaw('LOWER(IFNULL(IFNULL(own.display_name, own.name), IFNULL(ownc.display_name, ownc.name))) LIKE ?', ["%$lowerValue%"]),
                 'Agent' => $query->whereRaw('LOWER(IFNULL(IFNULL(agt.display_name, agt.name), IFNULL(agtc.display_name, agtc.name))) LIKE ?', ["%$lowerValue%"]),
+                'Contact' => $query->whereRaw('LOWER(IFNULL(cnt.display_name, cnt.name)) LIKE ?', ["%$lowerValue%"]),
                 'AgtRef' => $query->whereRaw('LOWER(IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
                 'Title' => $query->whereRaw('LOWER(concat_ws(" ", tit1.value, tit2.value, tit3.value)) LIKE ?', ["%$lowerValue%"]),
                 'Inventor1' => $query->whereRaw('LOWER(IFNULL(inv.display_name, inv.name)) LIKE ?', ["%$lowerValue%"]),

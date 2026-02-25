@@ -848,6 +848,8 @@
   "matter.filters.placeholders.client": "Search client...",
   "matter.filters.placeholders.clientReference": "Client ref...",
   "matter.filters.placeholders.agent": "Search agent...",
+  "matter.filters.labels.contact": "Contact",
+  "matter.filters.placeholders.contact": "Search contact...",
   "matter.filters.placeholders.title": "Search title...",
   "matter.filters.placeholders.selectDate": "Select date...",
   "matter.filters.placeholders.filingNumber": "Filing number...",
