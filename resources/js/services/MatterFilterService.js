@@ -29,8 +29,8 @@ export class MatterFilterService {
   /**
    * Export matters with current filters
    */
-  static exportMatters(filters) {
-    const params = new URLSearchParams(this.buildQueryParams(filters))
+  static exportMatters(filters, options = {}) {
+    const params = new URLSearchParams(this.buildQueryParams(filters, options))
     window.location.href = `/matter/export?${params.toString()}`
   }
 

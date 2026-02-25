@@ -366,7 +366,7 @@ function saveFilterState(open) {
 }
 
 function exportMatters() {
-  MatterFilterService.exportMatters(filters.value)
+  MatterFilterService.exportMatters(filters.value, { sort: sortField.value, direction: sortDirection.value })
 }
 
 function goToPage(page) {
