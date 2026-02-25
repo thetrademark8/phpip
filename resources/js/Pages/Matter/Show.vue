@@ -311,6 +311,24 @@
               </CardContent>
             </Card>
 
+            <Card v-if="matter.tasks_done.length > 0">
+              <CardHeader class="py-2 px-3 bg-secondary">
+                <h3 class="font-semibold text-sm flex items-center justify-between">
+                  {{ $t('Completed Tasks') }}
+                  <Badge variant="secondary">{{ matter.tasks_done.length }}</Badge>
+                </h3>
+              </CardHeader>
+              <CardContent class="p-3 overflow-y-auto">
+                <TasksTab
+                  :tasks="matter.tasks_done"
+                  :matter-id="matter.id"
+                  :enable-inline-edit="false"
+                  :compact="true"
+                  :show-done-date="true"
+                />
+              </CardContent>
+            </Card>
+
           </div>
 
           <!-- Notes -->
@@ -638,7 +656,7 @@ function handleNotesUpdate() {
 }
 
 function generateEmail() {
-  router.visit(`/matter/${props.matter.id}/email/compose`)
+  window.open(`/matter/${props.matter.id}/email/compose`, '_blank')
 }
 
 function exportMatter() {

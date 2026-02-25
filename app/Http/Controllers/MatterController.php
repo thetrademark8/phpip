@@ -85,6 +85,7 @@ class MatterController extends Controller
         // Load all necessary relationships with optimized queries
         $matter->load([
             'tasksPending.info',
+            'tasksDone.info',
             'renewalsPending',
             'events' => function ($query) {
                 $query->with(['info', 'altMatter', 'link'])

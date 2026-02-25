@@ -206,8 +206,9 @@ const tableColumns = [
     accessorKey: 'Ref',
     header: t('matter.columns.reference'),
     cell: ({ row }) => h('div', { class: 'flex items-center gap-2' }, [
-      h(Link, {
+      h('a', {
         href: `/matter/${row.original.id}`,
+        target: '_blank',
         class: 'text-primary hover:underline font-medium'
       }, row.original.Ref),
       row.original.Alt_Ref && h('span', { class: 'text-xs text-muted-foreground' }, `(${row.original.Alt_Ref})`)

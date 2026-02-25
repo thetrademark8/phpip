@@ -297,6 +297,15 @@ class Matter extends Model
             ->orderBy('due_date');
     }
 
+    // Completed tasks excluding renewals
+    public function tasksDone()
+    {
+        return $this->tasks()
+            ->where('task.code', '!=', 'REN')
+            ->whereDone(1)
+            ->orderBy('done_date', 'desc');
+    }
+
     // Pending renewals
     public function renewalsPending()
     {

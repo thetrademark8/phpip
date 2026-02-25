@@ -104,8 +104,9 @@ const columns = [
     accessorKey: 'matter.uid',
     header: t('dashboard.table.matter'),
     cell: ({row}) => h('div', {class: 'flex flex-col gap-1'}, [
-      h(Link, {
+      h('a', {
         href: route('matter.show', {matter: row.original.matter.id}),
+        target: '_blank',
         class: 'text-primary hover:underline text-sm font-medium'
       }, row.original.matter?.uid || `#${row.original.matter_id}`),
       h('span', {class: 'text-xs text-muted-foreground'}, `${t('dashboard.table.id')}: ${row.original.id}`)

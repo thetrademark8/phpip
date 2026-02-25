@@ -40,7 +40,11 @@ import {useTranslatedField} from '@/composables/useTranslation'
 const props = defineProps({
   tasks: Array,
   matterId: [String, Number],
-  enableInlineEdit: Boolean
+  enableInlineEdit: Boolean,
+  showDoneDate: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const {t} = useI18n()
@@ -127,6 +131,22 @@ const columns = [
     })
   }
 ]
+
+// Add done_date column for completed tasks view
+if (props.showDoneDate) {
+  columns.push({
+    id: 'done_date',
+    accessorKey: 'done_date',
+    header: t('Done date'),
+    cell: ({row}) => {
+      const task = row.original
+      return h('div', {class: 'flex items-center gap-1'}, [
+        h(Calendar, {class: 'h-3 w-3 text-muted-foreground'}),
+        h('span', {}, task.done_date ? formatDate(task.done_date) : '')
+      ])
+    }
+  })
+}
 
 // Add actions column if editing is enabled
 if (props.enableInlineEdit) {
