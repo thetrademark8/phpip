@@ -120,8 +120,9 @@ const selectedItem = ref(null)
 
 // Watch for external value changes
 watch(() => props.modelValue, (newValue) => {
-  if (!newValue && !selectedItem.value) {
+  if (!newValue) {
     displayValue.value = ''
+    selectedItem.value = null
   }
 })
 

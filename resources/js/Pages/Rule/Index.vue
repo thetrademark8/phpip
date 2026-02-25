@@ -363,6 +363,6 @@ function handleSortChange({ field, direction }) {
 
 function handleRuleSuccess() {
   isRuleDialogOpen.value = false
-  router.reload({ only: ['rules'] })
+  applyFilters()
 }
 </script>
