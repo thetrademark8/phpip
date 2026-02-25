@@ -264,11 +264,11 @@
         <!-- Middle Column - Main Information (50%) -->
         <div class="lg:col-span-2 space-y-3">
 
-          <!-- Events - Timeline with Actions -->
+          <!-- Events -->
           <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Recent Events') }}</h3>
+                <h3 class="font-semibold text-sm">{{ $t('Events') }}</h3>
                 <Button
                     v-if="canWrite"
                     variant="ghost"
@@ -280,15 +280,10 @@
                 </Button>
               </div>
             </CardHeader>
-            <CardContent class="p-3 max-h-64 overflow-y-auto">
-              <EventTimeline
-                  :events="recentEvents"
-                  :enable-inline-edit="false"
-                  :editable="canWrite"
-                  :show-tasks="false"
-                  @edit="handleEventEdit"
-                  @remove="handleEventRemove"
-                  @update="handleEventUpdate"
+            <CardContent class="p-3">
+              <EventsTab
+                  :events="matter.events"
+                  :can-write="canWrite"
               />
             </CardContent>
           </Card>
@@ -518,7 +513,7 @@ import {
 } from '@/components/ui/collapsible'
 import StatusBadge from '@/components/display/StatusBadge.vue'
 import ActorList from '@/components/display/ActorList.vue'
-import EventTimeline from '@/components/display/EventTimeline.vue'
+import EventsTab from '@/components/matter/tabs/EventsTab.vue'
 import MatterDialog from '@/components/dialogs/MatterDialog.vue'
 import MatterActorManager from '@/components/dialogs/MatterActorManager.vue'
 import MatterEventManager from '@/components/dialogs/MatterEventManager.vue'
@@ -572,9 +567,6 @@ const tmClasses = computed(() =>
   props.classifiers?.TMCL || []
 )
 
-const recentEvents = computed(() =>
-  [...(props.matter.events || [])].reverse().slice(0, 10)
-)
 
 const attributeClassifiers = computed(() => {
   if (!props.matter.classifiers) return []
@@ -653,21 +645,7 @@ function exportMatter() {
   window.location.href = route('matter.export.single', props.matter.id)
 }
 
-function handleEventEdit(event) {
-  // TODO: Open event edit dialog
-  console.log('Edit event:', event)
-}
-
-function handleEventRemove(event) {
-  if (confirm(t('Are you sure you want to remove this event?'))) {
-    router.delete(route('event.destroy', event.id), {
-      preserveScroll: true,
-      onSuccess: () => router.reload({ only: ['matter'] })
-    })
-  }
-}
-
-function handleEventUpdate(event) {
+function handleEventUpdate() {
   router.reload({ only: ['matter'] })
 }
 

@@ -78,6 +78,8 @@
   "Configuration": "Konfiguration",
   "Actor list": "Akteursliste",
   "Events": "Ereignisse",
+  "No events to display": "Keine Ereignisse vorhanden",
+  "Recalculate tasks": "Aufgaben neu berechnen",
   "Manage renewals": "Verlängerungen verwalten",
   "Renewal fees": "Verlängerungsgebühren",
   "Rules": "Regeln",
