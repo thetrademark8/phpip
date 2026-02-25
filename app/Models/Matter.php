@@ -574,16 +574,16 @@ class Matter extends Model
                             $query->whereJsonLike('event_name.name', $value);
                             break;
                         case 'Client':
-                            $query->whereRaw("IFNULL(cli.name, clic.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw("IFNULL(IFNULL(cli.display_name, cli.name), IFNULL(clic.display_name, clic.name)) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'ClRef':
                             $query->whereRaw("IFNULL(clilnk.actor_ref, cliclnk.actor_ref) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Owner':
-                            $query->whereRaw("IFNULL(own.name, ownc.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw("IFNULL(IFNULL(own.display_name, own.name), IFNULL(ownc.display_name, ownc.name)) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Agent':
-                            $query->whereRaw("IFNULL(agt.name, agtc.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw("IFNULL(IFNULL(agt.display_name, agt.name), IFNULL(agtc.display_name, agtc.name)) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'Title':
                             $query->whereRaw("concat_ws(' ', tit1.value, tit2.value, tit3.value) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);

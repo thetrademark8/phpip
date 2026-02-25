@@ -78,6 +78,7 @@
           endpoint="/actor/autocomplete"
           value-key="value"
           label-key="value"
+          allow-free-text
         />
       </div>
 
@@ -92,6 +93,7 @@
           endpoint="/actor/autocomplete"
           value-key="value"
           label-key="value"
+          allow-free-text
         />
       </div>
 

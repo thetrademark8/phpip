@@ -98,8 +98,10 @@ class AutocompleteController extends Controller
     public function actor(Request $request, $create_option = null): JsonResponse
     {
         $list = Actor::select(DB::raw('coalesce(display_name, name) as value'), 'id as key')
-            ->whereLike('name', "{$request->term}%")
-            ->orWhereLike('display_name', "{$request->term}%")
+            ->where(function ($q) use ($request) {
+                $q->whereLike('name', "%{$request->term}%")
+                    ->orWhereLike('display_name', "%{$request->term}%");
+            })
             ->take(10)
             ->get();
 
