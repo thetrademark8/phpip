@@ -73,6 +73,7 @@ class PlaceholderService
             ],
             'owner' => [
                 '{{owner.name}}' => __('email.placeholder.owner_name'),
+                '{{owner.first_name}}' => __('email.placeholder.owner_first_name'),
                 '{{owner.address}}' => __('email.placeholder.owner_address'),
             ],
             'agent' => [
@@ -144,6 +145,7 @@ class PlaceholderService
             // Owner placeholders
             $values['{{owner.name}}'] = $this->matter->getOwnerName();
             $owner = $this->matter->owners()->first();
+            $values['{{owner.first_name}}'] = $owner?->actor?->phy_person ? $owner?->actor?->first_name : null;
             $values['{{owner.address}}'] = $owner?->actor?->address;
 
             // Agent placeholders

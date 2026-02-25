@@ -1766,6 +1766,7 @@
   "email.placeholder.actor_email": "Recipient email",
   "email.placeholder.actor_first_name": "Recipient first name",
   "email.placeholder.owner_name": "Owner name",
+  "email.placeholder.owner_first_name": "Owner first name (empty if company)",
   "email.placeholder.owner_address": "Owner address",
   "email.placeholder.agent_name": "Agent name",
   "email.placeholder.agent_email": "Agent email",

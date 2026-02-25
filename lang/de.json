@@ -1666,6 +1666,7 @@
   "email.placeholder.actor_email": "Empfänger-E-Mail",
   "email.placeholder.actor_first_name": "Empfänger-Vorname",
   "email.placeholder.owner_name": "Inhabername",
+  "email.placeholder.owner_first_name": "Inhaber-Vorname (leer bei Unternehmen)",
   "email.placeholder.owner_address": "Inhaberadresse",
   "email.placeholder.agent_name": "Vertretername",
   "email.placeholder.agent_email": "Vertreter-E-Mail",

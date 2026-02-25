@@ -1763,6 +1763,7 @@
   "email.placeholder.actor_email": "Email du destinataire",
   "email.placeholder.actor_first_name": "Prénom du destinataire",
   "email.placeholder.owner_name": "Nom du titulaire",
+  "email.placeholder.owner_first_name": "Prénom du titulaire (vide si société)",
   "email.placeholder.owner_address": "Adresse du titulaire",
   "email.placeholder.agent_name": "Nom de l'agent",
   "email.placeholder.agent_email": "Email de l'agent",
