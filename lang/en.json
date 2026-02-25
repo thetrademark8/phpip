@@ -1754,6 +1754,7 @@
   "email.placeholder.matter_opposition_deadline": "Opposition deadline",
   "email.placeholder.matter_priority_deadline": "Priority deadline",
   "email.placeholder.matter_expire_date": "Expiration date",
+  "email.placeholder.matter_next_renewal": "Next renewal date",
   "email.placeholder.matter_country": "Country",
   "email.placeholder.matter_category": "Category",
   "email.placeholder.client_name": "Client name",

@@ -1751,6 +1751,7 @@
   "email.placeholder.matter_opposition_deadline": "Délai d'opposition",
   "email.placeholder.matter_priority_deadline": "Délai de priorité",
   "email.placeholder.matter_expire_date": "Date d'expiration",
+  "email.placeholder.matter_next_renewal": "Date du prochain renouvellement",
   "email.placeholder.matter_country": "Pays",
   "email.placeholder.matter_category": "Catégorie",
   "email.placeholder.client_name": "Nom du client",

@@ -46,6 +46,7 @@ class PlaceholderService
             '{{matter.opposition_deadline}}' => __('email.placeholder.matter_opposition_deadline'),
             '{{matter.priority_deadline}}' => __('email.placeholder.matter_priority_deadline'),
             '{{matter.expire_date}}' => __('email.placeholder.matter_expire_date'),
+            '{{matter.next_renewal}}' => __('email.placeholder.matter_next_renewal'),
             '{{matter.country}}' => __('email.placeholder.matter_country'),
             '{{matter.category}}' => __('email.placeholder.matter_category'),
         ];
@@ -124,7 +125,8 @@ class PlaceholderService
             $values['{{matter.publication_date}}'] = $this->matter->publication?->event_date?->isoFormat('L');
             $values['{{matter.opposition_deadline}}'] = $this->getTaskDueDate('FOP');
             $values['{{matter.priority_deadline}}'] = $this->getTaskDueDate('PRID');
-            $values['{{matter.expire_date}}'] = $this->matter->expire_date;
+            $values['{{matter.expire_date}}'] = $this->matter->expire_date ? \Carbon\Carbon::parse($this->matter->expire_date)->isoFormat('L') : null;
+            $values['{{matter.next_renewal}}'] = $this->getTaskDueDate('REN');
             $values['{{matter.country}}'] = $this->matter->countryInfo?->name;
             $values['{{matter.category}}'] = $this->matter->category?->category;
 

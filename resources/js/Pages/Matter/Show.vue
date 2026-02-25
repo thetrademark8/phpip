@@ -383,7 +383,7 @@
                 v-if="matter.renewals_pending.length > 0"
                 :renewals="matter.renewals_pending"
                 :matter-id="matter.id"
-                :compact="true"
+                :can-write="canWrite"
               />
               <div v-else class="text-center py-4 text-sm text-muted-foreground">
                 {{ $t('No pending renewals') }}

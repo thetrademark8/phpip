@@ -1654,6 +1654,7 @@
   "email.placeholder.matter_opposition_deadline": "Widerspruchsfrist",
   "email.placeholder.matter_priority_deadline": "Prioritätsfrist",
   "email.placeholder.matter_expire_date": "Ablaufdatum",
+  "email.placeholder.matter_next_renewal": "Nächstes Verlängerungsdatum",
   "email.placeholder.matter_country": "Land",
   "email.placeholder.matter_category": "Kategorie",
   "email.placeholder.client_name": "Mandantenname",
