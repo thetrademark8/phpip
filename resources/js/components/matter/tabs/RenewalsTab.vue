@@ -16,6 +16,7 @@ import {useI18n} from 'vue-i18n'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import DataTable from '@/components/ui/DataTable.vue'
+import {useTranslatedField} from '@/composables/useTranslation'
 
 const props = defineProps({
   renewals: Array,
@@ -23,6 +24,7 @@ const props = defineProps({
 })
 
 const {t} = useI18n()
+const {translated} = useTranslatedField()
 
 function formatDate(dateString) {
   if (!dateString) return ''
@@ -46,7 +48,7 @@ const columns = [
     cell: ({row}) => {
       const renewal = row.original
       return h('div', {class: 'space-y-1'}, [
-        h('div', {class: 'font-medium'}, renewal.detail || `Year ${renewal.recur_years || '?'}`),
+        h('div', {class: 'font-medium'}, translated(renewal.detail) || t('Renewal')),
         h('div', {class: 'text-sm text-muted-foreground'},
             renewal.info?.name || t('Renewal')
         )
