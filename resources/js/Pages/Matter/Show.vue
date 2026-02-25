@@ -128,10 +128,6 @@
                     ({{ (matter.grant || matter.registration)?.detail }})
                   </span>
                 </div>
-                <div v-if="matter.expire_date">
-                  <span class="font-medium">{{ $t('Next Renewal:') }}</span>
-                  <span class="ml-2 text-warning">{{ formatDate(matter.expire_date) }}</span>
-                </div>
                 <div v-if="matter.alt_ref">
                   <span class="font-medium">{{ $t('Alt. Ref:') }}</span>
                   <span class="ml-2">{{ matter.alt_ref }}</span>
