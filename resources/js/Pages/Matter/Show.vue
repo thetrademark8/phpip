@@ -594,7 +594,7 @@ const hasRelatedMatters = computed(() => {
 const isEligibleForInternational = computed(() => {
   return props.canWrite &&
          props.matter.country === 'WO' &&
-         props.matter.category_code === 'TM'
+         ['TM', 'DP'].includes(props.matter.category_code)
 })
 
 // Methods

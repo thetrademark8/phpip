@@ -2,9 +2,9 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
-        <DialogTitle>{{ t('Create National Trademark Matters') }}</DialogTitle>
+        <DialogTitle>{{ t('Create National Matters') }}</DialogTitle>
         <DialogDescription>
-          {{ t('Create national phase entries from international trademark') }} {{ matter.uid }}
+          {{ t('Create national phase entries from international matter') }} {{ matter.uid }}
         </DialogDescription>
       </DialogHeader>
 
@@ -152,7 +152,7 @@
             <CardContent class="pt-6">
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                  <span>{{ t('Creating national trademark matters...') }}</span>
+                  <span>{{ t('Creating national matters...') }}</span>
                   <span>{{ creationProgress }}/{{ selectedCountries.length }}</span>
                 </div>
                 <Progress :value="(creationProgress / selectedCountries.length) * 100" />

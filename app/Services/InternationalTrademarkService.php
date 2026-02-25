@@ -272,7 +272,12 @@ class InternationalTrademarkService
     }
 
     /**
-     * Validate that matter is eligible for international trademark automation
+     * Categories eligible for international matter automation
+     */
+    private const ELIGIBLE_CATEGORIES = ['TM', 'DP'];
+
+    /**
+     * Validate that matter is eligible for international matter automation
      */
     public function validateInternationalMatter(Matter $matter): array
     {
@@ -283,9 +288,9 @@ class InternationalTrademarkService
             $errors[] = 'Matter must be from WO (World Intellectual Property Organization)';
         }
 
-        // Must be trademark category
-        if ($matter->category_code !== 'TM') {
-            $errors[] = 'Matter must be a trademark (TM category)';
+        // Must be an eligible category
+        if (!in_array($matter->category_code, self::ELIGIBLE_CATEGORIES)) {
+            $errors[] = 'Matter must be a trademark (TM) or design patent (DP) category';
         }
 
         // Must have filing event
@@ -308,12 +313,12 @@ class InternationalTrademarkService
     }
 
     /**
-     * Get existing national matters for the international trademark
+     * Get existing national matters for the international matter
      */
     public function getExistingNationalMatters(Matter $internationalMatter): Collection
     {
         return Matter::where('parent_id', $internationalMatter->id)
-            ->where('category_code', 'TM')
+            ->where('category_code', $internationalMatter->category_code)
             ->where('country', '!=', 'WO')
             ->get(['id', 'uid', 'country', 'created_at']);
     }
