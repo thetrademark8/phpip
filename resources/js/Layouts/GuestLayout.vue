@@ -4,7 +4,7 @@
       <!-- Company Logo -->
       <div v-if="$page.props.app.company_logo" class="text-center">
         <img 
-          :src="`/${$page.props.app.company_logo}`" 
+          :src="$page.props.app.company_logo" 
           :alt="$page.props.app.company_name || $page.props.app.name"
           class="mx-auto h-20 w-auto"
         >

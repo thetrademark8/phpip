@@ -7,7 +7,7 @@
           <Link :href="route('home')" class="flex items-center">
             <img 
               v-if="$page.props.app.company_logo" 
-              :src="`/${$page.props.app.company_logo}`"
+              :src="$page.props.app.company_logo"
               :alt="$page.props.app.company_name || $page.props.app.name"
               class="h-10 w-auto max-w-[150px]"
             >

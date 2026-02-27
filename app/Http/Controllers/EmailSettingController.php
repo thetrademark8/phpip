@@ -6,6 +6,7 @@ use App\Models\EmailSetting;
 use App\Services\Email\EmailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,7 +21,7 @@ class EmailSettingController extends Controller
 
         return Inertia::render('Settings/Email', [
             'settings' => $settings,
-            'company_logo' => EmailSetting::get('email_logo', config('app.company_logo')),
+            'company_logo' => EmailSetting::logoUrl(),
         ]);
     }
 
@@ -62,18 +63,15 @@ class EmailSettingController extends Controller
         $file = $request->file('logo');
         $filename = 'logo-email.' . $file->getClientOriginalExtension();
 
-        // Store in storage/app/public/images (persistent across deployments)
-        $file->storeAs('images', $filename, 'public');
-
-        $logoPath = 'storage/images/' . $filename;
+        $path = $file->storeAs('branding', $filename);
 
         // Persist logo path in email_settings
-        EmailSetting::set('email_logo', $logoPath, 'text', 'branding');
+        EmailSetting::set('email_logo', $path, 'text', 'branding');
 
         return response()->json([
             'success' => true,
-            'path' => $logoPath,
-            'url' => asset($logoPath),
+            'path' => $path,
+            'url' => Storage::url($path),
             'message' => __('Logo uploaded successfully'),
         ]);
     }

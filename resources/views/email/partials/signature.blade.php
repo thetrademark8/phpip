@@ -1,15 +1,10 @@
 @php
     $signature = \App\Models\EmailSetting::get('email_signature', '');
-    $companyLogo = \App\Models\EmailSetting::get('email_logo', config('app.company_logo'));
+    $logoUrl = \App\Models\EmailSetting::logoUrl();
 @endphp
-@if($signature || $companyLogo)
+@if($signature || $logoUrl)
 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-    @if($companyLogo)
-    @php
-        $logoUrl = str_starts_with($companyLogo, 'http')
-            ? $companyLogo
-            : asset($companyLogo);
-    @endphp
+    @if($logoUrl)
     <div style="margin-bottom: 10px;">
         <img src="{{ $logoUrl }}" alt="{{ config('app.name') }}" style="max-height: 60px; width: auto;">
     </div>

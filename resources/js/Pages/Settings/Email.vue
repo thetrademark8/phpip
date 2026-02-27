@@ -243,7 +243,7 @@ const form = ref({
 
 // --- Logo upload ---
 
-const companyLogo = ref(props.company_logo ? `/${props.company_logo}` : '')
+const companyLogo = ref(props.company_logo || '')
 const selectedFile = ref(null)
 const isUploading = ref(false)
 

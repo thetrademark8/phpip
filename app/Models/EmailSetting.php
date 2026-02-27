@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class EmailSetting extends Model
 {
@@ -42,6 +43,20 @@ class EmailSetting extends Model
     public static function getAllGrouped(): \Illuminate\Support\Collection
     {
         return static::all()->groupBy('group');
+    }
+
+    /**
+     * Get the full URL for the company logo.
+     */
+    public static function logoUrl(): ?string
+    {
+        $path = static::get('email_logo');
+
+        if (! $path) {
+            return null;
+        }
+
+        return Storage::url($path);
     }
 
     /**
