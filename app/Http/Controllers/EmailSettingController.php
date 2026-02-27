@@ -62,10 +62,10 @@ class EmailSettingController extends Controller
         $file = $request->file('logo');
         $filename = 'logo-email.' . $file->getClientOriginalExtension();
 
-        // Store in public/images directory
-        $file->move(public_path('images'), $filename);
+        // Store in storage/app/public/images (persistent across deployments)
+        $file->storeAs('images', $filename, 'public');
 
-        $logoPath = 'images/' . $filename;
+        $logoPath = 'storage/images/' . $filename;
 
         // Persist logo path in email_settings
         EmailSetting::set('email_logo', $logoPath, 'text', 'branding');

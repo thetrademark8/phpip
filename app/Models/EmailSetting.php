@@ -26,12 +26,14 @@ class EmailSetting extends Model
      */
     public static function set(string $key, mixed $value, string $type = 'text', string $group = 'general'): static
     {
-        Cache::forget("email_setting_{$key}");
-
-        return static::updateOrCreate(
+        $setting = static::updateOrCreate(
             ['key' => $key],
             ['value' => $value, 'type' => $type, 'group' => $group]
         );
+
+        Cache::forget("email_setting_{$key}");
+
+        return $setting;
     }
 
     /**

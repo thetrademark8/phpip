@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Helpers\PermissionHelper;
 use App\Models\Category;
+use App\Models\EmailSetting;
 use App\Models\Country;
 use App\Models\MatterType;
 use App\Models\User;
@@ -79,7 +80,7 @@ class HandleInertiaRequests extends Middleware
             'app' => [
                 'name' => config('app.name'),
                 'company_name' => config('app.company_name'),
-                'company_logo' => config('app.company_logo'),
+                'company_logo' => EmailSetting::get('email_logo', config('app.company_logo')),
                 'teamleader_enabled' => config('services.teamleader.enabled', false),
             ],
             'matter_categories' => cache()->remember('matter_categories_nav', now()->addHours(1), function () {
