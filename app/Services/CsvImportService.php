@@ -436,8 +436,9 @@ class CsvImportService
 
         fclose($handle);
 
-        // Delete and insert within a transaction
+        // Delete and insert within a transaction (FK checks disabled)
         DB::transaction(function () use ($table, $rows, &$stats) {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
             $stats['deleted'] = DB::table($table)->count();
             DB::table($table)->delete();
 
@@ -445,6 +446,7 @@ class CsvImportService
                 DB::table($table)->insert($chunk);
                 $stats['inserted'] += count($chunk);
             }
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
         });
 
         return $stats;
