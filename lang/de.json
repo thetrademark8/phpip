@@ -1801,10 +1801,10 @@
 
   "Integrations": "Integrationen",
 
-  "Email Settings": "E-Mail-Einstellungen",
-  "Manage email branding, signature and logo for outgoing emails": "E-Mail-Branding, Signatur und Logo für ausgehende E-Mails verwalten",
+  "Brand Settings": "Markeneinstellungen",
+  "Manage branding, logo and email signature for your company": "Branding, Logo und E-Mail-Signatur Ihres Unternehmens verwalten",
   "Company Logo": "Firmenlogo",
-  "Upload a logo to display in email signatures": "Logo hochladen, das in E-Mail-Signaturen angezeigt wird",
+  "Upload your company logo for the website and email signatures": "Firmenlogo für die Website und E-Mail-Signaturen hochladen",
   "Upload Logo": "Logo hochladen",
   "Uploading...": "Wird hochgeladen...",
   "Current Logo": "Aktuelles Logo",

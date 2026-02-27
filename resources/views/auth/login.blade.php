@@ -8,10 +8,11 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    @if(config('app.company_logo'))
+                    @php($companyLogo = \App\Models\EmailSetting::get('email_logo', config('app.company_logo')))
+                    @if($companyLogo)
                         <div class="text-center mb-4">
-                            <img src="{{ asset(config('app.company_logo')) }}" 
-                                 alt="{{ config('app.company_name', config('app.name')) }}" 
+                            <img src="{{ asset($companyLogo) }}"
+                                 alt="{{ config('app.company_name', config('app.name')) }}"
                                  class="img-fluid"
                                  style="max-height: 80px; max-width: 250px;">
                         </div>

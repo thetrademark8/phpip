@@ -148,7 +148,7 @@
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>{{ $t('Settings') }}</DropdownMenuLabel>
                 <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/settings/email">{{ $t('Email Settings') }}</Link>
+                  <Link href="/settings/email">{{ $t('Brand Settings') }}</Link>
                 </DropdownMenuItem>
 
                 <!-- Integrations Section (only if any integration is enabled) -->

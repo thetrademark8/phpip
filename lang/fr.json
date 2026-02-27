@@ -1898,10 +1898,10 @@
 
   "Integrations": "Intégrations",
 
-  "Email Settings": "Paramètres e-mail",
-  "Manage email branding, signature and logo for outgoing emails": "Gérer la marque, la signature et le logo des e-mails sortants",
+  "Brand Settings": "Paramètres de marque",
+  "Manage branding, logo and email signature for your company": "Gérer l'image de marque, le logo et la signature e-mail de votre entreprise",
   "Company Logo": "Logo de l'entreprise",
-  "Upload a logo to display in email signatures": "Télécharger un logo à afficher dans les signatures d'e-mails",
+  "Upload your company logo for the website and email signatures": "Télécharger le logo de votre entreprise pour le site et les signatures d'e-mails",
   "Upload Logo": "Télécharger le logo",
   "Uploading...": "Téléchargement...",
   "Current Logo": "Logo actuel",

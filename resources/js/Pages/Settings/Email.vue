@@ -1,10 +1,10 @@
 <template>
-  <MainLayout :title="t('Email Settings')">
+  <MainLayout :title="t('Brand Settings')">
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       <!-- Header -->
       <div class="space-y-2">
-        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{{ t('Email Settings') }}</h1>
-        <p class="text-lg text-muted-foreground">{{ t('Manage email branding, signature and logo for outgoing emails') }}</p>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{{ t('Brand Settings') }}</h1>
+        <p class="text-lg text-muted-foreground">{{ t('Manage branding, logo and email signature for your company') }}</p>
       </div>
 
       <!-- Success Message -->
@@ -31,7 +31,7 @@
             {{ t('Company Logo') }}
           </CardTitle>
           <CardDescription>
-            {{ t('Upload a logo to display in email signatures') }}
+            {{ t('Upload your company logo for the website and email signatures') }}
           </CardDescription>
         </CardHeader>
         <CardContent class="pt-0 space-y-6">
@@ -83,7 +83,7 @@
         <CardHeader class="pb-6">
           <CardTitle class="text-xl font-semibold flex items-center gap-2">
             <Mail class="h-5 w-5 text-primary" />
-            {{ t('Email Settings') }}
+            {{ t('Brand Settings') }}
           </CardTitle>
         </CardHeader>
         <CardContent class="pt-0">

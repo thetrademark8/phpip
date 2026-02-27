@@ -1901,10 +1901,10 @@
 
   "Integrations": "Integrations",
 
-  "Email Settings": "Email Settings",
-  "Manage email branding, signature and logo for outgoing emails": "Manage email branding, signature and logo for outgoing emails",
+  "Brand Settings": "Brand Settings",
+  "Manage branding, logo and email signature for your company": "Manage branding, logo and email signature for your company",
   "Company Logo": "Company Logo",
-  "Upload a logo to display in email signatures": "Upload a logo to display in email signatures",
+  "Upload your company logo for the website and email signatures": "Upload your company logo for the website and email signatures",
   "Upload Logo": "Upload Logo",
   "Uploading...": "Uploading...",
   "Current Logo": "Current Logo",
