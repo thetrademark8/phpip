@@ -80,7 +80,7 @@ class HandleInertiaRequests extends Middleware
             'app' => [
                 'name' => config('app.name'),
                 'company_name' => config('app.company_name'),
-                'company_logo' => EmailSetting::logoUrl(),
+                'company_logo' => EmailSetting::siteLogoUrl(),
                 'teamleader_enabled' => config('services.teamleader.enabled', false),
             ],
             'matter_categories' => cache()->remember('matter_categories_nav', now()->addHours(1), function () {

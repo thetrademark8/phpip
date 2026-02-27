@@ -21,7 +21,8 @@ class EmailSettingController extends Controller
 
         return Inertia::render('Settings/Email', [
             'settings' => $settings,
-            'company_logo' => EmailSetting::logoUrl(),
+            'site_logo' => EmailSetting::siteLogoUrl(),
+            'email_logo' => EmailSetting::emailLogoUrl(),
         ]);
     }
 
@@ -58,15 +59,17 @@ class EmailSettingController extends Controller
     {
         $request->validate([
             'logo' => 'required|image|mimes:png,jpg,jpeg,svg,gif|max:2048',
+            'type' => 'required|in:site,email',
         ]);
 
+        $type = $request->input('type');
         $file = $request->file('logo');
-        $filename = 'logo-email.' . $file->getClientOriginalExtension();
+        $filename = "logo-{$type}." . $file->getClientOriginalExtension();
 
         $path = $file->storeAs('branding', $filename);
 
-        // Persist logo path in email_settings
-        EmailSetting::set('email_logo', $path, 'text', 'branding');
+        $settingKey = $type === 'site' ? 'site_logo' : 'email_logo';
+        EmailSetting::set($settingKey, $path, 'text', 'branding');
 
         return response()->json([
             'success' => true,

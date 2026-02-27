@@ -2,7 +2,7 @@
 <tr>
 <td class="header">
 <a href="{{ $url }}" style="display: inline-block;">
-@php($logoUrl = \App\Models\EmailSetting::logoUrl())
+@php($logoUrl = \App\Models\EmailSetting::emailLogoUrl())
 @if ($logoUrl)
     <img src="{{ $logoUrl }}" class="logo" alt="{{ config('app.name') }} Logo">
 @elseif (trim($slot) === 'Laravel')

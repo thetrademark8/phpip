@@ -1,6 +1,6 @@
 @php
     $signature = \App\Models\EmailSetting::get('email_signature', '');
-    $logoUrl = \App\Models\EmailSetting::logoUrl();
+    $logoUrl = \App\Models\EmailSetting::emailLogoUrl();
 @endphp
 @if($signature || $logoUrl)
 <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">

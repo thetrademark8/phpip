@@ -23,57 +23,78 @@
         </AlertDescription>
       </Alert>
 
-      <!-- Company Logo Card -->
+      <!-- Logos Card -->
       <Card>
         <CardHeader class="pb-6">
           <CardTitle class="text-xl font-semibold flex items-center gap-2">
             <Image class="h-5 w-5 text-primary" />
-            {{ t('Company Logo') }}
+            {{ t('Logos') }}
           </CardTitle>
           <CardDescription>
-            {{ t('Upload your company logo for the website and email signatures') }}
+            {{ t('Upload separate logos for the website and for emails') }}
           </CardDescription>
         </CardHeader>
-        <CardContent class="pt-0 space-y-6">
-          <!-- Current Logo Preview -->
-          <div v-if="companyLogo" class="space-y-2">
-            <p class="text-sm font-medium text-muted-foreground">{{ t('Current Logo') }}</p>
-            <div class="p-4 rounded-lg border bg-muted/30 inline-block">
-              <img
-                :src="companyLogo"
-                :alt="t('Company Logo')"
-                class="max-h-24 max-w-xs object-contain"
-              />
+        <CardContent class="pt-0 space-y-8">
+          <!-- Site Logo -->
+          <div class="space-y-4">
+            <div class="space-y-1">
+              <h3 class="text-sm font-semibold">{{ t('Site Logo') }}</h3>
+              <p class="text-sm text-muted-foreground">{{ t('Displayed in the navigation bar and login page') }}</p>
             </div>
-          </div>
-          <div v-else class="p-4 rounded-lg border border-dashed bg-muted/20">
-            <p class="text-sm text-muted-foreground italic">{{ t('No logo uploaded') }}</p>
+            <div v-if="siteLogo" class="p-4 rounded-lg border bg-muted/30 inline-block">
+              <img :src="siteLogo" :alt="t('Site Logo')" class="max-h-16 max-w-xs object-contain" />
+            </div>
+            <div v-else class="p-4 rounded-lg border border-dashed bg-muted/20">
+              <p class="text-sm text-muted-foreground italic">{{ t('No logo uploaded') }}</p>
+            </div>
+            <div class="flex items-end gap-3">
+              <div class="space-y-2 flex-1">
+                <Input
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml,image/gif"
+                  class="cursor-pointer"
+                  @change="siteFile = $event.target.files?.[0] ?? null"
+                />
+                <p class="text-xs text-muted-foreground">{{ t('Accepted formats: PNG, JPG, SVG, GIF (max 2MB)') }}</p>
+              </div>
+              <Button :disabled="!siteFile || isUploadingSite" @click="upload('site')">
+                <Upload v-if="!isUploadingSite" class="mr-2 h-4 w-4" />
+                <span v-else class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+                {{ isUploadingSite ? t('Uploading...') : t('Upload') }}
+              </Button>
+            </div>
           </div>
 
           <Separator />
 
-          <!-- Upload Form -->
+          <!-- Email Logo -->
           <div class="space-y-4">
-            <div class="space-y-2">
-              <Input
-                ref="logoInput"
-                type="file"
-                accept="image/png,image/jpeg,image/svg+xml,image/gif"
-                class="cursor-pointer"
-                @change="handleFileChange"
-              />
-              <p class="text-xs text-muted-foreground">
-                {{ t('Accepted formats: PNG, JPG, SVG, GIF (max 2MB)') }}
-              </p>
+            <div class="space-y-1">
+              <h3 class="text-sm font-semibold">{{ t('Email Logo') }}</h3>
+              <p class="text-sm text-muted-foreground">{{ t('Displayed in email signatures and headers. Falls back to the site logo if not set.') }}</p>
             </div>
-            <Button
-              :disabled="!selectedFile || isUploading"
-              @click="uploadLogo"
-            >
-              <Upload v-if="!isUploading" class="mr-2 h-4 w-4" />
-              <span v-if="isUploading" class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
-              {{ isUploading ? t('Uploading...') : t('Upload Logo') }}
-            </Button>
+            <div v-if="emailLogo" class="p-4 rounded-lg border bg-muted/30 inline-block">
+              <img :src="emailLogo" :alt="t('Email Logo')" class="max-h-16 max-w-xs object-contain" />
+            </div>
+            <div v-else class="p-4 rounded-lg border border-dashed bg-muted/20">
+              <p class="text-sm text-muted-foreground italic">{{ t('No logo uploaded — using site logo') }}</p>
+            </div>
+            <div class="flex items-end gap-3">
+              <div class="space-y-2 flex-1">
+                <Input
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml,image/gif"
+                  class="cursor-pointer"
+                  @change="emailFile = $event.target.files?.[0] ?? null"
+                />
+                <p class="text-xs text-muted-foreground">{{ t('Accepted formats: PNG, JPG, SVG, GIF (max 2MB)') }}</p>
+              </div>
+              <Button :disabled="!emailFile || isUploadingEmail" @click="upload('email')">
+                <Upload v-if="!isUploadingEmail" class="mr-2 h-4 w-4" />
+                <span v-else class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+                {{ isUploadingEmail ? t('Uploading...') : t('Upload') }}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -83,7 +104,7 @@
         <CardHeader class="pb-6">
           <CardTitle class="text-xl font-semibold flex items-center gap-2">
             <Mail class="h-5 w-5 text-primary" />
-            {{ t('Brand Settings') }}
+            {{ t('Email Settings') }}
           </CardTitle>
         </CardHeader>
         <CardContent class="pt-0">
@@ -215,7 +236,11 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  company_logo: {
+  site_logo: {
+    type: String,
+    default: '',
+  },
+  email_logo: {
     type: String,
     default: '',
   },
@@ -243,25 +268,26 @@ const form = ref({
 
 // --- Logo upload ---
 
-const companyLogo = ref(props.company_logo || '')
-const selectedFile = ref(null)
-const isUploading = ref(false)
+const siteLogo = ref(props.site_logo || '')
+const emailLogo = ref(props.email_logo || '')
+const siteFile = ref(null)
+const emailFile = ref(null)
+const isUploadingSite = ref(false)
+const isUploadingEmail = ref(false)
 
-const handleFileChange = (event) => {
-  const file = event.target.files?.[0] ?? null
-  selectedFile.value = file
-}
+const upload = async (type) => {
+  const file = type === 'site' ? siteFile.value : emailFile.value
+  if (!file) return
 
-const uploadLogo = async () => {
-  if (!selectedFile.value) return
-
+  const isUploading = type === 'site' ? isUploadingSite : isUploadingEmail
   isUploading.value = true
   errorMessage.value = ''
   successMessage.value = ''
 
   try {
     const formData = new FormData()
-    formData.append('logo', selectedFile.value)
+    formData.append('logo', file)
+    formData.append('type', type)
 
     const response = await fetch('/settings/email/upload-logo', {
       method: 'POST',
@@ -278,8 +304,13 @@ const uploadLogo = async () => {
     }
 
     const data = await response.json()
-    companyLogo.value = data.url || `/${data.path}` || companyLogo.value
-    selectedFile.value = null
+    if (type === 'site') {
+      siteLogo.value = data.url
+      siteFile.value = null
+    } else {
+      emailLogo.value = data.url
+      emailFile.value = null
+    }
     successMessage.value = data.message || t('Settings saved successfully')
   } catch (error) {
     errorMessage.value = error.message || t('An error occurred while uploading the logo')

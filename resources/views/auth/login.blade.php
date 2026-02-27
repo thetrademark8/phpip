@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    @php($companyLogoUrl = \App\Models\EmailSetting::logoUrl())
+                    @php($companyLogoUrl = \App\Models\EmailSetting::siteLogoUrl())
                     @if($companyLogoUrl)
                         <div class="text-center mb-4">
                             <img src="{{ $companyLogoUrl }}"

@@ -46,14 +46,28 @@ class EmailSetting extends Model
     }
 
     /**
-     * Get the full URL for the company logo.
+     * Get the full URL for the site logo (navigation, login page).
      */
-    public static function logoUrl(): ?string
+    public static function siteLogoUrl(): ?string
+    {
+        $path = static::get('site_logo');
+
+        if (! $path) {
+            return null;
+        }
+
+        return Storage::url($path);
+    }
+
+    /**
+     * Get the full URL for the email logo (signatures, email headers).
+     */
+    public static function emailLogoUrl(): ?string
     {
         $path = static::get('email_logo');
 
         if (! $path) {
-            return null;
+            return static::siteLogoUrl();
         }
 
         return Storage::url($path);
