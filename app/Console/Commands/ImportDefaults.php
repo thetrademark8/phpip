@@ -28,40 +28,30 @@ class ImportDefaults extends Command
     private const TABLES = [
         'classifier_type' => [
             'table' => 'classifier_type',
-            'uniqueKey' => 'code',
             'delimiter' => ',',
             'translatableColumns' => ['type'],
             'extraExclude' => [],
         ],
         'event_name' => [
             'table' => 'event_name',
-            'uniqueKey' => 'code',
             'delimiter' => ',',
             'translatableColumns' => ['name'],
             'extraExclude' => [],
         ],
         'matter_category' => [
             'table' => 'matter_category',
-            'uniqueKey' => 'code',
             'delimiter' => ',',
             'translatableColumns' => ['category'],
             'extraExclude' => [],
         ],
         'matter_type' => [
             'table' => 'matter_type',
-            'uniqueKey' => 'code',
             'delimiter' => ',',
             'translatableColumns' => ['type'],
             'extraExclude' => [],
         ],
         'task_rules' => [
             'table' => 'task_rules',
-            'uniqueKey' => [
-                'task', 'trigger_event', 'clear_task', 'delete_task',
-                'for_category', 'for_country', 'for_origin', 'for_type',
-                'days', 'months', 'years', 'recurring',
-                'abort_on', 'condition_event', 'use_priority',
-            ],
             'delimiter' => ';',
             'translatableColumns' => ['detail'],
             'extraExclude' => ['id', 'uid', 'detail_fr', 'detail_de'],
@@ -103,13 +93,13 @@ class ImportDefaults extends Command
             if ($dryRun) {
                 $this->showPreview($importService, $filePath, $config);
             } else {
-                $result = $this->upsertTable($importService, $filePath, $config);
+                $result = $this->replaceTable($importService, $filePath, $config);
 
                 $this->table(
                     ['Metric', 'Count'],
                     [
+                        ['Deleted', $result['deleted']],
                         ['Inserted', $result['inserted']],
-                        ['Updated', $result['updated']],
                         ['Errors', $result['errors']],
                     ]
                 );
@@ -134,14 +124,13 @@ class ImportDefaults extends Command
         return $hasErrors ? self::FAILURE : self::SUCCESS;
     }
 
-    private function upsertTable(CsvImportService $importService, string $filePath, array $config): array
+    private function replaceTable(CsvImportService $importService, string $filePath, array $config): array
     {
         $excludeColumns = array_merge(self::EXCLUDE_COLUMNS, $config['extraExclude']);
 
-        return $importService->upsertFromCsv(
+        return $importService->replaceFromCsv(
             filePath: $filePath,
             table: $config['table'],
-            uniqueKey: $config['uniqueKey'],
             excludeColumns: $excludeColumns,
             translatableColumns: $config['translatableColumns'],
             delimiter: $config['delimiter'],
@@ -151,27 +140,9 @@ class ImportDefaults extends Command
     private function showPreview(CsvImportService $importService, string $filePath, array $config): void
     {
         $preview = $importService->preview($filePath, 5, $config['delimiter']);
-
         $existingCount = DB::table($config['table'])->count();
 
         $this->info("  CSV rows: {$preview['total']}");
-        $this->info("  Existing DB records: {$existingCount}");
-
-        $existingKeys = $importService->getExistingKeys($config['table'], $config['uniqueKey']);
-        $keyColumn = is_array($config['uniqueKey']) ? $config['uniqueKey'][0] : $config['uniqueKey'];
-
-        $newCount = 0;
-        $updateCount = 0;
-
-        foreach ($preview['rows'] as $row) {
-            $key = $row[$keyColumn] ?? null;
-            if ($key && $existingKeys->contains($key)) {
-                $updateCount++;
-            } else {
-                $newCount++;
-            }
-        }
-
-        $this->info("  Sample: {$newCount} new, {$updateCount} existing (from first 5 rows)");
+        $this->info("  Existing DB records: {$existingCount} (will be deleted)");
     }
 }

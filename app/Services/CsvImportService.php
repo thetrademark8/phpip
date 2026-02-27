@@ -368,6 +368,89 @@ class CsvImportService
     }
 
     /**
+     * Replace all data in a table with data from a CSV file.
+     * Deletes all existing rows then inserts from CSV within a transaction.
+     *
+     * @return array{deleted: int, inserted: int, errors: int}
+     */
+    public function replaceFromCsv(
+        string $filePath,
+        string $table,
+        array $excludeColumns = [],
+        array $translatableColumns = [],
+        ?callable $rowTransformer = null,
+        string $delimiter = ','
+    ): array {
+        $stats = ['deleted' => 0, 'inserted' => 0, 'errors' => 0];
+
+        $handle = fopen($filePath, 'r');
+        if ($handle === false) {
+            Log::error("CsvImportService: Unable to open file {$filePath}");
+            return $stats;
+        }
+
+        $headers = fgetcsv($handle, 0, $delimiter);
+        if ($headers === false) {
+            fclose($handle);
+            Log::error("CsvImportService: Unable to read headers from {$filePath}");
+            return $stats;
+        }
+
+        $headers[0] = preg_replace('/^\xEF\xBB\xBF/', '', $headers[0]);
+        $headers = array_map('trim', $headers);
+
+        // Read all rows first
+        $rows = [];
+        $rowNumber = 1;
+        while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+            $rowNumber++;
+
+            try {
+                if (count($row) === 1 && empty($row[0])) {
+                    continue;
+                }
+
+                if (count($headers) !== count($row)) {
+                    Log::warning("CsvImportService: Row {$rowNumber} has mismatched column count");
+                    $stats['errors']++;
+                    continue;
+                }
+
+                $data = array_combine($headers, $row);
+                $data = $this->transformRow($data, $translatableColumns);
+
+                if ($rowTransformer !== null) {
+                    $data = $rowTransformer($data);
+                }
+
+                foreach ($excludeColumns as $col) {
+                    unset($data[$col]);
+                }
+
+                $rows[] = $data;
+            } catch (\Exception $e) {
+                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
+                $stats['errors']++;
+            }
+        }
+
+        fclose($handle);
+
+        // Delete and insert within a transaction
+        DB::transaction(function () use ($table, $rows, &$stats) {
+            $stats['deleted'] = DB::table($table)->count();
+            DB::table($table)->delete();
+
+            foreach (array_chunk($rows, 500) as $chunk) {
+                DB::table($table)->insert($chunk);
+                $stats['inserted'] += count($chunk);
+            }
+        });
+
+        return $stats;
+    }
+
+    /**
      * Preview the contents of a CSV file without importing.
      *
      * @return array{headers: array, rows: array, total: int}
