@@ -97,9 +97,9 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow-sm mb-1">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-          @php($companyLogo = \App\Models\EmailSetting::get('email_logo', config('app.company_logo')))
-          @if($companyLogo)
-            <img src="{{ asset($companyLogo) }}"
+          @php($companyLogoUrl = \App\Models\EmailSetting::logoUrl())
+          @if($companyLogoUrl)
+            <img src="{{ $companyLogoUrl }}"
                  alt="{{ config('app.company_name', config('app.name')) }}"
                  style="max-height: 40px; max-width: 150px; height: auto;">
           @else
