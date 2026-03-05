@@ -142,8 +142,8 @@ class CsvImportService
             if (in_array($key, $translatableColumns) && $parsedValue !== null) {
                 // Check if value is already valid JSON
                 if (!$this->isValidJson($parsedValue)) {
-                    // Convert plain text to JSON with 'en' as default language
-                    $parsedValue = json_encode(['en' => $parsedValue], JSON_UNESCAPED_UNICODE);
+                    // Convert plain text to JSON with all supported languages
+                    $parsedValue = json_encode(['en' => $parsedValue, 'fr' => $parsedValue, 'de' => $parsedValue], JSON_UNESCAPED_UNICODE);
                 }
             }
 
@@ -162,8 +162,8 @@ class CsvImportService
             return false;
         }
 
-        json_decode($value);
-        return json_last_error() === JSON_ERROR_NONE;
+        $decoded = json_decode($value);
+        return json_last_error() === JSON_ERROR_NONE && is_object($decoded);
     }
 
     /**
