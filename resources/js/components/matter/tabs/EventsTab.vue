@@ -50,16 +50,17 @@ function formatDate(date) {
   }
 }
 
-async function recalculateTasks(event) {
+function recalculateTasks(event) {
   recalculatingEventId.value = event.id
-  try {
-    await router.post(`/event/${event.id}/recalculate-tasks`, {}, {
-      preserveScroll: true,
-      onFinish: () => { recalculatingEventId.value = null }
-    })
-  } catch {
-    recalculatingEventId.value = null
-  }
+  router.post(`/event/${event.id}/recalculate-tasks`, {}, {
+    preserveScroll: true,
+    onSuccess: () => {
+      router.reload({ only: ['matter'] })
+    },
+    onFinish: () => {
+      recalculatingEventId.value = null
+    }
+  })
 }
 
 function removeEvent(event) {
