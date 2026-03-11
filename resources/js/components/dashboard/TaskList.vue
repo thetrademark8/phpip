@@ -176,7 +176,7 @@ const columns = [
       const dueToday = isToday(date)
 
       const IconComponent = overdue ? AlertCircle : (dueSoon || dueToday) ? Clock : CalendarDays
-      const dateColor = overdue ? 'text-destructive' : (dueSoon || dueToday) ? 'text-warning-foreground' : 'text-muted-foreground'
+      const dateColor = overdue ? 'text-destructive' : (dueSoon || dueToday) ? 'text-warning' : 'text-muted-foreground'
 
       return h('div', {class: `flex items-center gap-1.5 ${dateColor}`}, [
         h(IconComponent, {class: 'h-4 w-4'}),
