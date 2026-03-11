@@ -1,0 +1,735 @@
+id,class_id,language,style,category,format,summary,subject,body
+1,1,fr,NULL,firstcall,TEXT,"Annuités - premier appel","Prochaines taxes de maintien en vigueur de vos titres","<p>Veuillez trouver ci-joint une liste de titres dont le renouvellement arrive à échéance prochainement. Je vous remercie de me transmettre vos instructions accompagnées du règlement correspondant, de préférence un mois avant l'échéance.</p>"
+2,1,fr,NULL,warncall,HTML,"Annuités - avertissement","Prochaines taxes de maintien en vigueur de vos titres","<p>Nous n'avons pas reçu vos instructions concernant le maintien ou non des titres cités ci-dessous dans le délai normal de paiement, qui est maintenant dépassé. Sans instructions, nous ne ne procéderons à aucun renouvellement. Les renouvellements peuvent encore être payés moyennant une surtaxe incluse dans le tableau ci-dessous. Nous vous remercions de nous transmettre vos instructions accompagnées du règlement correspondant.</p>"
+3,1,fr,NULL,lastcall,HTML,"Annuités - dernier rappel","[DERNIER RAPPEL] Prochaines taxes de maintien en vigueur de vos titres","<p>Nous n'avons pas encore reçu vos instructions concernant le maintien ou non des titres cités ci-dessous. Sans instructions, nous ne procéderons à aucun renouvellement. Passée la date d'échéance, les renouvellements pourront encore être payés moyennant une surtaxe. Je vous remercie de me transmettre EN RETOUR vos instructions accompagnées du règlement correspondant.</p>"
+5,2,fr,NULL,NULL,TEXT,"Marque - Confirmation de dépôt","{{ $matter->countryInfo->name }} - Confirmation de dépôt de la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Conformément à vos instructions, nous avons procédé au dépôt de la marque suivante : 
+
+- Marque : {{ $matter->titles->first()->value }} 
+- Numéro : {{ $matter->filing->detail }}
+- Territoire : {{ $matter->countryInfo->name }}
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Date de dépôt : {{ $matter->filing->event_date->isoFormat('LL') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+
+Vous trouverez ci-joint les justificatifs du dépôt.
+
+Cette marque sera publiée sous 3 à 4 semaines, ce dont nous vous informerons.
+
+Entre temps, le titulaire recevra sans doute un ou plusieurs document(s) de sociétés se donnant une apparence officielle dans le domaine de la propriété intellectuelle, et lui demandant une somme d’argent pour la publication de la marque dans leurs registres. Il s’agit d’une escroquerie courante à laquelle il ne faut bien entendu pas donner suite. La totalité des frais afférant à l’enregistrement de cette marque, et ce jusqu’à son renouvellement dans 10 ans, a déjà été réglée.
+
+Par ailleurs, d’autres personnes ou sociétés aussi peu scrupuleuses surveillent les publications de marques afin de réserver les noms de domaine correspondants (principalement le .com), dans le but de le revendre à prix d’or au titulaire légitime. Si ce n’est pas déjà fait, nous conseillons donc de réserver dès aujourd’hui les noms de domaine correspondant à cette marque, dans les extensions les plus pertinentes (en général, le .com, le .fr et éventuellement le .eu)
+
+Nous restons à votre disposition si vous avez des questions, et vous tiendrons au courant de l’avancée de la procédure d’enregistrement."
+6,3,fr,NULL,NULL,HTML,"Marque - Publication","Publication de la marque {{ $matter->titles->first()->value }}  No.{{ $matter->filing->detail }}","Bonjour,
+
+La marque suivante a été publiée :
+
+- Marque : {{ $matter->titles->first()->value }} 
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Date de publication : {{ $matter->publication->event_date->isoFormat('LL') }}
+
+Nous vous joignons l'avis de publication.
+
+Les tiers ont un délai qui expire le {{ $matter->tasks->where('code', 'WAT')->first()->due_date->isoFormat('LL') }} pour former opposition contre votre dépôt. A l'issue de ce délai, l'office enregistrera la marque, ce dont nous vous informerons.
+
+<b>Petit rappel de prudence</b> :  vous risquez de recevoir des courriers envoyés par des sociétés se donnant une apparence officielle dans le domaine de la propriété intellectuelle, et vous demandant une somme d’argent pour la publication de la marque dans leurs registres. Il s’agit d’une escroquerie à laquelle il ne faut bien entendu pas donner suite. Si vous avez un doute, n’hésitez pas à nous écrire. 
+
+<b>Si vous êtes vendeur Amazon</b> : vous pouvez désormais ajouter votre marque au <i>Amazon Brand Registry</i>. Vous devrez fournir notamment le nom (ou le logo), sélectionner l’office de dépôt, et renseigner le numéro de votre marque. Amazon procèdera ensuite à une vérification et pourra être amené à nous envoyer un code de confirmation. Nous vous le ferons suivre dès réception, et vous pourrez finaliser le processus. Nous sommes à votre disposition si vous avez besoin d’aide pour cette inscription. 
+
+Bien cordialement,"
+7,4,fr,NULL,NULL,HTML,"Marque - Enregistrement","Enregistrement de la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","<p>Bonjour, </p><p></p><p>Nous avons le plaisir de vous informer que la marque suivante a bien été enregistrée : - Marque : {{ $matter-&gt;titles-&gt;first()-&gt;value }} - Numéro : {{ $matter-&gt;filing-&gt;detail }} - Pays : {{ $matter-&gt;countryInfo-&gt;name }} - Date d'enregistrement : {{ $matter-&gt;grant-&gt;event_date-&gt;isoFormat('LL') }} Nous vous joignons le certificat d'enregistrement. Cette marque devra être renouvelée avant le {{ $matter-&gt;renewalsPending[0]-&gt;due_date-&gt;isoFormat('LL') }}, ce que nous vous rappellerons. <strong>Surveillance</strong> : nous vous rappelons que la plupart des offices de marques (comme l'INPI ou l'EUIPO) ne vérifient pas la disponibilité d’une marque. Cela signifie qu’un tiers peut déposer une marque identique ou très proche de la vôtre sans que vous n’en soyez informé. Afin de détecter rapidement les utilisations non autorisées et prendre les mesures appropriées pour préserver l’intégrité et la valeur de votre marque, nous vous conseillons de mettre en place une surveillance. Toutes les informations sur ce sujet sont à retrouver ici : <a target=""_blank"" rel=""noopener noreferrer nofollow"" class=""text-primary underline"" href=""https://depot-de-marque.com/surveillance-de-marque/"">surveiller ma marque</a>. <strong>Logo</strong> : si vous avez déposé une marque verbale, nous vous rappelons qu'elle protège le nom de votre marque, quelle que soit sa représentation graphique. En revanche, si vous avez un logo ou une icône qui ne reprend pas le nom de votre marque, il ne sera pas protégé. Plusieurs options sont à votre disposition pour protéger cet élément : dépôt de marque, enveloppe e-Soleau, horodatage certifié. N’hésitez pas à nous contacter si vous souhaitez être accompagné dans cette démarche. Bien cordialement,</p>"
+9,3,fr,NULL,NULL,HTML,"Marque - Publication en UE / BOIP","Publication de la marque {{ $matter->titles->first()->value }}  No.{{ $matter->filing->detail }}","Bonjour,
+
+La marque suivante a été publiée :
+
+- Marque : {{ $matter->titles->first()->value }} 
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Date de publication : {{ $matter->publication->event_date->isoFormat('LL') }}
+
+Les tiers ont un délai qui expire le {{ $matter->tasks->where('code', 'WAT')->first()->due_date->isoFormat('LL') }} pour former opposition contre votre dépôt. A l'issue de ce délai, l'office enregistrera la marque, ce dont nous vous informerons.
+
+<b>Petit rappel de prudence</b> :  vous risquez de recevoir des courriers envoyés par des sociétés se donnant une apparence officielle dans le domaine de la propriété intellectuelle, et vous demandant une somme d’argent pour la publication de la marque dans leurs registres. Il s’agit d’une escroquerie à laquelle il ne faut bien entendu pas donner suite. Si vous avez un doute, n’hésitez pas à nous écrire.
+
+Bien cordialement,"
+10,6,fr,NULL,NULL,HTML,"Marque - Envoi certificat de renouvellement","Renouvellement de la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous avons le plaisir de vous informer que la marque suivante a bien été renouvelée :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+
+Nous vous joignons le certificat de renouvellement.
+
+Le prochain renouvellement devra avoir lieu avant le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}, ce que nous vous rappellerons.
+
+Bien cordialement,"
+11,3,fr,NULL,NULL,HTML,"Marque - Publication au UK","Publication de la marque {{ $matter->titles->first()->value }}  No.{{ $matter->filing->detail }}","Bonjour,
+
+La marque suivante a été publiée :
+
+- Marque : {{ $matter->titles->first()->value }} 
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Date de publication : {{ $matter->publication->event_date->isoFormat('LL') }}
+
+Les tiers ont un délai qui expire le {{ $matter->tasks->where('code', 'WAT')->first()->due_date->isoFormat('LL') }} pour former opposition contre votre dépôt, ou informer l’office de leur intention de le faire. Dans ce cas, ils disposeront d’un mois supplémentaire.
+
+A l'issue de ce délai, et si aucune opposition n’est formée, l'office enregistrera la marque, ce dont nous vous informerons.
+
+<b>Petit rappel de prudence</b> :  vous risquez de recevoir des courriers envoyés par des sociétés se donnant une apparence officielle dans le domaine de la propriété intellectuelle, et vous demandant une somme d’argent pour la publication de la marque dans leurs registres. Il s’agit d’une escroquerie à laquelle il ne faut bien entendu pas donner suite. Si vous avez un doute sur un courrier, n’hésitez pas à nous écrire. 
+
+<b>Si vous êtes vendeur Amazon</b : vous pouvez désormais ajouter votre marque au <i>Amazon Brand Registry</i>. Vous devrez fournir notamment le nom (ou le logo), sélectionner l’office de dépôt, et renseigner le numéro de votre marque. Amazon procèdera ensuite à une vérification et pourra être amené à nous envoyer un code de confirmation. Nous vous le ferons suivre dès réception, et vous pourrez finaliser le processus. Nous sommes à votre disposition si vous avez besoin d’aide pour cette inscription. 
+
+Bien cordialement,"
+12,4,fr,NULL,NULL,HTML,"Marque - Enregistrement en Suisse","Enregistrement de la marque {{ $matter->titles->first()->value }} No.{{ $matter->grant->detail }}","Bonjour,
+
+Nous avons le plaisir de vous informer que la marque suivante a bien été enregistrée :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->grant->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Date d'enregistrement : {{ $matter->grant->event_date->isoFormat('LL') }}
+
+Le délai d'opposition de 3 mois court à partir de la date d'enregistrement. Si personne ne forme opposition, la marque sera définitivement enregistrée.
+
+Nous vous joignons le certificat d'enregistrement.
+
+Cette marque devra être renouvelée avant le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}, ce que nous vous rappellerons.
+
+<b>Surveillance</b> : nous vous rappelons que la plupart des offices de marques (comme l'office Suisse) ne vérifient pas la disponibilité d’une marque. Cela signifie qu’un tiers peut déposer une marque identique ou très proche de la vôtre sans que vous n’en soyez informé. Afin de détecter rapidement les utilisations non autorisées et prendre les mesures appropriées pour préserver l’intégrité et la valeur de votre marque, nous vous conseillons de mettre en place une surveillance. Toutes les informations sur ce sujet sont à retrouver ici : <a href=""https://depot-de-marque.com/surveillance-de-marque/"">surveiller ma marque</a>. 
+
+<b>Logo</b> : si vous avez déposé une marque verbale, nous vous rappelons qu'elle protège le nom de votre marque, quelle que soit sa représentation graphique. En revanche, si vous avez un logo ou une icône qui ne reprend pas le nom de votre marque, il ne sera pas protégé. Plusieurs options sont à votre disposition pour protéger cet élément : dépôt de marque, enveloppe e-Soleau, horodatage certifié. N’hésitez pas à nous contacter si vous souhaitez être accompagné dans cette démarche. 
+
+Bien cordialement,"
+13,4,fr,NULL,NULL,TEXT,"Marque internationale - octroi de protection dans un pays","Octroi de protection pour la marque internationale {{ $matter->titles->first()->value }} No.{{ $matter->grant->detail }}","Bonjour,
+
+Nous avons le plaisir de vous informer que la marque internationale {{ $matter->titles->first()->value }} No.{{ $matter->grant->detail }} a bien été enregistrée dans le pays suivant : [nom du pays].
+
+
+Nous vous joignons la déclaration d'octroi de protection correspondante.
+
+
+Bien cordialement,"
+14,4,fr,NULL,NULL,HTML,"Marque internationale - envoi du certificat d'enregistrement OMPI","Enregistrement de la marque internationale {{ $matter->titles->first()->value }} No.{{ $matter->grant->detail }}","Bonjour,
+
+Nous avons le plaisir de vous transmettre le certificat d’enregistrement de la marque internationale suivante, émis par l’OMPI :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->grant->"
+15,7,fr,NULL,NULL,TEXT,"Dessin et Modèle - confirmation de dépôt","{{ $matter->countryInfo->name }} - Confirmation de dépôt du {{ $matter->titles->first()->value }}  No.{{ $matter->filing->detail }}","Bonjour,
+
+Conformément à vos instructions, nous avons procédé au dépôt du modèle suivant : 
+
+- Titre : {{ $matter->titles->first()->value }} 
+- Numéro : {{ $matter->filing->detail }}
+- Territoire : {{ $matter->countryInfo->name }}
+- Date de dépôt : {{ $matter->filing->event_date->isoFormat('LL') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+
+Vous trouverez ci-joint les justificatifs du dépôt.
+
+Nous restons à votre disposition si vous avez des questions, et vous tiendrons au courant de l’avancée de la procédure d’enregistrement."
+16,11,fr,NULL,NULL,HTML,"Com - enquête de satisfaction","Votre expérience, notre priorité : donnez votre avis et aidez-nous à améliorer nos services !","<p>Bonjour, </p><p></p><p></p><p></p><p>Nous vous remercions vivement pour votre confiance et sommes ravies d'avoir pu travailler avec vous. Prendriez-vous une petite minute pour nous laisser un commentaire svp ? La recommandation est notre plus grande alliée, alors si vous avez été satisfait(e), n'hésitez pas à le faire savoir ! Vous pouvez laisser votre commentaire, au choix, grâce à l'un des liens suivants :</p><ul><li><p><a target=""_blank"" rel=""noopener noreferrer nofollow"" class=""text-primary underline"" href=""https://g.page/r/CTt63KsHtxZcEBM/review"">Sur Google</a></p></li><li><p><a target=""_blank"" rel=""noopener noreferrer nofollow"" class=""text-primary underline"" href=""https://www.linkedin.com/in/claire-yam/"">sur LinkedIn - profil de Claire</a> (descendre jusqu'à l'onglet ""recommandations"" puis cliquer sur le bouton ""recommander Claire"")</p></li><li><p><a target=""_blank"" rel=""noopener noreferrer nofollow"" class=""text-primary underline"" href=""https://www.linkedin.com/in/juliette-tallobre-37936b44/"">sur LinkedIn - profil de Juliette</a> (descendre jusqu'à l'onglet ""recommandations"" puis cliquer sur le bouton ""recommander Juliette"")</p></li></ul><p> Nous vous remercions d'avance chaleureusement pour le temps que vous y consacrerez ! A bientôt, L'équipe de Yamark</p>"
+17,5,fr,NULL,NULL,HTML,"Marque - 1er rappel de priorité","Expiration du délai de priorité pour la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Voici quelques informations au sujet du délai de priorité de la marque en objet, qui expire le {{ $matter->tasks->where('code', 'PRID')->first()->due_date->isoFormat('LL') }}.
+
+<b>Qu’est-ce que le délai de priorité ?</b>
+
+Il s’agit d’une période de 6 mois qui démarre le jour du premier dépôt de votre marque. Pendant ce délai, vous pouvez étendre votre marque à l’étranger en bénéficiant de la date de votre premier dépôt.
+
+<i>Par exemple, si vous décidiez de déposer une marque aux Etats-Unis, elle serait réputée exister depuis la date de votre premier dépôt, à savoir le {{ $matter->filing->event_date->isoFormat('LL') }}.</i>
+
+<b>A quoi sert le délai de priorité ?</b>
+
+Il permet de vous donner un temps de réflexion suffisant, sans pour autant que les dépôts réalisés par des tiers pendant ces 6 mois ne vous soient opposables, dans les pays où vous déciderez finalement de protéger votre marque.
+
+<i>Par exemple, votre marque a été déposée le {{ $matter->filing->event_date->isoFormat('LL') }}. Si un américain déposait une marque très proche de la vôtre 5 mois plus tard, et que vous déposez par la suite une marque aux Etats-Unis, dans le délai de priorité, la marque américaine ne vous serait pas opposable.</i>
+
+<b>Quand et pourquoi déposer sa marque à l’étranger ?</b>
+
+Cette démarche n’a d’intérêt que si vous avez des projets de développement de votre activité hors France (ou hors UE si vous avez déposé une marque européenne), dans un délai court à moyen (moins de 5 ans). Déposer rapidement permet d’éviter que des tiers enregistrent une marque identique ou proche de la vôtre à l’étranger, et vous empêchent par la suite de vous y installer.
+
+<b>Combien ça coûte ?</b>
+
+Le prix est très variable selon les pays dans lesquels vous souhaitez protéger votre marque. Nous étudierons avec vous la solution la plus efficace en termes de protection et de coûts.
+
+Alors n'hésitez pas à nous contacter si vous souhaitez protéger votre marque à l'étranger !
+
+A bientôt,"
+18,5,fr,NULL,NULL,TEXT,"Marque - dernier rappel de prio","[Dernier rappel] Expiration du délai de priorité pour la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous vous rappelons que le délai de priorité pour étendre la marque {{ $matter->titles->first()->value }} à l'étranger expire le {{ $matter->tasks->where('code', 'PRID')->first()->due_date->isoFormat('LL') }}.
+
+Nous sommes à votre disposition pour vous conseiller et vous fournir un devis si vous le souhaitez. 
+
+Pour votre complète information, le dernier délai pour recevoir vos instructions afin de bénéficier du délai de priorité est J-7 avant l'expiration de ce dernier. Au-delà, nous ne pourrons pas assurer que le dépôt sera réalisé avant l'expiration du délai, et nous facturerons un honoraire de 100 € HT supplémentaire pour travail urgent.
+
+Bien cordialement,"
+19,3,en,NULL,NULL,TEXT,"Trademark - publication in UK","Publication of the trademark {{ $matter->titles->first()->value }}  No.{{ $matter->filing->detail }}","Hello,
+
+The following trademark was published :
+
+- Trademark : {{ $matter->titles->first()->value }} 
+- Number : {{ $matter->filing->detail }}
+- Country : {{ $matter->countryInfo->name }}
+- Date of publication : {{ $matter->publication->event_date->isoFormat('LL') }}
+
+Third parties can file an opposition before {{ $matter->tasks->where('code', 'WAT')->first()->due_date->isoFormat('LL') }}, or inform the UKIPO of their intent to do so. In that case, they would have an additional month to file an opposition.
+
+When the opposition deadline expires, and if no opposition is filed, the UKIPO will register the trademark within 2 weeks. We will send you the registration certificate upon receipt.
+
+Kind regards,"
+20,2,en,NULL,NULL,TEXT,"Trademark - confirmation of application","Confirmation of trademark application {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }} in {{ $matter->countryInfo->name }}","Hello,
+
+According to your instructions, we have filed the following trademark :
+
+- Trademark : {{ $matter->titles->first()->value }} 
+- Number : {{ $matter->filing->detail }}
+- Country : {{ $matter->countryInfo->name }}
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Application date : {{ $matter->filing->event_date->isoFormat('LL') }}
+- Owner : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+
+You will find enclosed the filing documents.
+
+This trademark will be published within 3 to 4 weeks, of which we will inform you. 
+
+In the meantime, the owner will probably receive one or more documents from companies claiming to be official in the field of intellectual property, and requesting a sum of money for publication of the trademark in their registers. This is a common scam that should never be followed up. The full cost of registering this trademark until its renewal in 10 years' time has already been paid.
+
+On the other hand, other equally unscrupulous individuals or companies monitor trademark publications in order to reserve the corresponding domain names (mainly .com), with the aim of reselling them at a premium to the rightful owner. If you haven't already done so, we advise you to reserve the domain names corresponding to this trademark today, in the most relevant extensions (generally .com, .fr and possibly .eu).
+
+We remain at your disposal should you have any questions, and will keep you informed of the progress of the registration procedure."
+21,4,en,NULL,NULL,TEXT,"Trademark - registration (pays qui calculent le renou à partir de la date de dépôt)","Registration of trademark {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }} in {{ $matter->countryInfo->name }}","Hello,
+
+We are pleased to inform you that the following trademark has been registered :
+
+- Trademark : {{ $matter->titles->first()->value }}
+- Number : {{ $matter->filing->detail }}
+- Country : {{ $matter->countryInfo->name }}
+- Registration date : {{ $matter->grant->event_date->isoFormat('LL') }}
+
+Please find enclosed the registration certificate.
+
+This trademark shall be renewed before {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}. We will send you a reminder in due time.
+
+Kind regards,"
+22,3,en,NULL,NULL,TEXT,"Trademark - publication","Publication of the trademark {{ $matter->titles->first()->value }}  No.{{ $matter->filing->detail }}","Hello,
+
+The following trademark was published :
+
+- Trademark : {{ $matter->titles->first()->value }} 
+- Number : {{ $matter->filing->detail }}
+- Country : {{ $matter->countryInfo->name }}
+- Date of publication : {{ $matter->publication->event_date->isoFormat('LL') }}
+
+Third parties can file an opposition before {{ $matter->tasks->where('code', 'WAT')->first()->due_date->isoFormat('LL') }}. When the opposition deadline expires, and if no opposition is filed, the Office will register the trademark. We will send you the registration certificate upon receipt.
+
+<b>Warning</b> : You may receive letters from companies presenting themselves as official entities in the field of intellectual property, requesting payment for the publication of your trademark in their registers. This is a scam, and you should, of course, not respond to it. If you have any doubts, please do not hesitate to contact us.
+
+<b>If your are an Amazon Seller</b> : You can now add your trademark to the <i>Amazon Brand Registry</i>. You will need to provide the name (or logo), select the trademark office where it was registered, and enter your trademark registration number. Amazon will then proceed with a verification process and may send us a confirmation code. We will forward this code to you upon receipt, allowing you to complete the process. Should you need any assistance with this registration, we are here to help.
+
+Kind regards,"
+23,5,en,NULL,NULL,HTML,"Trademark - priority deadline - first call","End of priority period for the trademark {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Here is some information about the priority period for the trademark in question, which expires on {{ $matter->tasks->where('code', 'PRID')->first()->due_date->isoFormat('LL') }}.
+
+<b>What is the priority period?</b>
+
+It is a 6-month period that starts on the day of the first filing of your trademark. During this period, you can extend your trademark abroad by benefiting from the date of your first filing.
+
+<i>For example, if you decided to file a trademark in the United States, it would be considered to exist from the date of your first filing, namely {{ $matter->filing->event_date->isoFormat('LL') }}.</i>
+
+<b>What is the purpose of the priority period?</b>
+
+It allows you sufficient time for reflection, without the filings made by third parties during these 6 months being enforceable against you, in the countries where you finally decide to protect your trademark.
+
+<i>For example, your trademark was filed on {{ $matter->filing->event_date->isoFormat('LL') }}. If an American filed a trademark very similar to yours 5 months later, and you subsequently file a trademark in the United States within the priority period, the American trademark would not be enforceable against you.</i>
+
+<b>When and why should you file your trademark abroad?</b>
+
+This step is only relevant if you have plans to develop your business outside France (or outside the EU if you have filed a European trademark) in the short to medium term (less than 5 years). Filing quickly prevents third parties from registering a trademark identical or similar to yours abroad, and subsequently preventing you from establishing yourself there.
+
+<b>How much does it cost?</b>
+
+The price varies greatly depending on the countries where you want to protect your trademark. We will work with you to find the most effective solution in terms of protection and costs.
+
+
+So do not hesitate to contact us if you want to protect your trademark in other countries !
+
+See you soon,"
+24,5,en,NULL,NULL,TEXT,"Trademark - priority deadline - last call","[Last call] Expiration of the priority period for the trademark {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+We remind you that the priority period to extend the trademark {{ $matter->titles->first()->value }} abroad expires on {{ $matter->tasks->where('code', 'PRID')->first()->due_date->isoFormat('LL') }}.
+
+We are at your disposal to advise you and provide a quote if you wish.
+
+Kind regards,"
+25,9,fr,NULL,NULL,TEXT,"Dessin et Modèle international - octroi de protection","Octroi de protection pour le modèle international No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous avons le plaisir de vous informer que le modèle international No.{{ $matter->filing->detail }} a bien été enregistré dans le pays suivant : [nom du pays].
+
+
+Nous vous joignons la déclaration d'octroi de protection correspondante.
+
+
+Bien cordialement,"
+26,6,fr,NULL,NULL,HTML,"Marque - 1er rappel de renouvellement (FRANCE)","Rappel de renouvellement pour la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }} en France","Bonjour,
+
+Nous vous informons que la marque suivante arrive à échéance le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }} :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Si vous exploitez toujours cette marque, il conviendrait de la renouveler. 
+
+Le coût d’un renouvellement pour 10 ans sera de 150 € HT d’honoraires + taxes INPI (290 € pour la 1ère classe + 40 € par classe supplémentaire).  
+
+Nous vous remercions de nous indiquer :
+ <ul>
+  <li>si vous souhaitez renouveler cette marque</li>
+  <li>si vous souhaitez la renouveler pour l’ensemble des classes de dépôt </li>
+  <li>si les informations concernant le titulaire sont bien à jour</li>
+</ul> 
+Merci de nous faire parvenir vos instructions au plus tard 2 mois avant la date d’expiration. 
+
+<b>Si vous n’exploitez plus votre marque, envisagez-vous de la vendre ?</b> N’hésitez pas à nous en informer : nous pourrons vous conseiller sur ce point.
+
+Bien cordialement,"
+27,6,fr,NULL,NULL,HTML,"Marque - 1er rappel de renouvellement (UE)","Rappel de renouvellement pour la marque {{ $matter->titles->first()->value }} No. {{ $matter->filing->detail }} en Union Européenne","Bonjour,
+
+Nous vous informons que la marque suivante arrive à échéance le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }} :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Si vous exploitez toujours cette marque, il conviendrait de la renouveler. 
+
+Le coût d’un renouvellement pour 10 ans sera de 200 € HT d’honoraires + taxes EUIPO (850 € pour la 1ère classe + 50 € pour la 2ème + 150 € par classe supplémentaire).  
+
+Nous vous remercions de nous indiquer :
+ <ul>
+  <li>si vous souhaitez renouveler cette marque</li>
+  <li>si vous souhaitez la renouveler pour l’ensemble des classes de dépôt </li>
+  <li>si les informations concernant le titulaire sont bien à jour</li>
+</ul> 
+
+Merci de nous faire parvenir vos instructions au plus tard 2 mois avant la date d’expiration. 
+
+<b>Si vous n’exploitez plus votre marque, envisagez-vous de la vendre ?</b> N’hésitez pas à nous en informer : nous pourrons vous conseiller sur ce point.
+
+Bien cordialement,"
+28,6,fr,NULL,NULL,HTML,"Marque - 1er rappel de renouvellement (UK)","Rappel de renouvellement pour la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }} au Royaume-Uni","Bonjour,
+
+Nous vous informons que la marque suivante arrive à échéance le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }} :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Si vous exploitez toujours cette marque, il conviendrait de la renouveler. 
+
+Le coût d’un renouvellement pour 10 ans sera de 180 € HT d’honoraires + taxes UKIPO (250 € pour la 1ère classe + 60 € par classe supplémentaire).  
+
+Nous vous remercions de nous indiquer :
+ <ul>
+  <li>si vous souhaitez renouveler cette marque</li>
+  <li>si vous souhaitez la renouveler pour l’ensemble des classes de dépôt </li>
+  <li>si les informations concernant le titulaire sont bien à jour</li>
+</ul> 
+Merci de nous faire parvenir vos instructions au plus tard 2 mois avant la date d’expiration. 
+
+<b>Si vous n’exploitez plus votre marque, envisagez-vous de la vendre ?</b> N’hésitez pas à nous en informer : nous pourrons vous conseiller sur ce point.
+
+Bien cordialement,"
+29,6,fr,NULL,NULL,HTML,"Marque - 1er rappel de renouvellement (marque inter)","Rappel de renouvellement pour votre marque internationale {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous vous informons que la marque internationale suivante arrive à échéance le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }} :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : <mark>[à remplir manuellement]</mark>
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Si vous exploitez toujours cette marque, il conviendrait de la renouveler. 
+
+Nous vous remercions de nous indiquer :
+ <ul>
+  <li>si vous souhaitez renouveler cette marque</li>
+  <li>si vous souhaitez la renouveler pour l’ensemble des classes de dépôt et/ou l’ensemble des pays (il est possible de supprimer des classes ou des pays)</li>
+  <li>si les informations concernant le titulaire sont bien à jour</li>
+</ul> 
+
+Merci de nous faire parvenir vos instructions au plus tard 2 mois avant la date d’expiration. Nous vous enverrons un devis au préalable.
+
+<b>Si vous n’exploitez plus votre marque, envisagez-vous de la vendre ?</b> N’hésitez pas à nous en informer : nous pourrons vous conseiller sur ce point.
+
+Bien cordialement,"
+30,6,fr,NULL,NULL,HTML,"Marque - 1er rappel de renouvellement (autre pays)","Rappel de renouvellement pour votre marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }} en {{ $matter->countryInfo->name }}","Bonjour,
+
+Nous vous informons que la marque suivante arrive à échéance le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }} :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Si vous exploitez toujours cette marque, il conviendrait de la renouveler. 
+
+Le coût d’un renouvellement pour 10 ans sera de 180 € HT d’honoraires + taxes <mark>[montant à remplir manuellement] </mark>.
+
+Nous vous remercions de nous indiquer :
+ <ul>
+  <li>si vous souhaitez renouveler cette marque</li>
+  <li>si vous souhaitez la renouveler pour l’ensemble des classes de dépôt </li>
+  <li>si les informations concernant le titulaire sont bien à jour</li>
+</ul> 
+Merci de nous faire parvenir vos instructions au plus tard 2 mois avant la date d’expiration. 
+
+<b>Si vous n’exploitez plus votre marque, envisagez-vous de la vendre ?</b> N’hésitez pas à nous en informer : nous pourrons vous conseiller sur ce point.
+
+Bien cordialement,"
+31,4,fr,NULL,NULL,HTML,"Marque - Obligation d'usage (2019-)","Informations importantes au sujet de votre marque {{ $matter->titles->first()->value }}","Bonjour, 
+
+Déjà 5 ans se sont écoulés depuis l’enregistrement de la marque {{ $matter->titles->first()->value }} le {{ $matter->grant->event_date->isoFormat('LL') }}! Elle est désormais légalement soumise à obligation d'usage.
+
+Cela signifie que cette marque doit être effectivement utilisée pour les produits et/ou services pour lesquels elle a été déposée. En l'absence d'usage, cette marque est susceptible d’être annulée par un tiers (partiellement ou totalement). De même, il sera difficile de vous opposer à un tiers qui déposerait ou utiliserait une marque proche de la vôtre, car il pourrait vous demander de prouver que vous l'utilisez, à défaut de quoi votre action sera rejetée.
+ 
+Par conséquent, nous vous proposons de faire le point sur l’usage de votre marque aujourd’hui.
+
+<ol><li><b>Usage conforme au dépôt</b> : </li>
+
+Est-ce que votre marque est toujours exploitée aujourd'hui : 
+<ul><li>pour les produits et/ou services visés dans le dépôt ?</li>
+<li>sous la forme du dépôt ? En particulier, si votre marque a été déposée avec un logo, l'avez-vous modifié entre temps ?</li></ul>
+
+<li><b>Personnes utilisant la marque</b> : 
+
+Avez-vous autorisé d'autres personnes à utiliser la marque (des tiers, des sociétés affiliées ou liées) ? Dans ce cas, il faudrait vérifier que vous avez mis en place un accord de licence écrit pour documenter correctement cette utilisation de votre marque.</li>
+
+
+<li><b>Coordonnées</b> : 
+
+La marque est aujourd’hui détenue par : 
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Est-ce que ces coordonnées sont toujours correctes ? Sinon, merci de nous transmettre vos nouvelles coordonnées. Nous mettrons à jour le registre de l’INPI ainsi que nos bases de données.</li>
+
+<li><b>Arrêt de l'usage</b> : 
+
+Si vous n’exploitez plus votre marque, envisagez-vous de la vendre ? N’hésitez pas à nous en informer : nous pourrons vous conseiller sur ce point.</li></ol>
+
+Dans tous les cas, nous sommes à votre disposition pour faire le point sur votre usage de marque et vos projets futurs. N’hésitez pas à nous répondre sur ce mail, ou à réserver un créneau pour en discuter avec nous : <a href=""https://calendly.com/claire-yam/30mn"">prendre un rdv téléphonique</a>.
+
+Nous vous remercions par avance pour votre retour et restons à votre disposition pour toute question complémentaire.
+
+Bien cordialement,"
+32,11,fr,NULL,NULL,HTML,"Com - offre de surveillance","La surveillance pour prévenir la contrefaçon et valoriser votre marque {{ $matter->titles->first()->value }}","Bonjour,
+
+Saviez-vous que l'INPI et la plupart des autres offices ne vérifient pas la disponibilité d’une marque lors de son dépôt ? Cela signifie qu’un tiers peut déposer le même nom / le même logo que le vôtre, et que celui-ci sera accepté à l’enregistrement.
+
+En tant que titulaire de marque, <u>c’est à vous qu’il appartient de défendre vos droits</u>. Explications.
+
+<b>➔ Pourquoi est-il important de surveiller votre marque ?</b>
+<b><ol><li>Détection de marques similaires</b> : La surveillance permet d'identifier les demandes d'enregistrement de marques similaires ou identiques qui pourraient créer une confusion chez les consommateurs et nuire à votre marque.</li>
+
+<b><li>Prévention des atteintes</b> : En surveillant les nouveaux dépôts et l'utilisation de marques similaires, vous pouvez agir rapidement et à moindre frais pour empêcher toute atteinte à vos droits.</li> 
+
+<b><li>Optimisation des investissements</b> : La surveillance vous permet de protéger les investissements réalisés dans la promotion et le développement de votre marque. Cela concourt à augmenter la valeur de votre marque. </li></ol>
+<b>➔ Comment fonctionne la surveillance ?</b>
+
+Nous proposons deux formules de surveillance :
+<ul><li><u>Formule Basique</u> : nous surveillons tous les dépôts identiques à votre marque. Cela vous permet de vous opposer aux principales usurpations, tout en maîtrisant votre budget de surveillance tout au long de l'année.</li>
+<li><u>Formule Avancée</u> : nous surveillons les dépôts identiques à votre marque, mais aussi ceux présentant une similarité visuelle ou phonétique. Ainsi vous pourrez vous opposer à toute forme d'imitation pertinente.</li></ul>
+Dès que nous avons connaissance d’une marque gênante, nous vous envoyons un rapport de surveillance qui comprend une analyse de la marque et nos préconisations d’action (envoi d’une mise en demeure, opposition…). Vous êtes ensuite libre de suivre nos recommandations ou de ne rien faire.
+
+
+<b>➔ Combien coûte la surveillance ?</b>
+Pour chaque formule, vous avez la possibilité de choisir entre un abonnement mensuel sans engagement (résiliable à tout moment), et un abonnement annuel (résiliable annuellement) grâce auquel vous bénéficiez de 2 mois gratuits.
+
+Nos tarifs sont disponibles sur notre site internet : <a href="" https://depot-de-marque.com/surveillance-de-marque/"">voir les tarifs</a>.
+
+Nous restons à votre disposition pour discuter de la mise en place d’une surveillance de votre marque, et pour toute autre question !
+
+
+Bien cordialement,"
+33,11,fr,NULL,NULL,HTML,"Com - protection à l'étranger","Sécurisez votre marque dans tous vos nouveaux marchés","Bonjour, 
+
+Votre marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }} a été déposée le {{ $matter->filing->event_date->isoFormat('LL') }} sur le territoire suivant : {{ $matter->countryInfo->name }}. 
+
+Si votre activité s’est développée dans d’autres pays, nous vous proposons d’étudier avec vous la pertinence d’étendre la protection de votre marque à ces nouveaux territoires. 
+
+Pour ce faire, vous pouvez simplement répondre à cet email, ou prendre rdv en cliquant sur ce lien : <a href=""https://calendly.com/yamark/30mn"">prendre un rdv téléphonique</a>
+
+Au plaisir d’échanger avec vous,
+
+Bien cordialement,"
+34,4,fr,NULL,NULL,HTML,"Marque - MAJ coordonnées","Information importante au sujet de votre marque {{ $matter->titles->first()->value }}","Bonjour,
+
+
+La marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}  est aujourd’hui détenue par : 
+
+<ul><li>Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}</li>
+<li>Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}</li></ul>
+
+Est-ce que ces coordonnées sont toujours correctes ? Sinon, nous vous remercions de nous transmettre vos nouvelles coordonnées. Nous mettrons à jour le registre de l’INPI ainsi que nos bases de données.
+
+Bien cordialement,"
+35,10,fr,NULL,NULL,TEXT,"Dessin et Modèle - renouvellement","{{ $matter->countryInfo->name }} - Renouvellement de votre {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous vous informons que le dessin et modèle suivant arrive à échéance le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }} :
+
+- Modèle : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('address')->join(', ') }}
+
+Nous vous remercions de nous indiquer :
+ <ul>
+  <li>si vous souhaitez renouveler ce modèle pour 5 années supplémentaires</li>
+  <li>si les informations concernant le titulaire sont bien à jour</li>
+</ul> 
+
+Le coût d’un renouvellement sera de : [indiquer le montant]
+
+Merci de nous faire parvenir vos instructions au plus tard 2 mois avant la date d’expiration. 
+
+
+Bien cordialement,"
+36,4,fr,NULL,NULL,HTML,"Marque - Obligation d'usage (2015-2019)","Informations importantes au sujet de votre marque {{ $matter->titles->first()->value }}","Bonjour, 
+
+Plus de 5 ans se sont écoulés depuis l’enregistrement de la marque {{ $matter->titles->first()->value }} le {{ $matter->grant->event_date->isoFormat('LL') }}! Elle est donc légalement soumise à obligation d'usage.
+
+Cela signifie que cette marque doit être effectivement utilisée pour les produits et/ou services pour lesquels elle a été déposée. En l'absence d'usage, cette marque est susceptible d’être annulée par un tiers (partiellement ou totalement). De même, il sera difficile de vous opposer à un tiers qui déposerait ou utiliserait une marque proche de la vôtre, car il pourrait vous demander de prouver que vous l'utilisez, à défaut de quoi votre action sera rejetée.
+ 
+Par conséquent, nous vous proposons de faire le point sur l’usage de votre marque aujourd’hui.
+
+<ol><li><b>Usage conforme au dépôt</b> : </li>
+
+Est-ce que votre marque est toujours exploitée aujourd'hui : 
+<ul><li>pour les produits et/ou services visés dans le dépôt ?</li>
+<li>sous la forme du dépôt ? En particulier, si votre marque a été déposée avec un logo, l'avez-vous modifié entre temps ?</li></ul>
+
+<li><b>Personnes utilisant la marque</b> : 
+
+Avez-vous autorisé d'autres personnes à utiliser la marque (des tiers, des sociétés affiliées ou liées) ? Dans ce cas, il faudrait vérifier que vous avez mis en place un accord de licence écrit pour documenter correctement cette utilisation de votre marque.</li>
+
+
+<li><b>Coordonnées</b> : 
+
+La marque est aujourd’hui détenue par : 
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Est-ce que ces coordonnées sont toujours correctes ? Sinon, merci de nous transmettre vos nouvelles coordonnées. Nous mettrons à jour le registre de l’INPI ainsi que nos bases de données.</li>
+
+<li><b>Arrêt de l'usage</b> : 
+
+Si vous n’exploitez plus votre marque, envisagez-vous de la vendre ? N’hésitez pas à nous en informer : nous pourrons vous conseiller sur ce point.</li></ol>
+
+Dans tous les cas, nous sommes à votre disposition pour faire le point sur votre usage de marque et vos projets futurs. N’hésitez pas à nous répondre sur ce mail, ou à réserver un créneau pour en discuter avec nous : <a href=""https://calendly.com/claire-yam/30mn"">prendre un rdv téléphonique</a>.
+
+Nous vous remercions par avance pour votre retour et restons à votre disposition pour toute question complémentaire.
+
+Bien cordialement,"
+37,1,en,NULL,firstcall,TEXT,"First call renewal","Please renew","<p>Please fin enclosed...</p>"
+38,9,fr,NULL,NULL,TEXT,"Dessin et Modèle international - Envoi certif enregistrement de l'OMPI","Enregistrement du modèle international No.{{ $matter->filing->detail }}","Nous avons le plaisir de vous transmettre le certificat d’enregistrement du modèle international suivant, émis par l’OMPI :
+
+- Modèle : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+
+Ce modèle devra être renouvelé avant le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}, ce que nous vous rappellerons.
+
+Notez que ce certificat ne signifie pas que le modèle a bien été enregistré dans chacun des pays visés dans la demande. Il faut attendre que chaque pays procède à son examen, selon ses propres règles nationales, et émette une déclaration d’octroi de protection. Nous vous informerons de l’évolution de la procédure dans chaque pays visé dans la demande, dès que nous aurons de nouvelles informations les concernant.
+
+
+Bien cordialement,"
+39,9,fr,NULL,NULL,HTML,"Dessin et Modèle - enregistrement","{{ $matter->countryInfo->name }} - Enregistrement du {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous avons le plaisir de vous informer que le modèle suivant a bien été enregistré :
+
+- Modèle : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+
+Nous vous joignons le certificat d'enregistrement.
+
+Ce modèle devra être renouvelé avant le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}, ce que nous vous rappellerons.
+
+Bien cordialement,"
+40,8,fr,NULL,NULL,HTML,"Dessin et Modèle - rappel de priorité","Expiration du délai de priorité pour le {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Voici quelques informations au sujet du délai de priorité du modèle en objet, qui expire le {{ $matter->tasks->where('code', 'PRID')->first()->due_date->isoFormat('LL') }}.
+
+<b>Qu’est-ce que le délai de priorité ?</b>
+
+Il s’agit d’une période de 6 mois qui démarre le jour du premier dépôt de votre modèle. Pendant ce délai, vous pouvez étendre votre modèle à l’étranger en bénéficiant de la date de dépôt du modèle en objet.
+
+<i>Par exemple, si vous décidiez de déposer un modèle au Japon, il serait réputé exister depuis la date de votre premier dépôt, à savoir le {{ $matter->filing->event_date->isoFormat('LL') }}.</i>
+
+<b>A quoi sert le délai de priorité ?</b>
+
+Il permet de vous donner un temps de réflexion suffisant, sans pour autant que les dépôts réalisés par des tiers pendant ces 6 mois ne vous soient opposables, dans les pays où vous déciderez finalement de protéger votre modèle.
+
+<b>Quand et pourquoi déposer son modèle à l’étranger ?</b>
+
+En raison du critère de nouveauté nécessaire à la validité des modèles, au-delà du délai de priorité (ou éventuellement du délai de grâce d’un an dans certains pays), <b><u>vous ne pourrez plus protéger votre modèle</u></b>. Cela signifie que des tiers pourront l’utiliser librement dans les pays où vous ne l’aurez pas déposé.
+
+N’hésitez pas à revenir vers nous si vous souhaitez discuter de l’opportunité d'étendre la protection de votre modèle à de nouveaux pays.
+
+Bien cordialement,"
+41,2,fr,NULL,NULL,TEXT,"Marque internationale - confirmation de dépôt","Confirmation de dépôt de la marque internationale {{ $matter->titles->first()->value }}","Bonjour,
+
+Conformément à vos instructions, nous avons procédé au dépôt de la marque internationale suivante : 
+
+- Marque : {{ $matter->titles->first()->value }} 
+- Numéro provisoire : {{ $matter->filing->detail }}
+- Pays visés dans la demande : COMPLETER
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Date de dépôt : {{ $matter->filing->event_date->isoFormat('LL') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+
+Vous trouverez ci-joint les justificatifs du dépôt.
+
+Nous vous tiendrons au courant de l’avancée de la procédure d’enregistrement.
+
+Entre temps, vous recevrez sans doute à l'adresse du titulaire un ou plusieurs document(s) de sociétés se donnant une apparence officielle dans le domaine de la propriété intellectuelle, et lui demandant une somme d’argent pour la publication de la marque dans leurs registres. Il s’agit d’une escroquerie courante à laquelle il ne faut bien entendu pas donner suite. La totalité des frais afférant à l’enregistrement de cette marque, et ce jusqu’à son renouvellement dans 10 ans, a déjà été réglée.
+
+Nous restons à votre disposition si vous avez des questions."
+42,4,fr,NULL,NULL,HTML,"Marque - Enregistrement aux US","Enregistrement de la marque {{ $matter->titles->first()->value }} No.{{ $matter->grant->detail }} aux Etats-Unis","<p>Bonjour, </p><p></p><p>Nous avons le plaisir de vous informer que la marque suivante a bien été enregistrée : - Marque : {{ $matter-&gt;titles-&gt;first()-&gt;value }} - Numéro : {{ $matter-&gt;grant-&gt;detail }} - Pays : {{ $matter-&gt;countryInfo-&gt;name }} - Date d'enregistrement : {{ $matter-&gt;grant-&gt;event_date-&gt;isoFormat('LL') }} Nous vous joignons le certificat d'enregistrement. Cette marque devra être renouvelée avant le {{ $matter-&gt;renewalsPending[0]-&gt;due_date-&gt;isoFormat('LL') }}, ce que nous vous rappellerons. <strong>IMPORTANT - Usage de votre marque</strong> : vous devrez obligatoirement fournir des preuves d'usage de votre marque entre la 5ème et la 6ème année suivant l'enregistrement, afin de la garder en vigueur. Nous vous le rappellerons en temps utiles. Entre temps, n'hésitez pas à conserver des preuves telles que des photos, des catalogues, des articles de presse... qui démontrent que votre marque est exploitée aux Etats-Unis. <strong>Logo</strong> : si vous avez déposé une marque verbale, nous vous rappelons qu'elle protège le nom de votre marque, quelle que soit sa représentation graphique. En revanche, si vous avez un logo ou une icône qui ne reprend pas le nom de votre marque, il ne sera pas protégé. Plusieurs options sont à votre disposition pour protéger cet élément : dépôt de marque, enveloppe e-Soleau, horodatage certifié. N’hésitez pas à nous contacter si vous souhaitez être accompagné dans cette démarche. Bien cordialement,</p>"
+43,11,fr,NULL,NULL,HTML,"Com - extension marque inter","Sécurisez votre marque sur vos nouveaux marchés","Bonjour, 
+
+Votre marque internationale {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }} a été déposée le {{ $matter->filing->event_date->isoFormat('LL') }} sur les territoires suivants : [LISTER LES PAYS]
+
+Si votre activité s’est développée dans d’autres pays, nous vous proposons d’étudier avec vous la pertinence d’étendre la protection de votre marque à ces nouveaux territoires. 
+
+Pour ce faire, vous pouvez simplement répondre à cet email, ou prendre rdv en cliquant sur ce lien : <a href=""https://calendly.com/yamark/30mn"">prendre un rdv téléphonique</a>
+
+Au plaisir d’échanger avec vous,
+
+Bien cordialement,"
+44,6,fr,NULL,NULL,TEXT,"Marque - Info renouvellement demandé","Renouvellement de la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous avons le plaisir de vous informer que nous avons bien renouvelé la marque suivante :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+
+Nous vous joignons le justificatif. Nous vous tiendrons informé(e) des suites de cette procédure.
+
+Le prochain renouvellement devra avoir lieu avant le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}, ce que nous vous rappellerons.
+
+Bien cordialement,"
+45,4,en,NULL,NULL,TEXT,"Trademark - registration (pays qui calculent le renou à partir de la date d'enregistrement)","Registration of trademark {{ $matter->titles->first()->value }} No.{{ $matter->grant->detail }} in {{ $matter->countryInfo->name }}","Hello,
+
+We are pleased to inform you that the following trademark has been registered :
+
+- Trademark : {{ $matter->titles->first()->value }}
+- Number : {{ $matter->grant->detail }}
+- Country : {{ $matter->countryInfo->name }}
+- Registration date : {{ $matter->grant->event_date->isoFormat('LL') }}
+
+Please find enclosed the registration certificate.
+
+This trademark shall be renewed before {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}. We will send you a reminder in due time.
+
+Kind regards,"
+46,6,fr,NULL,NULL,HTML,"Marque - dernier rappel de renouvellement","Dernier rappel de renouvellement pour la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Nous faisons suite à notre précédent rappel de renouvellement concernant la marque suivante : 
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->filing->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+- Adresse du titulaire : {{ $matter->actors->where('role_code', 'CLI')->first()->actor->address }}
+
+Nous vous remercions de nous indiquer :
+ <ul>
+  <li>si vous souhaitez renouveler cette marque</li>
+  <li>si vous souhaitez la renouveler pour l’ensemble des classes de dépôt </li>
+  <li>si les informations concernant le titulaire sont bien à jour</li>
+</ul> 
+
+Sans retour de votre part au moins 15 jours avant la date d'expiration ({{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}), nous ne la renouvellerons pas.
+
+Bien cordialement,"
+47,4,fr,NULL,NULL,HTML,"Marque - Enregistrement en Allemagne","Enregistrement de la marque {{ $matter->titles->first()->value }} No.{{ $matter->grant->detail }}","Bonjour,
+
+Nous avons le plaisir de vous informer que la marque suivante a bien été enregistrée :
+
+- Marque : {{ $matter->titles->first()->value }}
+- Numéro : {{ $matter->grant->detail }}
+- Pays : {{ $matter->countryInfo->name }}
+- Date d'enregistrement : {{ $matter->grant->event_date->isoFormat('LL') }}
+
+Le délai d'opposition démarre à la publication de l'enregistrement, et expirera le {{ $matter->tasks->where('code', 'WAT')->first()->due_date->isoFormat('LL') }}.
+
+Nous vous joignons le certificat d'enregistrement.
+
+Cette marque devra être renouvelée avant le {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}, ce que nous vous rappellerons.
+
+<b>Surveillance</b> : nous vous rappelons que l'office allemand ne vérifie pas la disponibilité d’une marque. Cela signifie qu’un tiers peut déposer une marque identique ou très proche de la vôtre sans que vous n’en soyez informé. Afin de détecter rapidement les utilisations non autorisées et prendre les mesures appropriées pour préserver l’intégrité et la valeur de votre marque, nous vous conseillons de mettre en place une surveillance. Toutes les informations sur ce sujet sont à retrouver ici : <a href=""https://depot-de-marque.com/surveillance-de-marque/"">surveiller ma marque</a>. 
+
+<b>Logo</b> : si vous avez déposé une marque verbale, nous vous rappelons qu'elle protège le nom de votre marque, quelle que soit sa représentation graphique. En revanche, si vous avez un logo ou une icône qui ne reprend pas le nom de votre marque, il ne sera pas protégé. Plusieurs options sont à votre disposition pour protéger cet élément : dépôt de marque, enveloppe e-Soleau, horodatage certifié. N’hésitez pas à nous contacter si vous souhaitez être accompagné dans cette démarche. 
+
+Bien cordialement,"
+48,6,en,NULL,NULL,HTML,"Trademark - sending renewal certificate","Renewal of trademark {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Hello,
+
+We are pleased to inform you that the following trademark has been renewed : 
+
+- Trademark : {{ $matter->titles->first()->value }}
+- Number : {{ $matter->filing->detail }}
+- Country : {{ $matter->countryInfo->name }}
+
+You will find enclosed the renewal certificate.
+
+Next renewal is due before {{ $matter->renewalsPending[0]->due_date->isoFormat('LL') }}. We will send you a reminder in due course.
+
+Kind regards,"
+49,2,fr,NULL,NULL,TEXT,"Marque - confirmation dépôt UE","Union Européenne - Confirmation de dépôt de la marque {{ $matter->titles->first()->value }} No.{{ $matter->filing->detail }}","Bonjour,
+
+Conformément à vos instructions, nous avons procédé au dépôt de la marque suivante : 
+
+- Marque : {{ $matter->titles->first()->value }} 
+- Numéro : {{ $matter->filing->detail }}
+- Territoire : Union Européenne*
+- Classes : {{ $matter->classifiers->where('type_code', 'TMCL')->pluck('value')->join('.') }}
+- Date de dépôt : {{ $matter->filing->event_date->isoFormat('LL') }}
+- Titulaire : {{ $matter->actors->where('role_code', 'CLI')->pluck('name')->join(', ') }}
+
+Vous trouverez ci-joint les justificatifs du dépôt.
+
+Cette marque sera publiée sous 3 à 4 semaines, ce dont nous vous informerons.
+
+Entre temps, le titulaire recevra sans doute un ou plusieurs document(s) de sociétés se donnant une apparence officielle dans le domaine de la propriété intellectuelle, et lui demandant une somme d’argent pour la publication de la marque dans leurs registres. Il s’agit d’une escroquerie courante à laquelle il ne faut bien entendu pas donner suite. La totalité des frais afférant à l’enregistrement de cette marque, et ce jusqu’à son renouvellement dans 10 ans, a déjà été réglée.
+
+Par ailleurs, d’autres personnes ou sociétés aussi peu scrupuleuses surveillent les publications de marques afin de réserver les noms de domaine correspondants (principalement le .com), dans le but de le revendre à prix d’or au titulaire légitime. Si ce n’est pas déjà fait, nous conseillons donc de réserver dès aujourd’hui les noms de domaine correspondant à cette marque, dans les extensions les plus pertinentes (en général, le .com, le .fr et éventuellement le .eu).
+
+* Enfin, nous vous rappelons qu'une marque européenne est valable dans les 27 pays de l'Union Européenne. Elle ne couvre donc pas des pays tels que le Royaume-Uni, la Suisse ou la Norvège. Pour une protection dans ces pays, n'hésitez pas à nous contacter.
+
+Nous restons à votre disposition si vous avez des questions, et vous tiendrons au courant de l’avancée de la procédure d’enregistrement."

@@ -56,6 +56,18 @@ class ImportDefaults extends Command
             'translatableColumns' => ['detail'],
             'extraExclude' => ['id', 'uid', 'detail_fr', 'detail_de'],
         ],
+        'template_classes' => [
+            'table' => 'template_classes',
+            'delimiter' => ',',
+            'translatableColumns' => [],
+            'extraExclude' => [],
+        ],
+        'template_members' => [
+            'table' => 'template_members',
+            'delimiter' => ',',
+            'translatableColumns' => [],
+            'extraExclude' => [],
+        ],
     ];
 
     public function handle(CsvImportService $importService): int

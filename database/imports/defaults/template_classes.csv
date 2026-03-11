@@ -1,0 +1,12 @@
+id,name,notes,default_role
+1,sys_renewals,"Templates used for the renewal management tool",NULL
+2,tm_filing,NULL,NULL
+3,tm_publication,NULL,NULL
+4,tm_registration,NULL,NULL
+5,tm_prio,NULL,NULL
+6,tm_renewal,NULL,NULL
+7,dm_filing,NULL,NULL
+8,dm_prio,NULL,NULL
+9,dm_registration,NULL,NULL
+10,dm_renewal,NULL,NULL
+11,commercial,NULL,NULL
