@@ -37,22 +37,35 @@
             <CardHeader class="py-3">
               <CardTitle class="text-sm">{{ $t('email.selectTemplate') }}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Select v-model="selectedTemplateId" @update:modelValue="handleTemplateChange">
-                <SelectTrigger>
-                  <SelectValue :placeholder="$t('email.selectTemplate')" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem :value="null">{{ $t('email.noTemplate') }}</SelectItem>
-                  <SelectItem
-                    v-for="template in templates"
-                    :key="template.id"
-                    :value="template.id"
-                  >
-                    {{ template.summary }} ({{ template.language }})
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+            <CardContent class="space-y-2">
+              <div class="flex gap-2">
+                <Select v-model="templateLanguage" class="w-24">
+                  <SelectTrigger class="w-24">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem :value="null">{{ $t('All') }}</SelectItem>
+                    <SelectItem v-for="lang in availableLanguages" :key="lang" :value="lang">
+                      {{ lang.toUpperCase() }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select v-model="selectedTemplateId" @update:modelValue="handleTemplateChange" class="flex-1">
+                  <SelectTrigger>
+                    <SelectValue :placeholder="$t('email.selectTemplate')" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem :value="null">{{ $t('email.noTemplate') }}</SelectItem>
+                    <SelectItem
+                      v-for="template in filteredTemplates"
+                      :key="template.id"
+                      :value="template.id"
+                    >
+                      {{ template.summary }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardContent>
           </Card>
 
@@ -247,6 +260,7 @@ const props = defineProps({
   matter: Object,
   recipients: Array,
   templates: Array,
+  clientLanguage: { type: String, default: 'fr' },
   placeholders: Object,
   attachments: Array,
 })
@@ -258,6 +272,17 @@ const { form, isDirty, canSend, loadTemplate, resetAfterSend } = useEmailForm()
 watch(() => form.attachment_ids, (newVal) => {
   console.log('[EmailComposer] form.attachment_ids changed:', newVal)
 }, { deep: true })
+
+// Template language filter
+const templateLanguage = ref(props.clientLanguage)
+const availableLanguages = computed(() => {
+  const langs = [...new Set(props.templates.map(t => t.language))].sort()
+  return langs
+})
+const filteredTemplates = computed(() => {
+  if (!templateLanguage.value) return props.templates
+  return props.templates.filter(t => t.language === templateLanguage.value)
+})
 
 // Local state
 const editorRef = ref(null)
@@ -288,6 +313,12 @@ const selectedRecipients = computed(() => {
 // Computed: selected attachments as objects for display
 const selectedAttachments = computed(() => {
   return matterAttachments.value.filter(a => form.attachment_ids.includes(a.id))
+})
+
+// Reset template selection when language changes
+watch(templateLanguage, () => {
+  selectedTemplateId.value = null
+  loadTemplate(null)
 })
 
 // Handle template change

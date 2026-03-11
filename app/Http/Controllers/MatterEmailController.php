@@ -37,13 +37,16 @@ class MatterEmailController extends Controller
             ])
             ->values();
 
-        $templates = $this->emailService->getTemplatesForMatter($matter, app()->getLocale());
+        // Get the client's language to pre-select templates, but load all templates
+        $clientLanguage = $matter->client?->language ?: app()->getLocale();
+        $templates = $this->emailService->getTemplatesForMatter($matter);
         $placeholders = $this->placeholderService->getAvailablePlaceholders();
 
         return Inertia::render('Matter/EmailComposer', [
             'matter' => $matter,
             'recipients' => $recipients,
             'templates' => $templates,
+            'clientLanguage' => $clientLanguage,
             'placeholders' => $placeholders,
             'attachments' => $matter->attachments,
         ]);
