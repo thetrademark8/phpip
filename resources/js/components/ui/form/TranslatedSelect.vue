@@ -12,7 +12,7 @@
         {{ clearLabel }}
       </SelectItem>
       <SelectItem
-        v-for="option in options"
+        v-for="option in sortedOptions"
         :key="option.value"
         :value="option.value"
       >
@@ -47,6 +47,10 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const { translated } = useTranslatedField()
+
+const sortedOptions = computed(() =>
+  [...props.options].sort((a, b) => getTranslatedLabel(a).localeCompare(getTranslatedLabel(b)))
+)
 
 const internalValue = computed({
   get: () => props.modelValue || undefined,

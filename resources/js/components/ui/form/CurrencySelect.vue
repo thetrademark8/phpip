@@ -112,13 +112,15 @@ const currencies = [
 ]
 
 // Filtered currencies based on search
+const sortedCurrencies = [...currencies].sort((a, b) => a.code.localeCompare(b.code))
+
 const filteredCurrencies = computed(() => {
   if (!searchQuery.value) {
-    return currencies
+    return sortedCurrencies
   }
-  
+
   const query = searchQuery.value.toLowerCase()
-  return currencies.filter(currency => 
+  return sortedCurrencies.filter(currency =>
     currency.code.toLowerCase().includes(query) ||
     currency.name.toLowerCase().includes(query)
   )

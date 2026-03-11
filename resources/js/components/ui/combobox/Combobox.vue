@@ -105,14 +105,18 @@ const allOptions = computed(() => {
 })
 
 const filteredOptions = computed(() => {
-  if (!searchQuery.value) return allOptions.value
+  let options = allOptions.value
 
-  const query = searchQuery.value.toLowerCase()
-  return allOptions.value.filter(option => {
-    const label = getLabel(option).toLowerCase()
-    const value = String(option.value).toLowerCase()
-    return label.includes(query) || value.includes(query)
-  })
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    options = options.filter(option => {
+      const label = getLabel(option).toLowerCase()
+      const value = String(option.value).toLowerCase()
+      return label.includes(query) || value.includes(query)
+    })
+  }
+
+  return [...options].sort((a, b) => getLabel(a).localeCompare(getLabel(b)))
 })
 
 const displayValue = computed(() => {

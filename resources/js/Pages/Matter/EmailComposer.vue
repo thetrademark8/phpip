@@ -280,8 +280,10 @@ const availableLanguages = computed(() => {
   return langs
 })
 const filteredTemplates = computed(() => {
-  if (!templateLanguage.value) return props.templates
-  return props.templates.filter(t => t.language === templateLanguage.value)
+  const list = templateLanguage.value
+    ? props.templates.filter(t => t.language === templateLanguage.value)
+    : props.templates
+  return [...list].sort((a, b) => (a.summary || '').localeCompare(b.summary || ''))
 })
 
 // Local state

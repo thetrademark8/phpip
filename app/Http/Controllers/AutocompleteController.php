@@ -24,6 +24,7 @@ class AutocompleteController extends Controller
         $results = Matter::with('filing')
             ->select('id as key', 'uid as value')
             ->whereLike('uid', "{$request->term}%")
+            ->orderBy('uid')
             ->take(15)
             ->get()
             ->toArray();
@@ -56,7 +57,7 @@ class AutocompleteController extends Controller
             });
         }
 
-        $eventNames = $query->take(10)->get();
+        $eventNames = $query->orderBy('name')->take(10)->get();
         $results = $eventNames->map(function ($item) {
             return [
                 'key' => $item->code,
@@ -89,6 +90,7 @@ class AutocompleteController extends Controller
         $results = User::select('name as value', 'login as key')
             ->whereLike('name', "{$request->term}%")
             ->orWhereLike('login', "{$request->term}%")
+            ->orderBy('name')
             ->take(10)
             ->get();
 
@@ -102,6 +104,7 @@ class AutocompleteController extends Controller
                 $q->whereLike('name', "%{$request->term}%")
                     ->orWhereLike('display_name', "%{$request->term}%");
             })
+            ->orderBy('name')
             ->take(10)
             ->get();
 
@@ -117,7 +120,7 @@ class AutocompleteController extends Controller
         $query = Role::whereJsonLike('name', $request->term)
             ->orWhereLike('code', "{$request->term}%");
 
-        $roles = $query->take(10)->get();
+        $roles = $query->orderBy('name')->take(10)->get();
         $results = $roles->map(function ($item) {
             return [
                 'key' => $item->code,
@@ -132,7 +135,8 @@ class AutocompleteController extends Controller
     public function dbrole(Request $request): JsonResponse
     {
         $query = Role::whereJsonLike('name', $request->term)
-            ->whereIn('code', ['CLI', 'DBA', 'DBRW', 'DBRO']);
+            ->whereIn('code', ['CLI', 'DBA', 'DBRW', 'DBRO'])
+            ->orderBy('name');
 
         $results = $query->get()->map(function ($item) {
             return [
@@ -148,6 +152,7 @@ class AutocompleteController extends Controller
     {
         $countries = Country::whereJsonLike('name', $request->term)
             ->orWhereLike('iso', "{$request->term}%")
+            ->orderBy('name')
             ->take(10)
             ->get();
 
@@ -166,7 +171,7 @@ class AutocompleteController extends Controller
         $query = Category::whereJsonLike('category', $request->term)
             ->orWhereLike('code', "{$request->term}%");
 
-        $categories = $query->take(10)->get();
+        $categories = $query->orderBy('category')->take(10)->get();
         $results = $categories->map(function ($item) {
             return [
                 'key' => $item->code,
@@ -182,7 +187,7 @@ class AutocompleteController extends Controller
     {
         $query = MatterType::whereJsonLike('type', $request->term);
 
-        $types = $query->take(10)->get();
+        $types = $query->orderBy('type')->take(10)->get();
         $results = $types->map(function ($item) {
             return [
                 'key' => $item->code,
@@ -198,6 +203,7 @@ class AutocompleteController extends Controller
         $list = TemplateMember::select('category as value', 'category as key')
             ->whereLike('category', "{$request->term}%")
             ->distinct()
+            ->orderBy('category')
             ->get();
 
         if ($list->count() == 0) {
@@ -211,6 +217,7 @@ class AutocompleteController extends Controller
     {
         $results = TemplateClass::select('name as value', 'id as key')
             ->whereLike('name', "{$request->term}%")
+            ->orderBy('name')
             ->get();
 
         return $this->formatResponse($results);
@@ -221,6 +228,7 @@ class AutocompleteController extends Controller
         $list = TemplateMember::select('style as value', 'style as key')
             ->whereLike('style', "{$request->term}%")
             ->distinct()
+            ->orderBy('style')
             ->get();
 
         if ($list->count() == 0) {
@@ -234,6 +242,7 @@ class AutocompleteController extends Controller
     {
         $eventNames = EventName::where('status_event', 1)
             ->whereJsonLike('name', $request->term)
+            ->orderBy('name')
             ->take(10)
             ->get();
         
