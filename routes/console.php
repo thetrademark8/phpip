@@ -1,20 +1,29 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 /*
 |--------------------------------------------------------------------------
-| Console Routes
+| Console Routes & Scheduling
 |--------------------------------------------------------------------------
-|
-| This file is where you may define all of your Closure based console
-| commands. Each Closure is bound to a command instance allowing a
-| simple approach to interacting with each command's IO methods.
-|
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Schedule::command('tasks:send-urgent-notifications')
+    ->dailyAt('08:00')
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/urgent-notifications.log'));
+
+Schedule::command('matters:send-renewal-reminders')
+    ->dailyAt('08:30')
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/renewal-reminders.log'));
+
+Schedule::command('tasks:renewr-sync')
+    ->weeklyOn(1, '3:00')
+    ->onOneServer()
+    ->withoutOverlapping();
+
+Schedule::command('teamleader:refresh-token')
+    ->everyFifteenMinutes()
+    ->onOneServer()
+    ->withoutOverlapping();
