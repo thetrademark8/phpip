@@ -281,24 +281,22 @@ class MatterController extends Controller
                     // Set parent-child relationship only, no automatic events
                     $new_matter->parent_id = $request->parent_id;
                 }
-                // Copy actors from parent matter (same logic as clone)
-                $actors = $parent_matter->actorPivot;
+                // Copy non-shared actors from parent matter.
+                // Shared actors are inherited automatically via container_id (DB view matter_actors),
+                // so copying them physically would create duplicates.
                 $new_matter_id = $new_matter->id;
+                $actors = $parent_matter->actorPivot->reject(function ($item) use ($new_matter) {
+                    return $item->shared && $new_matter->container_id;
+                });
                 $actors->each(function ($item) use ($new_matter_id) {
                     $item->matter_id = $new_matter_id;
                     $item->id = null;
                 });
                 ActorPivot::insertOrIgnore($actors->toArray());
-                // Copy classifiers (including image) from container or parent
+                // Copy classifiers from container or parent
                 if ($parent_matter->container_id) {
-                    // Copy shared actors from container
-                    $sharedActors = $parent_matter->container->actorPivot->where('shared', 1);
-                    $sharedActors->each(function ($item) use ($new_matter_id) {
-                        $item->matter_id = $new_matter_id;
-                        $item->id = null;
-                    });
-                    ActorPivot::insertOrIgnore($sharedActors->toArray());
-                    // Copy classifiers from container
+                    // Classifiers from container are inherited via the DB view — only copy from container
+                    // if this is a new container situation
                     $new_matter->classifiersNative()
                         ->createMany($parent_matter->container->classifiersNative->toArray());
                 } else {
@@ -311,25 +309,19 @@ class MatterController extends Controller
                 $parent_matter = Matter::with('priority', 'classifiersNative', 'actorPivot')->find($request->parent_id);
                 // Copy priority claims from original matter
                 $new_matter->priority()->createMany($parent_matter->priority->toArray());
-                // Copy actors from original matter
-                // Cannot use Eloquent relationships because they do not handle unique key constraints
-                // - the issue arises for actors that are inserted upon matter creation by a trigger based
-                //   on the default_actors table
-                $actors = $parent_matter->actorPivot;
+                // Copy non-shared actors from original matter.
+                // Shared actors are inherited automatically via container_id (DB view matter_actors).
+                // Using insertOrIgnore to handle actors already created by the matter_after_insert trigger.
                 $new_matter_id = $new_matter->id;
+                $actors = $parent_matter->actorPivot->reject(function ($item) use ($new_matter) {
+                    return $item->shared && $new_matter->container_id;
+                });
                 $actors->each(function ($item) use ($new_matter_id) {
                     $item->matter_id = $new_matter_id;
                     $item->id = null;
                 });
                 ActorPivot::insertOrIgnore($actors->toArray());
                 if ($parent_matter->container_id) {
-                    // Copy shared actors and classifiers from original matter's container
-                    $actors = $parent_matter->container->actorPivot->where('shared', 1);
-                    $actors->each(function ($item) use ($new_matter_id) {
-                        $item->matter_id = $new_matter_id;
-                        $item->id = null;
-                    });
-                    ActorPivot::insertOrIgnore($actors->toArray());
                     $new_matter->classifiersNative()
                         ->createMany($parent_matter->container->classifiersNative->toArray());
                 } else {
