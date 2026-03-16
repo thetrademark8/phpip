@@ -104,15 +104,13 @@ class EventController extends Controller
     }
 
     /**
-     * Recalculate tasks for an event
+     * Recreate tasks for an event by deleting rule-generated tasks and re-applying all matching rules.
      */
     public function recalculateTasks(Event $event)
     {
         try {
-            // Call the stored procedure to recalculate tasks
-            DB::statement('CALL recalculate_tasks(?, ?, ?)', [
-                $event->matter_id,
-                $event->code,
+            DB::statement('CALL recreate_tasks(?, ?)', [
+                $event->id,
                 Auth::user()->login
             ]);
 
