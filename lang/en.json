@@ -1952,5 +1952,12 @@
   "Warnings": "Warnings",
   "Import completed successfully": "Import completed successfully",
   "An error occurred while previewing the files": "An error occurred while previewing the files",
-  "An error occurred while importing the files": "An error occurred while importing the files"
+  "An error occurred while importing the files": "An error occurred while importing the files",
+  "Responsible actor": "Responsible actor",
+  "Select or create the actor responsible for generated tasks": "Select or create the actor responsible for generated tasks",
+  "Select existing user": "Select existing user",
+  "Create new actor": "Create new actor",
+  "Select responsible user": "Select responsible user",
+  "e.g. Gestion Ines-PI": "e.g. Gestion Ines-PI",
+  "e.g. gestion.ines-pi": "e.g. gestion.ines-pi"
 }

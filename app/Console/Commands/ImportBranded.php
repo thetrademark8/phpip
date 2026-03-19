@@ -10,7 +10,8 @@ class ImportBranded extends Command
 {
     protected $signature = 'import:branded
         {folder : Name of the branded folder (e.g. ines-pi)}
-        {--dry-run : Preview without making changes}';
+        {--dry-run : Preview without making changes}
+        {--responsible= : Login of the actor to assign as responsible for tasks}';
 
     protected $description = 'Import branded actors and matters from CSV files in database/imports/branded/{folder}/';
 
@@ -78,7 +79,8 @@ class ImportBranded extends Command
         $this->newLine();
 
         try {
-            $result = $service->import($actorsFile, $mattersFile);
+            $responsible = $this->option('responsible');
+            $result = $service->import($actorsFile, $mattersFile, $responsible);
         } catch (\Throwable $e) {
             $this->error("Import failed: {$e->getMessage()}");
             Log::error('ImportBranded failed', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);

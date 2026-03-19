@@ -46,11 +46,16 @@ class BrandedImportService
      *
      * @return array{stats: array, warnings: string[]}
      */
-    public function import(string $actorsFile, string $mattersFile): array
+    public function import(string $actorsFile, string $mattersFile, ?string $responsibleLogin = null): array
     {
-        DB::transaction(function () use ($actorsFile, $mattersFile) {
+        DB::transaction(function () use ($actorsFile, $mattersFile, $responsibleLogin) {
             $this->importActors($actorsFile);
             $this->buildActorCache();
+
+            if ($responsibleLogin !== null) {
+                DB::table('task_rules')->whereNotNull('responsible')->update(['responsible' => $responsibleLogin]);
+            }
+
             $this->importMatters($mattersFile);
         });
 

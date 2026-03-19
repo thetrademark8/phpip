@@ -23,6 +23,58 @@
         </AlertDescription>
       </Alert>
 
+      <!-- Responsible Actor Card -->
+      <Card>
+        <CardHeader class="pb-6">
+          <CardTitle class="text-xl font-semibold flex items-center gap-2">
+            <UserCog class="h-5 w-5 text-primary" />
+            {{ t('Responsible actor') }}
+          </CardTitle>
+          <CardDescription>
+            {{ t('Select or create the actor responsible for generated tasks') }}
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="pt-0">
+          <Tabs v-model="actorMode" class="w-full">
+            <TabsList class="grid w-full grid-cols-2">
+              <TabsTrigger value="existing">{{ t('Select existing user') }}</TabsTrigger>
+              <TabsTrigger value="create">{{ t('Create new actor') }}</TabsTrigger>
+            </TabsList>
+
+            <!-- Existing user -->
+            <TabsContent value="existing" class="space-y-4 mt-6">
+              <div class="space-y-2">
+                <label class="text-sm font-medium">{{ t('User') }}</label>
+                <AutocompleteInput
+                  v-model="responsibleLogin"
+                  v-model:display-model-value="responsibleDisplay"
+                  endpoint="/user/autocomplete"
+                  :placeholder="t('Select responsible user')"
+                  value-key="key"
+                  label-key="value"
+                />
+              </div>
+            </TabsContent>
+
+            <!-- Create new actor -->
+            <TabsContent value="create" class="space-y-4 mt-6">
+              <div class="space-y-2">
+                <label class="text-sm font-medium">{{ t('Name') }}</label>
+                <Input v-model="newActorName" :placeholder="t('e.g. Gestion Ines-PI')" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm font-medium">{{ t('Login') }}</label>
+                <Input v-model="newActorLogin" :placeholder="t('e.g. gestion.ines-pi')" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm font-medium">{{ t('Password') }}</label>
+                <Input v-model="newActorPassword" type="password" />
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
       <!-- Upload Card -->
       <Card>
         <CardHeader class="pb-6">
@@ -62,7 +114,7 @@
       <div class="flex flex-wrap gap-4 justify-end">
         <Button
           variant="outline"
-          :disabled="!canSubmit || isPreviewing"
+          :disabled="!canPreview || isPreviewing"
           @click="runPreview"
         >
           <Eye v-if="!isPreviewing" class="mr-2 h-4 w-4" />
@@ -70,7 +122,7 @@
           {{ isPreviewing ? t('Previewing...') : t('Preview') }}
         </Button>
         <Button
-          :disabled="!canSubmit || isImporting"
+          :disabled="!canImport || isImporting"
           @click="runImport"
         >
           <FileUp v-if="!isImporting" class="mr-2 h-4 w-4" />
@@ -198,7 +250,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Upload, Eye, FileUp, CheckCircle2, AlertTriangle } from 'lucide-vue-next'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
+import { Upload, Eye, FileUp, CheckCircle2, AlertTriangle, UserCog } from 'lucide-vue-next'
 
 const { t } = useI18n()
 
@@ -218,7 +272,25 @@ const errorMessage = ref('')
 const previewData = ref(null)
 const importResult = ref(null)
 
-const canSubmit = computed(() => actorsFile.value && mattersFile.value)
+// Responsible actor
+const actorMode = ref('existing')
+const responsibleLogin = ref('')
+const responsibleDisplay = ref('')
+const newActorName = ref('')
+const newActorLogin = ref('')
+const newActorPassword = ref('')
+
+const hasFiles = computed(() => actorsFile.value && mattersFile.value)
+const canPreview = computed(() => hasFiles.value)
+
+const hasResponsible = computed(() => {
+  if (actorMode.value === 'existing') {
+    return !!responsibleLogin.value
+  }
+  return !!newActorName.value && !!newActorLogin.value && !!newActorPassword.value && newActorPassword.value.length >= 8
+})
+
+const canImport = computed(() => hasFiles.value && hasResponsible.value)
 
 // --- Build FormData ---
 
@@ -226,6 +298,21 @@ const buildFormData = () => {
   const formData = new FormData()
   formData.append('actors_file', actorsFile.value)
   formData.append('matters_file', mattersFile.value)
+  return formData
+}
+
+const buildImportFormData = () => {
+  const formData = buildFormData()
+  formData.append('actor_mode', actorMode.value)
+
+  if (actorMode.value === 'existing') {
+    formData.append('responsible_login', responsibleLogin.value)
+  } else {
+    formData.append('responsible_name', newActorName.value)
+    formData.append('responsible_login', newActorLogin.value)
+    formData.append('responsible_password', newActorPassword.value)
+  }
+
   return formData
 }
 
@@ -278,7 +365,7 @@ const runImport = async () => {
         'X-CSRF-TOKEN': csrfToken(),
         'Accept': 'application/json',
       },
-      body: buildFormData(),
+      body: buildImportFormData(),
     })
 
     if (!response.ok) {

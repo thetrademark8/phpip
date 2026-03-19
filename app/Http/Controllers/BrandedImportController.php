@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Actor;
 use App\Services\BrandedImportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,17 +25,39 @@ class BrandedImportController extends Controller
      */
     public function import(Request $request): JsonResponse
     {
-        $request->validate([
+        $rules = [
             'actors_file' => 'required|file|mimes:csv,txt|max:10240',
             'matters_file' => 'required|file|mimes:csv,txt|max:10240',
-        ]);
+            'actor_mode' => 'required|in:existing,create',
+        ];
+
+        if ($request->input('actor_mode') === 'create') {
+            $rules['responsible_name'] = 'required|string|max:100';
+            $rules['responsible_login'] = 'required|string|max:160|unique:actor,login';
+            $rules['responsible_password'] = 'required|string|min:8';
+        } else {
+            $rules['responsible_login'] = 'required|string|exists:actor,login';
+        }
+
+        $request->validate($rules);
 
         try {
+            // Create actor if needed
+            if ($request->input('actor_mode') === 'create') {
+                Actor::create([
+                    'name' => $request->input('responsible_name'),
+                    'login' => $request->input('responsible_login'),
+                    'password' => Hash::make($request->input('responsible_password')),
+                    'default_role' => 'DBA',
+                    'phy_person' => 1,
+                ]);
+            }
+
             $actorsPath = $request->file('actors_file')->getRealPath();
             $mattersPath = $request->file('matters_file')->getRealPath();
 
             $service = new BrandedImportService();
-            $result = $service->import($actorsPath, $mattersPath);
+            $result = $service->import($actorsPath, $mattersPath, $request->input('responsible_login'));
 
             return response()->json([
                 'success' => true,

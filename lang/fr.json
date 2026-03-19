@@ -1949,5 +1949,12 @@
   "Warnings": "Avertissements",
   "Import completed successfully": "Import terminé avec succès",
   "An error occurred while previewing the files": "Une erreur est survenue lors de l'aperçu des fichiers",
-  "An error occurred while importing the files": "Une erreur est survenue lors de l'importation des fichiers"
+  "An error occurred while importing the files": "Une erreur est survenue lors de l'importation des fichiers",
+  "Responsible actor": "Acteur responsable",
+  "Select or create the actor responsible for generated tasks": "Sélectionnez ou créez l'acteur responsable des tâches générées",
+  "Select existing user": "Sélectionner un utilisateur existant",
+  "Create new actor": "Créer un nouvel acteur",
+  "Select responsible user": "Sélectionner l'utilisateur responsable",
+  "e.g. Gestion Ines-PI": "ex. Gestion Ines-PI",
+  "e.g. gestion.ines-pi": "ex. gestion.ines-pi"
 }
