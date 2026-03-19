@@ -307,7 +307,7 @@ class BrandedImportService
                 continue;
             }
 
-            $typeCode = $this->nullIfEmpty($row[$classifier['typeCol']]);
+            $typeCode = $this->mapClassifierType($this->nullIfEmpty($row[$classifier['typeCol']]));
 
             if ($typeCode === null) {
                 continue;
@@ -463,6 +463,19 @@ class BrandedImportService
         fclose($handle);
 
         return $rows;
+    }
+
+    private const CLASSIFIER_TYPE_MAP = [
+        'CL' => 'TMCL',
+    ];
+
+    private function mapClassifierType(?string $typeCode): ?string
+    {
+        if ($typeCode === null) {
+            return null;
+        }
+
+        return self::CLASSIFIER_TYPE_MAP[$typeCode] ?? $typeCode;
     }
 
     private function nullIfEmpty(string $value): ?string
