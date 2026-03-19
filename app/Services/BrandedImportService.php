@@ -223,7 +223,7 @@ class BrandedImportService
         $origin = $this->mapCountry($this->nullIfEmpty($row[4]));
 
         $data = array_filter([
-            'category_code' => $this->nullIfEmpty($row[1]),
+            'category_code' => $this->mapCategory($this->nullIfEmpty($row[1])),
             'type_code' => $this->nullIfEmpty($row[5]),
             'alt_ref' => $this->nullIfEmpty($row[6]),
             'responsible' => $this->responsibleLogin ?? $this->nullIfEmpty($row[7]),
@@ -475,9 +475,26 @@ class BrandedImportService
         'UAE' => 'AE',
     ];
 
+    private const CATEGORY_MAP = [
+        'DM' => 'DP',
+        'BT' => 'OTH',
+        'NDD' => 'OTH',
+    ];
+
     private const CLASSIFIER_TYPE_MAP = [
         'CL' => 'TMCL',
     ];
+
+    private function mapCategory(?string $code): ?string
+    {
+        if ($code === null) {
+            return null;
+        }
+
+        $upper = strtoupper($code);
+
+        return self::CATEGORY_MAP[$upper] ?? $upper;
+    }
 
     private function mapCountry(?string $code): ?string
     {
