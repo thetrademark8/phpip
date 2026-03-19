@@ -215,8 +215,8 @@ class BrandedImportService
     private function upsertMatter(array $row): ?int
     {
         $caseref = $this->nullIfEmpty($row[2]);
-        $country = $this->nullIfEmpty($row[3]);
-        $origin = $this->nullIfEmpty($row[4]);
+        $country = $this->mapCountry($this->nullIfEmpty($row[3]));
+        $origin = $this->mapCountry($this->nullIfEmpty($row[4]));
 
         $data = array_filter([
             'category_code' => $this->nullIfEmpty($row[1]),
@@ -404,8 +404,8 @@ class BrandedImportService
             }
 
             $caseref = $this->nullIfEmpty($row[2]);
-            $country = $this->nullIfEmpty($row[3]);
-            $origin = $this->nullIfEmpty($row[4]);
+            $country = $this->mapCountry($this->nullIfEmpty($row[3]));
+            $origin = $this->mapCountry($this->nullIfEmpty($row[4]));
 
             // Look up the parent matter by caseref
             $parent = DB::table('matter')->where('caseref', $parentRef)->first();
@@ -465,9 +465,26 @@ class BrandedImportService
         return $rows;
     }
 
+    private const COUNTRY_MAP = [
+        'UE' => 'EM',
+        'UK' => 'GB',
+        'UAE' => 'AE',
+    ];
+
     private const CLASSIFIER_TYPE_MAP = [
         'CL' => 'TMCL',
     ];
+
+    private function mapCountry(?string $code): ?string
+    {
+        if ($code === null) {
+            return null;
+        }
+
+        $upper = strtoupper($code);
+
+        return self::COUNTRY_MAP[$upper] ?? $upper;
+    }
 
     private function mapClassifierType(?string $typeCode): ?string
     {
