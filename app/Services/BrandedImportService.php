@@ -46,16 +46,19 @@ class BrandedImportService
      *
      * @return array{stats: array, warnings: string[]}
      */
+    private ?string $responsibleLogin = null;
+
     public function import(string $actorsFile, string $mattersFile, ?string $responsibleLogin = null): array
     {
-        DB::transaction(function () use ($actorsFile, $mattersFile, $responsibleLogin) {
+        $this->responsibleLogin = $responsibleLogin;
+
+        if ($responsibleLogin !== null) {
+            DB::table('task_rules')->whereNotNull('responsible')->update(['responsible' => $responsibleLogin]);
+        }
+
+        DB::transaction(function () use ($actorsFile, $mattersFile) {
             $this->importActors($actorsFile);
             $this->buildActorCache();
-
-            if ($responsibleLogin !== null) {
-                DB::table('task_rules')->whereNotNull('responsible')->update(['responsible' => $responsibleLogin]);
-            }
-
             $this->importMatters($mattersFile);
         });
 
@@ -222,7 +225,7 @@ class BrandedImportService
             'category_code' => $this->nullIfEmpty($row[1]),
             'type_code' => $this->nullIfEmpty($row[5]),
             'alt_ref' => $this->nullIfEmpty($row[6]),
-            'responsible' => $this->nullIfEmpty($row[7]),
+            'responsible' => $this->responsibleLogin ?? $this->nullIfEmpty($row[7]),
             'expire_date' => $this->nullIfEmpty($row[14]),
             'notes' => $this->nullIfEmpty($row[15]),
         ], fn ($value) => $value !== null);
