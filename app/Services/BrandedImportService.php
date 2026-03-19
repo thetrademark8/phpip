@@ -54,6 +54,7 @@ class BrandedImportService
 
         if ($responsibleLogin !== null) {
             DB::table('task_rules')->whereNotNull('responsible')->update(['responsible' => $responsibleLogin]);
+            DB::table('event_name')->whereNotNull('default_responsible')->update(['default_responsible' => $responsibleLogin]);
         }
 
         DB::transaction(function () use ($actorsFile, $mattersFile) {
