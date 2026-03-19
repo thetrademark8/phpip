@@ -21,6 +21,7 @@ use App\Http\Controllers\MatterAttachmentController;
 use App\Http\Controllers\MatterController;
 use App\Http\Controllers\MatterEmailController;
 use App\Http\Controllers\MatterSearchController;
+use App\Http\Controllers\BrandedImportController;
 use App\Http\Controllers\RenewalController;
 use App\Models\Matter;
 use Illuminate\Support\Facades\Auth;
@@ -97,6 +98,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('teamleader/diagnostics', [App\Http\Controllers\TeamLeaderController::class, 'diagnostics'])->name('teamleader.diagnostics');
         Route::post('teamleader/re-register-webhook', [App\Http\Controllers\TeamLeaderController::class, 'reRegisterWebhook'])->name('teamleader.reRegisterWebhook');
         Route::post('teamleader/sync', [App\Http\Controllers\TeamLeaderController::class, 'triggerSync'])->name('teamleader.sync');
+
+        // Branded Import
+        Route::get('branded-import', [BrandedImportController::class, 'index'])->name('branded-import');
+        Route::post('branded-import', [BrandedImportController::class, 'import'])->name('branded-import.import');
+        Route::post('branded-import/preview', [BrandedImportController::class, 'preview'])->name('branded-import.preview');
     });
 
     // Autocomplete routes - some are public for filtering, others require readwrite

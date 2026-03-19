@@ -21,3 +21,4 @@ Homestead.yaml
 .phpunit.cache
 /storage/*.key
 /storage/pail
+/database/imports/branded/
