@@ -13,6 +13,8 @@ class BrandedImportService
 
     private array $warnings = [];
 
+    private array $importedMatterIds = [];
+
     private array $stats = [
         'actors_created' => 0,
         'actors_updated' => 0,
@@ -21,6 +23,7 @@ class BrandedImportService
         'events_upserted' => 0,
         'classifiers_upserted' => 0,
         'actor_links_upserted' => 0,
+        'renewals_cleaned' => 0,
         'warnings' => 0,
     ];
 
@@ -62,6 +65,8 @@ class BrandedImportService
             $this->buildActorCache();
             $this->importMatters($mattersFile);
         });
+
+        $this->cleanupPastRenewals();
 
         return [
             'stats' => $this->stats,
@@ -254,6 +259,7 @@ class BrandedImportService
         if ($existing) {
             DB::table('matter')->where('id', $existing->id)->update($data);
             $this->stats['matters_updated']++;
+            $this->importedMatterIds[] = $existing->id;
 
             return $existing->id;
         }
@@ -266,6 +272,7 @@ class BrandedImportService
 
         $id = DB::table('matter')->insertGetId($insertData);
         $this->stats['matters_created']++;
+        $this->importedMatterIds[] = $id;
 
         return $id;
     }
@@ -484,6 +491,23 @@ class BrandedImportService
     private const CLASSIFIER_TYPE_MAP = [
         'CL' => 'TMCL',
     ];
+
+    private function cleanupPastRenewals(): void
+    {
+        if (empty($this->importedMatterIds)) {
+            return;
+        }
+
+        $deleted = DB::table('task')
+            ->join('event', 'event.id', '=', 'task.trigger_id')
+            ->whereIn('event.matter_id', $this->importedMatterIds)
+            ->where('task.code', 'REN')
+            ->where('task.done', 0)
+            ->where('task.due_date', '<', now())
+            ->delete();
+
+        $this->stats['renewals_cleaned'] = $deleted;
+    }
 
     private function mapCategory(?string $code): ?string
     {

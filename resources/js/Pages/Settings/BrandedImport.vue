@@ -222,6 +222,10 @@
               <span>{{ t('Actor links upserted') }}</span>
               <span class="font-medium">{{ importResult.stats.actor_links_upserted }}</span>
             </li>
+            <li v-if="importResult.stats.renewals_cleaned" class="flex justify-between rounded border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950 px-3 py-2">
+              <span>{{ t('Past renewals cleaned') }}</span>
+              <span class="font-medium">{{ importResult.stats.renewals_cleaned }}</span>
+            </li>
           </ul>
 
           <!-- Warnings -->
