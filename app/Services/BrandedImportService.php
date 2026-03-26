@@ -216,13 +216,19 @@ class BrandedImportService
                 continue;
             }
 
+            $categoryCode = $this->mapCategory($this->nullIfEmpty($row[1]));
+
+            if ($categoryCode === null || ! DB::table('matter_category')->where('code', $categoryCode)->exists()) {
+                $this->warnings[] = "Skipping matter row with missing or unknown category '{$categoryCode}'";
+                $this->stats['warnings']++;
+
+                continue;
+            }
+
             if ($caseref === null) {
-                $categoryCode = $this->mapCategory($this->nullIfEmpty($row[1]));
                 $caseref = $this->generateNextCaseref($categoryCode);
                 $row[2] = $caseref;
                 $this->stats['caserefs_generated']++;
-                $this->warnings[] = "Auto-generated caseref '{$caseref}' for matter row (category: {$categoryCode})";
-                $this->stats['warnings']++;
             }
 
             $matterId = $this->upsertMatter($row);
