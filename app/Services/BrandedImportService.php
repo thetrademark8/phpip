@@ -200,6 +200,15 @@ class BrandedImportService
             $importRef = $this->nullIfEmpty($row[0]);
             $caseref = $this->nullIfEmpty($row[2]);
 
+            $country = $this->mapCountry($this->nullIfEmpty($row[3]));
+
+            if ($country === null) {
+                $this->warnings[] = 'Skipping matter row with empty country';
+                $this->stats['warnings']++;
+
+                continue;
+            }
+
             if ($caseref === null) {
                 $categoryCode = $this->mapCategory($this->nullIfEmpty($row[1]));
                 $caseref = $this->generateNextCaseref($categoryCode);
