@@ -504,7 +504,7 @@ class BrandedImportService
         $prefix = null;
 
         if ($categoryCode !== null) {
-            $category = DB::table('category')->where('code', $categoryCode)->first();
+            $category = DB::table('matter_category')->where('code', $categoryCode)->first();
             $prefix = $category->ref_prefix ?? null;
         }
 
