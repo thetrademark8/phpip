@@ -209,6 +209,13 @@ class BrandedImportService
                 continue;
             }
 
+            if (! DB::table('country')->where('iso', $country)->exists()) {
+                $this->warnings[] = "Skipping matter row with unknown country code '{$country}'";
+                $this->stats['warnings']++;
+
+                continue;
+            }
+
             if ($caseref === null) {
                 $categoryCode = $this->mapCategory($this->nullIfEmpty($row[1]));
                 $caseref = $this->generateNextCaseref($categoryCode);
