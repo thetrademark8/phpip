@@ -15,6 +15,8 @@ class BrandedImportService
 
     private array $importedMatterIds = [];
 
+    private array $generatedCaserefCache = [];
+
     private array $stats = [
         'actors_created' => 0,
         'actors_updated' => 0,
@@ -24,6 +26,7 @@ class BrandedImportService
         'classifiers_upserted' => 0,
         'actor_links_upserted' => 0,
         'renewals_cleaned' => 0,
+        'caserefs_generated' => 0,
         'warnings' => 0,
     ];
 
@@ -32,6 +35,7 @@ class BrandedImportService
         $this->actorCache = [];
         $this->matterCache = [];
         $this->warnings = [];
+        $this->generatedCaserefCache = [];
         $this->stats = [
             'actors_created' => 0,
             'actors_updated' => 0,
@@ -40,6 +44,7 @@ class BrandedImportService
             'events_upserted' => 0,
             'classifiers_upserted' => 0,
             'actor_links_upserted' => 0,
+            'caserefs_generated' => 0,
             'warnings' => 0,
         ];
     }
@@ -196,10 +201,12 @@ class BrandedImportService
             $caseref = $this->nullIfEmpty($row[2]);
 
             if ($caseref === null) {
-                $this->warnings[] = 'Skipping matter row with empty caseref';
+                $categoryCode = $this->mapCategory($this->nullIfEmpty($row[1]));
+                $caseref = $this->generateNextCaseref($categoryCode);
+                $row[2] = $caseref;
+                $this->stats['caserefs_generated']++;
+                $this->warnings[] = "Auto-generated caseref '{$caseref}' for matter row (category: {$categoryCode})";
                 $this->stats['warnings']++;
-
-                continue;
             }
 
             $matterId = $this->upsertMatter($row);
@@ -491,6 +498,39 @@ class BrandedImportService
     private const CLASSIFIER_TYPE_MAP = [
         'CL' => 'TMCL',
     ];
+
+    private function generateNextCaseref(?string $categoryCode): string
+    {
+        $prefix = null;
+
+        if ($categoryCode !== null) {
+            $category = DB::table('category')->where('code', $categoryCode)->first();
+            $prefix = $category->ref_prefix ?? null;
+        }
+
+        $prefix = $prefix ?: ($categoryCode ?: 'X');
+
+        // Check if we already generated caserefs with this prefix in this import
+        if (isset($this->generatedCaserefCache[$prefix])) {
+            $lastGenerated = $this->generatedCaserefCache[$prefix];
+            $nextCaseref = ++$lastGenerated;
+        } else {
+            // Find the max existing caseref with this prefix in the database
+            $maxCaseref = DB::table('matter')
+                ->where('caseref', 'like', $prefix . '%')
+                ->max('caseref');
+
+            if ($maxCaseref !== null && $maxCaseref !== $prefix) {
+                $nextCaseref = ++$maxCaseref;
+            } else {
+                $nextCaseref = strtoupper($prefix);
+            }
+        }
+
+        $this->generatedCaserefCache[$prefix] = $nextCaseref;
+
+        return $nextCaseref;
+    }
 
     private function cleanupPastRenewals(): void
     {
