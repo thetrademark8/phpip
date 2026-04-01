@@ -194,7 +194,11 @@ class PlaceholderService
             return null;
         }
 
-        $query = $this->matter->tasks()
+        $matter = $this->matter->container_id
+            ? Matter::find($this->matter->container_id) ?? $this->matter
+            : $this->matter;
+
+        $query = $matter->tasks()
             ->where('task.code', $taskCode);
 
         if ($onlyPending) {
