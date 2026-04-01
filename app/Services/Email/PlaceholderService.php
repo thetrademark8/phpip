@@ -127,7 +127,7 @@ class PlaceholderService
             $values['{{matter.opposition_deadline}}'] = $this->getTaskDueDate('FOP');
             $values['{{matter.priority_deadline}}'] = $this->getTaskDueDate('PRID');
             $values['{{matter.expire_date}}'] = $this->matter->expire_date ? \Carbon\Carbon::parse($this->matter->expire_date)->isoFormat('L') : null;
-            $values['{{matter.next_renewal}}'] = $this->getTaskDueDate('REN');
+            $values['{{matter.next_renewal}}'] = $this->getTaskDueDate('REN', true);
             $values['{{matter.country}}'] = $this->matter->countryInfo?->name;
             $values['{{matter.category}}'] = $this->matter->category?->category;
 
@@ -188,17 +188,20 @@ class PlaceholderService
     /**
      * Get the due date of a specific task for the current matter.
      */
-    protected function getTaskDueDate(string $taskCode): ?string
+    protected function getTaskDueDate(string $taskCode, bool $onlyPending = false): ?string
     {
         if (! $this->matter) {
             return null;
         }
 
-        $task = $this->matter->tasks()
-            ->where('task.code', $taskCode)
-            ->where('done', 0)
-            ->orderBy('due_date')
-            ->first();
+        $query = $this->matter->tasks()
+            ->where('task.code', $taskCode);
+
+        if ($onlyPending) {
+            $query->where('task.done', 0);
+        }
+
+        $task = $query->orderBy('due_date')->first();
 
         return $task?->due_date?->isoFormat('L');
     }
