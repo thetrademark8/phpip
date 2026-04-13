@@ -512,8 +512,6 @@ class BrandedImportService
     ];
 
     private const CATEGORY_MAP = [
-        'DM' => 'DP',
-        'BT' => 'OTH',
         'NDD' => 'OTH',
     ];
 
