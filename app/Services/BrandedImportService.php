@@ -386,11 +386,7 @@ class BrandedImportService
             $actorId = $this->actorCache[$actorDisplayName] ?? null;
 
             if ($actorId === null) {
-                $this->warnings[] = "Matter row: actor '{$actorDisplayName}' not found";
-                $this->stats['warnings']++;
-                Log::warning('ImportBranded: actor not found for matter_actor_lnk', ['display_name' => $actorDisplayName]);
-
-                continue;
+                $actorId = $this->createActorFromName($actorDisplayName);
             }
 
             $role = $this->nullIfEmpty($row[$block['roleCol']]);
@@ -518,6 +514,19 @@ class BrandedImportService
     private const CLASSIFIER_TYPE_MAP = [
         'CL' => 'TMCL',
     ];
+
+    private function createActorFromName(string $displayName): int
+    {
+        $id = DB::table('actor')->insertGetId([
+            'name' => $displayName,
+            'display_name' => $displayName,
+        ]);
+
+        $this->actorCache[$displayName] = $id;
+        $this->stats['actors_created']++;
+
+        return $id;
+    }
 
     private function generateNextCaseref(?string $categoryCode): string
     {
