@@ -1213,6 +1213,8 @@
   "notifications.tasks.summary_title": "System-Zusammenfassung",
   "notifications.tasks.urgent_summary_title": "Zusammenfassung dringender Aufgaben",
   "notifications.tasks.fields.matter": "Akte",
+  "notifications.tasks.fields.title": "Titel",
+  "notifications.tasks.fields.country": "Land",
   "notifications.tasks.fields.task": "Aufgabe",
   "notifications.tasks.fields.due_date": "Fälligkeitsdatum",
   "notifications.tasks.fields.client": "Kunde",

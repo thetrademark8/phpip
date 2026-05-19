@@ -278,7 +278,7 @@ class NotificationService implements NotificationServiceInterface
                       // Orange: tasks due in next X days
                       ->orWhere('due_date', '<=', now()->addDays($daysAhead));
             })
-            ->with('matter', 'info', 'matter.responsibleActor')
+            ->with('matter', 'info', 'matter.responsibleActor', 'matter.titles', 'matter.countryInfo')
             ->orderBy('due_date')
             ->get();
     }

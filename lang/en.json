@@ -1312,6 +1312,8 @@
   "notifications.tasks.summary_title": "System Summary",
   "notifications.tasks.urgent_summary_title": "Urgent Tasks Summary",
   "notifications.tasks.fields.matter": "Matter",
+  "notifications.tasks.fields.title": "Title",
+  "notifications.tasks.fields.country": "Country",
   "notifications.tasks.fields.task": "Task",
   "notifications.tasks.fields.due_date": "Due Date",
   "notifications.tasks.fields.client": "Client",

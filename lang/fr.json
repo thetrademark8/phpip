@@ -1310,6 +1310,8 @@
   "notifications.tasks.summary_title": "Récapitulatif Système",
   "notifications.tasks.urgent_summary_title": "Récapitulatif des tâches urgentes",
   "notifications.tasks.fields.matter": "Dossier",
+  "notifications.tasks.fields.title": "Titre",
+  "notifications.tasks.fields.country": "Pays",
   "notifications.tasks.fields.task": "Tâche",
   "notifications.tasks.fields.due_date": "Date d'échéance",
   "notifications.tasks.fields.client": "Client",

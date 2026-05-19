@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use Illuminate\Mail\Events\MessageSending;
 
-class AddGlobalBcc
+class ConfigureGlobalRecipients
 {
     public function handle(MessageSending $event): void
     {
@@ -12,6 +12,12 @@ class AddGlobalBcc
 
         if ($bcc) {
             $event->message->addBcc($bcc);
+        }
+
+        $replyTo = config('mail.global_reply_to');
+
+        if ($replyTo) {
+            $event->message->addReplyTo($replyTo);
         }
     }
 }

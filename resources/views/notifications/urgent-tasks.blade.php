@@ -28,13 +28,13 @@
 ## 🚨 {{ __('notifications.tasks.overdue_title') }} ({{ $overdueTasks->count() }})
 
 @component('mail::table')
-| {{ __('notifications.tasks.fields.matter') }} | {{ __('notifications.tasks.fields.task') }} | {{ __('notifications.tasks.fields.due_date') }} | {{ __('notifications.tasks.fields.overdue_by') }} |
-|:-------------|:-------------|:-------------|:-------------|
+| {{ __('notifications.tasks.fields.matter') }} | {{ __('notifications.tasks.fields.title') }} | {{ __('notifications.tasks.fields.country') }} | {{ __('notifications.tasks.fields.task') }} | {{ __('notifications.tasks.fields.due_date') }} | {{ __('notifications.tasks.fields.overdue_by') }} |
+|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|
 @foreach($overdueTasks as $task)
 @php
 $daysOverdue = (int) round(now()->diffInDays($task->due_date, false));
 @endphp
-| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ abs($daysOverdue) }} {{ trans_choice('notifications.tasks.pluralization.day', abs($daysOverdue)) }}** |
+| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | {{ $task->matter->titles->first()?->value ?? '-' }} | {{ $task->matter->countryInfo?->name ?? $task->matter->country }} | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ abs($daysOverdue) }} {{ trans_choice('notifications.tasks.pluralization.day', abs($daysOverdue)) }}** |
 @endforeach
 @endcomponent
 @endif
@@ -44,13 +44,13 @@ $daysOverdue = (int) round(now()->diffInDays($task->due_date, false));
 ## ⏰ {{ __('notifications.tasks.due_soon_title') }} ({{ $dueSoonTasks->count() }})
 
 @component('mail::table')
-| {{ __('notifications.tasks.fields.matter') }} | {{ __('notifications.tasks.fields.task') }} | {{ __('notifications.tasks.fields.due_date') }} | {{ __('notifications.tasks.status.days_remaining') }} |
-|:-------------|:-------------|:-------------|:-------------|
+| {{ __('notifications.tasks.fields.matter') }} | {{ __('notifications.tasks.fields.title') }} | {{ __('notifications.tasks.fields.country') }} | {{ __('notifications.tasks.fields.task') }} | {{ __('notifications.tasks.fields.due_date') }} | {{ __('notifications.tasks.status.days_remaining') }} |
+|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|
 @foreach($dueSoonTasks as $task)
 @php
 $daysRemaining = (int) round(now()->diffInDays($task->due_date, false));
 @endphp
-| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ $daysRemaining }} {{ trans_choice('notifications.tasks.pluralization.day', $daysRemaining) }}** |
+| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | {{ $task->matter->titles->first()?->value ?? '-' }} | {{ $task->matter->countryInfo?->name ?? $task->matter->country }} | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ $daysRemaining }} {{ trans_choice('notifications.tasks.pluralization.day', $daysRemaining) }}** |
 @endforeach
 @endcomponent
 @endif
