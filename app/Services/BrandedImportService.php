@@ -521,6 +521,17 @@ class BrandedImportService
 
     private function createActorFromName(string $displayName): int
     {
+        // Recheck DB: the in-memory cache uses byte-exact keys but MySQL's
+        // utf8mb4_unicode_ci collation treats Unicode equivalents (e.g. NFC vs NFD)
+        // as equal, so a cache miss can still hit the display_name unique index.
+        $existing = DB::table('actor')->where('display_name', $displayName)->value('id');
+
+        if ($existing !== null) {
+            $this->actorCache[$displayName] = $existing;
+
+            return $existing;
+        }
+
         $id = DB::table('actor')->insertGetId([
             'name' => $displayName,
             'display_name' => $displayName,
