@@ -7,6 +7,7 @@ use App\Services\Email\EmailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -64,11 +65,16 @@ class EmailSettingController extends Controller
 
         $type = $request->input('type');
         $file = $request->file('logo');
-        $filename = "logo-{$type}." . $file->getClientOriginalExtension();
+        $settingKey = $type === 'site' ? 'site_logo' : 'email_logo';
 
+        $previous = EmailSetting::get($settingKey);
+        if ($previous) {
+            Storage::delete($previous);
+        }
+
+        $filename = "logo-{$type}-" . Str::random(8) . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('branding', $filename);
 
-        $settingKey = $type === 'site' ? 'site_logo' : 'email_logo';
         EmailSetting::set($settingKey, $path, 'text', 'branding');
 
         return response()->json([
