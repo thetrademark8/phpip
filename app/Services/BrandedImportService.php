@@ -508,7 +508,11 @@ class BrandedImportService
     ];
 
     private const CATEGORY_MAP = [
-        'NDD' => 'OTH',
+        'BT'  => 'PAT',
+        'DM'  => 'DES',
+        'DP'  => 'DES',
+        'ND'  => 'DOM',
+        'NDD' => 'DOM',
     ];
 
     private const CLASSIFIER_TYPE_MAP = [
