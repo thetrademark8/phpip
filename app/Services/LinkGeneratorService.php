@@ -84,9 +84,9 @@ class LinkGeneratorService
         ],
         
         // Design Offices (DP = Design Patent category code)
-        // Example FR: https://data.inpi.fr/dessins_modeles/FR20200885-003
+        // Example FR: https://data.inpi.fr/dessins_modeles/FR20200885-003?q=#FR20200885-003
         'INPI_DSG' => [
-            'url' => 'https://data.inpi.fr/dessins_modeles/%s',
+            'url' => 'https://data.inpi.fr/dessins_modeles/%1$s?q=#%1$s',
             'name' => 'INPI Dessins & Modèles',
             'icon' => 'Palette',
             'categories' => ['DP', 'DSG'],
@@ -362,12 +362,13 @@ class LinkGeneratorService
                 break;
 
             case 'inpi_design_format':
-                // INPI Design format: FR{number} (e.g., FR20200885-003)
-                // If number already contains country prefix, use as-is
-                if (preg_match('/^FR/', $number)) {
-                    return $number;
+                // INPI Design format requires FR{number}-{variant} (e.g., FR20200885-003).
+                // Strip any FR prefix to normalize, default variant to -001 when absent.
+                $base = preg_replace('/^FR/', '', $number);
+                if (!preg_match('/-\d+$/', $base)) {
+                    $base .= '-001';
                 }
-                return 'FR' . $number;
+                return 'FR' . $base;
 
             case 'euipo_design_format':
                 // EUIPO Design format: {9-digit-number}-{variant} (e.g., 007708706-0001)
