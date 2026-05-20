@@ -14,7 +14,7 @@ import { computed } from 'vue'
 import { cn } from '@/lib/utils'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 const props = defineProps({
   status: {
@@ -62,8 +62,7 @@ const statusClass = computed(() => {
 const displayText = computed(() => {
   if (props.customText) return props.customText
 
-  // Use translation key based on type and status
   const translationKey = `status.${props.type}.${props.status.toLowerCase()}`
-  return t(translationKey)
+  return te(translationKey) ? t(translationKey) : props.status
 })
 </script>
