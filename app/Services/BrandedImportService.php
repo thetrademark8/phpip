@@ -148,10 +148,20 @@ class BrandedImportService
                 'address' => count($addressParts) > 0 ? implode("\n", $addressParts) : null,
             ];
 
-            $existing = DB::table('actor')->where('name', $name)->first();
+            // Match canonically by display_name (the unique-indexed column) when
+            // available, fall back to name. This avoids unique-constraint violations
+            // when an actor was previously auto-created with name == display_name.
+            $displayName = $this->nullIfEmpty($row['display_name']);
+            $existing = null;
+            if ($displayName !== null) {
+                $existing = DB::table('actor')->where('display_name', $displayName)->first();
+            }
+            if ($existing === null) {
+                $existing = DB::table('actor')->where('name', $name)->first();
+            }
 
             if ($existing) {
-                DB::table('actor')->where('name', $name)->update($data);
+                DB::table('actor')->where('id', $existing->id)->update(array_merge(['name' => $name], $data));
                 $this->stats['actors_updated']++;
             } else {
                 DB::table('actor')->insert(array_merge(['name' => $name], $data));
