@@ -88,26 +88,30 @@ class TaskEmailService
      */
     private function detectSystemLanguage(Collection $tasks, string $primaryRecipient): string
     {
+        $supportedLanguages = ['en', 'fr', 'de'];
+
         // Try to detect language from responsible actors in the tasks
         if ($tasks->isNotEmpty()) {
             $responsibleActors = $tasks->map(function ($task) {
                 return $task->matter->responsibleActor ?? null;
             })->filter()->unique('id');
-            
+
             if ($responsibleActors->isNotEmpty()) {
-                // Get the most common language among responsible actors
-                $languages = $responsibleActors->map(function ($actor) {
-                    return $actor->getLanguage();
-                })->countBy();
-                
+                // Get the most common language among responsible actors,
+                // ignoring empty/unsupported values so they don't drown out real preferences.
+                $languages = $responsibleActors
+                    ->map(fn ($actor) => $actor->getLanguage())
+                    ->filter(fn ($lang) => ! empty($lang) && in_array($lang, $supportedLanguages, true))
+                    ->countBy();
+
                 if ($languages->isNotEmpty()) {
                     $mostCommonLanguage = $languages->sortDesc()->keys()->first();
-                    
+
                     Log::info('Detected language from responsible actors', [
                         'language' => $mostCommonLanguage,
                         'language_distribution' => $languages->toArray()
                     ]);
-                    
+
                     return $mostCommonLanguage;
                 }
             }
@@ -129,7 +133,7 @@ class TaskEmailService
             'language' => $fallbackLanguage,
             'reason' => 'no context available'
         ]);
-        
+
         return $fallbackLanguage;
     }
     
@@ -164,13 +168,20 @@ class TaskEmailService
     private function validateLanguage(string &$language): void
     {
         $supportedLanguages = ['en', 'fr', 'de'];
-        
-        if (!in_array($language, $supportedLanguages)) {
-            Log::warning('Unsupported language detected, falling back to English', [
+
+        if (! in_array($language, $supportedLanguages, true)) {
+            $fallback = config('app.locale', 'en');
+            if (! in_array($fallback, $supportedLanguages, true)) {
+                $fallback = 'en';
+            }
+
+            Log::warning('Unsupported language detected, falling back to application default', [
                 'requested_language' => $language,
-                'supported_languages' => $supportedLanguages
+                'fallback_language' => $fallback,
+                'supported_languages' => $supportedLanguages,
             ]);
-            $language = 'en';
+
+            $language = $fallback;
         }
     }
     
