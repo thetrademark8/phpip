@@ -17,6 +17,13 @@ class BrandedImportService
 
     private array $generatedCaserefCache = [];
 
+    /**
+     * Maps the original caseref as it appears in the CSV (before stripping the country
+     * suffix) to the resulting matter id. Used by resolveParentRefs() to translate the
+     * parent_ref column (which uses the old convention) into the actual matter row.
+     */
+    private array $caserefMatterMap = [];
+
     private array $stats = [
         'actors_created' => 0,
         'actors_updated' => 0,
@@ -36,6 +43,7 @@ class BrandedImportService
         $this->matterCache = [];
         $this->warnings = [];
         $this->generatedCaserefCache = [];
+        $this->caserefMatterMap = [];
         $this->stats = [
             'actors_created' => 0,
             'actors_updated' => 0,
@@ -241,7 +249,16 @@ class BrandedImportService
                 $this->stats['caserefs_generated']++;
             }
 
-            $matterId = $this->upsertMatter($row);
+            // Preserve the caseref as it appears in the CSV so parent_ref entries that use
+            // the old convention can still be resolved after we strip the country suffix.
+            $originalCaseref = $caseref;
+
+            $origin = $this->mapCountry($this->nullIfEmpty($row[4]));
+            $stripped = $this->stripCountryFromCaseref($caseref, $country, $origin);
+            $row[2] = $stripped['caseref'];
+            $idx = $stripped['idx'];
+
+            $matterId = $this->upsertMatter($row, $idx);
 
             if ($matterId === null) {
                 continue;
@@ -250,6 +267,8 @@ class BrandedImportService
             if ($importRef !== null) {
                 $this->matterCache[$importRef] = $matterId;
             }
+
+            $this->caserefMatterMap[$originalCaseref] = $matterId;
 
             $this->upsertEvents($matterId, $row);
             $this->upsertClassifiers($matterId, $row);
@@ -260,7 +279,38 @@ class BrandedImportService
         $this->resolveParentRefs($mattersFile);
     }
 
-    private function upsertMatter(array $row): ?int
+    /**
+     * Strip a trailing country (and optional origin) code, plus any digits that follow,
+     * from a caseref. Returns the cleaned caseref and the captured digits parsed as idx.
+     *
+     * Examples (country=EM, origin=null):  TM1008EM00 -> ["TM1008", 0]
+     * Examples (country=GB, origin=WO):    TM1008WOGB -> ["TM1008", null]
+     */
+    private function stripCountryFromCaseref(string $caseref, string $country, ?string $origin): array
+    {
+        $suffix = ($origin ?? '') . $country;
+        if ($suffix === '') {
+            return ['caseref' => $caseref, 'idx' => null];
+        }
+
+        $pattern = '/' . preg_quote($suffix, '/') . '(\d*)$/i';
+
+        if (preg_match($pattern, $caseref, $matches)) {
+            $newCaseref = substr($caseref, 0, -strlen($matches[0]));
+
+            if ($newCaseref === '') {
+                return ['caseref' => $caseref, 'idx' => null];
+            }
+
+            $idx = $matches[1] !== '' ? (int) $matches[1] : null;
+
+            return ['caseref' => $newCaseref, 'idx' => $idx];
+        }
+
+        return ['caseref' => $caseref, 'idx' => null];
+    }
+
+    private function upsertMatter(array $row, ?int $idx = null): ?int
     {
         $caseref = $this->nullIfEmpty($row[2]);
         $country = $this->mapCountry($this->nullIfEmpty($row[3]));
@@ -275,22 +325,24 @@ class BrandedImportService
             'notes' => $this->nullIfEmpty($row[15]),
         ], fn ($value) => $value !== null);
 
-        $matchConditions = ['caseref' => $caseref, 'country' => $country];
-
-        if ($origin !== null) {
-            $matchConditions['origin'] = $origin;
-        } else {
-            $matchConditions[] = ['origin', 'IS', null];
+        if ($idx !== null) {
+            $data['idx'] = $idx;
         }
 
-        $existing = DB::table('matter');
+        $existing = DB::table('matter')
+            ->where('caseref', $caseref)
+            ->where('country', $country);
 
-        foreach ($matchConditions as $key => $value) {
-            if (is_int($key)) {
-                $existing->whereNull('origin');
-            } else {
-                $existing->where($key, $value);
-            }
+        if ($origin !== null) {
+            $existing->where('origin', $origin);
+        } else {
+            $existing->whereNull('origin');
+        }
+
+        if ($idx !== null) {
+            $existing->where('idx', $idx);
+        } else {
+            $existing->whereNull('idx');
         }
 
         $existing = $existing->first();
@@ -449,30 +501,26 @@ class BrandedImportService
                 continue;
             }
 
-            $caseref = $this->nullIfEmpty($row[2]);
-            $country = $this->mapCountry($this->nullIfEmpty($row[3]));
-            $origin = $this->mapCountry($this->nullIfEmpty($row[4]));
+            $childOriginalCaseref = $this->nullIfEmpty($row[2]);
+            $childId = $this->caserefMatterMap[$childOriginalCaseref] ?? null;
+            $parentId = $this->caserefMatterMap[$parentRef] ?? null;
 
-            // Look up the parent matter by caseref
-            $parent = DB::table('matter')->where('caseref', $parentRef)->first();
+            if ($parentId === null) {
+                // Fallback: parent may have been imported in a previous run with its
+                // current (post-strip) caseref, so try a direct database lookup.
+                $parent = DB::table('matter')->where('caseref', $parentRef)->first();
+                $parentId = $parent?->id;
+            }
 
-            if ($parent === null) {
-                $this->warnings[] = "Matter '{$caseref}': parent_ref '{$parentRef}' not found";
+            if ($childId === null || $parentId === null) {
+                $this->warnings[] = "Matter '{$childOriginalCaseref}': parent_ref '{$parentRef}' not found";
                 $this->stats['warnings']++;
-                Log::warning('ImportBranded: parent_ref not found', ['caseref' => $caseref, 'parent_ref' => $parentRef]);
+                Log::warning('ImportBranded: parent_ref not found', ['caseref' => $childOriginalCaseref, 'parent_ref' => $parentRef]);
 
                 continue;
             }
 
-            $query = DB::table('matter')->where('caseref', $caseref)->where('country', $country);
-
-            if ($origin !== null) {
-                $query->where('origin', $origin);
-            } else {
-                $query->whereNull('origin');
-            }
-
-            $query->update(['parent_id' => $parent->id]);
+            DB::table('matter')->where('id', $childId)->update(['parent_id' => $parentId]);
         }
     }
 
