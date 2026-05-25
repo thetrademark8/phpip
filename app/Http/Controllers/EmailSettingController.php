@@ -20,7 +20,7 @@ class EmailSettingController extends Controller
     {
         $settings = EmailSetting::getAllGrouped();
 
-        return Inertia::render('Settings/Email', [
+        return Inertia::render('Settings/Brand', [
             'settings' => $settings,
             'site_logo' => EmailSetting::siteLogoUrl(),
             'email_logo' => EmailSetting::emailLogoUrl(),

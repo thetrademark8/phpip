@@ -1805,6 +1805,10 @@
 
   "Brand Settings": "Markeneinstellungen",
   "Manage branding, logo and email signature for your company": "Branding, Logo und E-Mail-Signatur Ihres Unternehmens verwalten",
+  "Behavior": "Verhalten",
+  "Configure how matters open and other navigation preferences": "Konfigurieren Sie, wie Akten geöffnet werden, und weitere Navigationseinstellungen",
+  "Open matters in a new tab": "Akten in einem neuen Tab öffnen",
+  "When enabled, clicking a matter in the list opens it in a new browser tab. Disable to open matters in the same tab.": "Wenn aktiviert, öffnet das Anklicken einer Akte in der Liste sie in einem neuen Browser-Tab. Deaktivieren Sie, um Akten im aktuellen Tab zu öffnen.",
   "Logos": "Logos",
   "Upload separate logos for the website and for emails": "Separate Logos für die Website und für E-Mails hochladen",
   "Site Logo": "Website-Logo",

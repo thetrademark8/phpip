@@ -82,12 +82,12 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('attachments/{attachment}', [MatterAttachmentController::class, 'destroy'])->name('attachments.destroy');
     });
 
-    // Email Settings (Admin only)
+    // Brand Settings (Admin only)
     Route::middleware('can:admin')->prefix('settings')->name('settings.')->group(function () {
-        Route::get('email', [EmailSettingController::class, 'index'])->name('email');
-        Route::put('email', [EmailSettingController::class, 'update'])->name('email.update');
-        Route::post('email/upload-logo', [EmailSettingController::class, 'uploadLogo'])->name('email.uploadLogo');
-        Route::get('email/preview', [EmailSettingController::class, 'preview'])->name('email.preview');
+        Route::get('brand', [EmailSettingController::class, 'index'])->name('brand');
+        Route::put('brand', [EmailSettingController::class, 'update'])->name('brand.update');
+        Route::post('brand/upload-logo', [EmailSettingController::class, 'uploadLogo'])->name('brand.uploadLogo');
+        Route::get('brand/preview', [EmailSettingController::class, 'preview'])->name('brand.preview');
 
         // TeamLeader Integration
         Route::get('teamleader', [App\Http\Controllers\TeamLeaderController::class, 'index'])->name('teamleader.index');

@@ -169,6 +169,30 @@
         </CardContent>
       </Card>
 
+      <!-- Behavior Settings -->
+      <Card>
+        <CardHeader class="pb-6">
+          <CardTitle class="text-xl font-semibold flex items-center gap-2">
+            <SettingsIcon class="h-5 w-5 text-primary" />
+            {{ t('Behavior') }}
+          </CardTitle>
+          <CardDescription>
+            {{ t('Configure how matters open and other navigation preferences') }}
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="pt-0">
+          <div class="flex items-center justify-between gap-4">
+            <div class="space-y-1">
+              <label class="text-sm font-semibold">{{ t('Open matters in a new tab') }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{ t('When enabled, clicking a matter in the list opens it in a new browser tab. Disable to open matters in the same tab.') }}
+              </p>
+            </div>
+            <Switch v-model:checked="form.matter_open_in_new_tab" />
+          </div>
+        </CardContent>
+      </Card>
+
       <!-- Actions -->
       <div class="flex flex-wrap gap-4 justify-end">
         <Button
@@ -229,7 +253,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Mail, Upload, Eye, Save, Image, CheckCircle2 } from 'lucide-vue-next'
+import { Switch } from '@/components/ui/switch'
+import { Mail, Upload, Eye, Save, Image, CheckCircle2, Settings as SettingsIcon } from 'lucide-vue-next'
 
 const props = defineProps({
   settings: {
@@ -253,8 +278,8 @@ const { t } = useI18n()
 const csrfToken = () =>
   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? ''
 
-const findSettingValue = (key) => {
-  const setting = props.settings?.branding?.find((s) => s.key === key)
+const findSettingValue = (key, group = 'branding') => {
+  const setting = props.settings?.[group]?.find((s) => s.key === key)
   return setting?.value ?? ''
 }
 
@@ -264,6 +289,7 @@ const form = ref({
   email_header: findSettingValue('email_header'),
   email_footer: findSettingValue('email_footer'),
   email_signature: findSettingValue('email_signature'),
+  matter_open_in_new_tab: findSettingValue('matter_open_in_new_tab', 'behavior') !== '0',
 })
 
 // --- Logo upload ---
@@ -289,7 +315,7 @@ const upload = async (type) => {
     formData.append('logo', file)
     formData.append('type', type)
 
-    const response = await fetch('/settings/email/upload-logo', {
+    const response = await fetch('/settings/brand/upload-logo', {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': csrfToken(),
@@ -336,10 +362,11 @@ const saveSettings = async () => {
         { key: 'email_header', value: form.value.email_header, type: 'html', group: 'branding' },
         { key: 'email_footer', value: form.value.email_footer, type: 'html', group: 'branding' },
         { key: 'email_signature', value: form.value.email_signature, type: 'html', group: 'branding' },
+        { key: 'matter_open_in_new_tab', value: form.value.matter_open_in_new_tab ? '1' : '0', type: 'bool', group: 'behavior' },
       ],
     }
 
-    const response = await fetch('/settings/email', {
+    const response = await fetch('/settings/brand', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -373,7 +400,7 @@ const fetchPreview = async () => {
   errorMessage.value = ''
 
   try {
-    const response = await fetch('/settings/email/preview', {
+    const response = await fetch('/settings/brand/preview', {
       method: 'GET',
       headers: {
         'X-CSRF-TOKEN': csrfToken(),

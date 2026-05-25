@@ -103,6 +103,7 @@ class MatterController extends Controller
             'countryInfo',
             'container',
             'parent',
+            'children',
             'family',
             'priorityTo'
         ]);

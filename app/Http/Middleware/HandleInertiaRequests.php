@@ -83,6 +83,9 @@ class HandleInertiaRequests extends Middleware
                 'company_logo' => EmailSetting::siteLogoUrl(),
                 'teamleader_enabled' => config('services.teamleader.enabled', false),
             ],
+            'brand' => [
+                'matter_open_in_new_tab' => EmailSetting::get('matter_open_in_new_tab', '1') !== '0',
+            ],
             'matter_categories' => cache()->remember('matter_categories_nav', now()->addHours(1), function () {
                 return Category::whereColumn('code', 'display_with')
                     ->select('code', 'category')

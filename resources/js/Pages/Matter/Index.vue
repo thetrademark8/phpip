@@ -200,6 +200,8 @@ onMounted(() => {
   }
 })
 
+const openInNewTab = page.props.brand?.matter_open_in_new_tab !== false
+
 // Table columns in the specified order
 const tableColumns = [
   {
@@ -208,7 +210,7 @@ const tableColumns = [
     cell: ({ row }) => h('div', { class: 'flex items-center gap-2' }, [
       h('a', {
         href: `/matter/${row.original.id}`,
-        target: '_blank',
+        ...(openInNewTab ? { target: '_blank' } : {}),
         class: 'text-primary hover:underline font-medium'
       }, row.original.Ref),
       row.original.Alt_Ref && h('span', { class: 'text-xs text-muted-foreground' }, `(${row.original.Alt_Ref})`)

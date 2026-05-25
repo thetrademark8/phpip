@@ -1902,6 +1902,10 @@
 
   "Brand Settings": "Paramètres de marque",
   "Manage branding, logo and email signature for your company": "Gérer l'image de marque, le logo et la signature e-mail de votre entreprise",
+  "Behavior": "Comportement",
+  "Configure how matters open and other navigation preferences": "Configurer l'ouverture des dossiers et les autres préférences de navigation",
+  "Open matters in a new tab": "Ouvrir les dossiers dans un nouvel onglet",
+  "When enabled, clicking a matter in the list opens it in a new browser tab. Disable to open matters in the same tab.": "Lorsque cette option est activée, cliquer sur un dossier dans la liste l'ouvre dans un nouvel onglet. Désactivez pour ouvrir les dossiers dans l'onglet actuel.",
   "Logos": "Logos",
   "Upload separate logos for the website and for emails": "Télécharger des logos distincts pour le site et pour les e-mails",
   "Site Logo": "Logo du site",

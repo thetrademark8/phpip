@@ -182,6 +182,19 @@
                     </Link>
                   </dd>
                 </div>
+                <div v-if="matter.children && matter.children.length > 0" class="flex flex-col">
+                  <dt class="font-medium text-muted-foreground text-xs">Children:</dt>
+                  <dd class="ml-2 space-y-1">
+                    <Link
+                      v-for="child in matter.children"
+                      :key="child.id"
+                      :href="`/matter/${child.id}`"
+                      class="block text-primary hover:underline text-xs"
+                    >
+                      {{ child.uid }}
+                    </Link>
+                  </dd>
+                </div>
                 <div v-if="matter.linked_by && matter.linked_by.length > 0" class="flex flex-col">
                   <dt class="font-medium text-muted-foreground text-xs">Linked:</dt>
                   <dd class="ml-2 space-y-1">
@@ -597,6 +610,7 @@ const hasRelatedMatters = computed(() => {
   return props.matter.container_id ||
     props.matter.parent_id ||
     (props.matter.family && props.matter.family.length > 0) ||
+    (props.matter.children && props.matter.children.length > 0) ||
     (props.matter.linked_by && props.matter.linked_by.length > 0) ||
     (props.matter.priority_to && props.matter.priority_to.length > 0)
 })

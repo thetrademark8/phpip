@@ -1905,6 +1905,10 @@
 
   "Brand Settings": "Brand Settings",
   "Manage branding, logo and email signature for your company": "Manage branding, logo and email signature for your company",
+  "Behavior": "Behavior",
+  "Configure how matters open and other navigation preferences": "Configure how matters open and other navigation preferences",
+  "Open matters in a new tab": "Open matters in a new tab",
+  "When enabled, clicking a matter in the list opens it in a new browser tab. Disable to open matters in the same tab.": "When enabled, clicking a matter in the list opens it in a new browser tab. Disable to open matters in the same tab.",
   "Logos": "Logos",
   "Upload separate logos for the website and for emails": "Upload separate logos for the website and for emails",
   "Site Logo": "Site Logo",

@@ -118,6 +118,15 @@ class UserController extends Controller
         return Inertia::render('User/Profile', compact('user'));
     }
 
+    public function show(User $user)
+    {
+        Gate::forUser(auth()->user())->authorize('view', $user);
+
+        $user->load(['company:id,name', 'roleInfo:code,name']);
+
+        return response()->json($user);
+    }
+
     public function update(Request $request, User $user)
     {
         Gate::forUser(auth()->user())->authorize('update', $user);

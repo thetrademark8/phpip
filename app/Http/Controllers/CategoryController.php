@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -127,7 +128,37 @@ class CategoryController extends Controller
         ]);
 
         $request->merge(['updater' => Auth::user()->login]);
-        $category->update($request->except(['_token', '_method']));
+        $oldCode = $category->code;
+        $newCode = $request->input('code');
+        $data = $request->except(['_token', '_method']);
+
+        if ($newCode !== $oldCode) {
+            // If display_with was self-referencing the old code, move the reference to the new code.
+            if (($data['display_with'] ?? null) === $oldCode) {
+                $data['display_with'] = $newCode;
+            }
+
+            // InnoDB cannot cascade self-referencing FKs (matter_category.display_with → matter_category.code),
+            // which makes a plain PK update fail when any row references the old code via display_with.
+            // We bypass FK checks and update every referencing column manually inside a transaction.
+            DB::transaction(function () use ($oldCode, $newCode, $data) {
+                DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+                DB::table('matter_category')->where('display_with', $oldCode)->update(['display_with' => $newCode]);
+                DB::table('matter')->where('category_code', $oldCode)->update(['category_code' => $newCode]);
+                DB::table('task_rules')->where('for_category', $oldCode)->update(['for_category' => $newCode]);
+                DB::table('classifier_type')->where('for_category', $oldCode)->update(['for_category' => $newCode]);
+                DB::table('default_actor')->where('for_category', $oldCode)->update(['for_category' => $newCode]);
+
+                DB::table('matter_category')->where('code', $oldCode)->update($data);
+
+                DB::statement('SET FOREIGN_KEY_CHECKS=1');
+            });
+
+            $category = Category::find($newCode);
+        } else {
+            $category->update($data);
+        }
 
         // Clear the navigation cache to immediately reflect changes
         cache()->forget('matter_categories_nav');
