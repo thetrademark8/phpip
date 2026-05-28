@@ -109,33 +109,7 @@ function createTestActor(array $attributes = []): \App\Models\Actor
 | Architecture Testing
 |--------------------------------------------------------------------------
 |
-| Architecture tests ensure your code follows SOLID principles and maintains
-| clean architecture patterns.
+| Architecture tests live in tests/Unit/ArchTest.php so they are discovered
+| by the configured test suites and runnable via `pest --group=arch`.
 |
 */
-
-arch('controllers follow single responsibility')
-    ->expect('App\Http\Controllers')
-    ->toHaveSuffix('Controller')
-    ->not->toHaveMethod('__invoke')->ignoring('App\Http\Controllers\Api');
-
-arch('models are not bloated')
-    ->expect('App\Models')
-    ->toHaveMethodsCountLessThan(30);
-
-arch('services follow interface segregation')
-    ->expect('App\Services')
-    ->toImplement('App\Contracts\Services');
-
-arch('no direct database queries in controllers')
-    ->expect('App\Http\Controllers')
-    ->not->toUse(['DB', 'Illuminate\Support\Facades\DB']);
-
-arch('dependency injection is used')
-    ->expect('App\Services')
-    ->toOnlyDependOn([
-        'App\Models',
-        'App\Contracts',
-        'Illuminate',
-        'Carbon',
-    ]);

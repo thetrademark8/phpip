@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\components;
+namespace App\View\Components;
 
 use App\Contracts\Services\DatePickerServiceInterface;
 use Closure;
