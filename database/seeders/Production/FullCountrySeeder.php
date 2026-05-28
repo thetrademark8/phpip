@@ -2,15 +2,16 @@
 
 namespace Database\Seeders\Production;
 
+use Database\Seeders\Concerns\SeedsCountries;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class FullCountrySeeder extends Seeder
 {
+    use SeedsCountries;
+
     public function run()
     {
-
-        DB::table('country')->insertOrIgnore([
+        $this->seedCountries([
 
             [
                 'numcode' => 20,

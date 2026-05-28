@@ -2,11 +2,13 @@
 
 namespace Database\Seeders\Production;
 
+use Database\Seeders\Concerns\SeedsCountries;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class EssentialCountrySeeder extends Seeder
 {
+    use SeedsCountries;
+
     /**
      * Seed essential countries for production use.
      * Includes major jurisdictions for patents and trademarks.
@@ -45,6 +47,6 @@ class EssentialCountrySeeder extends Seeder
             ['iso' => 'MX', 'iso3' => 'MEX', 'name' => 'Mexico', 'name_FR' => 'Mexique', 'name_DE' => 'Mexiko'],
         ];
 
-        DB::table('country')->insertOrIgnore($countries);
+        $this->seedCountries($countries);
     }
 }

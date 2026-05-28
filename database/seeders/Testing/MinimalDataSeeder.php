@@ -4,12 +4,15 @@ namespace Database\Seeders\Testing;
 
 use App\Models\Actor;
 use App\Models\User;
+use Database\Seeders\Concerns\SeedsCountries;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class MinimalDataSeeder extends Seeder
 {
+    use SeedsCountries;
+
     /**
      * Seed minimal data required for tests.
      * Most tests should create their own test data using factories.
@@ -49,7 +52,7 @@ class MinimalDataSeeder extends Seeder
             ['iso' => 'EM', 'iso3' => 'EM', 'name' => 'EUIPO', 'name_FR' => 'EUIPO', 'name_DE' => 'EUIPO'],
         ];
 
-        DB::table('country')->insertOrIgnore($countries);
+        $this->seedCountries($countries);
     }
 
     /**
