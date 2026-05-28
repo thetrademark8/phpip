@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Actor;
 use App\Models\User;
-use App\Services\ProfileFieldConfigService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -18,7 +17,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('readonly');
-        
+
         $Name = $request->input('Name');
         $Role = $request->input('Role');
         $Username = $request->input('Username');
@@ -30,21 +29,21 @@ class UserController extends Controller
         $query = User::query()->with(['company:id,name', 'roleInfo:code,name']);
 
         // Apply filters
-        if (!empty($Name)) {
+        if (! empty($Name)) {
             $query->whereLike('name', $Name.'%');
         }
 
-        if (!empty($Role)) {
+        if (! empty($Role)) {
             $query->whereHas('roleInfo', function ($q) use ($Role) {
                 $q->whereJsonLike('name', $Role);
             });
         }
 
-        if (!empty($Username)) {
+        if (! empty($Username)) {
             $query->whereLike('login', $Username.'%');
         }
 
-        if (!empty($Company)) {
+        if (! empty($Company)) {
             $query->whereHas('company', function ($q) use ($Company) {
                 $q->whereLike('name', $Company.'%');
             });
@@ -53,12 +52,12 @@ class UserController extends Controller
         // Apply sorting
         if ($sort === 'role') {
             $query->leftJoin('role', 'users.default_role', '=', 'role.code')
-                  ->orderBy('role.name', $direction)
-                  ->select('users.*');
+                ->orderBy('role.name', $direction)
+                ->select('users.*');
         } elseif ($sort === 'company') {
             $query->leftJoin('actor', 'users.company_id', '=', 'actor.id')
-                  ->orderBy('actor.name', $direction)
-                  ->select('users.*');
+                ->orderBy('actor.name', $direction)
+                ->select('users.*');
         } else {
             $query->orderBy($sort, $direction);
         }
@@ -139,17 +138,17 @@ class UserController extends Controller
             'default_role' => 'required',
             'language' => 'required|string|max:5',
         ]);
-        
+
         $request->merge(['updater' => Auth::user()->login]);
-        
+
         $dataToUpdate = $request->except(['_token', '_method', 'password_confirmation']);
-        
+
         if ($request->filled('password')) {
             $dataToUpdate['password'] = Hash::make($request->password);
         } else {
             unset($dataToUpdate['password']);
         }
-        
+
         $user->update($dataToUpdate);
 
         // Update locale for the current session if current user is updating their own profile
@@ -168,15 +167,15 @@ class UserController extends Controller
 
     /**
      * Update the authenticated user's profile with field-level authorization
-     * 
+     *
      * This method implements role-based field restrictions:
      * - CLI: Cannot edit 'default_role' or 'company_id'
      * - DBRO/DBRW: Cannot edit 'default_role'
      * - DBA: Can edit all fields
      * - Password can always be updated by the user themselves
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws ValidationException
      */
     public function updateProfile(Request $request)
@@ -186,7 +185,7 @@ class UserController extends Controller
 
         // Determine what fields are being updated
         $fieldsToUpdate = $request->only([
-            'name', 'email', 'phone', 'language', 'default_role', 'company_id'
+            'name', 'email', 'phone', 'language', 'default_role', 'company_id',
         ]);
 
         $isPasswordUpdate = $request->filled('password');

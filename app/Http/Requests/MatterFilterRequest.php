@@ -114,7 +114,7 @@ class MatterFilterRequest extends FormRequest
             'Ref', 'Cat', 'Status', 'Client', 'ClRef',
             'Owner', 'Agent', 'Title', 'FilNo',
             'Published', 'registration_date', 'registration_number',
-            'classes', 'responsible', 'Ctnr', 'country', 'Filed'
+            'classes', 'responsible', 'Ctnr', 'country', 'Filed',
         ]);
     }
 
@@ -126,7 +126,7 @@ class MatterFilterRequest extends FormRequest
         // Use new sort/direction parameters if available, fallback to sortkey/sortdir
         $sortField = $this->input('sort') ?: $this->input('sortkey', 'id');
         $sortDirection = $this->input('direction') ?: $this->input('sortdir', 'desc');
-        
+
         return [
             'sortkey' => $sortField,
             'sortdir' => $sortDirection,

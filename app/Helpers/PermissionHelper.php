@@ -12,7 +12,7 @@ class PermissionHelper
     public static function getUserPermissions(User $user): array
     {
         $role = $user->default_role;
-        
+
         return [
             'role' => $role,
             'is_client' => self::isClient($user),
@@ -22,7 +22,7 @@ class PermissionHelper
             'can_write' => self::canWrite($user),
         ];
     }
-    
+
     /**
      * Check if user is a client
      */
@@ -30,15 +30,15 @@ class PermissionHelper
     {
         return $user->default_role === 'CLI' || empty($user->default_role);
     }
-    
+
     /**
      * Check if user is not a client
      */
     public static function isNotClient(User $user): bool
     {
-        return $user->default_role !== 'CLI' && !empty($user->default_role);
+        return $user->default_role !== 'CLI' && ! empty($user->default_role);
     }
-    
+
     /**
      * Check if user is admin
      */
@@ -46,7 +46,7 @@ class PermissionHelper
     {
         return $user->default_role === 'DBA';
     }
-    
+
     /**
      * Check if user has read/write permissions
      */
@@ -54,7 +54,7 @@ class PermissionHelper
     {
         return in_array($user->default_role, ['DBA', 'DBRW']);
     }
-    
+
     /**
      * Check if user has read-only permissions
      */
@@ -62,12 +62,12 @@ class PermissionHelper
     {
         return in_array($user->default_role, ['DBA', 'DBRW', 'DBRO']);
     }
-    
+
     /**
      * Check if user can write (not a client)
      */
     public static function canWrite(User $user): bool
     {
-        return $user->default_role !== 'CLI' && !empty($user->default_role);
+        return $user->default_role !== 'CLI' && ! empty($user->default_role);
     }
 }

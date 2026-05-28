@@ -130,8 +130,8 @@ class MatterEmailNotification extends Notification implements ShouldQueue
                 $headers = $symfonyMessage->getHeaders();
                 $userEmail = Auth::user()->email;
                 if ($userEmail) {
-                    $headers->addTextHeader('X-Confirm-Reading-To', '<' . $userEmail . '>');
-                    $headers->addTextHeader('Return-receipt-to', '<' . $userEmail . '>');
+                    $headers->addTextHeader('X-Confirm-Reading-To', '<'.$userEmail.'>');
+                    $headers->addTextHeader('Return-receipt-to', '<'.$userEmail.'>');
                 }
             });
         }

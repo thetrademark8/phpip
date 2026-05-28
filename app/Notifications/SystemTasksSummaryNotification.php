@@ -2,8 +2,6 @@
 
 namespace App\Notifications;
 
-use Illuminate\Support\Collection;
-
 /**
  * System-specific tasks summary notification for email-only recipients.
  * Extends TasksSummaryNotification but only uses mail channel to avoid

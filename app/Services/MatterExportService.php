@@ -93,7 +93,7 @@ class MatterExportService
             200,
             [
                 'Content-Type' => 'text/csv; charset=UTF-8',
-                'Content-Disposition' => 'attachment; filename='.$filename
+                'Content-Disposition' => 'attachment; filename='.$filename,
             ]
         );
     }

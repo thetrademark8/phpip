@@ -72,7 +72,7 @@ class EmailSettingController extends Controller
             Storage::delete($previous);
         }
 
-        $filename = "logo-{$type}-" . Str::random(8) . '.' . $file->getClientOriginalExtension();
+        $filename = "logo-{$type}-".Str::random(8).'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs('branding', $filename);
 
         EmailSetting::set($settingKey, $path, 'text', 'branding');
@@ -94,10 +94,10 @@ class EmailSettingController extends Controller
         $header = EmailSetting::get('email_header', '');
         $footer = EmailSetting::get('email_footer', '');
 
-        $previewBody = '<p>' . __('This is a preview of your email branding.') . '</p>'
-            . '<p>' . __('The header, footer and signature will appear on all outgoing emails.') . '</p>';
+        $previewBody = '<p>'.__('This is a preview of your email branding.').'</p>'
+            .'<p>'.__('The header, footer and signature will appear on all outgoing emails.').'</p>';
 
-        $fullPreview = $header . $previewBody . $footer . $signature;
+        $fullPreview = $header.$previewBody.$footer.$signature;
 
         return response()->json([
             'html' => $fullPreview,

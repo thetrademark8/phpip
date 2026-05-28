@@ -24,16 +24,16 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
         }
 
         $renewals = $this->renewalRepository->getRenewalsForInvoicing($ids);
-        
+
         if ($renewals->isEmpty()) {
             return ActionResultDTO::error('No renewals found for invoicing.');
         }
 
         $num = 0;
-        
+
         if (config('renewal.invoice.backend') === 'dolibarr' && $toInvoice) {
             $result = $this->processDolibarrInvoices($renewals);
-            if (!$result['success']) {
+            if (! $result['success']) {
                 return ActionResultDTO::error($result['error']);
             }
             $num = $result['count'];
@@ -50,25 +50,25 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
     public function searchClient(string $clientName): array
     {
         $apikey = config('renewal.api.DOLAPIKEY');
-        if (!$apikey) {
+        if (! $apikey) {
             return ['error' => ['code' => 500, 'message' => 'API key not configured']];
         }
 
         $curl = curl_init();
-        $httpheader = ['DOLAPIKEY: ' . $apikey];
-        $data = ['sqlfilters' => '(t.nom:like:"' . $clientName . '%")'];
-        $url = config('renewal.api.dolibarr_url') . '/thirdparties?' . http_build_query($data);
-        
+        $httpheader = ['DOLAPIKEY: '.$apikey];
+        $data = ['sqlfilters' => '(t.nom:like:"'.$clientName.'%")'];
+        $url = config('renewal.api.dolibarr_url').'/thirdparties?'.http_build_query($data);
+
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $httpheader);
-        
+
         $result = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
         $decoded = json_decode($result, true);
-        
+
         if ($httpCode >= 400) {
             return ['error' => ['code' => $httpCode, 'message' => $decoded['error']['message'] ?? 'Client not found']];
         }
@@ -79,27 +79,27 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
     public function createDolibarrInvoice(array $invoiceData): array
     {
         $apikey = config('renewal.api.DOLAPIKEY');
-        if (!$apikey) {
+        if (! $apikey) {
             return ['success' => false, 'error' => 'API key not configured'];
         }
 
         $curl = curl_init();
-        $url = config('renewal.api.dolibarr_url') . '/invoices';
+        $url = config('renewal.api.dolibarr_url').'/invoices';
         $httpheader = [
-            'DOLAPIKEY: ' . $apikey,
-            'Content-Type: application/json'
+            'DOLAPIKEY: '.$apikey,
+            'Content-Type: application/json',
         ];
-        
+
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($invoiceData));
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $httpheader);
-        
+
         $result = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
-        
+
         $decoded = json_decode($result, true);
 
         if (isset($decoded['error']) || $status >= 400) {
@@ -112,7 +112,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
     public function prepareInvoiceLines(array $renewals, array $clientInfo): array
     {
         $lines = [];
-        
+
         // Determine VAT rate based on client's country
         $vatRate = ($clientInfo['tva_intra'] === '' || str_starts_with($clientInfo['tva_intra'], 'FR')) ? 0.2 : 0.0;
 
@@ -122,25 +122,25 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
 
             // Create description
             $desc = "{$renewal->uid} : Annuité pour l'année {$renewal->detail} du titre {$renewal->number}";
-            
+
             if ($renewal->event_name === 'FIL') {
                 $desc .= ' déposé le ';
             } elseif (in_array($renewal->event_name, ['GRT', 'PR'])) {
                 $desc .= ' délivré le ';
             }
-            
+
             $desc .= Carbon::parse($renewal->event_date)->isoFormat('LL');
-            $desc .= ' en ' . $renewal->country_FR;
-            
+            $desc .= ' en '.$renewal->country_FR;
+
             if ($renewal->title) {
                 $desc .= "\nSujet : {$renewal->title}";
             }
-            
+
             if ($renewal->client_ref) {
                 $desc .= " ({$renewal->client_ref})";
             }
-            
-            $desc .= "\nÉchéance le " . Carbon::parse($renewal->due_date)->isoFormat('LL');
+
+            $desc .= "\nÉchéance le ".Carbon::parse($renewal->due_date)->isoFormat('LL');
 
             // Add fee line
             if ($feeDTO->cost != 0) {
@@ -181,32 +181,32 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
     private function processDolibarrInvoices($renewals): array
     {
         $apikey = config('renewal.api.DOLAPIKEY');
-        if (!$apikey) {
+        if (! $apikey) {
             return ['success' => false, 'error' => 'API is not configured'];
         }
 
         Log::info('Facturation dans Dolibarr');
-        
+
         $renewalsByClient = $renewals->groupBy('client_name');
         $processedCount = 0;
 
         foreach ($renewalsByClient as $clientName => $clientRenewals) {
             // Search for client in Dolibarr
             $clientResult = $this->searchClient($clientName);
-            
+
             if (isset($clientResult['error']) && $clientResult['error']['code'] >= 404) {
                 return ['success' => false, 'error' => "$clientName not found in Dolibarr"];
             }
-            
+
             if (empty($clientResult)) {
                 return ['success' => false, 'error' => "$clientName not found in Dolibarr"];
             }
 
             $clientInfo = $clientResult[0];
-            
+
             // Prepare invoice lines
             $lines = $this->prepareInvoiceLines($clientRenewals->toArray(), $clientInfo);
-            
+
             // Create invoice
             $invoiceData = [
                 'socid' => $clientInfo['id'],
@@ -218,8 +218,8 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
             ];
 
             $result = $this->createDolibarrInvoice($invoiceData);
-            
-            if (!$result['success']) {
+
+            if (! $result['success']) {
                 return ['success' => false, 'error' => $result['error']];
             }
 

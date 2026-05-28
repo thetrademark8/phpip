@@ -13,9 +13,9 @@ class InternationalTrademarkService
 {
     /**
      * Create national trademark matters from international WO registration
-     * 
-     * @param Matter $internationalMatter WO trademark matter (parent)
-     * @param array $countries Array of ISO country codes
+     *
+     * @param  Matter  $internationalMatter  WO trademark matter (parent)
+     * @param  array  $countries  Array of ISO country codes
      * @return array Results with created/skipped matters
      */
     public function createCountryMatters(Matter $internationalMatter, array $countries, array $copyOptions = []): array
@@ -28,14 +28,14 @@ class InternationalTrademarkService
 
         // Validate international matter
         $validation = $this->validateInternationalMatter($internationalMatter);
-        if (!empty($validation['errors'])) {
-            throw new \InvalidArgumentException('Invalid international matter: ' . implode(', ', $validation['errors']));
+        if (! empty($validation['errors'])) {
+            throw new \InvalidArgumentException('Invalid international matter: '.implode(', ', $validation['errors']));
         }
 
         $results = [
             'created' => [],
             'skipped' => [],
-            'errors' => []
+            'errors' => [],
         ];
 
         // Get existing national matters to avoid duplicates
@@ -49,38 +49,39 @@ class InternationalTrademarkService
                     $results['skipped'][] = [
                         'country' => $countryIso,
                         'reason' => 'Matter already exists',
-                        'existing_uid' => $existingMatters->where('country', $countryIso)->first()->uid ?? null
+                        'existing_uid' => $existingMatters->where('country', $countryIso)->first()->uid ?? null,
                     ];
+
                     continue;
                 }
 
                 // Create national matter
                 $nationalMatter = $this->createSingleNationalMatter($internationalMatter, $countryIso, $copyOptions);
-                
+
                 $results['created'][] = [
                     'country' => $countryIso,
                     'matter_id' => $nationalMatter->id,
-                    'uid' => $nationalMatter->uid
+                    'uid' => $nationalMatter->uid,
                 ];
 
-                Log::info("Created national trademark matter", [
+                Log::info('Created national trademark matter', [
                     'parent_id' => $internationalMatter->id,
                     'parent_uid' => $internationalMatter->uid,
                     'national_id' => $nationalMatter->id,
                     'national_uid' => $nationalMatter->uid,
-                    'country' => $countryIso
+                    'country' => $countryIso,
                 ]);
 
             } catch (\Exception $e) {
                 $results['errors'][] = [
                     'country' => $countryIso,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ];
 
-                Log::error("Failed to create national trademark matter", [
+                Log::error('Failed to create national trademark matter', [
                     'parent_id' => $internationalMatter->id,
                     'country' => $countryIso,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
@@ -165,7 +166,7 @@ class InternationalTrademarkService
         // Create "parent filed" event linking to international matter
         $target->events()->create([
             'code' => 'PFIL',
-            'alt_matter_id' => $source->id
+            'alt_matter_id' => $source->id,
         ]);
     }
 
@@ -209,7 +210,7 @@ class InternationalTrademarkService
                 'date_start' => $actorLink->date_start,
                 'date_end' => $actorLink->date_end,
                 'rate' => $actorLink->rate,
-                'creator' => Auth::user()?->login ?? 'system'
+                'creator' => Auth::user()?->login ?? 'system',
             ]);
         }
     }
@@ -255,7 +256,7 @@ class InternationalTrademarkService
                 'value_id' => $classifier->value_id,
                 'display_order' => $classifier->display_order,
                 'lnk_matter_id' => $classifier->lnk_matter_id,
-                'creator' => Auth::user()?->login ?? 'system'
+                'creator' => Auth::user()?->login ?? 'system',
             ]);
         }
     }
@@ -289,26 +290,26 @@ class InternationalTrademarkService
         }
 
         // Must be an eligible category
-        if (!in_array($matter->category_code, self::ELIGIBLE_CATEGORIES)) {
+        if (! in_array($matter->category_code, self::ELIGIBLE_CATEGORIES)) {
             $errors[] = 'Matter must be a trademark (TM) or design patent (DP) category';
         }
 
         // Must have filing event
-        if (!$matter->filing->exists()) {
+        if (! $matter->filing->exists()) {
             $errors[] = 'Matter must have a filing event';
         }
 
         // Should have registration for best results
         $hasRegistration = $matter->registration->exists() || $matter->grant->exists();
         $warnings = [];
-        if (!$hasRegistration) {
+        if (! $hasRegistration) {
             $warnings[] = 'Matter has no registration event - national matters will be created without registration data';
         }
 
         return [
             'valid' => empty($errors),
             'errors' => $errors,
-            'warnings' => $warnings
+            'warnings' => $warnings,
         ];
     }
 
@@ -330,7 +331,7 @@ class InternationalTrademarkService
     {
         $existing = $this->getExistingNationalMatters($internationalMatter);
         $existingCountries = $existing->pluck('country')->toArray();
-        
+
         $toCreate = array_diff($countries, $existingCountries);
         $toSkip = array_intersect($countries, $existingCountries);
 
@@ -339,7 +340,7 @@ class InternationalTrademarkService
             'to_create' => count($toCreate),
             'to_skip' => count($toSkip),
             'estimated_time_seconds' => count($toCreate) * 3, // ~3 seconds per matter
-            'existing_matters' => $existing->keyBy('country')
+            'existing_matters' => $existing->keyBy('country'),
         ];
     }
 

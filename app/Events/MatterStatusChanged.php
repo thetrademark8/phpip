@@ -15,6 +15,5 @@ class MatterStatusChanged
         public Matter $matter,
         public string $oldStatus,
         public string $newStatus
-    ) {
-    }
+    ) {}
 }

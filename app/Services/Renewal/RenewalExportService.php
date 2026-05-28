@@ -19,20 +19,20 @@ class RenewalExportService implements RenewalExportServiceInterface
     /**
      * Generate payment XML for selected renewals
      * Moved from RenewalController for better separation of concerns
-     * 
-     * @param array $ids Array of renewal IDs
+     *
+     * @param  array  $ids  Array of renewal IDs
      * @return string XML content
      */
     public function generatePaymentXml(array $ids): string
     {
         $renewals = $this->renewalRepository->getGroupedByClient($ids);
-        
+
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><payments></payments>');
-        
+
         foreach ($renewals as $clientId => $clientRenewals) {
             $payment = $xml->addChild('payment');
             $payment->addChild('client_id', $clientId);
-            
+
             $total = 0;
             foreach ($clientRenewals as $renewal) {
                 $item = $payment->addChild('renewal');
@@ -40,18 +40,18 @@ class RenewalExportService implements RenewalExportServiceInterface
                 $item->addChild('caseref', $renewal->caseref);
                 $item->addChild('detail', $renewal->detail);
                 $item->addChild('due_date', $renewal->due_date);
-                
+
                 $feeDTO = $this->feeCalculator->calculate(RenewalDTO::fromModel($renewal));
                 $item->addChild('cost', $feeDTO->cost);
                 $item->addChild('fee', $feeDTO->fee);
                 $item->addChild('total', $feeDTO->total);
-                
+
                 $total += $feeDTO->total;
             }
-            
+
             $payment->addChild('total_amount', $total);
         }
-        
+
         return $xml->asXML();
     }
 
@@ -61,59 +61,59 @@ class RenewalExportService implements RenewalExportServiceInterface
         $renewals->transform(function ($renewal) {
             $renewalDTO = RenewalDTO::fromModel($renewal);
             $feeDTO = $this->feeCalculator->calculate($renewalDTO);
-            
+
             $renewal->cost = $feeDTO->cost;
             $renewal->fee = $feeDTO->fee;
-            
+
             return $renewal;
         });
 
         // Get export captions from config
         $captions = config('renewal.invoice.captions', [
-            'ID', 'Case', 'Client', 'Title', 'Due Date', 'Cost', 'Fee', 'Total'
+            'ID', 'Case', 'Client', 'Title', 'Due Date', 'Cost', 'Fee', 'Total',
         ]);
 
-        $filename = now()->format('YmdHis') . '_invoicing.csv';
+        $filename = now()->format('YmdHis').'_invoicing.csv';
 
         return response()->streamDownload(function () use ($renewals, $captions) {
             $output = fopen('php://output', 'w');
-            
+
             // Add BOM for UTF-8
             fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
-            
+
             // Write headers
             fputcsv($output, $captions, ';');
-            
+
             // Write data rows
             foreach ($renewals as $renewal) {
                 $row = $this->prepareExportRow($renewal);
                 fputcsv($output, array_map('utf8_decode', $row), ';');
             }
-            
+
             fclose($output);
         }, $filename, [
             'Content-Type' => 'application/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"'
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }
 
     public function exportToXml(array $renewalIds, bool $markAsDone = false): StreamedResponse
     {
         $renewals = $this->renewalRepository->findByIds($renewalIds);
-        
-        if (!$this->validateForXmlExport($renewals)) {
+
+        if (! $this->validateForXmlExport($renewals)) {
             throw new \InvalidArgumentException('XML export requires all renewals to be from the same jurisdiction');
         }
-        
+
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><payments></payments>');
-        
+
         // Group renewals by client
         $groupedRenewals = $renewals->groupBy('client_id');
-        
+
         foreach ($groupedRenewals as $clientId => $clientRenewals) {
             $payment = $xml->addChild('payment');
             $payment->addChild('client_id', $clientId);
-            
+
             $total = 0;
             foreach ($clientRenewals as $renewal) {
                 $item = $payment->addChild('renewal');
@@ -121,44 +121,44 @@ class RenewalExportService implements RenewalExportServiceInterface
                 $item->addChild('caseref', $renewal->caseref);
                 $item->addChild('detail', $renewal->detail);
                 $item->addChild('due_date', $renewal->due_date);
-                
+
                 $renewalDTO = RenewalDTO::fromModel($renewal);
                 $feeDTO = $this->feeCalculator->calculate($renewalDTO);
-                
+
                 $item->addChild('cost', $feeDTO->cost);
                 $item->addChild('fee', $feeDTO->fee);
                 $item->addChild('total', $feeDTO->total);
-                
+
                 $total += $feeDTO->total;
             }
-            
+
             $payment->addChild('total_amount', $total);
         }
-        
+
         if ($markAsDone) {
             // Mark renewals as done after successful export
             $this->renewalRepository->markAsDone($renewalIds, now()->toDateString());
         }
-        
-        $filename = 'payment_' . now()->format('YmdHis') . '.xml';
-        
+
+        $filename = 'payment_'.now()->format('YmdHis').'.xml';
+
         return response()->streamDownload(
-            function() use ($xml) {
+            function () use ($xml) {
                 echo $xml->asXML();
             },
             $filename,
             ['Content-Type' => 'text/xml']
         );
     }
-    
+
     public function generateInvoiceData(Collection $renewals): array
     {
         $invoiceData = [];
-        
+
         foreach ($renewals as $renewal) {
             $renewalDTO = RenewalDTO::fromModel($renewal);
             $feeDTO = $this->feeCalculator->calculate($renewalDTO);
-            
+
             $invoiceData[] = [
                 'renewal_id' => $renewal->id,
                 'caseref' => $renewal->caseref,
@@ -175,19 +175,19 @@ class RenewalExportService implements RenewalExportServiceInterface
                 'grace_period' => $renewal->grace_period,
             ];
         }
-        
+
         return $invoiceData;
     }
-    
+
     public function validateForXmlExport(Collection $renewals): bool
     {
         if ($renewals->isEmpty()) {
             return false;
         }
-        
+
         // Check if all renewals are from the same country/jurisdiction
         $countries = $renewals->pluck('country')->unique();
-        
+
         return $countries->count() === 1;
     }
 

@@ -29,8 +29,8 @@ class SendTasksDueEmail extends Command
             ->where(function ($query) {
                 // Rouge: overdue tasks
                 $query->where('due_date', '<', now())
-                      // Orange: tasks due in next 7 days  
-                      ->orWhere('due_date', '<=', now()->addDays(7));
+                      // Orange: tasks due in next 7 days
+                    ->orWhere('due_date', '<=', now()->addDays(7));
             })
             ->with('matter', 'info', 'matter.client', 'matter.responsibleActor')
             ->orderBy('due_date')
@@ -39,29 +39,29 @@ class SendTasksDueEmail extends Command
         // Send individual notifications to agents via NotificationService
         $notificationService = app(\App\Contracts\Services\NotificationServiceInterface::class);
         $sentCount = $notificationService->sendUpcomingTaskReminders(7);
-        
+
         $this->info("Sent urgent task notifications to {$sentCount} agents");
-        
+
         // Send system summary email using clean Laravel service with intelligent language detection
         try {
             $this->taskEmailService->sendSystemTasksSummary($tasks);
-            
+
             if ($this->taskEmailService->isSystemEmailConfigured()) {
                 $recipients = $this->taskEmailService->getSystemEmailRecipients();
-                $this->info("Sent professional summary email to " . $recipients['to']);
-                
+                $this->info('Sent professional summary email to '.$recipients['to']);
+
                 if ($recipients['bcc'] && $recipients['bcc'] !== $recipients['to']) {
-                    $this->info("Sent summary BCC to " . $recipients['bcc']);
+                    $this->info('Sent summary BCC to '.$recipients['bcc']);
                 }
             } else {
-                $this->info($tasks->count() === 0 
-                    ? "No urgent tasks found" 
-                    : "No summary email configured (tasks-email.email_to not set)"
+                $this->info($tasks->count() === 0
+                    ? 'No urgent tasks found'
+                    : 'No summary email configured (tasks-email.email_to not set)'
                 );
             }
-            
+
         } catch (\Exception $e) {
-            $this->error("Failed to send summary email: " . $e->getMessage());
+            $this->error('Failed to send summary email: '.$e->getMessage());
         }
     }
 }

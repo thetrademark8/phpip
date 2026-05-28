@@ -2,10 +2,10 @@
 
 namespace App\Repositories\Contracts;
 
+use App\DataTransferObjects\Renewal\RenewalFilterDTO;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use App\DataTransferObjects\Renewal\RenewalFilterDTO;
 
 interface RenewalRepositoryInterface
 {

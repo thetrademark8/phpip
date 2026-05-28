@@ -245,14 +245,14 @@ class AutocompleteController extends Controller
             ->orderBy('name')
             ->take(10)
             ->get();
-        
+
         $results = $eventNames->map(function ($item) {
             return [
                 'key' => $item->code,
                 'value' => $item->name,
             ];
         })->toArray();
-        
+
         return $this->formatResponse($results);
     }
 

@@ -55,7 +55,7 @@ class TemplateMemberController extends Controller
             'filters' => $request->only(['summary', 'style', 'language', 'class', 'format', 'category']),
             'sort' => 'summary',
             'direction' => 'asc',
-            'languages' => $this->languages
+            'languages' => $this->languages,
         ]);
     }
 
@@ -68,7 +68,7 @@ class TemplateMemberController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'tableComments' => $tableComments,
-                'languages' => $languages
+                'languages' => $languages,
             ]);
         }
 
@@ -102,7 +102,7 @@ class TemplateMemberController extends Controller
             return response()->json([
                 'templateMember' => $templateMember,
                 'tableComments' => $tableComments,
-                'languages' => $languages
+                'languages' => $languages,
             ]);
         }
 

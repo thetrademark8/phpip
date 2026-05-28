@@ -30,13 +30,11 @@ class MatterController extends Controller
 {
     public function __construct(
         protected MatterServiceInterface $matterService,
-        protected DocumentMergeService   $documentMergeService,
-        protected MatterExportService    $matterExportService,
-        protected OPSService             $opsService,
-        protected SharePointService      $sharePoint
-    )
-    {
-    }
+        protected DocumentMergeService $documentMergeService,
+        protected MatterExportService $matterExportService,
+        protected OPSService $opsService,
+        protected SharePointService $sharePoint
+    ) {}
 
     public function index(MatterFilterRequest $request)
     {
@@ -45,6 +43,7 @@ class MatterController extends Controller
 
         if ($request->wantsJson()) {
             $matters = $this->matterService->exportMatters($filters, $options);
+
             return response()->json($matters);
         }
 
@@ -52,17 +51,17 @@ class MatterController extends Controller
         $matters->withQueryString();
 
         // Fetch options for filter dropdowns
-        $categoryOptions = Category::orderBy('code')->get()->map(fn($cat) => [
+        $categoryOptions = Category::orderBy('code')->get()->map(fn ($cat) => [
             'value' => $cat->code,
             'label' => $cat->category,
         ]);
 
-        $countryOptions = Country::orderBy('name')->get()->map(fn($country) => [
+        $countryOptions = Country::orderBy('name')->get()->map(fn ($country) => [
             'value' => $country->iso,
             'label' => $country->name,
         ]);
 
-        $statusOptions = EventName::where('status_event', 1)->orderBy('name')->get()->map(fn($event) => [
+        $statusOptions = EventName::where('status_event', 1)->orderBy('name')->get()->map(fn ($event) => [
             'value' => $event->code,
             'label' => $event->name,
         ]);
@@ -105,7 +104,7 @@ class MatterController extends Controller
             'parent',
             'children',
             'family',
-            'priorityTo'
+            'priorityTo',
         ]);
 
         // Group data for the frontend
@@ -131,23 +130,23 @@ class MatterController extends Controller
                 'classifiers' => $classifiers,
                 'actors' => $actors,
                 'statusEvents' => $statusEvents,
-                'sharePointLink' => $sharePointLink
+                'sharePointLink' => $sharePointLink,
             ]);
         }
 
         // Fetch options for Select/Combobox components in the edit form
-        $categoryOptions = Category::orderBy('code')->get()->map(fn($cat) => [
+        $categoryOptions = Category::orderBy('code')->get()->map(fn ($cat) => [
             'value' => $cat->code,
             'label' => $cat->category,
             'prefix' => $cat->ref_prefix,
         ]);
 
-        $typeOptions = MatterType::orderBy('code')->get()->map(fn($type) => [
+        $typeOptions = MatterType::orderBy('code')->get()->map(fn ($type) => [
             'value' => $type->code,
             'label' => $type->type,
         ]);
 
-        $userOptions = User::orderBy('name')->get()->map(fn($user) => [
+        $userOptions = User::orderBy('name')->get()->map(fn ($user) => [
             'value' => $user->login,
             'label' => $user->name,
         ]);
@@ -177,7 +176,7 @@ class MatterController extends Controller
     /**
      * Return a JSON array with info of a matter. For use with API REST.
      *
-     * @param int $id
+     * @param  int  $id
      * @return Json
      **/
     public function info($id)
@@ -206,7 +205,7 @@ class MatterController extends Controller
                 $parent_matter->caseref = Matter::where(
                     'caseref',
                     'like',
-                    $parent_matter->category->ref_prefix . '%'
+                    $parent_matter->category->ref_prefix.'%'
                 )->max('caseref');
                 $parent_matter->caseref++;
             }
@@ -215,7 +214,7 @@ class MatterController extends Controller
             $ref_prefix = \App\Models\Category::find($category_code)['ref_prefix'];
             $category = [
                 'code' => $category_code,
-                'next_caseref' => Matter::where('caseref', 'like', $ref_prefix . '%')
+                'next_caseref' => Matter::where('caseref', 'like', $ref_prefix.'%')
                     ->max('caseref'),
                 'name' => \App\Models\Category::find($category_code)['category'],
             ];
@@ -424,25 +423,25 @@ class MatterController extends Controller
                 'success' => true,
                 'message' => __('National trademark matters created successfully'),
                 'results' => $results,
-                'redirect' => route('matter.show', $parentMatter)
+                'redirect' => route('matter.show', $parentMatter),
             ]);
 
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 422);
 
         } catch (\Exception $e) {
             Log::error('International trademark creation failed', [
                 'parent_id' => $request->parent_id,
                 'countries' => $request->countries,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => __('An error occurred while creating national matters')
+                'message' => __('An error occurred while creating national matters'),
             ], 500);
         }
     }
@@ -463,7 +462,7 @@ class MatterController extends Controller
             'validation' => $validation,
             'available_countries' => $service->getAvailableCountries(),
             'existing_matters' => $service->getExistingNationalMatters($matter),
-            'estimation' => $service->estimateCreation($matter, $service->getAvailableCountries()->pluck('iso')->toArray())
+            'estimation' => $service->estimateCreation($matter, $service->getAvailableCountries()->pluck('iso')->toArray()),
         ]);
     }
 
@@ -481,8 +480,8 @@ class MatterController extends Controller
             'matter_info' => [
                 'country' => $matter->country,
                 'category' => $matter->category_code,
-                'uid' => $matter->uid
-            ]
+                'uid' => $matter->uid,
+            ],
         ]);
     }
 
@@ -571,7 +570,7 @@ class MatterController extends Controller
                         $new_matter->events()->create(
                             [
                                 'code' => 'PRI',
-                                'detail' => $pri['country'] . $pri['number'],
+                                'detail' => $pri['country'].$pri['number'],
                                 'event_date' => $pri['date'],
                             ]
                         );
@@ -624,7 +623,7 @@ class MatterController extends Controller
                             );
                         }
                     }
-                    $new_matter->notes = 'Applicants: ' . collect($app['applicants'])->implode('; ');
+                    $new_matter->notes = 'Applicants: '.collect($app['applicants'])->implode('; ');
                 }
                 if (array_key_exists('inventors', $app)) {
                     foreach ($app['inventors'] as $inventor) {
@@ -660,7 +659,7 @@ class MatterController extends Controller
                             );
                         }
                     }
-                    $new_matter->notes .= "\nInventors: " . collect($app['inventors'])->implode(' - ');
+                    $new_matter->notes .= "\nInventors: ".collect($app['inventors'])->implode(' - ');
                 }
             } else {
                 $new_matter->container_id = $container_id;
@@ -679,7 +678,7 @@ class MatterController extends Controller
                             $new_matter->events()->create(
                                 [
                                     'code' => 'PRI',
-                                    'detail' => $pri['country'] . $pri['number'],
+                                    'detail' => $pri['country'].$pri['number'],
                                     'event_date' => $pri['date'],
                                 ]
                             );
@@ -805,17 +804,17 @@ class MatterController extends Controller
             'filing'
         );
         $country_edit = $matter->tasks()->whereHas(
-                'rule',
-                function (Builder $q) {
-                    $q->whereNotNull('for_country');
-                }
-            )->count() == 0;
+            'rule',
+            function (Builder $q) {
+                $q->whereNotNull('for_country');
+            }
+        )->count() == 0;
         $cat_edit = $matter->tasks()->whereHas(
-                'rule',
-                function (Builder $q) {
-                    $q->whereNotNull('for_category');
-                }
-            )->count() == 0;
+            'rule',
+            function (Builder $q) {
+                $q->whereNotNull('for_category');
+            }
+        )->count() == 0;
 
         return view('matter.edit', compact(['matter', 'cat_edit', 'country_edit']));
     }
@@ -857,7 +856,7 @@ class MatterController extends Controller
      * This method exports a list of matters based on the provided filters and returns
      * a streamed response for downloading the file in CSV format.
      *
-     * @param MatterExportRequest $request The request object containing the filters for exporting matters.
+     * @param  MatterExportRequest  $request  The request object containing the filters for exporting matters.
      * @return \Symfony\Component\HttpFoundation\StreamedResponse The streamed response for the CSV file download.
      */
     public function export(MatterExportRequest $request)
@@ -896,7 +895,6 @@ class MatterController extends Controller
     /**
      * Export a single matter
      *
-     * @param Matter $matter
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
     public function exportSingle(Matter $matter)
@@ -906,6 +904,7 @@ class MatterController extends Controller
 
         // Export this specific matter
         $matterData = [$matter->toArray()];
+
         return $this->matterExportService->export($matterData);
     }
 
@@ -921,7 +920,7 @@ class MatterController extends Controller
 
         return response()->streamDownload(function () use ($template) {
             $template->saveAs('php://output');
-        }, 'merged-' . $file->getClientOriginalName(), [
+        }, 'merged-'.$file->getClientOriginalName(), [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Transfer-Encoding' => 'binary',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
@@ -1071,18 +1070,18 @@ class MatterController extends Controller
      */
     public function getFormOptions()
     {
-        $categoryOptions = Category::orderBy('code')->get()->map(fn($cat) => [
+        $categoryOptions = Category::orderBy('code')->get()->map(fn ($cat) => [
             'value' => $cat->code,
             'label' => $cat->category,
             'prefix' => $cat->ref_prefix,
         ]);
 
-        $typeOptions = MatterType::orderBy('code')->get()->map(fn($type) => [
+        $typeOptions = MatterType::orderBy('code')->get()->map(fn ($type) => [
             'value' => $type->code,
             'label' => $type->type,
         ]);
 
-        $userOptions = User::orderBy('name')->get()->map(fn($user) => [
+        $userOptions = User::orderBy('name')->get()->map(fn ($user) => [
             'value' => $user->login,
             'label' => $user->name,
         ]);

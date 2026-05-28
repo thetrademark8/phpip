@@ -49,7 +49,7 @@ class SendTasksRecapTestEmail extends Command
             ->limit($limit)
             ->get();
 
-        $this->info("Preparing recap email…");
+        $this->info('Preparing recap email…');
         $this->line("  Recipient : {$email}");
         $this->line("  Language  : {$language}");
         $this->line("  Tasks     : {$tasks->count()}");
@@ -61,7 +61,7 @@ class SendTasksRecapTestEmail extends Command
             // even if QUEUE_CONNECTION is configured for async processing.
             Notification::route('mail', $email)->notifyNow($notification);
         } catch (\Throwable $e) {
-            $this->error('Failed to send recap email: ' . $e->getMessage());
+            $this->error('Failed to send recap email: '.$e->getMessage());
 
             return self::FAILURE;
         }

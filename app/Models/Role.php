@@ -20,7 +20,7 @@ class Role extends Model
     protected $hidden = ['created_at', 'updated_at'];
 
     protected $guarded = ['created_at', 'updated_at'];
-    
+
     protected $casts = [
         'shareable' => 'boolean',
         'show_ref' => 'boolean',
