@@ -138,6 +138,16 @@ class CategoryController extends Controller
                 $data['display_with'] = $newCode;
             }
 
+            // The raw query builder below bypasses Eloquent casts, so translatable columns
+            // (e.g. `category`) must be JSON-encoded here; otherwise MySQL rejects the plain
+            // string with "Invalid JSON text" for the JSON column.
+            foreach ($category->getTranslatableAttributes() as $attribute) {
+                if (array_key_exists($attribute, $data)) {
+                    $category->setAttribute($attribute, $data[$attribute]);
+                    $data[$attribute] = $category->getAttributes()[$attribute];
+                }
+            }
+
             // InnoDB cannot cascade self-referencing FKs (matter_category.display_with → matter_category.code),
             // which makes a plain PK update fail when any row references the old code via display_with.
             // We bypass FK checks and update every referencing column manually inside a transaction.
