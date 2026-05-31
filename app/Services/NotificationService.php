@@ -352,8 +352,8 @@ class NotificationService implements NotificationServiceInterface
                 }
             }
 
-            // Get agent's preferred language
-            $language = $agent->language ?? 'en';
+            // Get agent's preferred language (handles empty string + null fallback to app.locale)
+            $language = $agent->getLanguage();
             
             // Send notification using the new UrgentTasksNotification class
             $agent->notify(new UrgentTasksNotification(
