@@ -44,13 +44,17 @@ class BrandedImportController extends Controller
         try {
             // Create actor if needed
             if ($request->input('actor_mode') === 'create') {
-                Actor::create([
+                $actor = Actor::create([
                     'name' => $request->input('responsible_name'),
                     'login' => $request->input('responsible_login'),
-                    'password' => Hash::make($request->input('responsible_password')),
                     'default_role' => 'DBA',
                     'phy_person' => 1,
                 ]);
+
+                // `password` is guarded on the Actor model, so it must be set
+                // outside mass assignment, otherwise it is silently dropped.
+                $actor->password = Hash::make($request->input('responsible_password'));
+                $actor->save();
             }
 
             $actorsPath = $request->file('actors_file')->getRealPath();
