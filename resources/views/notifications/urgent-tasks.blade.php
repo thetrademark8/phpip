@@ -34,7 +34,7 @@
 @php
 $daysOverdue = (int) round(now()->diffInDays($task->due_date, false));
 @endphp
-| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | {{ $task->matter->titles->first()?->value ?? '-' }} | {{ $task->matter->countryInfo?->name ?? $task->matter->country }} | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ abs($daysOverdue) }} {{ trans_choice('notifications.tasks.pluralization.day', abs($daysOverdue)) }}** |
+| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | {{ $task->matter->titles->first()?->value ?? '-' }} | {{ $task->matter->countryInfo?->name ?? $task->matter->country }} | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ trans_choice('notifications.tasks.pluralization.day', abs($daysOverdue)) }}** |
 @endforeach
 @endcomponent
 @endif
@@ -50,7 +50,7 @@ $daysOverdue = (int) round(now()->diffInDays($task->due_date, false));
 @php
 $daysRemaining = (int) round(now()->diffInDays($task->due_date, false));
 @endphp
-| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | {{ $task->matter->titles->first()?->value ?? '-' }} | {{ $task->matter->countryInfo?->name ?? $task->matter->country }} | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ $daysRemaining }} {{ trans_choice('notifications.tasks.pluralization.day', $daysRemaining) }}** |
+| [{{ $task->matter->uid }}]({{ $phpip_url }}/matter/{{ $task->matter->id }}) @if($task->matter->alt_ref)<br><small>({{ $task->matter->alt_ref }})</small>@endif | {{ $task->matter->titles->first()?->value ?? '-' }} | {{ $task->matter->countryInfo?->name ?? $task->matter->country }} | **{{ $task->info->name ?? $task->code }}** @if($task->detail)<br><small>{{ $task->detail }}</small>@endif | {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }} | **{{ trans_choice('notifications.tasks.pluralization.day', $daysRemaining) }}** |
 @endforeach
 @endcomponent
 @endif

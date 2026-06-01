@@ -91,9 +91,10 @@ class CsvImportService
                     continue;
                 }
 
-                // Insert the row
-                DB::table($table)->insert($data);
+                // Mark the key as seen BEFORE inserting: a failing insert must not
+                // cause every subsequent duplicate-key row to retry the same broken data.
                 $existingKeys->push($keyValue);
+                DB::table($table)->insert($data);
                 $stats['inserted']++;
 
             } catch (\Exception $e) {
@@ -140,11 +141,13 @@ class CsvImportService
 
             // Convert translatable columns to JSON format
             if (in_array($key, $translatableColumns) && $parsedValue !== null) {
-                // Check if value is already valid JSON
                 if (!$this->isValidJson($parsedValue)) {
-                    // Convert plain text to JSON with all supported languages
                     $parsedValue = json_encode(['en' => $parsedValue, 'fr' => $parsedValue, 'de' => $parsedValue], JSON_UNESCAPED_UNICODE);
                 }
+
+                // Wrap in CAST(... AS JSON) so MySQL treats the value as JSON instead of
+                // rejecting it with error 3144 ("string with CHARACTER SET 'binary'").
+                $parsedValue = DB::raw('CAST(' . DB::getPdo()->quote($parsedValue) . ' AS JSON)');
             }
 
             $transformed[$key] = $parsedValue;
