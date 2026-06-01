@@ -565,14 +565,6 @@ class BrandedImportService
         'UAE' => 'AE',
     ];
 
-    private const CATEGORY_MAP = [
-        'BT'  => 'PAT',
-        'DM'  => 'DES',
-        'DP'  => 'DES',
-        'ND'  => 'DOM',
-        'NDD' => 'DOM',
-    ];
-
     private const CLASSIFIER_TYPE_MAP = [
         'CL' => 'TMCL',
     ];
@@ -657,9 +649,7 @@ class BrandedImportService
             return null;
         }
 
-        $upper = strtoupper($code);
-
-        return self::CATEGORY_MAP[$upper] ?? $upper;
+        return strtoupper($code);
     }
 
     private function mapCountry(?string $code): ?string
