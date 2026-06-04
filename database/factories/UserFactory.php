@@ -15,8 +15,8 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'login' => Str::lower($this->faker->unique()->userName()),
             'email' => $this->faker->unique()->safeEmail,
-            'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
             'default_role' => 'DRO', // Default role
