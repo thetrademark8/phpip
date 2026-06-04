@@ -8,8 +8,11 @@ use Illuminate\Support\Collection;
 class RenewalReportNotification extends BaseRenewalNotification
 {
     protected Collection $renewals;
+
     protected string $recipient;
+
     protected string $subject;
+
     protected array $reportData;
 
     /**
@@ -20,8 +23,8 @@ class RenewalReportNotification extends BaseRenewalNotification
         $this->renewals = $renewals;
         $this->recipient = $recipient;
         $this->language = app()->getLocale(); // Default to app locale for reports
-        $this->subject = 'Renewal Report - ' . $renewals->count() . ' renewals';
-        
+        $this->subject = 'Renewal Report - '.$renewals->count().' renewals';
+
         // Prepare report data
         $this->reportData = [
             'renewals' => $renewals,

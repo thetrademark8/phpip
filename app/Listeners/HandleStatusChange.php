@@ -24,10 +24,10 @@ class HandleStatusChange implements ShouldQueue
         // Compare by event codes instead of translated names to avoid language issues
         $cancellingStatuses = ['REF', 'ABA', 'EXP', 'WIT']; // REF=Refused, ABA=Abandoned, EXP=Expired, WIT=Withdrawn
         $eventCode = $this->getEventCodeFromStatus($matter, $newStatus);
-        
+
         if (in_array($eventCode, $cancellingStatuses)) {
             Log::info("Matter {$matter->id} status changed to {$newStatus} - processing renewal cancellation");
-            
+
             // Cancel all pending renewal tasks for this matter
             $renewalTasks = $matter->tasks()
                 ->where('task.code', 'REN')
@@ -38,7 +38,7 @@ class HandleStatusChange implements ShouldQueue
                 $task->update([
                     'done' => 1,
                     'done_date' => now(),
-                    'notes' => $task->notes ? $task->notes . "\nAuto-cancelled due to matter status: {$newStatus}" : "Auto-cancelled due to matter status: {$newStatus}"
+                    'notes' => $task->notes ? $task->notes."\nAuto-cancelled due to matter status: {$newStatus}" : "Auto-cancelled due to matter status: {$newStatus}",
                 ]);
             }
 

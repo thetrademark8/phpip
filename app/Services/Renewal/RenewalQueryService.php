@@ -18,20 +18,20 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         $query = $this->applyOptimizations($query, $filters);
         $query = $this->applyFilters($query, $filters->toArray());
         $query = $this->applySorting($query, $filters->step, $filters->invoiceStep);
-        
+
         return $query;
     }
 
     /**
      * Get renewal statistics for dashboard
      * Moved from RenewalController for better separation of concerns
-     * 
+     *
      * @return array Statistics by step and invoice step
      */
     public function getRenewalStats(): array
     {
-        $filters = new RenewalFilterDTO();
-        
+        $filters = new RenewalFilterDTO;
+
         // Get counts by step
         $stepCounts = [];
         for ($step = 0; $step <= 5; $step++) {
@@ -39,7 +39,7 @@ class RenewalQueryService implements RenewalQueryServiceInterface
             $query = $this->buildQuery($filters);
             $stepCounts["step_$step"] = $query->count();
         }
-        
+
         // Get counts by invoice step
         $invoiceStepCounts = [];
         $filters->step = null;
@@ -48,7 +48,7 @@ class RenewalQueryService implements RenewalQueryServiceInterface
             $query = $this->buildQuery($filters);
             $invoiceStepCounts["invoice_step_$invoiceStep"] = $query->count();
         }
-        
+
         return [
             'by_step' => $stepCounts,
             'by_invoice_step' => $invoiceStepCounts,
@@ -80,9 +80,9 @@ class RenewalQueryService implements RenewalQueryServiceInterface
                     $query->where('task.due_date', '<=', $value);
                     break;
                 case 'Name':
-                    $query->where(function($q) use ($value) {
+                    $query->where(function ($q) use ($value) {
                         $q->where('pa_cli.name', 'LIKE', "$value%")
-                          ->orWhere('clic.name', 'LIKE', "$value%");
+                            ->orWhere('clic.name', 'LIKE', "$value%");
                     });
                     break;
                 case 'Country':
@@ -116,7 +116,7 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         // Only apply ORDER BY for specific steps
         if ($step == 10 || $invoiceStep == 3) {
             $query->orderByDesc('task.due_date');
-        } else if ($step !== 0) {
+        } elseif ($step !== 0) {
             // Only apply ascending order if not step 0
             $query->orderBy('task.due_date');
         }
@@ -136,8 +136,8 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         // Apply step OR invoice_step filter, not both
         if ($filters->invoiceStep !== null) {
             // When filtering by invoice_step, don't apply step filter
-            $query->whereRaw('invoice_step = ?', [(string)$filters->invoiceStep]);
-            
+            $query->whereRaw('invoice_step = ?', [(string) $filters->invoiceStep]);
+
             // When filtering by invoice_step, also add matter.dead = 0
             $query->where('matter.dead', 0);
         } else {
@@ -155,17 +155,17 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         $with_step = false;
         $with_invoice = false;
         $filterArray = $filters->toArray();
-        if (!empty($filterArray)) {
-            if (!empty($filterArray['step']) && $step != 0) {
+        if (! empty($filterArray)) {
+            if (! empty($filterArray['step']) && $step != 0) {
                 $with_step = true;
             }
-            if (!empty($filterArray['invoice_step']) && $filterArray['invoice_step'] != 0) {
+            if (! empty($filterArray['invoice_step']) && $filterArray['invoice_step'] != 0) {
                 $with_invoice = true;
             }
         }
 
         // Only display pending renewals at the beginning of the pipeline
-        if (!($with_step || $with_invoice)) {
+        if (! ($with_step || $with_invoice)) {
             // Use whereRaw without table prefix to match old query
             $query->whereRaw('done = 0');
         }

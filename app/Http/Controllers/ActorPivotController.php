@@ -32,24 +32,25 @@ class ActorPivotController extends Controller
                 'display_order' => 'nullable|numeric|min:0',
             ]);
 
-        // Fix display order indexes if wrong
-        $roleGroup = ActorPivot::where('matter_id', $request->matter_id)->where('role', $request->role);
-        $max = $roleGroup->max('display_order');
-        $count = $roleGroup->count();
-        if ($count < $max) {
-            $i = 0;
-            $actors = $roleGroup->orderBy('display_order')->get();
-            foreach ($actors as $actor) {
-                $i++;
-                $actor->display_order = $i;
-                $actor->save();
+            // Fix display order indexes if wrong
+            $roleGroup = ActorPivot::where('matter_id', $request->matter_id)->where('role', $request->role);
+            $max = $roleGroup->max('display_order');
+            $count = $roleGroup->count();
+            if ($count < $max) {
+                $i = 0;
+                $actors = $roleGroup->orderBy('display_order')->get();
+                foreach ($actors as $actor) {
+                    $i++;
+                    $actor->display_order = $i;
+                    $actor->save();
+                }
+                $max = $i;
             }
-            $max = $i;
-        }
 
             $addedActor = Actor::find($request->actor_id);
-            if (!$addedActor) {
+            if (! $addedActor) {
                 Log::error('Actor not found', ['actor_id' => $request->actor_id]);
+
                 return response()->json(['error' => 'Actor not found'], 404);
             }
 
@@ -77,7 +78,7 @@ class ActorPivotController extends Controller
         } catch (\Exception $e) {
             Log::error('Error creating ActorPivot', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             if ($request->inertia()) {
@@ -144,7 +145,7 @@ class ActorPivotController extends Controller
         if (request()->wantsJson()) {
             return response()->json([
                 'matter_dependencies' => $matter_dependencies,
-                'other_dependencies' => $other_dependencies
+                'other_dependencies' => $other_dependencies,
             ]);
         }
 

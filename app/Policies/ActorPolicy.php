@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Helpers\PermissionHelper;
 use App\Models\Actor;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ActorPolicy
 {
@@ -14,7 +13,7 @@ class ActorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return PermissionHelper::canReadOnly($user) && !PermissionHelper::isClient($user);
+        return PermissionHelper::canReadOnly($user) && ! PermissionHelper::isClient($user);
     }
 
     /**
@@ -22,7 +21,7 @@ class ActorPolicy
      */
     public function view(User $user, Actor $actor): bool
     {
-        return PermissionHelper::canReadOnly($user) && !PermissionHelper::isClient($user);
+        return PermissionHelper::canReadOnly($user) && ! PermissionHelper::isClient($user);
     }
 
     /**

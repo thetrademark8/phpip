@@ -38,7 +38,7 @@ class RenewalServiceProvider extends ServiceProvider
         $this->app->bind(MatterRepositoryInterface::class, MatterRepository::class);
         $this->app->bind(ActorRepositoryInterface::class, ActorRepository::class);
         $this->app->bind(EventRepositoryInterface::class, EventRepository::class);
-        
+
         // Register service bindings
         $this->app->bind(RenewalQueryServiceInterface::class, RenewalQueryService::class);
         $this->app->bind(RenewalFeeCalculatorInterface::class, RenewalFeeCalculatorService::class);

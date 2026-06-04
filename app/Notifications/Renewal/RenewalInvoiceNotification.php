@@ -8,8 +8,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 class RenewalInvoiceNotification extends BaseRenewalNotification
 {
     protected RenewalDTO $renewal;
+
     protected array $clientData;
+
     protected string $invoiceNumber;
+
     protected string $subject;
 
     /**
@@ -21,7 +24,7 @@ class RenewalInvoiceNotification extends BaseRenewalNotification
         $this->clientData = $clientData;
         $this->invoiceNumber = $invoiceNumber;
         $this->language = app()->getLocale(); // Default to app locale for invoices
-        $this->subject = 'Invoice for Patent Renewal - ' . $renewal->caseref;
+        $this->subject = 'Invoice for Patent Renewal - '.$renewal->caseref;
     }
 
     /**

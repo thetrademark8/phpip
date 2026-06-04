@@ -51,10 +51,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrapFive();
-        
+
         // Register mail component namespace for email templates
         view()->addNamespace('mail', resource_path('views/vendor/mail'));
-        
+
         // Use PermissionHelper to define gates
         Gate::define('client', fn ($user) => PermissionHelper::isClient($user));
         Gate::define('except_client', fn ($user) => PermissionHelper::isNotClient($user));

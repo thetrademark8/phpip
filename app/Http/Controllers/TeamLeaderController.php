@@ -25,7 +25,7 @@ class TeamLeaderController extends Controller
 
     public function authenticate(): RedirectResponse
     {
-        if (!$this->teamLeaderService->isEnabled()) {
+        if (! $this->teamLeaderService->isEnabled()) {
             return redirect()->route('settings.teamleader.index')
                 ->with('error', 'TeamLeader integration is not enabled');
         }
@@ -37,14 +37,14 @@ class TeamLeaderController extends Controller
     {
         $code = $request->query('code');
 
-        if (!$code) {
+        if (! $code) {
             return redirect()->route('settings.teamleader.index')
                 ->with('error', 'No authorization code received');
         }
 
         $success = $this->teamLeaderService->exchangeCodeForToken($code);
 
-        if (!$success) {
+        if (! $success) {
             return redirect()->route('settings.teamleader.index')
                 ->with('error', 'Failed to authenticate with TeamLeader');
         }
@@ -102,7 +102,7 @@ class TeamLeaderController extends Controller
 
     public function triggerSync(): RedirectResponse
     {
-        if (!$this->teamLeaderService->isConnected()) {
+        if (! $this->teamLeaderService->isConnected()) {
             return redirect()->route('settings.teamleader.index')
                 ->with('error', 'Not connected to TeamLeader');
         }
@@ -111,6 +111,6 @@ class TeamLeaderController extends Controller
         $output = Artisan::output();
 
         return redirect()->route('settings.teamleader.index')
-            ->with('success', 'Sync completed. ' . trim($output));
+            ->with('success', 'Sync completed. '.trim($output));
     }
 }

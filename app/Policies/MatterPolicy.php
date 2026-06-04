@@ -18,8 +18,8 @@ class MatterPolicy
      */
     public function view(User $user, Matter $matter)
     {
-        if(PermissionHelper::isClient($user)) {
-            if($matter->client->count()) {
+        if (PermissionHelper::isClient($user)) {
+            if ($matter->client->count()) {
                 return $matter->client->where('id', $user->id)->notEmpty();
             }
 

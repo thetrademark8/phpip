@@ -60,7 +60,7 @@ class BrandedImportController extends Controller
             $actorsPath = $request->file('actors_file')->getRealPath();
             $mattersPath = $request->file('matters_file')->getRealPath();
 
-            $service = new BrandedImportService();
+            $service = new BrandedImportService;
             $result = $service->import($actorsPath, $mattersPath, $request->input('responsible_login'));
 
             return response()->json([
@@ -91,7 +91,7 @@ class BrandedImportController extends Controller
             $actorsPath = $request->file('actors_file')->getRealPath();
             $mattersPath = $request->file('matters_file')->getRealPath();
 
-            $service = new BrandedImportService();
+            $service = new BrandedImportService;
             $result = $service->preview($actorsPath, $mattersPath);
 
             return response()->json([

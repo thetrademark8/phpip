@@ -288,12 +288,12 @@ class BrandedImportService
      */
     private function stripCountryFromCaseref(string $caseref, string $country, ?string $origin): array
     {
-        $suffix = ($origin ?? '') . $country;
+        $suffix = ($origin ?? '').$country;
         if ($suffix === '') {
             return ['caseref' => $caseref, 'idx' => null];
         }
 
-        $pattern = '/' . preg_quote($suffix, '/') . '(\d*)$/i';
+        $pattern = '/'.preg_quote($suffix, '/').'(\d*)$/i';
 
         if (preg_match($pattern, $caseref, $matches)) {
             $newCaseref = substr($caseref, 0, -strlen($matches[0]));
@@ -611,7 +611,7 @@ class BrandedImportService
         } else {
             // Find the max existing caseref with this prefix in the database
             $maxCaseref = DB::table('matter')
-                ->where('caseref', 'like', $prefix . '%')
+                ->where('caseref', 'like', $prefix.'%')
                 ->max('caseref');
 
             if ($maxCaseref !== null && $maxCaseref !== $prefix) {

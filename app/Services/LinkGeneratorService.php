@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Matter;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class LinkGeneratorService
@@ -19,14 +18,14 @@ class LinkGeneratorService
             'name' => 'WIPO Madrid Monitor',
             'icon' => 'Globe',
             'categories' => ['TM'],
-            'number_field' => 'registration' // Usually registration number for international marks
+            'number_field' => 'registration', // Usually registration number for international marks
         ],
         'USPTO' => [
             'url' => 'https://tsdr.uspto.gov/#caseNumber=%s&caseType=SERIAL_NO',
             'name' => 'USPTO TSDR',
             'icon' => 'ExternalLink',
             'categories' => ['TM'],
-            'number_field' => 'filing' // Serial number
+            'number_field' => 'filing', // Serial number
         ],
         'EUIPO' => [
             'url' => 'https://euipo.europa.eu/eSearch/#details/trademarks/%s',
@@ -34,7 +33,7 @@ class LinkGeneratorService
             'icon' => 'Search',
             'categories' => ['TM'],
             'number_field' => 'filing', // Application number
-            'number_format' => 'pad_zeros_9' // Pad with zeros to 9 digits
+            'number_format' => 'pad_zeros_9', // Pad with zeros to 9 digits
         ],
         'UKIPO' => [
             'url' => 'https://trademarks.ipo.gov.uk/ipo-tmcase/page/Results/1/%s%s',
@@ -42,7 +41,7 @@ class LinkGeneratorService
             'icon' => 'Search',
             'categories' => ['TM'],
             'number_field' => 'filing',
-            'requires_country_prefix' => true
+            'requires_country_prefix' => true,
         ],
         'INPI' => [
             'url' => 'https://data.inpi.fr/marques/%s%s',
@@ -50,39 +49,39 @@ class LinkGeneratorService
             'icon' => 'Database',
             'categories' => ['TM'],
             'number_field' => 'filing',
-            'requires_country_prefix' => true
+            'requires_country_prefix' => true,
         ],
         'DPMA' => [
             'url' => 'https://register.dpma.de/DPMAregister/marke/basis?AKZ=%s',
             'name' => 'DPMA Register',
             'icon' => 'FileText',
             'categories' => ['TM'],
-            'number_field' => 'filing'
+            'number_field' => 'filing',
         ],
         'JPO' => [
             'url' => 'https://www.j-platpat.inpit.go.jp/c1800/TR/JP-%s',
             'name' => 'J-PlatPat Trademarks',
             'icon' => 'Search',
             'categories' => ['TM'],
-            'number_field' => 'filing'
+            'number_field' => 'filing',
         ],
-        
+
         // Patent Offices (bonus functionality)
         'EPO' => [
             'url' => 'https://worldwide.espacenet.com/patent/search/family/%s',
             'name' => 'Espacenet',
             'icon' => 'Search',
             'categories' => ['PAT'],
-            'number_field' => 'publication'
+            'number_field' => 'publication',
         ],
         'USPTO_PAT' => [
             'url' => 'https://ppubs.uspto.gov/dirsearch-public/print/downloadPdf/%s',
             'name' => 'USPTO Patents',
             'icon' => 'FileText',
             'categories' => ['PAT'],
-            'number_field' => 'publication'
+            'number_field' => 'publication',
         ],
-        
+
         // Design Offices (DP = Design Patent category code)
         // Example FR: https://data.inpi.fr/dessins_modeles/FR20200885-003?q=#FR20200885-003
         'INPI_DSG' => [
@@ -91,7 +90,7 @@ class LinkGeneratorService
             'icon' => 'Palette',
             'categories' => ['DP', 'DSG'],
             'number_field' => 'filing', // Use filing number for French designs
-            'number_format' => 'inpi_design_format'
+            'number_format' => 'inpi_design_format',
         ],
         // Example EU: https://euipo.europa.eu/eSearch/#details/designs/007708706-0001
         'EUIPO_DSG' => [
@@ -100,7 +99,7 @@ class LinkGeneratorService
             'icon' => 'Palette',
             'categories' => ['DP', 'DSG'],
             'number_field' => 'filing', // Use filing/application number for EU designs
-            'number_format' => 'euipo_design_format'
+            'number_format' => 'euipo_design_format',
         ],
         // Example WO: https://designdb.wipo.int/designdb/hague/fr/showData.jsp?ID=HAGUE.D215987
         'WIPO_DSG' => [
@@ -109,22 +108,22 @@ class LinkGeneratorService
             'icon' => 'Globe',
             'categories' => ['DP', 'DSG'],
             'number_field' => 'registration',
-            'number_format' => 'wipo_design_format'
+            'number_format' => 'wipo_design_format',
         ],
         'USPTO_DSG' => [
             'url' => 'https://ppubs.uspto.gov/dirsearch-public/print/downloadPdf/D%s',
             'name' => 'USPTO Design Patents',
             'icon' => 'FileText',
             'categories' => ['DP', 'DSG'],
-            'number_field' => 'publication'
+            'number_field' => 'publication',
         ],
         'DPMA_DSG' => [
             'url' => 'https://register.dpma.de/DPMAregister/gsm/basis?AKZ=%s',
             'name' => 'DPMA Designs',
             'icon' => 'FileText',
             'categories' => ['DP', 'DSG'],
-            'number_field' => 'filing'
-        ]
+            'number_field' => 'filing',
+        ],
     ];
 
     /**
@@ -145,7 +144,7 @@ class LinkGeneratorService
         'AU' => null, // No direct link support yet
         'BR' => null, // No direct link support yet
         'KR' => null, // No direct link support yet
-        'RU' => null  // No direct link support yet
+        'RU' => null,  // No direct link support yet
     ];
 
     /**
@@ -153,7 +152,7 @@ class LinkGeneratorService
      */
     public function generateLink(string $office, string $number, string $countryCode = ''): ?string
     {
-        if (!isset($this->patterns[$office])) {
+        if (! isset($this->patterns[$office])) {
             return null;
         }
 
@@ -169,23 +168,26 @@ class LinkGeneratorService
         $formattedNumber = $this->formatNumberForOffice($cleanNumber, $office, $countryCode);
 
         // Validate number format for the specific office (use original clean number for validation)
-        if (!$this->isValidNumberFormat($office, $cleanNumber)) {
-            Log::warning("Invalid number format for office", [
+        if (! $this->isValidNumberFormat($office, $cleanNumber)) {
+            Log::warning('Invalid number format for office', [
                 'office' => $office,
-                'number' => $cleanNumber
+                'number' => $cleanNumber,
             ]);
+
             return null;
         }
 
         // Check if this office requires a country prefix
-        if (!empty($pattern['requires_country_prefix']) && $pattern['requires_country_prefix']) {
+        if (! empty($pattern['requires_country_prefix']) && $pattern['requires_country_prefix']) {
             if (empty($countryCode)) {
-                Log::warning("Country code required for office but not provided", [
+                Log::warning('Country code required for office but not provided', [
                     'office' => $office,
-                    'number' => $cleanNumber
+                    'number' => $cleanNumber,
                 ]);
+
                 return null;
             }
+
             return sprintf($pattern['url'], $countryCode, $formattedNumber);
         }
 
@@ -201,8 +203,8 @@ class LinkGeneratorService
 
         // Determine office based on country
         $office = $this->detectOfficeFromCountry($matter->country, $matter->category_code);
-        
-        if (!$office) {
+
+        if (! $office) {
             return [];
         }
 
@@ -221,7 +223,7 @@ class LinkGeneratorService
                     'url' => $link,
                     'number' => $numberData['number'],
                     'type' => $numberData['type'], // 'filing', 'publication', 'registration'
-                    'date' => $numberData['date']
+                    'date' => $numberData['date'],
                 ];
             }
         }
@@ -254,8 +256,8 @@ class LinkGeneratorService
         }
 
         $baseOffice = $this->countryToOffice[$country] ?? null;
-        
-        if (!$baseOffice) {
+
+        if (! $baseOffice) {
             return null;
         }
 
@@ -266,7 +268,7 @@ class LinkGeneratorService
 
         // Check if office supports this category
         $pattern = $this->patterns[$baseOffice] ?? null;
-        if (!$pattern || !in_array($category, $pattern['categories'])) {
+        if (! $pattern || ! in_array($category, $pattern['categories'])) {
             return null;
         }
 
@@ -286,7 +288,7 @@ class LinkGeneratorService
                 'number' => $matter->filing->detail,
                 'type' => 'filing',
                 'date' => $matter->filing->event_date,
-                'priority' => $preferredField === 'filing' ? 1 : 3
+                'priority' => $preferredField === 'filing' ? 1 : 3,
             ];
         }
 
@@ -296,7 +298,7 @@ class LinkGeneratorService
                 'number' => $matter->publication->detail,
                 'type' => 'publication',
                 'date' => $matter->publication->event_date,
-                'priority' => $preferredField === 'publication' ? 1 : 2
+                'priority' => $preferredField === 'publication' ? 1 : 2,
             ];
         }
 
@@ -306,12 +308,12 @@ class LinkGeneratorService
                 'number' => $matter->grant->detail,
                 'type' => 'registration',
                 'date' => $matter->grant->event_date,
-                'priority' => $preferredField === 'registration' ? 1 : 2
+                'priority' => $preferredField === 'registration' ? 1 : 2,
             ];
         }
 
         // Sort by priority (preferred field first)
-        usort($numbers, fn($a, $b) => $a['priority'] <=> $b['priority']);
+        usort($numbers, fn ($a, $b) => $a['priority'] <=> $b['priority']);
 
         return $numbers;
     }
@@ -339,7 +341,7 @@ class LinkGeneratorService
         $cleaned = preg_replace('/[^\w]/', '', $cleaned);
 
         // Re-add the variant suffix if it existed
-        return trim($cleaned . $variant);
+        return trim($cleaned.$variant);
     }
 
     /**
@@ -349,7 +351,7 @@ class LinkGeneratorService
     {
         $pattern = $this->patterns[$office] ?? null;
 
-        if (!$pattern || empty($pattern['number_format'])) {
+        if (! $pattern || empty($pattern['number_format'])) {
             return $number;
         }
 
@@ -365,10 +367,11 @@ class LinkGeneratorService
                 // INPI Design format requires FR{number}-{variant} (e.g., FR20200885-003).
                 // Strip any FR prefix to normalize, default variant to -001 when absent.
                 $base = preg_replace('/^FR/', '', $number);
-                if (!preg_match('/-\d+$/', $base)) {
+                if (! preg_match('/-\d+$/', $base)) {
                     $base .= '-001';
                 }
-                return 'FR' . $base;
+
+                return 'FR'.$base;
 
             case 'euipo_design_format':
                 // EUIPO Design format: {9-digit-number}-{variant} (e.g., 007708706-0001)
@@ -376,16 +379,19 @@ class LinkGeneratorService
                 if (str_contains($number, '-')) {
                     $parts = explode('-', $number);
                     $baseNumber = str_pad($parts[0], 9, '0', STR_PAD_LEFT);
-                    return $baseNumber . '-' . $parts[1];
+
+                    return $baseNumber.'-'.$parts[1];
                 }
+
                 // No variant, pad number and add default variant
-                return str_pad($number, 9, '0', STR_PAD_LEFT) . '-0001';
+                return str_pad($number, 9, '0', STR_PAD_LEFT).'-0001';
 
             case 'wipo_design_format':
                 // WIPO Hague Design format: D{number} (e.g., D215987 for HAGUE.D215987)
                 // Handle various input formats: WIPO171702, DM/215987, DM215987, D215987, 215987
                 $cleanNumber = preg_replace('/^(WIPO|DM\/|DM|D)/', '', $number);
-                return 'D' . $cleanNumber;
+
+                return 'D'.$cleanNumber;
 
             default:
                 break;
@@ -414,17 +420,17 @@ class LinkGeneratorService
             'JPO' => '/^\d+$/', // Numeric
             'EPO' => '/^\d+$/', // Numeric
             'USPTO_PAT' => '/^\d{7,8}$/', // 7-8 digits for patents
-            
+
             // Design validation patterns (flexible to handle various formats)
             'INPI_DSG' => '/^(FR)?\d{6,10}(\-\d{1,3})?$/', // Optional FR prefix + 6-10 digits + optional variant
             'EUIPO_DSG' => '/^\d{6,9}(\-\d{4})?$/', // 6-9 digits + optional variant (e.g., -0001)
             'WIPO_DSG' => '/^(WIPO|DM|D)?\d{5,7}$/', // Optional WIPO/DM/D prefix + 5-7 digits
             'USPTO_DSG' => '/^D?\d{6,8}$/', // Optional D prefix + 6-8 digits
-            'DPMA_DSG' => '/^\d{8,14}$/' // 8-14 digits for German designs
+            'DPMA_DSG' => '/^\d{8,14}$/', // 8-14 digits for German designs
         ];
 
         $pattern = $validationPatterns[$office] ?? '/^.+$/'; // Default: any non-empty
-        
+
         return preg_match($pattern, $number) === 1;
     }
 
@@ -434,8 +440,8 @@ class LinkGeneratorService
     public function getAvailableOffices(string $country, string $category): array
     {
         $office = $this->detectOfficeFromCountry($country, $category);
-        
-        if (!$office) {
+
+        if (! $office) {
             return [];
         }
 
@@ -452,7 +458,7 @@ class LinkGeneratorService
                 'code' => $code,
                 'name' => $pattern['name'],
                 'icon' => $pattern['icon'],
-                'categories' => $pattern['categories']
+                'categories' => $pattern['categories'],
             ];
         }, $this->patterns, array_keys($this->patterns));
     }

@@ -22,7 +22,7 @@ class RuleController extends Controller
         $Category = $request->input('Category');
         $sort = $request->input('sort', 'task');
         $direction = $request->input('direction', 'asc');
-        
+
         $rule = new Rule;
         $locale = app()->getLocale();
         // Normalize to the base locale (e.g., 'en' from 'en_US')

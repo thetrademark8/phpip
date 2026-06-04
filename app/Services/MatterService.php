@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Contracts\Services\MatterServiceInterface;
 use App\Models\Matter;
 use App\Repositories\MatterRepository;
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class MatterService implements MatterServiceInterface
 {

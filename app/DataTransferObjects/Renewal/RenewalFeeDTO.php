@@ -41,10 +41,10 @@ class RenewalFeeDTO
             // Percentage discount
             $this->fee *= (1.0 - $discount);
         }
-        
+
         $this->discount = $discount;
         $this->recalculate();
-        
+
         return $this;
     }
 
@@ -54,7 +54,7 @@ class RenewalFeeDTO
         $this->feeFactor = $factor;
         $this->gracePeriodApplied = true;
         $this->recalculate();
-        
+
         return $this;
     }
 

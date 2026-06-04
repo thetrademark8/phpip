@@ -3,18 +3,17 @@
 namespace App\Notifications;
 
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 
 class TaskReminderNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     protected Task $task;
+
     protected string $language;
 
     /**
@@ -41,7 +40,7 @@ class TaskReminderNotification extends Notification implements ShouldQueue
     {
         $daysUntilDue = $this->getDaysUntilDue();
         $urgencyLevel = $this->getUrgencyLevel();
-        
+
         $subject = $this->getSubject();
 
         return (new MailMessage)
@@ -89,12 +88,20 @@ class TaskReminderNotification extends Notification implements ShouldQueue
     private function getUrgencyLevel(): string
     {
         $days = $this->getDaysUntilDue();
-        
-        if ($days < 0) return 'overdue';
-        if ($days <= 1) return 'critical';
-        if ($days <= 3) return 'urgent';
-        if ($days <= 7) return 'attention';
-        
+
+        if ($days < 0) {
+            return 'overdue';
+        }
+        if ($days <= 1) {
+            return 'critical';
+        }
+        if ($days <= 3) {
+            return 'urgent';
+        }
+        if ($days <= 7) {
+            return 'attention';
+        }
+
         return 'normal';
     }
 
@@ -106,7 +113,7 @@ class TaskReminderNotification extends Notification implements ShouldQueue
         $name = $notifiable->name ?? 'Agent';
         $hour = now()->hour;
 
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => $hour < 12 ? "Bonjour {$name}," : "Bonsoir {$name},",
             'de' => $hour < 12 ? "Guten Morgen {$name}," : "Guten Abend {$name},",
             default => $hour < 12 ? "Good morning {$name}," : "Good evening {$name},",
@@ -120,8 +127,8 @@ class TaskReminderNotification extends Notification implements ShouldQueue
     {
         $taskName = $this->task->info->name ?? $this->task->code;
         $matterRef = $this->task->matter->uid;
-        
-        return match($this->language) {
+
+        return match ($this->language) {
             'fr' => "[phpIP] Rappel de tâche: {$taskName} - {$matterRef}",
             'de' => "[phpIP] Aufgabenerinnerung: {$taskName} - {$matterRef}",
             default => "[phpIP] Task Reminder: {$taskName} - {$matterRef}",
@@ -133,7 +140,7 @@ class TaskReminderNotification extends Notification implements ShouldQueue
      */
     private function getIntroLine(int $daysUntilDue, string $urgencyLevel): string
     {
-        $icon = match($urgencyLevel) {
+        $icon = match ($urgencyLevel) {
             'overdue' => '🚨',
             'critical' => '🔴',
             'urgent' => '🟠',
@@ -143,25 +150,26 @@ class TaskReminderNotification extends Notification implements ShouldQueue
 
         if ($daysUntilDue < 0) {
             $daysOverdue = abs($daysUntilDue);
-            return match($this->language) {
-                'fr' => "{$icon} Cette tâche est en retard de {$daysOverdue} jour" . ($daysOverdue > 1 ? 's' : '') . " et nécessite votre attention immédiate.",
-                'de' => "{$icon} Diese Aufgabe ist {$daysOverdue} Tag" . ($daysOverdue > 1 ? 'e' : '') . " überfällig und erfordert Ihre sofortige Aufmerksamkeit.",
-                default => "{$icon} This task is {$daysOverdue} day" . ($daysOverdue > 1 ? 's' : '') . " overdue and requires your immediate attention.",
+
+            return match ($this->language) {
+                'fr' => "{$icon} Cette tâche est en retard de {$daysOverdue} jour".($daysOverdue > 1 ? 's' : '').' et nécessite votre attention immédiate.',
+                'de' => "{$icon} Diese Aufgabe ist {$daysOverdue} Tag".($daysOverdue > 1 ? 'e' : '').' überfällig und erfordert Ihre sofortige Aufmerksamkeit.',
+                default => "{$icon} This task is {$daysOverdue} day".($daysOverdue > 1 ? 's' : '').' overdue and requires your immediate attention.',
             };
         } elseif ($daysUntilDue === 0) {
-            return match($this->language) {
+            return match ($this->language) {
                 'fr' => "{$icon} Cette tâche est due aujourd'hui.",
                 'de' => "{$icon} Diese Aufgabe ist heute fällig.",
                 default => "{$icon} This task is due today.",
             };
         } elseif ($daysUntilDue === 1) {
-            return match($this->language) {
+            return match ($this->language) {
                 'fr' => "{$icon} Cette tâche est due demain.",
                 'de' => "{$icon} Diese Aufgabe ist morgen fällig.",
                 default => "{$icon} This task is due tomorrow.",
             };
         } else {
-            return match($this->language) {
+            return match ($this->language) {
                 'fr' => "{$icon} Cette tâche est due dans {$daysUntilDue} jours.",
                 'de' => "{$icon} Diese Aufgabe ist in {$daysUntilDue} Tagen fällig.",
                 default => "{$icon} This task is due in {$daysUntilDue} days.",
@@ -175,8 +183,8 @@ class TaskReminderNotification extends Notification implements ShouldQueue
     private function getTaskDetails(): string
     {
         $details = [];
-        
-        $labels = match($this->language) {
+
+        $labels = match ($this->language) {
             'fr' => [
                 'matter' => 'Dossier',
                 'task' => 'Tâche',
@@ -201,14 +209,14 @@ class TaskReminderNotification extends Notification implements ShouldQueue
         if ($this->task->matter->alt_ref) {
             $details[] = "**Alt. Ref:** {$this->task->matter->alt_ref}";
         }
-        
-        $details[] = "**{$labels['task']}:** " . ($this->task->info->name ?? $this->task->code);
+
+        $details[] = "**{$labels['task']}:** ".($this->task->info->name ?? $this->task->code);
         if ($this->task->detail) {
             $details[] = "**Details:** {$this->task->detail}";
         }
-        
-        $details[] = "**{$labels['due_date']}:** " . \Carbon\Carbon::parse($this->task->due_date)->format('d/m/Y');
-        
+
+        $details[] = "**{$labels['due_date']}:** ".\Carbon\Carbon::parse($this->task->due_date)->format('d/m/Y');
+
         if ($this->task->matter->client) {
             $details[] = "**{$labels['client']}:** {$this->task->matter->client->name}";
         }
@@ -221,7 +229,7 @@ class TaskReminderNotification extends Notification implements ShouldQueue
      */
     private function getActionText(): string
     {
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => 'Voir le dossier',
             'de' => 'Akte anzeigen',
             default => 'View Matter',
@@ -233,7 +241,7 @@ class TaskReminderNotification extends Notification implements ShouldQueue
      */
     private function getClosingLine(): string
     {
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => 'Veuillez traiter cette tâche dès que possible et mettre à jour son statut une fois terminée.',
             'de' => 'Bitte bearbeiten Sie diese Aufgabe so bald wie möglich und aktualisieren Sie ihren Status, sobald sie abgeschlossen ist.',
             default => 'Please process this task as soon as possible and update its status once completed.',
@@ -245,7 +253,7 @@ class TaskReminderNotification extends Notification implements ShouldQueue
      */
     private function getSalutation(): string
     {
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => 'Cordialement,<br>L\'équipe phpIP',
             'de' => 'Mit freundlichen Grüßen,<br>Das phpIP-Team',
             default => 'Best regards,<br>The phpIP Team',

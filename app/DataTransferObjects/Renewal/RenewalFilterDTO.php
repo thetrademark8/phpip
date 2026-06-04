@@ -25,7 +25,7 @@ class RenewalFilterDTO
     public static function fromRequest(Request $request): self
     {
         $filters = $request->except(['my_renewals', 'page', 'step', 'invoice_step']);
-        
+
         return new self(
             step: $request->input('step'),
             invoiceStep: $request->input('invoice_step'),
@@ -57,12 +57,12 @@ class RenewalFilterDTO
             'Name' => $this->name,
             'Country' => $this->country,
             'grace_period' => $this->gracePeriod,
-        ], fn($value) => $value !== null && $value !== false && $value !== '');
+        ], fn ($value) => $value !== null && $value !== false && $value !== '');
     }
 
     public function hasTextFilters(): bool
     {
-        return !empty($this->title) || !empty($this->name);
+        return ! empty($this->title) || ! empty($this->name);
     }
 
     public function hasStepFilter(): bool

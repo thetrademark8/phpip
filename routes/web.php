@@ -12,22 +12,20 @@
  */
 
 use App\Http\Controllers\AutocompleteController;
+use App\Http\Controllers\BrandedImportController;
 use App\Http\Controllers\ClassifierController;
 use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\OptionsController;
 use App\Http\Controllers\EmailSettingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatterAttachmentController;
 use App\Http\Controllers\MatterController;
 use App\Http\Controllers\MatterEmailController;
 use App\Http\Controllers\MatterSearchController;
-use App\Http\Controllers\BrandedImportController;
+use App\Http\Controllers\OptionsController;
 use App\Http\Controllers\RenewalController;
 use App\Models\Matter;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
     return view('welcome');
@@ -110,7 +108,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('status-event/autocomplete', [AutocompleteController::class, 'statusEventName']);
     Route::get('category/autocomplete', [AutocompleteController::class, 'category']);
     Route::get('actor/autocomplete/{create_option?}', [AutocompleteController::class, 'actor']);
-    
+
     // Protected autocomplete routes - require readwrite permission
     Route::middleware('can:readwrite')->group(function () {
         Route::get('event-name/autocomplete/{is_task}', [AutocompleteController::class, 'eventName']);
@@ -177,18 +175,18 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('can:except_client')->group(function () {
         Route::post('matter/clear-tasks', [HomeController::class, 'clearTasks']);
         Route::get('matter/{parent_matter}/createN', fn (Matter $parent_matter) => view('matter.createN', compact('parent_matter')));
-        
+
         // Nested routes for matter relationships
         // Route::post('matter/{matter}/actors', [App\Http\Controllers\ActorPivotController::class, 'store']);
         // Route::post('matter/{matter}/events', [App\Http\Controllers\EventController::class, 'store']);
-        
+
         // International trademark automation routes
         Route::post('matter/{matter}/create-national', [App\Http\Controllers\MatterController::class, 'storeInternational'])->name('matter.create-national');
         Route::get('matter/{matter}/international-countries', [App\Http\Controllers\MatterController::class, 'getInternationalCountries'])->name('matter.international-countries');
-        
+
         // Official links route
         Route::get('matter/{matter}/official-links', [App\Http\Controllers\MatterController::class, 'getOfficialLinks'])->name('matter.official-links');
-        
+
         Route::apiResource('event', App\Http\Controllers\EventController::class);
         Route::post('event/{event}/recalculate-tasks', [App\Http\Controllers\EventController::class, 'recalculateTasks'])->name('event.recalculate-tasks');
         Route::resource('category', App\Http\Controllers\CategoryController::class);

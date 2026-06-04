@@ -5,8 +5,6 @@ namespace App\Http\Middleware;
 use App\Helpers\PermissionHelper;
 use App\Models\Category;
 use App\Models\EmailSetting;
-use App\Models\Country;
-use App\Models\MatterType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -50,17 +48,17 @@ class HandleInertiaRequests extends Middleware
                 $locale = $userActor->language;
             }
         }
-        
+
         // Set the application locale
         app()->setLocale($locale);
-        
+
         // Load translations for the current locale
         $translations = [];
         $translationFile = base_path("lang/{$locale}.json");
         if (file_exists($translationFile)) {
             $translations = json_decode(file_get_contents($translationFile), true) ?? [];
         }
-        
+
         return [
             ...parent::share($request),
             'auth' => [

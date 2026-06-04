@@ -26,16 +26,14 @@ use Illuminate\Support\Facades\DB;
  * - 5: Receipts issued
  * - 10: Closed (completed)
  * - 11: Abandoned
- *
- * @package App\Services\Renewal
  */
 class RenewalWorkflowService implements RenewalWorkflowServiceInterface
 {
     /**
      * Create a new RenewalWorkflowService instance.
      *
-     * @param RenewalRepositoryInterface $renewalRepository Repository for renewal data access
-     * @param EventRepositoryInterface $eventRepository Repository for event management
+     * @param  RenewalRepositoryInterface  $renewalRepository  Repository for renewal data access
+     * @param  EventRepositoryInterface  $eventRepository  Repository for event management
      */
     public function __construct(
         private RenewalRepositoryInterface $renewalRepository,
@@ -48,35 +46,38 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * Validates the step value and updates all specified renewals to the new step.
      * The operation is wrapped in a database transaction and logged for audit purposes.
      *
-     * @param array<int> $ids Array of renewal IDs to update
-     * @param int $step The target workflow step (0-5, 10, 11)
+     * @param  array<int>  $ids  Array of renewal IDs to update
+     * @param  int  $step  The target workflow step (0-5, 10, 11)
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails
      */
     public function updateStep(array $ids, int $step): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Validate step
-            if (!$this->isValidStep($step)) {
+            if (! $this->isValidStep($step)) {
                 DB::rollback();
+
                 return ActionResultDTO::error('Invalid step value');
             }
-            
+
             $count = $this->renewalRepository->updateStep($ids, $step);
-            
+
             // Log the action if needed
             if ($count > 0) {
                 $this->logAction($ids, "Updated to step $step", 'step_update');
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($count, "Updated $count renewals to step $step");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to update step: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to update step: '.$e->getMessage());
         }
     }
 
@@ -89,35 +90,38 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * - 2: Invoice paid
      * - 3: Receipt issued
      *
-     * @param array<int> $ids Array of renewal IDs to update
-     * @param int $invoiceStep The target invoice step (0-3)
+     * @param  array<int>  $ids  Array of renewal IDs to update
+     * @param  int  $invoiceStep  The target invoice step (0-3)
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails
      */
     public function updateInvoiceStep(array $ids, int $invoiceStep): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Validate invoice step
-            if (!$this->isValidInvoiceStep($invoiceStep)) {
+            if (! $this->isValidInvoiceStep($invoiceStep)) {
                 DB::rollback();
+
                 return ActionResultDTO::error('Invalid invoice step value');
             }
-            
+
             $count = $this->renewalRepository->updateInvoiceStep($ids, $invoiceStep);
-            
+
             // Log the action if needed
             if ($count > 0) {
                 $this->logAction($ids, "Updated to invoice step $invoiceStep", 'invoice_step_update');
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($count, "Updated $count renewals to invoice step $invoiceStep");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to update invoice step: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to update invoice step: '.$e->getMessage());
         }
     }
 
@@ -133,35 +137,38 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * This affects financial calculations by extending payment deadlines and
      * potentially reducing late fees during the grace period.
      *
-     * @param array<int> $ids Array of renewal IDs to update
-     * @param int $gracePeriod Grace period value (0-3)
+     * @param  array<int>  $ids  Array of renewal IDs to update
+     * @param  int  $gracePeriod  Grace period value (0-3)
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails
      */
     public function setGracePeriod(array $ids, int $gracePeriod): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Validate grace period
             if ($gracePeriod < 0 || $gracePeriod > 3) {
                 DB::rollback();
+
                 return ActionResultDTO::error('Invalid grace period value');
             }
-            
+
             $count = $this->renewalRepository->updateGracePeriod($ids, $gracePeriod);
-            
+
             // Log the action if needed
             if ($count > 0) {
                 $this->logAction($ids, "Set grace period to $gracePeriod", 'grace_period_update');
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($count, "Updated $count renewals with grace period $gracePeriod");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to set grace period: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to set grace period: '.$e->getMessage());
         }
     }
 
@@ -172,39 +179,42 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * This indicates successful completion of the renewal process. The done date
      * represents when the renewal was officially filed or completed.
      *
-     * @param array<int> $ids Array of renewal IDs to mark as done
-     * @param string|null $doneDate Completion date in Y-m-d format (defaults to today)
+     * @param  array<int>  $ids  Array of renewal IDs to mark as done
+     * @param  string|null  $doneDate  Completion date in Y-m-d format (defaults to today)
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails
      */
     public function markAsDone(array $ids, ?string $doneDate = null): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Default to today if no date provided
             $date = $doneDate ?? Carbon::now()->format('Y-m-d');
-            
+
             // Validate date
-            if (!$this->isValidDate($date)) {
+            if (! $this->isValidDate($date)) {
                 DB::rollback();
+
                 return ActionResultDTO::error('Invalid date format');
             }
-            
+
             $count = $this->renewalRepository->markAsDone($ids, $date);
-            
+
             // Update to step 10 (closed) automatically
             if ($count > 0) {
                 $this->renewalRepository->updateStep($ids, 10);
                 $this->logAction($ids, "Marked as done on $date", 'marked_done');
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($count, "Marked $count renewals as done");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to mark as done: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to mark as done: '.$e->getMessage());
         }
     }
 
@@ -216,23 +226,24 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * maintain proper audit trail. This action is irreversible and indicates the
      * renewal process was terminated without completion.
      *
-     * @param array<int> $ids Array of renewal IDs to abandon
+     * @param  array<int>  $ids  Array of renewal IDs to abandon
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails or event creation fails
      */
     public function abandon(array $ids): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Mark as done with today's date
             $count = $this->renewalRepository->markAsDone($ids, Carbon::now()->format('Y-m-d'));
-            
+
             // Set step to 11 (abandoned)
             if ($count > 0) {
                 $this->renewalRepository->updateStep($ids, 11);
-                $this->logAction($ids, "Abandoned renewals", 'abandoned');
-                
+                $this->logAction($ids, 'Abandoned renewals', 'abandoned');
+
                 // Create abandon events if needed
                 foreach ($ids as $id) {
                     $renewal = $this->renewalRepository->findById($id);
@@ -241,13 +252,14 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
                     }
                 }
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($count, "Abandoned $count renewals");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to abandon renewals: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to abandon renewals: '.$e->getMessage());
         }
     }
 
@@ -255,27 +267,28 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * Mark renewals as payment order received.
      * Transitions from step 2 to step 4 and sets invoice_step to 1.
      *
-     * @param array<int> $ids Array of renewal IDs to update
+     * @param  array<int>  $ids  Array of renewal IDs to update
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails
      */
     public function markAsPaymentOrderReceived(array $ids): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Get current states for logging
             $renewals = $this->renewalRepository->findByIds($ids);
-            
+
             // Update step to 4 and invoice_step to 1
             $stepCount = $this->renewalRepository->updateStep($ids, 4);
             $invoiceCount = $this->renewalRepository->updateInvoiceStep($ids, 1);
-            
+
             if ($stepCount > 0) {
                 // Create proper logs with correct from/to values
                 $jobId = RenewalsLog::max('job_id') + 1;
                 $logs = [];
-                
+
                 foreach ($renewals as $renewal) {
                     $logs[] = [
                         'task_id' => $renewal->id,
@@ -288,16 +301,17 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
                         'created_at' => now(),
                     ];
                 }
-                
+
                 RenewalsLog::insert($logs);
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($stepCount, "Marked $stepCount renewals as payment order received");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to mark as payment order received: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to mark as payment order received: '.$e->getMessage());
         }
     }
 
@@ -308,14 +322,14 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * predefined workflow rules. Some transitions can skip steps (e.g., direct to
      * abandoned), while others must follow sequential progression.
      *
-     * @param int $fromStep Current workflow step
-     * @param int $toStep Target workflow step
+     * @param  int  $fromStep  Current workflow step
+     * @param  int  $toStep  Target workflow step
      * @return bool True if the transition is allowed, false otherwise
      */
     /**
      * Validate if a workflow step value is valid.
      *
-     * @param int $step Step value to validate
+     * @param  int  $step  Step value to validate
      * @return bool True if step is valid (0-5, 10, 11), false otherwise
      */
     private function isValidStep(int $step): bool
@@ -326,7 +340,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
     /**
      * Validate if an invoice step value is valid.
      *
-     * @param int $invoiceStep Invoice step value to validate
+     * @param  int  $invoiceStep  Invoice step value to validate
      * @return bool True if invoice step is valid (0-3), false otherwise
      */
     private function isValidInvoiceStep(int $invoiceStep): bool
@@ -339,13 +353,14 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      *
      * Uses Carbon to parse the date string and verify it's valid.
      *
-     * @param string $date Date string to validate
+     * @param  string  $date  Date string to validate
      * @return bool True if date can be parsed, false otherwise
      */
     private function isValidDate(string $date): bool
     {
         try {
             Carbon::parse($date);
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -358,16 +373,15 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * Creates entries in the renewals_log table for each affected renewal.
      * Groups related actions under the same job_id for batch operations.
      *
-     * @param array<int> $ids Array of renewal IDs that were affected
-     * @param string $action Human-readable description of the action
-     * @param string $type Action type identifier (e.g., 'step_update', 'abandoned')
-     * @return void
+     * @param  array<int>  $ids  Array of renewal IDs that were affected
+     * @param  string  $action  Human-readable description of the action
+     * @param  string  $type  Action type identifier (e.g., 'step_update', 'abandoned')
      */
     private function logAction(array $ids, string $action, string $type): void
     {
         // Create renewal log entry
         $jobId = RenewalsLog::max('job_id') + 1;
-        
+
         foreach ($ids as $id) {
             RenewalsLog::create([
                 'task_id' => $id,
@@ -383,42 +397,46 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
     /**
      * Update both step and invoice step simultaneously
      *
-     * @param array<int> $ids Array of renewal IDs to update
-     * @param int $step The target workflow step
-     * @param int $invoiceStep The target invoice step
+     * @param  array<int>  $ids  Array of renewal IDs to update
+     * @param  int  $step  The target workflow step
+     * @param  int  $invoiceStep  The target invoice step
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails
      */
     public function updateStepAndInvoiceStep(array $ids, int $step, int $invoiceStep): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Validate both steps
-            if (!$this->isValidStep($step)) {
+            if (! $this->isValidStep($step)) {
                 DB::rollback();
+
                 return ActionResultDTO::error('Invalid step value');
             }
-            
-            if (!$this->isValidInvoiceStep($invoiceStep)) {
+
+            if (! $this->isValidInvoiceStep($invoiceStep)) {
                 DB::rollback();
+
                 return ActionResultDTO::error('Invalid invoice step value');
             }
-            
+
             $stepCount = $this->renewalRepository->updateStep($ids, $step);
             $invoiceCount = $this->renewalRepository->updateInvoiceStep($ids, $invoiceStep);
-            
+
             // Log the action if needed
             if ($stepCount > 0) {
                 $this->logAction($ids, "Updated to step $step and invoice step $invoiceStep", 'step_invoice_update');
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($stepCount, "Updated $stepCount renewals to step $step and invoice step $invoiceStep");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to update steps: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to update steps: '.$e->getMessage());
         }
     }
 
@@ -428,28 +446,30 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * Sets renewals to step 11 (abandoned) without setting done_date.
      * This indicates the renewals will lapse due to non-payment or client decision.
      *
-     * @param array<int> $ids Array of renewal IDs to mark as lapsing
+     * @param  array<int>  $ids  Array of renewal IDs to mark as lapsing
      * @return ActionResultDTO Result containing success status, affected count, and message
+     *
      * @throws \Exception If database transaction fails
      */
     public function markAsLapsing(array $ids): ActionResultDTO
     {
         try {
             DB::beginTransaction();
-            
+
             // Set step to 11 (abandoned/lapsing) but don't set done_date
             $count = $this->renewalRepository->updateStep($ids, 11);
-            
+
             if ($count > 0) {
-                $this->logAction($ids, "Marked as lapsing", 'lapsing');
+                $this->logAction($ids, 'Marked as lapsing', 'lapsing');
             }
-            
+
             DB::commit();
-            
+
             return ActionResultDTO::success($count, "Marked $count renewals as lapsing");
         } catch (\Exception $e) {
             DB::rollback();
-            return ActionResultDTO::error('Failed to mark as lapsing: ' . $e->getMessage());
+
+            return ActionResultDTO::error('Failed to mark as lapsing: '.$e->getMessage());
         }
     }
 
@@ -460,34 +480,34 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
      * the abandonment. This maintains consistency with the matter
      * event tracking system.
      *
-     * @param mixed $renewal Renewal model instance with matter relation
-     * @return void
+     * @param  mixed  $renewal  Renewal model instance with matter relation
+     *
      * @throws \Exception If matter relation is not loaded or not found
      */
     private function createAbandonEvent($renewal): void
     {
         // Verify that the matter relation exists
-        if (!$renewal->matter) {
-            throw new \Exception('Cannot create abandon event: matter not found for renewal ' . $renewal->id);
+        if (! $renewal->matter) {
+            throw new \Exception('Cannot create abandon event: matter not found for renewal '.$renewal->id);
         }
-        
+
         // Create abandon event in the event table
         $this->eventRepository->create([
             'matter_id' => $renewal->matter->id,
             'code' => 'ABA',
             'event_date' => Carbon::now(),
             'detail' => 'Renewal abandoned',
-            'notes' => 'Renewal ' . $renewal->id . ' abandoned',
+            'notes' => 'Renewal '.$renewal->id.' abandoned',
         ]);
     }
 
     /**
      * Create renewal orders for selected renewals.
      * Moves renewals to step 4 (payment order) and invoice step 1 (invoiced).
-     * 
+     *
      * Previously in RenewalOrderService, now integrated directly.
      *
-     * @param array<int> $ids Array of renewal IDs
+     * @param  array<int>  $ids  Array of renewal IDs
      * @return ActionResultDTO Result of the operation
      */
     public function createOrders(array $ids): ActionResultDTO
@@ -498,7 +518,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
 
         // Move to step 4 (payment order) and invoice step 1 (invoiced)
         $result = $this->updateStepAndInvoiceStep($ids, 4, 1);
-        
+
         if ($result->success) {
             return ActionResultDTO::success($result->affectedCount ?? count($ids), 'Renewal orders created successfully');
         }
@@ -509,10 +529,10 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
     /**
      * Mark renewals as invoiced.
      * Updates invoice step to 2 (invoiced).
-     * 
+     *
      * Previously in RenewalOrderService, now integrated directly.
      *
-     * @param array<int> $ids Array of renewal IDs
+     * @param  array<int>  $ids  Array of renewal IDs
      * @return ActionResultDTO Result of the operation
      */
     public function markInvoiced(array $ids): ActionResultDTO
@@ -523,7 +543,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
 
         // Update invoice step to 2 (invoiced)
         $result = $this->updateInvoiceStep($ids, 2);
-        
+
         if ($result->success) {
             return ActionResultDTO::success($result->affectedCount ?? count($ids), 'Renewals marked as invoiced');
         }
@@ -534,10 +554,10 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
     /**
      * Mark renewals as paid.
      * Updates invoice step to 3 (paid).
-     * 
+     *
      * Previously in RenewalPaymentService, now integrated directly.
      *
-     * @param array<int> $ids Array of renewal IDs
+     * @param  array<int>  $ids  Array of renewal IDs
      * @return ActionResultDTO Result of the operation
      */
     public function markPaid(array $ids): ActionResultDTO
@@ -548,9 +568,10 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
 
         // Update invoice step to 3 (paid)
         $result = $this->updateInvoiceStep($ids, 3);
-        
+
         if ($result->success) {
             $count = $result->affectedCount ?? count($ids);
+
             return ActionResultDTO::success($count, "$count invoices paid");
         }
 

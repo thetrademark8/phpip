@@ -15,25 +15,25 @@ class FeeController extends Controller
 
         // Apply filters
         if ($request->filled('Origin')) {
-            $query->where('for_origin', 'LIKE', $request->Origin . '%');
+            $query->where('for_origin', 'LIKE', $request->Origin.'%');
         }
 
         if ($request->filled('Category')) {
-            $query->where('for_category', 'LIKE', $request->Category . '%');
+            $query->where('for_category', 'LIKE', $request->Category.'%');
         }
 
         if ($request->filled('Qt')) {
-            $query->where('qt', 'LIKE', $request->Qt . '%');
+            $query->where('qt', 'LIKE', $request->Qt.'%');
         }
 
         if ($request->filled('Country')) {
-            $query->where('for_country', 'LIKE', $request->Country . '%');
+            $query->where('for_country', 'LIKE', $request->Country.'%');
         }
 
         // Handle sorting
         $sortField = $request->input('sort', 'for_category');
         $sortDirection = $request->input('direction', 'asc');
-        
+
         // Map frontend column names to database columns
         $sortableColumns = [
             'for_category' => 'for_category',
@@ -45,7 +45,7 @@ class FeeController extends Controller
             'use_after' => 'use_after',
             'use_before' => 'use_before',
         ];
-        
+
         // Apply sorting
         if (isset($sortableColumns[$sortField])) {
             $query->orderBy($sortableColumns[$sortField], $sortDirection);
@@ -96,9 +96,9 @@ class FeeController extends Controller
             'use_after' => 'nullable|date',
             'use_before' => 'nullable|date',
         ]);
-        
+
         $request->merge(['creator' => Auth::user()->login]);
-        
+
         if (is_null($request->input('to_qt'))) {
             $request->merge(['qt' => $request->input('from_qt')]);
             Fee::create($request->except(['from_qt', 'to_qt', '_token', '_method']));
@@ -149,7 +149,7 @@ class FeeController extends Controller
             'cost_sup_reduced' => 'nullable|numeric',
             'fee_sup_reduced' => 'nullable|numeric',
         ]);
-        
+
         $request->merge(['updater' => Auth::user()->login]);
         $fee->update($request->except(['_token', '_method']));
 

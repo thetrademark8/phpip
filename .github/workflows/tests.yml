@@ -223,6 +223,11 @@ jobs:
           echo "MySQL did not become ready in time"
           exit 1
 
+      - name: Allow non-deterministic stored functions
+        # The committed `mysql-schema.sql` declares functions without a deterministic descriptor,
+        # which MySQL 8 rejects when binary logging is enabled (ER_BINLOG_UNSAFE_ROUTINE / 1418).
+        run: mysql -h 127.0.0.1 -P 3306 -uroot -proot -e "SET GLOBAL log_bin_trust_function_creators = 1;"
+
       - name: Load MySQL schema dump
         run: mysql -h 127.0.0.1 -P 3306 -uroot -proot phpip_test < database/schema/mysql-schema.sql
 

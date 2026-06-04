@@ -19,21 +19,21 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
     /**
      * Calculate fees for multiple renewals in batch
      * Optimized version to avoid N+1 queries
-     * 
-     * @param \Illuminate\Support\Collection $renewals Collection of renewal models
+     *
+     * @param  \Illuminate\Support\Collection  $renewals  Collection of renewal models
      * @return array Associative array of renewal_id => RenewalFeeDTO
      */
     public function calculateBatch(\Illuminate\Support\Collection $renewals): array
     {
         $results = [];
-        
+
         // Pre-load all necessary data to avoid N+1 queries
         // This could be optimized further with eager loading if needed
         foreach ($renewals as $renewal) {
             $renewalDTO = RenewalDTO::fromModel($renewal);
             $results[$renewal->id] = $this->calculate($renewalDTO);
         }
-        
+
         return $results;
     }
 
@@ -78,11 +78,11 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
     public function calculateWithDiscount(RenewalDTO $renewal, float $discount): RenewalFeeDTO
     {
         $feeDTO = $this->calculate($renewal);
-        
+
         if ($discount > 0) {
             $feeDTO->applyDiscount($discount);
         }
-        
+
         return $feeDTO;
     }
 
@@ -90,16 +90,16 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
     {
         // Get client discount
         $discount = $this->actorRepository->getDiscount($clientId) ?? 0;
-        
+
         // Get renewals
         $renewals = $this->renewalRepository->findByIds($renewalIds);
-        
+
         $results = [];
         foreach ($renewals as $renewal) {
             $renewalDTO = RenewalDTO::fromModel($renewal);
             $results[$renewal->id] = $this->calculateWithDiscount($renewalDTO, $discount);
         }
-        
+
         return $results;
     }
 
@@ -112,7 +112,7 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
     {
         // Default VAT rate
         $vatRate = config('renewal.invoice.default_vat_rate', 0.2);
-        
+
         // Check if client has specific VAT rate
         if ($renewal->clientId) {
             $clientVatRate = $this->actorRepository->getVatRate($renewal->clientId);
@@ -120,7 +120,7 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
                 $vatRate = $clientVatRate;
             }
         }
-        
+
         return $vatRate;
     }
 
@@ -129,7 +129,7 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
         if ($renewal->isInGracePeriod() && $renewal->doneDate && Carbon::parse($renewal->doneDate)->lt($renewal->dueDate)) {
             return config('renewal.validity.fee_factor', 1.0);
         }
-        
+
         return 1.0;
     }
 

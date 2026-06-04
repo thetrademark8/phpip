@@ -58,7 +58,7 @@ class TaskController extends Controller
             $paginatedTasks = $query->with(['matter:id,uid', 'info:id,name,code'])
                 ->simplePaginate(18)
                 ->appends($request->input());
-            
+
             return response()->json($paginatedTasks);
         }
 

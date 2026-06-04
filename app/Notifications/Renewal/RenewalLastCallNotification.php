@@ -2,27 +2,35 @@
 
 namespace App\Notifications\Renewal;
 
+use App\Models\TemplateMember;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TemplateMember;
-use Illuminate\Database\Eloquent\Builder;
 
 class RenewalLastCallNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     protected Collection $renewals;
+
     protected string $language;
+
     protected string $subject;
+
     protected string $validity_date;
+
     protected string $instruction_date;
+
     protected float $total;
+
     protected float $total_ht;
+
     protected string $dest;
+
     protected int $gracePeriod;
 
     /**
@@ -94,8 +102,8 @@ class RenewalLastCallNotification extends Notification implements ShouldQueue
             $message->withSymfonyMessage(function ($symfonyMessage) {
                 $headers = $symfonyMessage->getHeaders();
                 $userEmail = Auth::user()->email;
-                $headers->addTextHeader('X-Confirm-Reading-To', '<' . $userEmail . '>');
-                $headers->addTextHeader('Return-receipt-to', '<' . $userEmail . '>');
+                $headers->addTextHeader('X-Confirm-Reading-To', '<'.$userEmail.'>');
+                $headers->addTextHeader('Return-receipt-to', '<'.$userEmail.'>');
             });
         }
 

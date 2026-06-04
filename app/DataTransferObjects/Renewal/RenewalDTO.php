@@ -2,7 +2,6 @@
 
 namespace App\DataTransferObjects\Renewal;
 
-use App\Models\Task;
 use Carbon\Carbon;
 
 class RenewalDTO
