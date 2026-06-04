@@ -41,8 +41,8 @@ abstract class BaseRenewalNotification extends Notification implements ShouldQue
             $message->withSymfonyMessage(function ($symfonyMessage) {
                 $headers = $symfonyMessage->getHeaders();
                 $userEmail = Auth::user()->email;
-                $headers->addTextHeader('X-Confirm-Reading-To', '<' . $userEmail . '>');
-                $headers->addTextHeader('Return-receipt-to', '<' . $userEmail . '>');
+                $headers->addTextHeader('X-Confirm-Reading-To', '<'.$userEmail.'>');
+                $headers->addTextHeader('Return-receipt-to', '<'.$userEmail.'>');
             });
         }
 

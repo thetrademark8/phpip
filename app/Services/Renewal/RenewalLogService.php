@@ -88,7 +88,7 @@ class RenewalLogService implements RenewalLogServiceInterface
     {
         $jobId = $this->getNextJobId();
         $logs = [];
-        
+
         foreach ($renewals as $renewal) {
             $logs[] = [
                 'task_id' => $renewal->id,
@@ -99,8 +99,8 @@ class RenewalLogService implements RenewalLogServiceInterface
                 'created_at' => now(),
             ];
         }
-        
-        if (!empty($logs)) {
+
+        if (! empty($logs)) {
             RenewalsLog::insert($logs);
         }
     }
@@ -150,16 +150,16 @@ class RenewalLogService implements RenewalLogServiceInterface
     {
         $jobId = $this->getNextJobId();
         $logs = [];
-        
+
         // Determine grace period transitions based on email type
         $fromGrace = null;
         $toGrace = null;
-        
+
         if ($emailType === 'last') {
             $fromGrace = 0;
             $toGrace = 1;
         }
-        
+
         foreach ($taskIds as $taskId) {
             $logs[] = [
                 'task_id' => $taskId,
@@ -168,13 +168,13 @@ class RenewalLogService implements RenewalLogServiceInterface
                 'to_step' => $toStep,
                 'from_grace' => $fromGrace,
                 'to_grace' => $toGrace,
-                'action' => 'email_' . $emailType,
+                'action' => 'email_'.$emailType,
                 'creator' => Auth::user()->login ?? 'system',
                 'created_at' => now(),
             ];
         }
-        
-        if (!empty($logs)) {
+
+        if (! empty($logs)) {
             RenewalsLog::insert($logs);
         }
     }

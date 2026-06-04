@@ -2,12 +2,10 @@
 
 namespace Tests\Support;
 
-use App\Models\Task;
-use App\Models\Matter;
-use App\Models\Event;
 use App\Models\Actor;
-use App\Models\EventName;
-use App\Models\Rule;
+use App\Models\Event;
+use App\Models\Matter;
+use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -24,28 +22,28 @@ class RenewalTestHelpers
             'small_entity' => $attributes['small_entity'] ?? false,
             'discount' => $attributes['discount'] ?? null,
         ]);
-        
+
         // Create matter with client
         $matter = Matter::factory()->create([
             'category_code' => $attributes['category_code'] ?? 'PAT',
             'country' => $attributes['country'] ?? 'FR',
             'dead' => 0,
         ]);
-        
+
         // Link client to matter
         $matter->actors()->attach($client->id, [
             'role' => 'CLI',
             'display' => 1,
             'shared' => 0,
         ]);
-        
+
         // Create trigger event
         $trigger = Event::factory()->create([
             'matter_id' => $matter->id,
             'code' => 'FIL',
             'event_date' => Carbon::now()->subYears(10),
         ]);
-        
+
         // Create renewal task
         return Task::factory()->renewal()->create(array_merge([
             'trigger_id' => $trigger->id,
@@ -57,7 +55,7 @@ class RenewalTestHelpers
             'grace_period' => $attributes['grace_period'] ?? 0,
         ], $attributes));
     }
-    
+
     /**
      * Create a renewal in a specific workflow step.
      */
@@ -65,21 +63,21 @@ class RenewalTestHelpers
     {
         return self::createRenewalWithClient(array_merge($attributes, ['step' => $step]));
     }
-    
+
     /**
      * Create multiple renewals for batch testing.
      */
     public static function createBatchRenewals(int $count, array $attributes = []): array
     {
         $renewals = [];
-        
+
         for ($i = 0; $i < $count; $i++) {
             $renewals[] = self::createRenewalWithClient($attributes);
         }
-        
+
         return $renewals;
     }
-    
+
     /**
      * Setup a complete renewal workflow scenario.
      */
@@ -96,7 +94,7 @@ class RenewalTestHelpers
             'abandoned' => self::createRenewalInStep(11),
         ];
     }
-    
+
     /**
      * Create a renewal with specific fee configuration.
      */
@@ -107,7 +105,7 @@ class RenewalTestHelpers
             'fee' => $fee,
         ]));
     }
-    
+
     /**
      * Create a renewal with grace period.
      */
@@ -118,7 +116,7 @@ class RenewalTestHelpers
             'due_date' => Carbon::now()->subDays(30), // Past due
         ]));
     }
-    
+
     /**
      * Assert renewal is in expected step.
      */
@@ -127,7 +125,7 @@ class RenewalTestHelpers
         $renewal->refresh();
         expect($renewal->step)->toBe($expectedStep);
     }
-    
+
     /**
      * Assert renewal has expected invoice step.
      */
@@ -136,7 +134,7 @@ class RenewalTestHelpers
         $renewal->refresh();
         expect($renewal->invoice_step)->toBe($expectedInvoiceStep);
     }
-    
+
     /**
      * Assert renewal fees are calculated correctly.
      */
@@ -145,7 +143,7 @@ class RenewalTestHelpers
         expect($renewal->cost)->toBe($expectedCost);
         expect($renewal->fee)->toBe($expectedFee);
     }
-    
+
     /**
      * Create user with specific role for testing.
      */
@@ -155,16 +153,16 @@ class RenewalTestHelpers
             'default_role' => $role,
         ]);
     }
-    
+
     /**
      * Get renewal IDs from collection.
      */
     public static function getRenewalIds($renewals): array
     {
         if (is_array($renewals)) {
-            return array_map(fn($r) => $r->id, $renewals);
+            return array_map(fn ($r) => $r->id, $renewals);
         }
-        
+
         return $renewals->pluck('id')->toArray();
     }
 }

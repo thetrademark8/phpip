@@ -28,7 +28,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DateServiceInterface::class, DateService::class);
         $this->app->bind(DatePickerServiceInterface::class, DatePickerService::class);
         $this->app->bind(MatterServiceInterface::class, MatterService::class);
-        
+
         // Register TaskEmailService as singleton for better performance
         $this->app->singleton(TaskEmailService::class);
 

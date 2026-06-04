@@ -39,7 +39,7 @@ class DocumentController extends Controller
             'template_classes' => $query->paginate(15),
             'filters' => $request->only(['Name', 'Notes']),
             'sort' => 'name',
-            'direction' => 'asc'
+            'direction' => 'asc',
         ]);
     }
 
@@ -49,7 +49,7 @@ class DocumentController extends Controller
         $tableComments = $table->getTableComments();
 
         return response()->json([
-            'tableComments' => $tableComments
+            'tableComments' => $tableComments,
         ]);
     }
 
@@ -59,9 +59,9 @@ class DocumentController extends Controller
             'name' => 'required|max:55',
         ]);
         $request->merge(['creator' => Auth::user()->login]);
-        
+
         $templateClass = TemplateClass::create($request->except(['_token', '_method']));
-        
+
         if ($request->header('X-Inertia')) {
             return redirect()->route('document.index')
                 ->with('success', 'Template class created successfully');
@@ -77,7 +77,7 @@ class DocumentController extends Controller
 
         return response()->json([
             'templateClass' => $class,
-            'tableComments' => $tableComments
+            'tableComments' => $tableComments,
         ]);
     }
 

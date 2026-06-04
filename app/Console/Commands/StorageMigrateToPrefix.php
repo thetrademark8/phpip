@@ -45,7 +45,7 @@ class StorageMigrateToPrefix extends Command
 
         foreach ($attachments as $attachment) {
             $oldKey = $attachment->path;
-            $newKey = $prefixClean . '/' . ltrim($oldKey, '/');
+            $newKey = $prefixClean.'/'.ltrim($oldKey, '/');
 
             try {
                 $existsOld = $legacy->exists($oldKey);
@@ -70,7 +70,7 @@ class StorageMigrateToPrefix extends Command
                 if (! $dryRun) {
                     $client->copyObject([
                         'Bucket' => $bucket,
-                        'CopySource' => urlencode($bucket . '/' . $oldKey),
+                        'CopySource' => urlencode($bucket.'/'.$oldKey),
                         'Key' => $newKey,
                     ]);
                 }

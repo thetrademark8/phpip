@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
 use App\Models\Matter;
+use App\Models\Task;
 use App\Models\User;
 use App\Notifications\TaskReminderNotification;
 use App\Notifications\TasksSummaryNotification;
@@ -18,12 +18,12 @@ class EmailPreviewController extends Controller
      */
     public function show(Request $request, $template)
     {
-        if (!app()->environment('local')) {
+        if (! app()->environment('local')) {
             abort(404);
         }
 
         try {
-            $html = match($template) {
+            $html = match ($template) {
                 'task-reminder' => $this->previewTaskReminder(),
                 'tasks-summary' => $this->previewTasksSummary(),
                 'urgent-tasks' => $this->previewUrgentTasks(),
@@ -32,7 +32,7 @@ class EmailPreviewController extends Controller
 
             return response($html)->header('Content-Type', 'text/html');
         } catch (\Exception $e) {
-            return response('<h1>Error</h1><p>' . $e->getMessage() . '</p><pre>' . $e->getTraceAsString() . '</pre>');
+            return response('<h1>Error</h1><p>'.$e->getMessage().'</p><pre>'.$e->getTraceAsString().'</pre>');
         }
     }
 
@@ -40,14 +40,14 @@ class EmailPreviewController extends Controller
     {
         // Create sample data for testing
         $matter = Matter::with(['client', 'classifiers'])->first();
-        
-        if (!$matter) {
+
+        if (! $matter) {
             // Create fake matter data if none exists
             $matter = new Matter([
                 'id' => 1,
                 'uid' => 'TEST-001',
                 'title' => 'Test Patent Application',
-                'alt_ref' => 'CLIENT-REF-123'
+                'alt_ref' => 'CLIENT-REF-123',
             ]);
             $matter->exists = true;
         }
@@ -57,11 +57,11 @@ class EmailPreviewController extends Controller
             'code' => 'REN',
             'due_date' => now()->addDays(2),
             'detail' => 'Renewal payment due',
-            'matter_id' => $matter->id
+            'matter_id' => $matter->id,
         ]);
         $task->exists = true;
         $task->setRelation('matter', $matter);
-        
+
         // Add fake info relation
         $taskInfo = (object) ['name' => 'Patent Renewal Payment'];
         $task->setRelation('info', $taskInfo);
@@ -69,7 +69,7 @@ class EmailPreviewController extends Controller
         $user = User::first() ?? new User(['name' => 'Test User', 'email' => 'test@example.com']);
 
         $notification = new TaskReminderNotification($task, 'en');
-        
+
         return $notification->toMail($user)->render();
     }
 
@@ -89,8 +89,8 @@ class EmailPreviewController extends Controller
                     'category_code' => 'PAT',
                     'responsible' => 'MP',
                     'alt_ref' => 'CLIENT-REF-001',
-                    'client' => (object) ['name' => 'Test Client']
-                ]
+                    'client' => (object) ['name' => 'Test Client'],
+                ],
             ],
             (object) [
                 'id' => 2,
@@ -105,15 +105,15 @@ class EmailPreviewController extends Controller
                     'category_code' => 'TM',
                     'responsible' => 'KB',
                     'alt_ref' => 'CLIENT-REF-002',
-                    'client' => (object) ['name' => 'Another Client']
-                ]
-            ]
+                    'client' => (object) ['name' => 'Another Client'],
+                ],
+            ],
         ]);
 
         $user = User::first() ?? new User(['name' => 'Test User', 'email' => 'test@example.com']);
 
         $notification = new TasksSummaryNotification($tasks, 'fr');
-        
+
         return $notification->toMail($user)->render();
     }
 
@@ -124,7 +124,7 @@ class EmailPreviewController extends Controller
             'id' => 1,
             'name' => 'Test Agent',
             'email' => 'agent@example.com',
-            'login' => 'MP'
+            'login' => 'MP',
         ]);
         $agent->exists = true;
 
@@ -142,9 +142,9 @@ class EmailPreviewController extends Controller
                     'category_code' => 'PAT',
                     'responsible' => 'MP',
                     'alt_ref' => 'URGENT-REF-001',
-                    'client' => (object) ['name' => 'Important Client']
-                ]
-            ]
+                    'client' => (object) ['name' => 'Important Client'],
+                ],
+            ],
         ];
 
         $dueSoonTasks = [
@@ -161,15 +161,15 @@ class EmailPreviewController extends Controller
                     'category_code' => 'TM',
                     'responsible' => 'MP',
                     'alt_ref' => 'URGENT-REF-002',
-                    'client' => (object) ['name' => 'Important Client']
-                ]
-            ]
+                    'client' => (object) ['name' => 'Important Client'],
+                ],
+            ],
         ];
 
         $user = User::first() ?? new User(['name' => 'Test User', 'email' => 'test@example.com']);
 
         $notification = new UrgentTasksNotification($agent, $overdueTasks, $dueSoonTasks, 'fr');
-        
+
         return $notification->toMail($user)->render();
     }
 
@@ -178,24 +178,24 @@ class EmailPreviewController extends Controller
      */
     public function index()
     {
-        if (!app()->environment('local')) {
+        if (! app()->environment('local')) {
             abort(404);
         }
 
         $templates = [
             'task-reminder' => 'Single Task Reminder',
             'tasks-summary' => 'Tasks Summary',
-            'urgent-tasks' => 'Urgent Tasks Alert'
+            'urgent-tasks' => 'Urgent Tasks Alert',
         ];
 
         $html = '<h1>Email Template Previews</h1>';
         $html .= '<p>Available templates for testing:</p>';
         $html .= '<ul>';
-        
+
         foreach ($templates as $key => $name) {
-            $html .= '<li><a href="' . route('email.preview', $key) . '" target="_blank">' . $name . '</a></li>';
+            $html .= '<li><a href="'.route('email.preview', $key).'" target="_blank">'.$name.'</a></li>';
         }
-        
+
         $html .= '</ul>';
         $html .= '<p><small>Note: These previews are only available in development environment.</small></p>';
 

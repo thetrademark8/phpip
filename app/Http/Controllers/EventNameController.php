@@ -14,33 +14,33 @@ class EventNameController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('except_client');
-        
+
         // Get filters
         $code = $request->input('Code');
         $name = $request->input('Name');
         $sort = $request->input('sort', 'code');
         $direction = $request->input('direction', 'asc');
-        
+
         // Base query with relationships
         $query = EventName::query()->with([
-            'countryInfo:iso,name', 
-            'categoryInfo:code,category', 
-            'default_responsibleInfo:id,name'
+            'countryInfo:iso,name',
+            'categoryInfo:code,category',
+            'default_responsibleInfo:id,name',
         ]);
-        
+
         // Apply filters
-        if (!is_null($code)) {
+        if (! is_null($code)) {
             $query->whereLike('code', $code.'%');
         }
 
-        if (!is_null($name)) {
+        if (! is_null($name)) {
             $query->whereJsonLike('name', $name);
         }
 
         // Apply sorting
         $locale = app()->getLocale();
         $baseLocale = substr($locale, 0, 2);
-        
+
         $sortableColumns = [
             'code' => 'event_name.code',
             'name' => "JSON_UNQUOTE(JSON_EXTRACT(event_name.name, '$.\"{$baseLocale}\"'))",
@@ -78,7 +78,7 @@ class EventNameController extends Controller
     public function create()
     {
         Gate::authorize('except_client');
-        
+
         $table = new EventName;
         $tableComments = $table->getTableComments();
 
@@ -91,7 +91,7 @@ class EventNameController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('except_client');
-        
+
         $request->validate([
             'code' => 'required|unique:event_name|max:5',
             'name' => 'required|max:45',
@@ -104,7 +104,7 @@ class EventNameController extends Controller
             'category' => 'nullable|string|max:5',
             'default_responsible' => 'nullable|exists:users,id',
         ]);
-        
+
         $request->merge(['creator' => Auth::user()->login]);
         EventName::create($request->except(['_token', '_method']));
 
@@ -119,7 +119,7 @@ class EventNameController extends Controller
     public function show(EventName $eventname)
     {
         Gate::authorize('except_client');
-        
+
         $tableComments = $eventname->getTableComments();
         $eventname->load(['countryInfo:iso,name', 'categoryInfo:code,category', 'default_responsibleInfo:id,name']);
         $links = EventClassLnk::where('event_name_code', '=', $eventname->code)
@@ -137,7 +137,7 @@ class EventNameController extends Controller
     public function update(Request $request, EventName $eventname)
     {
         Gate::authorize('except_client');
-        
+
         $request->validate([
             'code' => 'required|unique:event_name,code,'.$eventname->code.',code|max:5',
             'name' => 'required|max:45',
@@ -150,7 +150,7 @@ class EventNameController extends Controller
             'category' => 'nullable|string|max:5',
             'default_responsible' => 'nullable|exists:users,id',
         ]);
-        
+
         $request->merge(['updater' => Auth::user()->login]);
         $eventname->update($request->except(['_token', '_method']));
 
@@ -165,7 +165,7 @@ class EventNameController extends Controller
     public function destroy(EventName $eventname)
     {
         Gate::authorize('except_client');
-        
+
         $eventname->delete();
 
         if (request()->header('X-Inertia')) {

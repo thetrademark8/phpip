@@ -21,15 +21,15 @@ class ClassifierTypeController extends Controller
         $query = ClassifierType::query()->with(['category:code,category']);
 
         // Apply filters
-        if (!empty($Code)) {
+        if (! empty($Code)) {
             $query->whereLike('code', $Code.'%');
         }
 
-        if (!empty($Type)) {
+        if (! empty($Type)) {
             $query->whereJsonLike('type', $Type);
         }
 
-        if (!empty($Category)) {
+        if (! empty($Category)) {
             $query->whereHas('category', function ($q) use ($Category) {
                 $q->whereJsonLike('category', $Category);
             });
@@ -38,8 +38,8 @@ class ClassifierTypeController extends Controller
         // Apply sorting
         if ($sort === 'category') {
             $query->leftJoin('category', 'classifier_type.for_category', '=', 'category.code')
-                  ->orderBy('category.category', $direction)
-                  ->select('classifier_type.*');
+                ->orderBy('category.category', $direction)
+                ->select('classifier_type.*');
         } else {
             $query->orderBy($sort, $direction);
         }
@@ -94,6 +94,7 @@ class ClassifierTypeController extends Controller
         }
 
         $tableComments = $classifier_type->getTableComments();
+
         return view('classifier_type.show', compact('classifier_type', 'tableComments'));
     }
 
@@ -103,7 +104,7 @@ class ClassifierTypeController extends Controller
             'code' => 'required|max:5|unique:classifier_type,code,'.$classifierType->code.',code',
             'type' => 'required|max:45',
         ]);
-        
+
         $request->merge(['updater' => Auth::user()->login]);
         $classifierType->update($request->except(['_token', '_method']));
 

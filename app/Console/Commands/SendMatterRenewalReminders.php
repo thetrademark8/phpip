@@ -39,6 +39,7 @@ class SendMatterRenewalReminders extends Command
 
             if ($matters->isEmpty()) {
                 $this->info("No matters found for {$months}-month reminder ({$reminderType})");
+
                 continue;
             }
 
@@ -97,12 +98,13 @@ class SendMatterRenewalReminders extends Command
         foreach ($matters as $matter) {
             $responsible = $matter->responsible;
 
-            if (!$responsible) {
+            if (! $responsible) {
                 Log::warning('Matter has no responsible assigned', ['matter_id' => $matter->id, 'uid' => $matter->uid]);
+
                 continue;
             }
 
-            if (!isset($grouped[$responsible])) {
+            if (! isset($grouped[$responsible])) {
                 $grouped[$responsible] = [];
             }
 
@@ -119,13 +121,15 @@ class SendMatterRenewalReminders extends Command
     {
         $actor = Actor::where('login', $responsibleLogin)->first();
 
-        if (!$actor) {
+        if (! $actor) {
             Log::warning('Responsible actor not found', ['login' => $responsibleLogin]);
+
             return false;
         }
 
-        if (!$actor->email) {
+        if (! $actor->email) {
             Log::warning('Responsible actor has no email', ['login' => $responsibleLogin, 'actor_id' => $actor->id]);
+
             return false;
         }
 

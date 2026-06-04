@@ -35,33 +35,34 @@ class RenewalController extends Controller
     {
         // Create filter DTO from request
         $filters = RenewalFilterDTO::fromRequest($request);
-        
+
         // Build query using service
         $query = $this->queryService->buildQuery($filters);
-        
+
         // Paginate results
         $renewals = $this->renewalRepository->paginate($query, $filters->perPage);
-        
+
         // Calculate fees in batch to avoid N+1 queries
         $fees = $this->feeCalculator->calculateBatch($renewals->getCollection());
-        
+
         // Apply calculated fees to renewals
         $renewals->transform(function ($renewal) use ($fees) {
             if (isset($fees[$renewal->id])) {
                 $renewal->cost = $fees[$renewal->id]->cost;
                 $renewal->fee = $fees[$renewal->id]->fee;
             }
+
             return $renewal;
         });
-        
+
         // Keep URL parameters in paginator links
         $renewals->appends($request->input());
-        
+
         // For API/JSON requests
         if ($request->wantsJson()) {
             return response()->json($renewals);
         }
-        
+
         // For Inertia requests
         return Inertia::render('Renewal/Index', [
             'renewals' => $renewals,
@@ -82,25 +83,25 @@ class RenewalController extends Controller
     public function firstcall(Request $request, int $send)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index')
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         // Send or preview first calls
         $result = $this->emailService->sendFirstCall($ids, $send !== 1);
-        
+
         if ($result->success) {
             // Update step to 2 (reminder) if sent
             if ($send == 1) {
                 $this->workflowService->updateStep($ids, 2);
             }
-            
+
             return to_route('renewal.index', ['step' => 2])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => $result->error]);
     }
@@ -111,19 +112,19 @@ class RenewalController extends Controller
     public function remindercall(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 2])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->emailService->sendReminderCall($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 2])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['step' => 2])
             ->withErrors(['error' => $result->error]);
     }
@@ -134,19 +135,19 @@ class RenewalController extends Controller
     public function lastcall(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 2])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->emailService->sendLastCall($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 2])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['step' => 2])
             ->withErrors(['error' => $result->error]);
     }
@@ -157,19 +158,19 @@ class RenewalController extends Controller
     public function formalcall(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 2])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->emailService->sendFormalCall($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 2])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['step' => 2])
             ->withErrors(['error' => $result->error]);
     }
@@ -180,24 +181,24 @@ class RenewalController extends Controller
     public function payment(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 2])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         // Update invoice step to 1 (invoiced)
         $result = $this->workflowService->updateInvoiceStep($ids, 1);
-        
+
         if ($result->success) {
             // Generate XML file for payment
             $xmlContent = $this->exportService->generatePaymentXml($ids);
-            
+
             return response($xmlContent, 200)
                 ->header('Content-Type', 'text/xml')
-                ->header('Content-Disposition', 'attachment; filename="payment_' . date('YmdHis') . '.xml"');
+                ->header('Content-Disposition', 'attachment; filename="payment_'.date('YmdHis').'.xml"');
         }
-        
+
         return to_route('renewal.index', ['step' => 2])
             ->withErrors(['error' => $result->error]);
     }
@@ -208,19 +209,19 @@ class RenewalController extends Controller
     public function topay(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 2])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->markAsPaymentOrderReceived($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 4])
                 ->with('success', 'Marked as to pay');
         }
-        
+
         return to_route('renewal.index', ['step' => 2])
             ->withErrors(['error' => $result->error]);
     }
@@ -235,18 +236,18 @@ class RenewalController extends Controller
             'cost' => 'required|numeric|min:0',
             'fee' => 'required|numeric|min:0',
         ]);
-        
+
         $success = $this->renewalRepository->updateFees(
             $validated['task_id'],
             $validated['cost'],
             $validated['fee']
         );
-        
+
         if ($success) {
             return to_route('renewal.index')
                 ->with('success', 'Fees updated successfully');
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => 'Failed to update fees']);
     }
@@ -257,19 +258,19 @@ class RenewalController extends Controller
     public function clear(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 2])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->abandon($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 2])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['step' => 2])
             ->withErrors(['error' => $result->error]);
     }
@@ -280,19 +281,19 @@ class RenewalController extends Controller
     public function invoice(Request $request, int $toinvoice)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 3])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->invoiceService->createInvoices($ids, $toinvoice === 1);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['invoice_step' => 2])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['step' => 3])
             ->withErrors(['error' => $result->error]);
     }
@@ -303,20 +304,20 @@ class RenewalController extends Controller
     public function receipt(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['invoice_step' => 2])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         // Update invoice step to 3 (paid)
         $result = $this->workflowService->updateInvoiceStep($ids, 3);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['invoice_step' => 3])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['invoice_step' => 2])
             ->withErrors(['error' => $result->error]);
     }
@@ -327,20 +328,20 @@ class RenewalController extends Controller
     public function receipts(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 4])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         // Update step to 5 (receipts)
         $result = $this->workflowService->updateStep($ids, 5);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 5])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['step' => 4])
             ->withErrors(['error' => $result->error]);
     }
@@ -352,19 +353,19 @@ class RenewalController extends Controller
     {
         $ids = $request->input('task_ids', []);
         $done_date = $request->input('done_date');
-        
+
         if (empty($ids)) {
             return to_route('renewal.index', ['step' => 5])
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->markAsDone($ids, $done_date);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 10])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index', ['step' => 5])
             ->withErrors(['error' => $result->error]);
     }
@@ -385,17 +386,15 @@ class RenewalController extends Controller
     public function previewEmail(Request $request, int $id)
     {
         $type = $request->input('type', 'first');
-        
+
         $preview = $this->emailService->previewEmail($id, $type);
-        
+
         if (isset($preview['error'])) {
             return response()->json(['error' => $preview['error']], 404);
         }
-        
+
         return response()->json($preview);
     }
-
-
 
     /**
      * Create renewal orders for selected renewals
@@ -403,19 +402,19 @@ class RenewalController extends Controller
     public function renewalOrder(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index')
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->createOrders($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 4])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => $result->error]);
     }
@@ -426,19 +425,19 @@ class RenewalController extends Controller
     public function renewalsInvoiced(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index')
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->markInvoiced($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['invoice_step' => 2])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => $result->error]);
     }
@@ -449,19 +448,19 @@ class RenewalController extends Controller
     public function paid(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index')
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->markPaid($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['invoice_step' => 3])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => $result->error]);
     }
@@ -473,19 +472,19 @@ class RenewalController extends Controller
     {
         $ids = $request->input('task_ids', []);
         $doneDate = $request->input('done_date');
-        
+
         if (empty($ids)) {
             return to_route('renewal.index')
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->markAsDone($ids, $doneDate);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 10])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => $result->error]);
     }
@@ -496,19 +495,19 @@ class RenewalController extends Controller
     public function abandon(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index')
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->abandon($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 11])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => $result->error]);
     }
@@ -519,19 +518,19 @@ class RenewalController extends Controller
     public function lapsing(Request $request)
     {
         $ids = $request->input('task_ids', []);
-        
+
         if (empty($ids)) {
             return to_route('renewal.index')
                 ->withErrors(['error' => 'No renewals selected']);
         }
-        
+
         $result = $this->workflowService->markAsLapsing($ids);
-        
+
         if ($result->success) {
             return to_route('renewal.index', ['step' => 11])
                 ->with('success', $result->message);
         }
-        
+
         return to_route('renewal.index')
             ->withErrors(['error' => $result->error]);
     }
@@ -543,14 +542,14 @@ class RenewalController extends Controller
     {
         // Build filters from request
         $filters = RenewalFilterDTO::fromRequest($request);
-        
+
         // Get renewals for export (typically invoice_step = 1)
         $filters->invoiceStep = $filters->invoiceStep ?? 1;
-        
+
         // Build query and get renewals
         $query = $this->queryService->buildQuery($filters);
         $renewals = $query->get();
-        
+
         // Export to CSV
         return $this->exportService->exportToCsv($renewals);
     }
@@ -562,9 +561,9 @@ class RenewalController extends Controller
     {
         $filters = $request->except(['page', 'per_page']);
         $perPage = $request->input('per_page', 25);
-        
+
         $logs = $this->logService->getLogs($filters, $perPage);
-        
+
         return Inertia::render('Renewal/Logs', [
             'logs' => $logs,
             'filters' => $filters,

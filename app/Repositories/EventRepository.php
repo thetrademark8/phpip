@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Contracts\EventRepositoryInterface;
 use App\Models\Event;
-use Illuminate\Support\Collection;
+use App\Repositories\Contracts\EventRepositoryInterface;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class EventRepository implements EventRepositoryInterface
 {
@@ -25,10 +25,10 @@ class EventRepository implements EventRepositoryInterface
     public function getRenewalEvents(int $matterId): Collection
     {
         return Event::where('matter_id', $matterId)
-            ->whereHas('tasks', function($query) {
+            ->whereHas('tasks', function ($query) {
                 $query->where('code', 'REN');
             })
-            ->with(['tasks' => function($query) {
+            ->with(['tasks' => function ($query) {
                 $query->where('code', 'REN');
             }])
             ->orderBy('event_date', 'desc')
@@ -48,11 +48,11 @@ class EventRepository implements EventRepositoryInterface
     public function delete(int $id): bool
     {
         $event = Event::find($id);
-        
-        if (!$event) {
+
+        if (! $event) {
             return false;
         }
-        
+
         return $event->delete();
     }
 
@@ -60,37 +60,37 @@ class EventRepository implements EventRepositoryInterface
     {
         return Event::whereBetween('event_date', [
             $from->format('Y-m-d'),
-            $to->format('Y-m-d')
+            $to->format('Y-m-d'),
         ])->get();
     }
 
     public function getOverdueEvents(): Collection
     {
-        return Event::whereHas('tasks', function($query) {
+        return Event::whereHas('tasks', function ($query) {
             $query->where('done', 0)
                 ->where('due_date', '<', Carbon::now());
         })
-        ->with(['tasks' => function($query) {
-            $query->where('done', 0)
-                ->where('due_date', '<', Carbon::now());
-        }])
-        ->get();
+            ->with(['tasks' => function ($query) {
+                $query->where('done', 0)
+                    ->where('due_date', '<', Carbon::now());
+            }])
+            ->get();
     }
 
     public function markAsCompleted(int $id, ?\DateTime $completedDate = null): bool
     {
         $event = Event::find($id);
-        
-        if (!$event) {
+
+        if (! $event) {
             return false;
         }
-        
+
         // Mark associated tasks as done
         $date = $completedDate ? $completedDate->format('Y-m-d') : Carbon::now()->format('Y-m-d');
-        
+
         return $event->tasks()->update([
             'done' => 1,
-            'done_date' => $date
+            'done_date' => $date,
         ]) > 0;
     }
 
@@ -104,29 +104,29 @@ class EventRepository implements EventRepositoryInterface
     public function getForExport(array $filters = []): Collection
     {
         $query = Event::with(['matter', 'tasks']);
-        
-        if (!empty($filters['code'])) {
+
+        if (! empty($filters['code'])) {
             $query->where('code', $filters['code']);
         }
-        
-        if (!empty($filters['matter_id'])) {
+
+        if (! empty($filters['matter_id'])) {
             $query->where('matter_id', $filters['matter_id']);
         }
-        
-        if (!empty($filters['from_date'])) {
+
+        if (! empty($filters['from_date'])) {
             $query->where('event_date', '>=', $filters['from_date']);
         }
-        
-        if (!empty($filters['until_date'])) {
+
+        if (! empty($filters['until_date'])) {
             $query->where('event_date', '<=', $filters['until_date']);
         }
-        
-        if (!empty($filters['done'])) {
-            $query->whereHas('tasks', function($q) use ($filters) {
+
+        if (! empty($filters['done'])) {
+            $query->whereHas('tasks', function ($q) use ($filters) {
                 $q->where('done', $filters['done']);
             });
         }
-        
+
         return $query->orderBy('event_date', 'desc')->get();
     }
 }

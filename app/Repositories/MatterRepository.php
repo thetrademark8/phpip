@@ -26,6 +26,7 @@ class MatterRepository implements MatterRepositoryInterface
     public function update(Matter $matter, array $data): Matter
     {
         $matter->update($data);
+
         return $matter->fresh();
     }
 
@@ -60,10 +61,10 @@ class MatterRepository implements MatterRepositoryInterface
         bool $includeDead
     ): LengthAwarePaginator {
         $query = $this->buildFilterQuery($filters, $displayWith, $includeDead);
-        
+
         // Map sort key to actual database column
         $actualSortKey = $this->mapSortKey($sortKey);
-        
+
         // Add all GROUP BY fields needed for the aggregate functions
         $groupByFields = [
             'matter.id',
@@ -98,12 +99,12 @@ class MatterRepository implements MatterRepositoryInterface
             'reg.event_date',
             'reg.detail',
             'regdp.event_date',
-            'img.id'
+            'img.id',
         ];
 
         // Group by the sort key and additional fields to match old implementation
         $query->groupBy(...$groupByFields)
-              ->orderBy($actualSortKey, $sortDir);
+            ->orderBy($actualSortKey, $sortDir);
 
         return $query->paginate($perPage);
     }
@@ -119,10 +120,10 @@ class MatterRepository implements MatterRepositoryInterface
         bool $includeDead
     ): Collection {
         $query = $this->buildFilterQuery($filters, $displayWith, $includeDead);
-        
+
         // Map sort key to actual database column
         $actualSortKey = $this->mapSortKey($sortKey);
-        
+
         // Add all GROUP BY fields needed for the aggregate functions
         $groupByFields = [
             'matter.id',
@@ -157,12 +158,12 @@ class MatterRepository implements MatterRepositoryInterface
             'reg.event_date',
             'reg.detail',
             'regdp.event_date',
-            'img.id'
+            'img.id',
         ];
 
         // Group by the sort key and additional fields to match old implementation
         $query->groupBy(...$groupByFields)
-              ->orderBy($actualSortKey, $sortDir);
+            ->orderBy($actualSortKey, $sortDir);
 
         return $query->get();
     }
@@ -229,7 +230,7 @@ class MatterRepository implements MatterRepositoryInterface
         $this->applyFilters($query, $filters);
 
         // Apply dead filter
-        if (!$includeDead) {
+        if (! $includeDead) {
             $query->whereRaw('(select count(1) from matter m where m.caseref = matter.caseref and m.dead = 0) > 0');
         }
 
@@ -302,7 +303,7 @@ class MatterRepository implements MatterRepositoryInterface
             })
             ->leftJoin('classifier AS tmcl', function ($join) {
                 $join->on(DB::raw('IFNULL(matter.container_id, matter.id)'), '=', 'tmcl.matter_id')
-                     ->whereIn('tmcl.type_code', ['NICE', 'TMCL']);
+                    ->whereIn('tmcl.type_code', ['NICE', 'TMCL']);
             })
             ->leftJoin(DB::raw('event status JOIN event_name ON event_name.code = status.code AND event_name.status_event = 1'), 'matter.id', 'status.matter_id')
             ->leftJoin(DB::raw('event e2 JOIN event_name en2 ON e2.code = en2.code AND en2.status_event = 1'), function ($join) {
@@ -350,12 +351,13 @@ class MatterRepository implements MatterRepositoryInterface
 
         // Format intervalle : { from: "2025-01-01", to: "2025-12-31" }
         if (is_array($value)) {
-            if (!empty($value['from'])) {
+            if (! empty($value['from'])) {
                 $query->where($column, '>=', $value['from']);
             }
-            if (!empty($value['to'])) {
+            if (! empty($value['to'])) {
                 $query->where($column, '<=', $value['to']);
             }
+
             return;
         }
 
@@ -376,28 +378,29 @@ class MatterRepository implements MatterRepositoryInterface
         if (is_array($value)) {
             $query->where(function ($q) use ($value) {
                 $q->where(function ($sub) use ($value) {
-                    if (!empty($value['from'])) {
+                    if (! empty($value['from'])) {
                         $sub->where('grt.event_date', '>=', $value['from']);
                     }
-                    if (!empty($value['to'])) {
+                    if (! empty($value['to'])) {
                         $sub->where('grt.event_date', '<=', $value['to']);
                     }
                 })->orWhere(function ($sub) use ($value) {
-                    if (!empty($value['from'])) {
+                    if (! empty($value['from'])) {
                         $sub->where('reg.event_date', '>=', $value['from']);
                     }
-                    if (!empty($value['to'])) {
+                    if (! empty($value['to'])) {
                         $sub->where('reg.event_date', '<=', $value['to']);
                     }
                 })->orWhere(function ($sub) use ($value) {
-                    if (!empty($value['from'])) {
+                    if (! empty($value['from'])) {
                         $sub->where('regdp.event_date', '>=', $value['from']);
                     }
-                    if (!empty($value['to'])) {
+                    if (! empty($value['to'])) {
                         $sub->where('regdp.event_date', '<=', $value['to']);
                     }
                 });
             });
+
             return;
         }
 
@@ -415,7 +418,9 @@ class MatterRepository implements MatterRepositoryInterface
     protected function applyFilters(Builder $query, array $filters): void
     {
         foreach ($filters as $key => $value) {
-            if (empty($value)) continue;
+            if (empty($value)) {
+                continue;
+            }
 
             // Skip array values for lowercase conversion (date ranges)
             // Convert value to lowercase for case-insensitive search only for strings
@@ -505,17 +510,17 @@ class MatterRepository implements MatterRepositoryInterface
     public function findWithRenewalData(int $id): ?Matter
     {
         return Matter::with([
-            'events' => function($query) {
-                $query->whereHas('tasks', function($q) {
+            'events' => function ($query) {
+                $query->whereHas('tasks', function ($q) {
                     $q->where('code', 'REN');
                 });
             },
-            'classifiers' => function($query) {
+            'classifiers' => function ($query) {
                 $query->whereIn('type_code', ['TIT', 'TITOF']);
             },
-            'actors' => function($query) {
+            'actors' => function ($query) {
                 $query->whereIn('role_code', ['CLI', 'APP', 'OWN']);
-            }
+            },
         ])->find($id);
     }
 
@@ -534,18 +539,19 @@ class MatterRepository implements MatterRepositoryInterface
     {
         $lastRenewal = Matter::find($matterId)
             ->events()
-            ->whereHas('tasks', function($query) {
+            ->whereHas('tasks', function ($query) {
                 $query->where('code', 'REN')
                     ->where('done', 1);
             })
             ->orderByDesc('event_date')
             ->first();
-        
+
         if ($lastRenewal && $lastRenewal->tasks->first()) {
             $detail = json_decode($lastRenewal->tasks->first()->detail, true);
+
             return isset($detail['en']) ? (int) $detail['en'] : null;
         }
-        
+
         return null;
     }
 
@@ -555,10 +561,10 @@ class MatterRepository implements MatterRepositoryInterface
     public function getApplicants(int $matterId): Collection
     {
         $matter = Matter::find($matterId);
-        if (!$matter) {
+        if (! $matter) {
             return collect();
         }
-        
+
         return $matter->actors()
             ->where('role_code', 'APP')
             ->get();
@@ -570,10 +576,10 @@ class MatterRepository implements MatterRepositoryInterface
     public function getOwner(int $matterId)
     {
         $matter = Matter::find($matterId);
-        if (!$matter) {
+        if (! $matter) {
             return null;
         }
-        
+
         return $matter->actors()
             ->where('role_code', 'OWN')
             ->first();
@@ -593,7 +599,7 @@ class MatterRepository implements MatterRepositoryInterface
      */
     public function getByClient(int $clientId): Collection
     {
-        return Matter::whereHas('actors', function($query) use ($clientId) {
+        return Matter::whereHas('actors', function ($query) use ($clientId) {
             $query->where('actor_id', $clientId)
                 ->where('role_code', 'CLI');
         })->get();

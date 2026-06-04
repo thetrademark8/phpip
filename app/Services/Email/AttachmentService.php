@@ -31,8 +31,8 @@ class AttachmentService
         ?string $category = null,
         ?string $description = null
     ): MatterAttachment {
-        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        $path = $this->basePath . '/' . $matter->id . '/' . $filename;
+        $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
+        $path = $this->basePath.'/'.$matter->id.'/'.$filename;
 
         Storage::disk($this->disk)->put($path, file_get_contents($file));
 

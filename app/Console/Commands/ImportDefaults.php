@@ -78,9 +78,9 @@ class ImportDefaults extends Command
         $tables = self::TABLES;
 
         if ($targetTable) {
-            if (!isset($tables[$targetTable])) {
+            if (! isset($tables[$targetTable])) {
                 $this->error("Unknown table: {$targetTable}");
-                $this->info('Available tables: ' . implode(', ', array_keys($tables)));
+                $this->info('Available tables: '.implode(', ', array_keys($tables)));
 
                 return self::FAILURE;
             }
@@ -95,8 +95,9 @@ class ImportDefaults extends Command
         foreach ($tables as $name => $config) {
             $filePath = database_path("imports/defaults/{$name}.csv");
 
-            if (!file_exists($filePath)) {
+            if (! file_exists($filePath)) {
                 $this->warn("File not found: {$filePath} — skipping {$name}");
+
                 continue;
             }
 

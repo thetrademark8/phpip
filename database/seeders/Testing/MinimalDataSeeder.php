@@ -63,6 +63,10 @@ class MinimalDataSeeder extends Seeder
             ['code' => 'AGT', 'name' => '{"en": "Agent", "fr": "Agent"}', 'display_order' => 10, 'shareable' => 1, 'show_ref' => 1, 'show_company' => 0, 'show_rate' => 0, 'show_date' => 0],
             ['code' => 'INV', 'name' => '{"en": "Inventor", "fr": "Inventeur"}', 'display_order' => 1, 'shareable' => 1, 'show_ref' => 0, 'show_company' => 0, 'show_rate' => 0, 'show_date' => 0],
             ['code' => 'OWN', 'name' => '{"en": "Owner", "fr": "Propriétaire"}', 'display_order' => 2, 'shareable' => 1, 'show_ref' => 0, 'show_company' => 1, 'show_rate' => 0, 'show_date' => 1],
+            // System roles required by UserFactory and feature tests referencing `actor.default_role`
+            ['code' => 'DBA', 'name' => '{"en": "DB Admin", "fr": "Admin BD"}', 'display_order' => 127, 'shareable' => 0, 'show_ref' => 0, 'show_company' => 0, 'show_rate' => 0, 'show_date' => 0],
+            ['code' => 'DBRW', 'name' => '{"en": "DB Read/Write", "fr": "BDD Lecture/écriture"}', 'display_order' => 126, 'shareable' => 0, 'show_ref' => 0, 'show_company' => 0, 'show_rate' => 0, 'show_date' => 0],
+            ['code' => 'DBRO', 'name' => '{"en": "DB Read-Only", "fr": "BDD Lecture seule"}', 'display_order' => 125, 'shareable' => 0, 'show_ref' => 0, 'show_company' => 0, 'show_rate' => 0, 'show_date' => 0],
         ];
 
         DB::table('actor_role')->insertOrIgnore($roles);

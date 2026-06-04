@@ -133,7 +133,7 @@ class TaskFactory extends Factory
             'detail' => json_encode(['RYear' => $year]),
         ]);
     }
-    
+
     /**
      * Set the renewal in a specific workflow step
      */
@@ -143,7 +143,7 @@ class TaskFactory extends Factory
             'step' => $step,
         ]);
     }
-    
+
     /**
      * Set the renewal in a specific invoice step
      */
@@ -153,7 +153,7 @@ class TaskFactory extends Factory
             'invoice_step' => $invoiceStep,
         ]);
     }
-    
+
     /**
      * Set the renewal in grace period
      */
@@ -164,7 +164,7 @@ class TaskFactory extends Factory
             'due_date' => $this->faker->dateTimeBetween('-60 days', '-1 day'),
         ]);
     }
-    
+
     /**
      * Set the renewal as abandoned
      */
@@ -176,7 +176,7 @@ class TaskFactory extends Factory
             'done_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
         ]);
     }
-    
+
     /**
      * Set the renewal as closed
      */
@@ -188,7 +188,7 @@ class TaskFactory extends Factory
             'done_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
         ]);
     }
-    
+
     /**
      * Set specific cost and fee
      */

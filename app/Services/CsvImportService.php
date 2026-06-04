@@ -12,12 +12,12 @@ class CsvImportService
     /**
      * Import data from a CSV file into a database table.
      *
-     * @param string $filePath Path to the CSV file
-     * @param string $table Target database table
-     * @param string|array $uniqueKey Column(s) to check for duplicates
-     * @param array $excludeColumns Columns to exclude from import
-     * @param array $translatableColumns Columns that should be converted to JSON format
-     * @param callable|null $rowTransformer Optional callback to transform each row
+     * @param  string  $filePath  Path to the CSV file
+     * @param  string  $table  Target database table
+     * @param  string|array  $uniqueKey  Column(s) to check for duplicates
+     * @param  array  $excludeColumns  Columns to exclude from import
+     * @param  array  $translatableColumns  Columns that should be converted to JSON format
+     * @param  callable|null  $rowTransformer  Optional callback to transform each row
      * @return array{inserted: int, skipped: int, errors: int}
      */
     public function importFromCsv(
@@ -33,6 +33,7 @@ class CsvImportService
         $handle = fopen($filePath, 'r');
         if ($handle === false) {
             Log::error("CsvImportService: Unable to open file {$filePath}");
+
             return $stats;
         }
 
@@ -41,6 +42,7 @@ class CsvImportService
         if ($headers === false) {
             fclose($handle);
             Log::error("CsvImportService: Unable to read headers from {$filePath}");
+
             return $stats;
         }
 
@@ -66,6 +68,7 @@ class CsvImportService
                 if (count($headers) !== count($row)) {
                     Log::warning("CsvImportService: Row {$rowNumber} has mismatched column count");
                     $stats['errors']++;
+
                     continue;
                 }
 
@@ -88,6 +91,7 @@ class CsvImportService
                 $keyValue = $this->extractKeyValue($data, $uniqueKey);
                 if ($existingKeys->contains($keyValue)) {
                     $stats['skipped']++;
+
                     continue;
                 }
 
@@ -98,7 +102,7 @@ class CsvImportService
                 $stats['inserted']++;
 
             } catch (\Exception $e) {
-                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
+                Log::error("CsvImportService: Error on row {$rowNumber}: ".$e->getMessage());
                 $stats['errors']++;
             }
         }
@@ -122,6 +126,7 @@ class CsvImportService
                 foreach ($uniqueKey as $col) {
                     $values[] = $row->$col ?? '';
                 }
+
                 return implode('|', $values);
             });
         }
@@ -141,13 +146,13 @@ class CsvImportService
 
             // Convert translatable columns to JSON format
             if (in_array($key, $translatableColumns) && $parsedValue !== null) {
-                if (!$this->isValidJson($parsedValue)) {
+                if (! $this->isValidJson($parsedValue)) {
                     $parsedValue = json_encode(['en' => $parsedValue, 'fr' => $parsedValue, 'de' => $parsedValue], JSON_UNESCAPED_UNICODE);
                 }
 
                 // Wrap in CAST(... AS JSON) so MySQL treats the value as JSON instead of
                 // rejecting it with error 3144 ("string with CHARACTER SET 'binary'").
-                $parsedValue = DB::raw('CAST(' . DB::getPdo()->quote($parsedValue) . ' AS JSON)');
+                $parsedValue = DB::raw('CAST('.DB::getPdo()->quote($parsedValue).' AS JSON)');
             }
 
             $transformed[$key] = $parsedValue;
@@ -161,11 +166,12 @@ class CsvImportService
      */
     private function isValidJson(mixed $value): bool
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return false;
         }
 
         $decoded = json_decode($value);
+
         return json_last_error() === JSON_ERROR_NONE && is_object($decoded);
     }
 
@@ -195,6 +201,7 @@ class CsvImportService
     private function isDateColumn(string $column): bool
     {
         $dateColumns = ['created_at', 'updated_at', 'deleted_at'];
+
         return in_array($column, $dateColumns) || str_ends_with($column, '_at') || str_ends_with($column, '_date');
     }
 
@@ -223,6 +230,7 @@ class CsvImportService
             foreach ($uniqueKey as $col) {
                 $values[] = $data[$col] ?? '';
             }
+
             return implode('|', $values);
         }
 
@@ -237,13 +245,13 @@ class CsvImportService
      * For composite array keys, uses row-by-row updateOrInsert() which handles
      * nullable columns correctly and doesn't require a unique DB index.
      *
-     * @param string $filePath Path to the CSV file
-     * @param string $table Target database table
-     * @param string|array $uniqueKey Column(s) used for upsert matching
-     * @param array $excludeColumns Columns to exclude from import
-     * @param array $translatableColumns Columns that should be converted to JSON format
-     * @param callable|null $rowTransformer Optional callback to transform each row
-     * @param string $delimiter CSV delimiter character
+     * @param  string  $filePath  Path to the CSV file
+     * @param  string  $table  Target database table
+     * @param  string|array  $uniqueKey  Column(s) used for upsert matching
+     * @param  array  $excludeColumns  Columns to exclude from import
+     * @param  array  $translatableColumns  Columns that should be converted to JSON format
+     * @param  callable|null  $rowTransformer  Optional callback to transform each row
+     * @param  string  $delimiter  CSV delimiter character
      * @return array{inserted: int, updated: int, errors: int}
      */
     public function upsertFromCsv(
@@ -260,6 +268,7 @@ class CsvImportService
         $handle = fopen($filePath, 'r');
         if ($handle === false) {
             Log::error("CsvImportService: Unable to open file {$filePath}");
+
             return $stats;
         }
 
@@ -267,6 +276,7 @@ class CsvImportService
         if ($headers === false) {
             fclose($handle);
             Log::error("CsvImportService: Unable to read headers from {$filePath}");
+
             return $stats;
         }
 
@@ -278,7 +288,7 @@ class CsvImportService
         $useCompositeMatch = is_array($uniqueKey);
 
         // For simple keys, pre-fetch existing keys for batch upsert tracking
-        if (!$useCompositeMatch) {
+        if (! $useCompositeMatch) {
             $existingKeys = $this->getExistingKeys($table, $uniqueKey);
         }
 
@@ -297,6 +307,7 @@ class CsvImportService
                 if (count($headers) !== count($row)) {
                     Log::warning("CsvImportService: Row {$rowNumber} has mismatched column count");
                     $stats['errors']++;
+
                     continue;
                 }
 
@@ -347,18 +358,18 @@ class CsvImportService
                     }
                 }
             } catch (\Exception $e) {
-                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
+                Log::error("CsvImportService: Error on row {$rowNumber}: ".$e->getMessage());
                 $stats['errors']++;
             }
         }
 
         // Flush remaining batch (simple key mode only)
-        if (!empty($batch)) {
+        if (! empty($batch)) {
             try {
                 $updateColumns = array_diff(array_keys($batch[0]), $uniqueKeyArray);
                 DB::table($table)->upsert($batch, $uniqueKeyArray, array_values($updateColumns));
             } catch (\Exception $e) {
-                Log::error("CsvImportService: Error flushing batch: " . $e->getMessage());
+                Log::error('CsvImportService: Error flushing batch: '.$e->getMessage());
                 $stats['errors'] += count($batch);
                 $stats['inserted'] = max(0, $stats['inserted'] - count($batch));
                 $stats['updated'] = max(0, $stats['updated'] - count($batch));
@@ -389,6 +400,7 @@ class CsvImportService
         $handle = fopen($filePath, 'r');
         if ($handle === false) {
             Log::error("CsvImportService: Unable to open file {$filePath}");
+
             return $stats;
         }
 
@@ -396,6 +408,7 @@ class CsvImportService
         if ($headers === false) {
             fclose($handle);
             Log::error("CsvImportService: Unable to read headers from {$filePath}");
+
             return $stats;
         }
 
@@ -416,6 +429,7 @@ class CsvImportService
                 if (count($headers) !== count($row)) {
                     Log::warning("CsvImportService: Row {$rowNumber} has mismatched column count");
                     $stats['errors']++;
+
                     continue;
                 }
 
@@ -432,7 +446,7 @@ class CsvImportService
 
                 $rows[] = $data;
             } catch (\Exception $e) {
-                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
+                Log::error("CsvImportService: Error on row {$rowNumber}: ".$e->getMessage());
                 $stats['errors']++;
             }
         }
@@ -473,6 +487,7 @@ class CsvImportService
         $headers = fgetcsv($handle, 0, $delimiter);
         if ($headers === false) {
             fclose($handle);
+
             return $result;
         }
 

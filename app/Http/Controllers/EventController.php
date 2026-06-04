@@ -17,7 +17,7 @@ class EventController extends Controller
         if ($matter) {
             $request->merge(['matter_id' => $matter]);
         }
-        
+
         $this->validate($request, [
             'code' => 'required',
             'matter_id' => 'required|numeric',
@@ -54,7 +54,7 @@ class EventController extends Controller
         $request->merge(['updater' => Auth::user()->login]);
         // Get the old status before updating
         $oldStatus = $this->getCurrentMatterStatus($event->matter);
-        
+
         $event->update($request->except(['_token', '_method']));
 
         // Check if this update changed the status and trigger MatterStatusChanged
@@ -87,15 +87,15 @@ class EventController extends Controller
     {
         // Get the event info to check if it's a status event
         $eventName = EventName::where('code', $event->code)->first();
-        
+
         if ($eventName && $eventName->status_event) {
             $newStatus = $eventName->getTranslation('name', app()->getLocale());
-            
+
             // If we don't have an old status, get the current one (excluding this new event)
-            if (!$oldStatus) {
+            if (! $oldStatus) {
                 $oldStatus = $this->getCurrentMatterStatus($event->matter, $event->id);
             }
-            
+
             // Only trigger if status actually changed
             if ($oldStatus !== $newStatus) {
                 MatterStatusChanged::dispatch($event->matter, $oldStatus ?? 'Unknown', $newStatus);
@@ -111,7 +111,7 @@ class EventController extends Controller
         try {
             DB::statement('CALL recreate_tasks(?, ?)', [
                 $event->id,
-                Auth::user()->login
+                Auth::user()->login,
             ]);
 
             // Handle Inertia requests
@@ -122,10 +122,10 @@ class EventController extends Controller
             return response()->json(['message' => 'Tasks recalculated successfully']);
         } catch (\Exception $e) {
             if (request()->inertia()) {
-                return redirect()->back()->with('error', 'Failed to recalculate tasks: ' . $e->getMessage());
+                return redirect()->back()->with('error', 'Failed to recalculate tasks: '.$e->getMessage());
             }
 
-            return response()->json(['error' => 'Failed to recalculate tasks: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to recalculate tasks: '.$e->getMessage()], 500);
         }
     }
 
@@ -138,18 +138,19 @@ class EventController extends Controller
             ->join('event_name', 'event.code', '=', 'event_name.code')
             ->where('event_name.status_event', 1)
             ->orderByDesc('event_date');
-            
+
         if ($excludeEventId) {
             $query->where('event.id', '!=', $excludeEventId);
         }
-        
+
         $latestStatusEvent = $query->first();
-        
+
         if ($latestStatusEvent) {
             $eventName = EventName::where('code', $latestStatusEvent->code)->first();
+
             return $eventName?->getTranslation('name', app()->getLocale());
         }
-        
+
         return null;
     }
 }

@@ -15,7 +15,7 @@ class RoleController extends Controller
         $Name = $request->input('Name');
         $sort = $request->input('sort', 'code');
         $direction = $request->input('direction', 'asc');
-        
+
         $role = Role::query();
 
         if (! is_null($Code)) {
@@ -55,7 +55,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $this->authorize('readwrite', Role::class);
-        
+
         $request->validate([
             'code' => 'required|unique:actor_role|max:5',
             'name' => 'required|max:45',
@@ -70,12 +70,12 @@ class RoleController extends Controller
         $request->merge(['creator' => Auth::user()->login]);
 
         $role = Role::create($request->except(['_token', '_method']));
-        
+
         if ($request->header('X-Inertia')) {
             return redirect()->route('role.index')
                 ->with('success', 'Role created successfully');
         }
-        
+
         return $role;
     }
 
@@ -84,7 +84,7 @@ class RoleController extends Controller
         if (request()->wantsJson()) {
             return response()->json($role);
         }
-        
+
         $tableComments = $role->getTableComments();
 
         return view('role.show', compact('role', 'tableComments'));
@@ -93,7 +93,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $this->authorize('readwrite', Role::class);
-        
+
         $request->validate([
             'name' => 'required|max:45',
             'display_order' => 'numeric|nullable',
@@ -104,7 +104,7 @@ class RoleController extends Controller
             'show_rate' => 'boolean',
             'show_date' => 'boolean',
         ]);
-        
+
         $request->merge(['updater' => Auth::user()->login]);
         $role->update($request->except(['_token', '_method']));
 
@@ -112,28 +112,28 @@ class RoleController extends Controller
             return redirect()->route('role.index')
                 ->with('success', 'Role updated successfully');
         }
-        
+
         return $role;
     }
 
     public function destroy(Role $role)
     {
         $this->authorize('readwrite', Role::class);
-        
+
         $role->delete();
 
         if (request()->header('X-Inertia')) {
             return redirect()->route('role.index')
                 ->with('success', 'Role deleted successfully');
         }
-        
+
         return $role;
     }
-    
+
     public function autocomplete(Request $request)
     {
         $query = $request->get('query', '');
-        
+
         $roles = Role::where('name', 'like', "%{$query}%")
             ->take(10)
             ->get()

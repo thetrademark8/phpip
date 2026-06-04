@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Traits\HasTableComments;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Translation\HasLocalePreference;
 
 class Actor extends Model implements HasLocalePreference
 {
@@ -57,8 +57,6 @@ class Actor extends Model implements HasLocalePreference
     /**
      * Get the actor's preferred locale for Laravel notifications.
      * Implementation of HasLocalePreference contract.
-     *
-     * @return string
      */
     public function preferredLocale(): string
     {

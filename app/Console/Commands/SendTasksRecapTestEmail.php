@@ -61,7 +61,7 @@ class SendTasksRecapTestEmail extends Command
             ->get();
 
         $this->info('Preparing system summary recap email…');
-        $this->line("  Template  : tasks-summary (SystemTasksSummaryNotification)");
+        $this->line('  Template  : tasks-summary (SystemTasksSummaryNotification)');
         $this->line("  Recipient : {$email}");
         $this->line("  Language  : {$language}");
         $this->line("  Tasks     : {$tasks->count()}");
@@ -107,7 +107,7 @@ class SendTasksRecapTestEmail extends Command
         $dueSoonTasks = $tasks->filter(fn ($task) => $task->due_date >= $now)->values()->all();
 
         $this->info('Preparing per-agent urgent tasks email…');
-        $this->line("  Template  : urgent-tasks (UrgentTasksNotification)");
+        $this->line('  Template  : urgent-tasks (UrgentTasksNotification)');
         $this->line("  Recipient : {$email}");
         $this->line("  Agent     : {$agent->login} ({$agent->name})");
         $this->line("  Language  : {$language}");

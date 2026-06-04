@@ -42,7 +42,7 @@ class ImportBranded extends Command
             return self::FAILURE;
         }
 
-        $service = new BrandedImportService();
+        $service = new BrandedImportService;
 
         if ($dryRun) {
             $this->info("[DRY RUN] Previewing branded import from '{$folder}'...");
@@ -100,7 +100,7 @@ class ImportBranded extends Command
         );
 
         if (count($result['warnings']) > 0) {
-            $this->warn("There were " . count($result['warnings']) . " warning(s). Check the logs for details.");
+            $this->warn('There were '.count($result['warnings']).' warning(s). Check the logs for details.');
         }
 
         return self::SUCCESS;

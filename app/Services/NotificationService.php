@@ -3,15 +3,15 @@
 namespace App\Services;
 
 use App\Contracts\Services\NotificationServiceInterface;
+use App\Models\Actor;
 use App\Models\Task;
 use App\Models\User;
-use App\Models\Actor;
-use App\Notifications\UrgentTasksNotification;
 use App\Notifications\TaskReminderNotification;
+use App\Notifications\UrgentTasksNotification;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Log;
 
 class NotificationService implements NotificationServiceInterface
 {
@@ -22,22 +22,23 @@ class NotificationService implements NotificationServiceInterface
     {
         try {
             $language = $recipient->language ?? 'en';
-            
+
             $recipient->notify(new TaskReminderNotification($task, $language));
-            
+
             Log::info('Task reminder sent successfully', [
                 'task_id' => $task->id,
                 'recipient_email' => $recipient->email,
-                'language' => $language
+                'language' => $language,
             ]);
-            
+
             return true;
         } catch (\Exception $e) {
             Log::error('Failed to send task reminder', [
                 'task_id' => $task->id,
                 'recipient_email' => $recipient->email,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -48,17 +49,18 @@ class NotificationService implements NotificationServiceInterface
     public function sendUpcomingTaskReminders(int $daysAhead = 7): int
     {
         $tasks = $this->getUrgentTasks($daysAhead);
-        
+
         Log::info('Starting urgent task notifications', [
             'total_urgent_tasks' => $tasks->count(),
-            'days_ahead' => $daysAhead
+            'days_ahead' => $daysAhead,
         ]);
-        
+
         if ($tasks->isEmpty()) {
             Log::info('No urgent tasks found, nothing to send');
+
             return 0;
         }
-        
+
         $tasksByAgent = $this->groupTasksByAgent($tasks);
         $sent = 0;
         $errors = [];
@@ -72,13 +74,13 @@ class NotificationService implements NotificationServiceInterface
                 Log::info('Successfully sent notification', [
                     'agent_login' => $agentLogin,
                     'agent_email' => $agent->email,
-                    'task_count' => count($agentTasks)
+                    'task_count' => count($agentTasks),
                 ]);
             } else {
                 $errors[] = $agentLogin;
                 Log::error('Failed to send notification', [
                     'agent_login' => $agentLogin,
-                    'agent_email' => $agent->email
+                    'agent_email' => $agent->email,
                 ]);
             }
         }
@@ -86,7 +88,7 @@ class NotificationService implements NotificationServiceInterface
         Log::info('Completed urgent task notifications', [
             'sent_count' => $sent,
             'error_count' => count($errors),
-            'errors' => $errors
+            'errors' => $errors,
         ]);
 
         return $sent;
@@ -112,7 +114,7 @@ class NotificationService implements NotificationServiceInterface
     ): bool {
         try {
             $matter = \App\Models\Matter::find($matterId);
-            if (!$matter) {
+            if (! $matter) {
                 return false;
             }
 
@@ -122,23 +124,25 @@ class NotificationService implements NotificationServiceInterface
                         'matter' => $matter,
                         'oldStatus' => $oldStatus,
                         'newStatus' => $newStatus,
-                        'phpip_url' => config('app.url') . '/matter/' . $matterId,
+                        'phpip_url' => config('app.url').'/matter/'.$matterId,
                     ])->render(),
                     function ($message) use ($matter, $newStatus, $recipient) {
                         $message
                             ->from(config('mail.from.address'))
                             ->to($recipient)
-                            ->subject('[phpIP] - Status change: ' . $matter->uid . ' is now ' . $newStatus);
+                            ->subject('[phpIP] - Status change: '.$matter->uid.' is now '.$newStatus);
                     }
                 );
             }
+
             return true;
         } catch (\Exception $e) {
             Log::error('Failed to send status change notification', [
                 'matter_id' => $matterId,
                 'recipients' => $recipients,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -149,7 +153,7 @@ class NotificationService implements NotificationServiceInterface
     public function getTaskRecipients(Task $task): Collection
     {
         $recipients = collect();
-        
+
         // Add matter responsible
         if ($task->matter->responsible) {
             $responsible = Actor::where('login', $task->matter->responsible)->first();
@@ -163,7 +167,7 @@ class NotificationService implements NotificationServiceInterface
             ->whereIn('role_code', ['AGT', 'AGT2'])
             ->whereNotNull('email')
             ->get();
-        
+
         foreach ($agents as $agent) {
             $recipients->push($agent->actor->email ?? $agent->email);
         }
@@ -173,7 +177,7 @@ class NotificationService implements NotificationServiceInterface
             ->where('role_code', 'DEL')
             ->whereNotNull('email')
             ->first();
-        
+
         if ($delegate && $delegate->actor->email) {
             $recipients->push($delegate->actor->email);
         }
@@ -201,26 +205,27 @@ class NotificationService implements NotificationServiceInterface
                             ->from(config('mail.from.address'))
                             ->to($recipient)
                             ->subject($data['subject'] ?? '[phpIP] - Notification');
-                            
+
                         foreach ($attachments as $attachment) {
                             $message->attach($attachment);
                         }
                     }
                 );
             }
-            
+
             Log::info('Custom notification sent successfully', [
                 'template' => $template,
-                'recipient_count' => count($recipients)
+                'recipient_count' => count($recipients),
             ]);
-            
+
             return true;
         } catch (\Exception $e) {
             Log::error('Failed to send custom notification', [
                 'template' => $template,
                 'recipients' => $recipients,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -232,14 +237,14 @@ class NotificationService implements NotificationServiceInterface
     {
         // For now, return a simple queue ID
         // In a full implementation, this would integrate with Laravel Queue
-        $queueId = uniqid('notification_' . $type . '_');
-        
+        $queueId = uniqid('notification_'.$type.'_');
+
         Log::info('Notification queued', [
             'queue_id' => $queueId,
             'type' => $type,
-            'send_at' => $sendAt
+            'send_at' => $sendAt,
         ]);
-        
+
         return $queueId;
     }
 
@@ -251,11 +256,11 @@ class NotificationService implements NotificationServiceInterface
         // Basic rules - can be extended with more complex logic
         switch ($type) {
             case 'urgent_tasks':
-                return !empty($context['tasks']);
+                return ! empty($context['tasks']);
             case 'status_change':
                 return isset($context['matter']) && isset($context['newStatus']);
             case 'task_reminder':
-                return isset($context['task']) && !$context['task']->done;
+                return isset($context['task']) && ! $context['task']->done;
             default:
                 return true;
         }
@@ -276,7 +281,7 @@ class NotificationService implements NotificationServiceInterface
                 // Rouge: overdue tasks
                 $query->where('due_date', '<', now())
                       // Orange: tasks due in next X days
-                      ->orWhere('due_date', '<=', now()->addDays($daysAhead));
+                    ->orWhere('due_date', '<=', now()->addDays($daysAhead));
             })
             ->with('matter', 'info', 'matter.responsibleActor', 'matter.titles', 'matter.countryInfo')
             ->orderBy('due_date')
@@ -292,35 +297,38 @@ class NotificationService implements NotificationServiceInterface
 
         foreach ($tasks as $task) {
             $agentLogin = $task->matter->responsible;
-            
-            if (!$agentLogin) {
+
+            if (! $agentLogin) {
                 Log::debug('Task has no responsible agent', ['task_id' => $task->id, 'matter_id' => $task->matter->id]);
+
                 continue;
             }
 
             // Check if agent exists and has email
             $agent = Actor::where('login', $agentLogin)->first();
-            if (!$agent) {
+            if (! $agent) {
                 Log::warning('Responsible agent not found', ['login' => $agentLogin, 'task_id' => $task->id]);
-                continue;
-            }
-            
-            if (!$agent->email) {
-                Log::warning('Agent has no email address', ['login' => $agentLogin, 'agent_id' => $agent->id]);
+
                 continue;
             }
 
-            if (!isset($tasksByAgent[$agentLogin])) {
+            if (! $agent->email) {
+                Log::warning('Agent has no email address', ['login' => $agentLogin, 'agent_id' => $agent->id]);
+
+                continue;
+            }
+
+            if (! isset($tasksByAgent[$agentLogin])) {
                 $tasksByAgent[$agentLogin] = [];
             }
-            
+
             $tasksByAgent[$agentLogin][] = $task;
         }
 
         Log::info('Tasks grouped by agent', [
             'agent_count' => count($tasksByAgent),
             'agents' => array_keys($tasksByAgent),
-            'total_tasks' => $tasks->count()
+            'total_tasks' => $tasks->count(),
         ]);
 
         return $tasksByAgent;
@@ -331,11 +339,12 @@ class NotificationService implements NotificationServiceInterface
      */
     private function sendUrgentTasksToAgent(Actor $agent, array $tasks): bool
     {
-        if (!$agent->email) {
+        if (! $agent->email) {
             Log::warning('Agent has no email address', [
                 'agent_id' => $agent->id,
-                'agent_name' => $agent->name
+                'agent_name' => $agent->name,
             ]);
+
             return false;
         }
 
@@ -343,7 +352,7 @@ class NotificationService implements NotificationServiceInterface
             // Separate tasks by urgency
             $overdueTasks = [];
             $dueSoonTasks = [];
-            
+
             foreach ($tasks as $task) {
                 if ($task->due_date < now()) {
                     $overdueTasks[] = $task;
@@ -354,7 +363,7 @@ class NotificationService implements NotificationServiceInterface
 
             // Get agent's preferred language (handles empty string + null fallback to app.locale)
             $language = $agent->getLanguage();
-            
+
             // Send notification using the new UrgentTasksNotification class
             $agent->notify(new UrgentTasksNotification(
                 $agent,
@@ -362,23 +371,24 @@ class NotificationService implements NotificationServiceInterface
                 $dueSoonTasks,
                 $language
             ));
-            
+
             Log::info('Urgent tasks notification sent successfully', [
                 'agent_id' => $agent->id,
                 'agent_email' => $agent->email,
                 'overdue_count' => count($overdueTasks),
                 'due_soon_count' => count($dueSoonTasks),
-                'language' => $language
+                'language' => $language,
             ]);
-            
+
             return true;
         } catch (\Exception $e) {
             Log::error('Failed to send urgent tasks to agent', [
                 'agent_id' => $agent->id,
                 'agent_email' => $agent->email,
                 'task_count' => count($tasks),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

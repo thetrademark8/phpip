@@ -13,14 +13,13 @@ use Inertia\Inertia;
 
 class ActorController extends Controller
 {
-
     public function index(Request $request)
     {
         $user = Auth::user();
-        
+
         // Use ActorPolicy for authorization
         Gate::authorize('viewAny', Actor::class);
-        
+
         $query = Actor::query();
 
         // Name search
@@ -94,7 +93,7 @@ class ActorController extends Controller
         // Handle sorting
         $sortField = $request->input('sort', 'name');
         $sortDirection = $request->input('direction', 'asc');
-        
+
         // Map frontend column names to database columns
         $sortableColumns = [
             'name' => 'name',
@@ -103,14 +102,14 @@ class ActorController extends Controller
             'company.name' => 'company_id',
             'phy_person' => 'phy_person',
         ];
-        
+
         // Load relationships
         $query->with(['company:id,name', 'droleInfo:name', 'countryInfo:iso,name']);
-        
+
         // Apply sorting
         if (isset($sortableColumns[$sortField])) {
             $column = $sortableColumns[$sortField];
-            
+
             // Special handling for company.name
             if ($sortField === 'company.name') {
                 $query->leftJoin('actor as company_actor', 'actor.company_id', '=', 'company_actor.id')
@@ -127,8 +126,8 @@ class ActorController extends Controller
         // Filter actors for CLI users to only show actors related to their matters
         if ($user->default_role === 'CLI' || empty($user->default_role)) {
             $userMatterIds = $user->matters()->pluck('id')->toArray();
-            if (!empty($userMatterIds)) {
-                $query->whereHas('matters', function($q) use ($userMatterIds) {
+            if (! empty($userMatterIds)) {
+                $query->whereHas('matters', function ($q) use ($userMatterIds) {
                     $q->whereIn('matter.id', $userMatterIds);
                 });
             } else {
@@ -143,8 +142,8 @@ class ActorController extends Controller
         return Inertia::render('Actor/Index', [
             'actors' => $actorslist,
             'filters' => $request->only([
-                'Name', 'first_name', 'display_name', 'company', 'email', 'phone', 
-                'country', 'default_role', 'selector', 'phy_person', 'warn', 'has_login'
+                'Name', 'first_name', 'display_name', 'company', 'email', 'phone',
+                'country', 'default_role', 'selector', 'phy_person', 'warn', 'has_login',
             ]),
             'sort' => $sortField,
             'direction' => $sortDirection,
@@ -154,10 +153,10 @@ class ActorController extends Controller
     public function create()
     {
         $user = Auth::user();
-        
+
         // Use ActorPolicy for create authorization
         Gate::authorize('create', Actor::class);
-        
+
         $actor = new Actor;
         $actorComments = $actor->getTableComments();
 
@@ -169,7 +168,7 @@ class ActorController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        
+
         // Use ActorPolicy for create authorization
         Gate::forUser($user)->authorize('create', Actor::class);
 
@@ -198,8 +197,8 @@ class ActorController extends Controller
 
         // Log field-level permission denials for security monitoring
         $deniedFields = collect($request->except(['_token', '_method']))->keys()
-            ->filter(function($field) use ($editableFields) {
-                return !in_array($field, $editableFields) && !in_array($field, ['_token', '_method']);
+            ->filter(function ($field) use ($editableFields) {
+                return ! in_array($field, $editableFields) && ! in_array($field, ['_token', '_method']);
             });
 
         if ($deniedFields->isNotEmpty()) {
@@ -255,10 +254,10 @@ class ActorController extends Controller
     public function show(Actor $actor)
     {
         $user = Auth::user();
-        
+
         // Use ActorPolicy for view authorization
         Gate::forUser($user)->authorize('view', $actor);
-        
+
         $actorInfo = $actor->load(['company:id,name', 'parent:id,name', 'site:id,name', 'droleInfo', 'countryInfo:iso,name', 'country_mailingInfo:iso,name', 'country_billingInfo:iso,name', 'nationalityInfo:iso,name']);
         $actorComments = $actor->getTableComments();
 
@@ -278,10 +277,10 @@ class ActorController extends Controller
     public function edit(Actor $actor)
     {
         $user = Auth::user();
-        
+
         // Use ActorPolicy for update authorization
         Gate::forUser($user)->authorize('update', $actor);
-        
+
         $actorInfo = $actor->load(['company:id,name', 'parent:id,name', 'site:id,name', 'droleInfo', 'countryInfo:iso,name', 'country_mailingInfo:iso,name', 'country_billingInfo:iso,name', 'nationalityInfo:iso,name']);
         $actorComments = $actor->getTableComments();
 
@@ -297,7 +296,7 @@ class ActorController extends Controller
     public function update(Request $request, Actor $actor)
     {
         $user = Auth::user();
-        
+
         // Use ActorPolicy for update authorization
         Gate::forUser($user)->authorize('update', $actor);
 
@@ -327,7 +326,7 @@ class ActorController extends Controller
         try {
             // Store original values for logging
             $originalValues = $actor->only(array_keys($updateData));
-            
+
             $actor->update($updateData);
 
             // Log successful update

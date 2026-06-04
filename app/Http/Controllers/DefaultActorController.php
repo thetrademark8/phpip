@@ -12,7 +12,7 @@ class DefaultActorController extends Controller
     {
         $sort = $request->input('sort', 'id');
         $direction = $request->input('direction', 'asc');
-        
+
         $Actor = $request->input('Actor');
         $Role = $request->input('Role');
         $Country = $request->input('Country');
@@ -45,7 +45,7 @@ class DefaultActorController extends Controller
                 $q->where('name', 'like', $Client.'%');
             });
         }
-        
+
         // Apply sorting
         if ($sort === 'actor') {
             $default_actor = $default_actor->join('actor', 'default_actor.actor_id', '=', 'actor.id')
@@ -64,7 +64,7 @@ class DefaultActorController extends Controller
         } else {
             $default_actor = $default_actor->orderBy($sort, $direction);
         }
-        
+
         $default_actors = $default_actor->with(['roleInfo:code,name', 'actor:id,name', 'client:id,name', 'category:code,category', 'country:iso,name'])
             ->paginate(25)
             ->withQueryString();
@@ -97,24 +97,25 @@ class DefaultActorController extends Controller
         ]);
 
         $defaultActor = DefaultActor::create($request->except(['_token', '_method']));
-        
+
         if ($request->header('X-Inertia')) {
             return redirect()->route('default_actor.index')
                 ->with('success', 'Default actor created successfully');
         }
-        
+
         return $defaultActor;
     }
 
     public function show(DefaultActor $default_actor)
     {
         $default_actor->load(['roleInfo:code,name', 'actor:id,name', 'client:id,name', 'category:code,category', 'country:iso,name']);
-        
+
         if (request()->wantsJson()) {
             return response()->json($default_actor);
         }
-        
+
         $tableComments = $default_actor->getTableComments();
+
         return view('default_actor.show', compact('default_actor', 'tableComments'));
     }
 
@@ -125,7 +126,7 @@ class DefaultActorController extends Controller
             'role' => 'sometimes|required',
         ]);
         $default_actor->update($request->except(['_token', '_method']));
-        
+
         if ($request->header('X-Inertia')) {
             return redirect()->route('default_actor.index')
                 ->with('success', 'Default actor updated successfully');
@@ -137,7 +138,7 @@ class DefaultActorController extends Controller
     public function destroy(Request $request, DefaultActor $default_actor)
     {
         $default_actor->delete();
-        
+
         if ($request->header('X-Inertia')) {
             return redirect()->route('default_actor.index')
                 ->with('success', 'Default actor deleted successfully');
@@ -145,11 +146,11 @@ class DefaultActorController extends Controller
 
         return $default_actor;
     }
-    
+
     public function autocomplete(Request $request)
     {
         $query = $request->get('query', '');
-        
+
         $defaultActors = DefaultActor::with(['actor:id,name', 'roleInfo:code,name'])
             ->whereHas('actor', function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%");
@@ -159,7 +160,7 @@ class DefaultActorController extends Controller
             ->map(function ($da) {
                 return [
                     'id' => $da->id,
-                    'name' => $da->actor->name . ' (' . $da->roleInfo->name . ')',
+                    'name' => $da->actor->name.' ('.$da->roleInfo->name.')',
                 ];
             });
 

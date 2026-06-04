@@ -14,12 +14,12 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('readonly');
-        
+
         $Code = $request->input('Code');
         $Category = $request->input('Category');
         $sort = $request->input('sort', 'code');
         $direction = $request->input('direction', 'asc');
-        
+
         $query = Category::query();
 
         if (! is_null($Code)) {
@@ -36,7 +36,7 @@ class CategoryController extends Controller
         // Apply sorting
         $locale = app()->getLocale();
         $baseLocale = substr($locale, 0, 2);
-        
+
         $sortableColumns = [
             'code' => 'code',
             'category' => "JSON_UNQUOTE(JSON_EXTRACT(category, '$.\"$baseLocale\"'))",
@@ -71,7 +71,7 @@ class CategoryController extends Controller
     public function create()
     {
         Gate::authorize('readwrite');
-        
+
         $category = new Category;
         $tableComments = $category->getTableComments();
 
@@ -107,7 +107,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         Gate::authorize('readonly');
-        
+
         $tableComments = $category->getTableComments();
         $category->load(['displayWithInfo:code,category']);
 
@@ -197,11 +197,11 @@ class CategoryController extends Controller
 
         return response()->json(['success' => true]);
     }
-    
+
     public function autocomplete(Request $request)
     {
         $query = $request->get('query', '');
-        
+
         $categories = Category::where('category', 'like', "%{$query}%")
             ->take(10)
             ->get()

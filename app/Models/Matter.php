@@ -504,7 +504,7 @@ class Matter extends Model
             'classifier AS tmcl',
             function ($join) {
                 $join->on(DB::raw('IFNULL(matter.container_id, matter.id)'), '=', 'tmcl.matter_id')
-                     ->whereIn('tmcl.type_code', ['NICE', 'TMCL']);
+                    ->whereIn('tmcl.type_code', ['NICE', 'TMCL']);
             }
         )->leftJoin(
             DB::raw('event status JOIN event_name ON event_name.code = status.code AND event_name.status_event = 1'),
@@ -574,39 +574,39 @@ class Matter extends Model
                     switch ($key) {
                         case 'Ref':
                             $query->where(function ($q) use ($value) {
-                                $q->whereRaw("uid COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"])
-                                    ->orWhereRaw("alt_ref COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"]);
+                                $q->whereRaw('uid COLLATE utf8mb4_unicode_ci LIKE ?', ["$value%"])
+                                    ->orWhereRaw('alt_ref COLLATE utf8mb4_unicode_ci LIKE ?', ["$value%"]);
                             });
                             break;
                         case 'Cat':
-                            $query->whereRaw("category_code COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"]);
+                            $query->whereRaw('category_code COLLATE utf8mb4_unicode_ci LIKE ?', ["$value%"]);
                             break;
                         case 'country':
-                            $query->whereRaw("matter.country COLLATE utf8mb4_unicode_ci LIKE ?", ["$value%"]);
+                            $query->whereRaw('matter.country COLLATE utf8mb4_unicode_ci LIKE ?', ["$value%"]);
                             break;
                         case 'Status':
                             $query->whereJsonLike('event_name.name', $value);
                             break;
                         case 'Client':
-                            $query->whereRaw("IFNULL(IFNULL(cli.display_name, cli.name), IFNULL(clic.display_name, clic.name)) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw('IFNULL(IFNULL(cli.display_name, cli.name), IFNULL(clic.display_name, clic.name)) COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             break;
                         case 'ClRef':
-                            $query->whereRaw("IFNULL(clilnk.actor_ref, cliclnk.actor_ref) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw('IFNULL(clilnk.actor_ref, cliclnk.actor_ref) COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             break;
                         case 'Owner':
-                            $query->whereRaw("IFNULL(IFNULL(own.display_name, own.name), IFNULL(ownc.display_name, ownc.name)) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw('IFNULL(IFNULL(own.display_name, own.name), IFNULL(ownc.display_name, ownc.name)) COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             break;
                         case 'Agent':
-                            $query->whereRaw("IFNULL(IFNULL(agt.display_name, agt.name), IFNULL(agtc.display_name, agtc.name)) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw('IFNULL(IFNULL(agt.display_name, agt.name), IFNULL(agtc.display_name, agtc.name)) COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             break;
                         case 'Contact':
-                            $query->whereRaw("IFNULL(cnt.display_name, cnt.name) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw('IFNULL(cnt.display_name, cnt.name) COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             break;
                         case 'Title':
                             $query->whereRaw("concat_ws(' ', tit1.value, tit2.value, tit3.value) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
                             break;
                         case 'classes':
-                            $query->whereRaw("tmcl.value COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw('tmcl.value COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             break;
                         case 'Filed':
                             if (is_array($value)) {
@@ -622,7 +622,7 @@ class Matter extends Model
                             }
                             break;
                         case 'FilNo':
-                            $query->whereRaw("fil.detail COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                            $query->whereRaw('fil.detail COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             break;
                         case 'Published':
                             if (is_array($value)) {
@@ -669,8 +669,8 @@ class Matter extends Model
                             break;
                         case 'registration_number':
                             $query->where(function ($q) use ($value) {
-                                $q->whereRaw("grt.detail COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"])
-                                    ->orWhereRaw("reg.detail COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]);
+                                $q->whereRaw('grt.detail COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"])
+                                    ->orWhereRaw('reg.detail COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                             });
                             break;
                         case 'responsible':
@@ -745,7 +745,7 @@ class Matter extends Model
                 }
 
                 $query->where('created_at', '>=', Carbon::now()->subDays(7));
-            }
+            },
         ])
             ->when(Auth::user()->default_role == 'CLI' || empty(Auth::user()->default_role),
                 function ($query) {

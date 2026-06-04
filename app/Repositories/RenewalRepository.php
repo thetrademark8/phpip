@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Contracts\RenewalRepositoryInterface;
 use App\DataTransferObjects\Renewal\RenewalFilterDTO;
 use App\Models\Task;
+use App\Repositories\Contracts\RenewalRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Carbon\Carbon;
 
 class RenewalRepository implements RenewalRepositoryInterface
 {
@@ -36,27 +36,27 @@ class RenewalRepository implements RenewalRepositoryInterface
     public function getByFilters(RenewalFilterDTO $filters): Collection
     {
         $query = Task::where('code', 'REN');
-        
+
         if ($filters->step !== null) {
             $query->where('step', $filters->step);
         }
-        
+
         if ($filters->invoiceStep !== null) {
             $query->where('invoice_step', $filters->invoiceStep);
         }
-        
+
         if ($filters->gracePeriod !== null) {
             $query->where('grace_period', $filters->gracePeriod);
         }
-        
+
         if ($filters->fromDate) {
             $query->where('due_date', '>=', $filters->fromDate);
         }
-        
+
         if ($filters->untilDate) {
             $query->where('due_date', '<=', $filters->untilDate);
         }
-        
+
         return $query->with(['matter', 'event'])->get();
     }
 
@@ -84,12 +84,12 @@ class RenewalRepository implements RenewalRepositoryInterface
     public function markAsDone(array $ids, ?string $doneDate = null): int
     {
         $date = $doneDate ?? Carbon::now()->format('Y-m-d');
-        
+
         return Task::whereIn('id', $ids)
             ->where('code', 'REN')
             ->update([
                 'done' => 1,
-                'done_date' => $date
+                'done_date' => $date,
             ]);
     }
 
@@ -99,7 +99,7 @@ class RenewalRepository implements RenewalRepositoryInterface
             ->where('code', 'REN')
             ->update([
                 'cost' => $cost,
-                'fee' => $fee
+                'fee' => $fee,
             ]) > 0;
     }
 
@@ -107,23 +107,23 @@ class RenewalRepository implements RenewalRepositoryInterface
     {
         $query = Task::where('code', 'REN')
             ->with(['matter', 'trigger', 'matter.actors']);
-        
-        if (!empty($filters['step'])) {
+
+        if (! empty($filters['step'])) {
             $query->where('step', $filters['step']);
         }
-        
-        if (!empty($filters['invoice_step'])) {
+
+        if (! empty($filters['invoice_step'])) {
             $query->where('invoice_step', $filters['invoice_step']);
         }
-        
-        if (!empty($filters['from_date'])) {
+
+        if (! empty($filters['from_date'])) {
             $query->where('due_date', '>=', $filters['from_date']);
         }
-        
-        if (!empty($filters['until_date'])) {
+
+        if (! empty($filters['until_date'])) {
             $query->where('due_date', '<=', $filters['until_date']);
         }
-        
+
         return $query->get();
     }
 
@@ -131,12 +131,13 @@ class RenewalRepository implements RenewalRepositoryInterface
     {
         return Task::whereIn('id', $ids)
             ->where('code', 'REN')
-            ->with(['matter', 'matter.actors' => function($query) {
+            ->with(['matter', 'matter.actors' => function ($query) {
                 $query->where('role_code', 'CLI');
             }])
             ->get()
-            ->groupBy(function($task) {
+            ->groupBy(function ($task) {
                 $client = $task->matter->actors->where('role_code', 'CLI')->first();
+
                 return $client ? $client->id : 0;
             });
     }
@@ -152,12 +153,12 @@ class RenewalRepository implements RenewalRepositoryInterface
     public function getRenewalsForExport(?array $filters = null): Collection
     {
         $query = Task::renewals();
-        
+
         // Default filter for export: invoice_step = 1 (invoiced)
-        if (!$filters || !isset($filters['invoice_step'])) {
+        if (! $filters || ! isset($filters['invoice_step'])) {
             $query->where('invoice_step', 1);
         }
-        
+
         if ($filters) {
             foreach ($filters as $key => $value) {
                 if ($value !== null && $value !== '') {
@@ -171,7 +172,7 @@ class RenewalRepository implements RenewalRepositoryInterface
                 }
             }
         }
-        
+
         return $query->orderBy('pmal_cli.actor_id')->get();
     }
 }

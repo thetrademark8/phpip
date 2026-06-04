@@ -13,17 +13,20 @@ class MatterRenewalReminderNotification extends Notification implements ShouldQu
     use Queueable;
 
     protected Collection $matters;
+
     protected string $reminderType;
+
     protected int $monthsRemaining;
+
     protected string $language;
 
     /**
      * Create a new notification instance.
      *
-     * @param Collection $matters - Matters that need renewal
-     * @param string $reminderType - 'first', 'second', or 'last'
-     * @param int $monthsRemaining - Months until expiry (6, 3, or 1)
-     * @param string $language - Notification language
+     * @param  Collection  $matters  - Matters that need renewal
+     * @param  string  $reminderType  - 'first', 'second', or 'last'
+     * @param  int  $monthsRemaining  - Months until expiry (6, 3, or 1)
+     * @param  string  $language  - Notification language
      */
     public function __construct(Collection $matters, string $reminderType, int $monthsRemaining, string $language = 'en')
     {
@@ -101,7 +104,7 @@ class MatterRenewalReminderNotification extends Notification implements ShouldQu
 
         $matterText = $count === 1 ? 'matter' : 'matters';
 
-        return "[phpIP] Renewal {$reminderLabel}: {$count} {$matterText} expiring in {$this->monthsRemaining} month" . ($this->monthsRemaining > 1 ? 's' : '');
+        return "[phpIP] Renewal {$reminderLabel}: {$count} {$matterText} expiring in {$this->monthsRemaining} month".($this->monthsRemaining > 1 ? 's' : '');
     }
 
     private function getFrenchSubject(int $count): string
@@ -129,6 +132,6 @@ class MatterRenewalReminderNotification extends Notification implements ShouldQu
 
         $matterText = $count === 1 ? 'Akte' : 'Akten';
 
-        return "[phpIP] Verlangerung - {$reminderLabel}: {$count} {$matterText} lauft in {$this->monthsRemaining} Monat" . ($this->monthsRemaining > 1 ? 'en' : '') . ' ab';
+        return "[phpIP] Verlangerung - {$reminderLabel}: {$count} {$matterText} lauft in {$this->monthsRemaining} Monat".($this->monthsRemaining > 1 ? 'en' : '').' ab';
     }
 }

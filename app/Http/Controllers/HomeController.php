@@ -44,7 +44,7 @@ class HomeController extends Controller
                 $q->where('dead', 0);
             })
             ->where('code', '!=', 'REN');
-        
+
         // Apply filters for tasks
         if ($whatTasks == 1) {
             $tasksQuery->where('assigned_to', auth()->user()->login);
@@ -89,7 +89,7 @@ class HomeController extends Controller
                 $q->where('dead', 0);
             })
             ->where('code', 'REN');
-        
+
         // Apply same filters for renewals
         if ($whatTasks == 1) {
             $renewalsQuery->where('assigned_to', auth()->user()->login);
@@ -155,19 +155,19 @@ class HomeController extends Controller
     {
         $now = Carbon::now();
         $lastMonth = $now->copy()->subMonth();
-        
+
         // Total active matters
         $totalActiveMatters = Matter::where('dead', 0)->count();
-        
+
         // Active matters change from last month
         $lastMonthActiveMatters = Matter::where('dead', 0)
             ->where('created_at', '<=', $lastMonth)
             ->count();
-        
-        $activeMattersChange = $lastMonthActiveMatters > 0 
+
+        $activeMattersChange = $lastMonthActiveMatters > 0
             ? round((($totalActiveMatters - $lastMonthActiveMatters) / $lastMonthActiveMatters) * 100, 1)
             : 0;
-        
+
         // Overdue tasks
         $overdueTasks = Task::where('done', 0)
             ->where('due_date', '<', $now)
@@ -175,7 +175,7 @@ class HomeController extends Controller
                 $q->where('dead', 0);
             })
             ->count();
-        
+
         // Upcoming renewals (next 30 days)
         $upcomingRenewals = Task::where('done', 0)
             ->where('code', 'REN')
@@ -184,7 +184,7 @@ class HomeController extends Controller
                 $q->where('dead', 0);
             })
             ->count();
-        
+
         // Matters created this year
         $mattersCreatedThisYear = Matter::whereYear('created_at', $now->year)->count();
 
@@ -211,7 +211,7 @@ class HomeController extends Controller
         $tids = $request->task_ids;
         $done_date = Carbon::createFromFormat('Y-m-d', $request->done_date);
         $updated = 0;
-        
+
         foreach ($tids as $id) {
             $task = Task::find($id);
             $task->done_date = $done_date;
@@ -225,7 +225,7 @@ class HomeController extends Controller
             'success' => true,
             'updated' => $updated,
             'not_updated' => (count($tids) - $updated),
-            'message' => "$updated tasks cleared successfully"
+            'message' => "$updated tasks cleared successfully",
         ]);
     }
 }

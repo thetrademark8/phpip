@@ -28,8 +28,9 @@ class EventNameImportSeeder extends Seeder
     {
         $filePath = database_path(self::CSV_FILE);
 
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             $this->command?->warn('Event name CSV file not found, skipping import...');
+
             return;
         }
 

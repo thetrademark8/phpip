@@ -3,21 +3,22 @@
 namespace App\Notifications;
 
 use App\Models\Actor;
-use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 class UrgentTasksNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     protected Actor $agent;
+
     protected Collection $overdueTasks;
+
     protected Collection $dueSoonTasks;
+
     protected string $language;
 
     /**
@@ -45,7 +46,7 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
     public function toMail($notifiable): MailMessage
     {
         $totalTasks = $this->overdueTasks->count() + $this->dueSoonTasks->count();
-        
+
         $subject = $this->getSubject($totalTasks);
 
         // Use markdown method instead of view to properly work with mail::layout components
@@ -88,7 +89,7 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
         $hour = now()->hour;
         $name = $this->agent->name ?? 'Agent';
 
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => $hour < 12 ? "Bonjour {$name}," : "Bonsoir {$name},",
             'de' => $hour < 12 ? "Guten Morgen {$name}," : "Guten Abend {$name},",
             default => $hour < 12 ? "Good morning {$name}," : "Good evening {$name},",
@@ -100,10 +101,10 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
      */
     private function getSubject(int $totalTasks): string
     {
-        return match($this->language) {
-            'fr' => "[phpIP] Tâches urgentes ({$totalTasks} tâche" . ($totalTasks > 1 ? 's' : '') . " nécessitent votre attention)",
-            'de' => "[phpIP] Dringende Aufgaben ({$totalTasks} Aufgabe" . ($totalTasks > 1 ? 'n' : '') . " erfordern Ihre Aufmerksamkeit)",
-            default => "[phpIP] Urgent Tasks ({$totalTasks} task" . ($totalTasks > 1 ? 's' : '') . " require your attention)",
+        return match ($this->language) {
+            'fr' => "[phpIP] Tâches urgentes ({$totalTasks} tâche".($totalTasks > 1 ? 's' : '').' nécessitent votre attention)',
+            'de' => "[phpIP] Dringende Aufgaben ({$totalTasks} Aufgabe".($totalTasks > 1 ? 'n' : '').' erfordern Ihre Aufmerksamkeit)',
+            default => "[phpIP] Urgent Tasks ({$totalTasks} task".($totalTasks > 1 ? 's' : '').' require your attention)',
         };
     }
 
@@ -113,7 +114,7 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
     private function getIntroLine(int $totalTasks): string
     {
         if ($totalTasks === 0) {
-            return match($this->language) {
+            return match ($this->language) {
                 'fr' => '✅ Parfait ! Vous n\'avez aucune tâche urgente en ce moment.',
                 'de' => '✅ Perfekt! Sie haben derzeit keine dringenden Aufgaben.',
                 default => '✅ Great! You have no urgent tasks at this time.',
@@ -124,32 +125,32 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
         $dueSoonCount = $this->dueSoonTasks->count();
 
         $parts = [];
-        
+
         if ($overdueCount > 0) {
-            $part = match($this->language) {
-                'fr' => "{$overdueCount} tâche" . ($overdueCount > 1 ? 's' : '') . " en retard",
-                'de' => "{$overdueCount} überfällige Aufgabe" . ($overdueCount > 1 ? 'n' : ''),
-                default => "{$overdueCount} overdue task" . ($overdueCount > 1 ? 's' : ''),
+            $part = match ($this->language) {
+                'fr' => "{$overdueCount} tâche".($overdueCount > 1 ? 's' : '').' en retard',
+                'de' => "{$overdueCount} überfällige Aufgabe".($overdueCount > 1 ? 'n' : ''),
+                default => "{$overdueCount} overdue task".($overdueCount > 1 ? 's' : ''),
             };
-            $parts[] = "🚨 " . $part;
+            $parts[] = '🚨 '.$part;
         }
 
         if ($dueSoonCount > 0) {
-            $part = match($this->language) {
-                'fr' => "{$dueSoonCount} tâche" . ($dueSoonCount > 1 ? 's' : '') . " à échéance proche",
-                'de' => "{$dueSoonCount} bald fällige Aufgabe" . ($dueSoonCount > 1 ? 'n' : ''),
-                default => "{$dueSoonCount} task" . ($dueSoonCount > 1 ? 's' : '') . " due soon",
+            $part = match ($this->language) {
+                'fr' => "{$dueSoonCount} tâche".($dueSoonCount > 1 ? 's' : '').' à échéance proche',
+                'de' => "{$dueSoonCount} bald fällige Aufgabe".($dueSoonCount > 1 ? 'n' : ''),
+                default => "{$dueSoonCount} task".($dueSoonCount > 1 ? 's' : '').' due soon',
             };
-            $parts[] = "⏰ " . $part;
+            $parts[] = '⏰ '.$part;
         }
 
-        $intro = match($this->language) {
+        $intro = match ($this->language) {
             'fr' => 'Vous avez des tâches qui nécessitent votre attention immédiate:',
             'de' => 'Sie haben Aufgaben, die Ihre sofortige Aufmerksamkeit erfordern:',
             default => 'You have tasks that require your immediate attention:',
         };
 
-        return $intro . "\n\n" . implode("\n", $parts);
+        return $intro."\n\n".implode("\n", $parts);
     }
 
     /**
@@ -157,7 +158,7 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
      */
     private function getActionText(): string
     {
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => 'Voir mes tâches urgentes',
             'de' => 'Meine dringenden Aufgaben anzeigen',
             default => 'View My Urgent Tasks',
@@ -169,7 +170,7 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
      */
     private function getClosingLine(): string
     {
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => 'Les détails de chaque tâche sont disponibles en cliquant sur les références de dossier ci-dessus. N\'hésitez pas à mettre à jour le statut des tâches une fois terminées.',
             'de' => 'Details zu jeder Aufgabe sind verfügbar, indem Sie auf die oben genannten Aktenreferenzen klicken. Bitte aktualisieren Sie den Status der Aufgaben, sobald sie abgeschlossen sind.',
             default => 'Details for each task are available by clicking on the matter references above. Please update task status once completed.',
@@ -181,7 +182,7 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
      */
     private function getSalutation(): string
     {
-        return match($this->language) {
+        return match ($this->language) {
             'fr' => 'Cordialement,<br>L\'équipe phpIP',
             'de' => 'Mit freundlichen Grüßen,<br>Das phpIP-Team',
             default => 'Best regards,<br>The phpIP Team',

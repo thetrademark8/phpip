@@ -3,8 +3,8 @@
 namespace App\Contracts\Services;
 
 use App\Models\Matter;
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface MatterServiceInterface
 {

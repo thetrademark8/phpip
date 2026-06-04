@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Schema;
 class TeamLeaderService
 {
     public const BASE_URL = 'https://api.focus.teamleader.eu/';
+
     public const AUTH_URL = 'https://focus.teamleader.eu/oauth2/authorize';
+
     public const TOKEN_URL = 'https://focus.teamleader.eu/oauth2/access_token';
 
     protected ?TeamleaderToken $token = null;
@@ -46,7 +48,7 @@ class TeamLeaderService
 
     public function isTokenExpiringSoon(int $minutesThreshold = 30): bool
     {
-        if (!$this->token || !$this->token->expires_at) {
+        if (! $this->token || ! $this->token->expires_at) {
             return true;
         }
 
@@ -70,7 +72,7 @@ class TeamLeaderService
         $clientId = config('services.teamleader.client_id');
         $redirectUri = route('settings.teamleader.callback');
 
-        return self::AUTH_URL . "?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code";
+        return self::AUTH_URL."?client_id={$clientId}&redirect_uri={$redirectUri}&response_type=code";
     }
 
     public function exchangeCodeForToken(string $code): bool
@@ -83,11 +85,12 @@ class TeamLeaderService
             'grant_type' => 'authorization_code',
         ]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             Log::error('TeamLeader: Failed to exchange code for token', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+
             return false;
         }
 
@@ -104,8 +107,9 @@ class TeamLeaderService
 
     public function refreshAccessToken(): bool
     {
-        if (!$this->token || !$this->token->refresh_token) {
+        if (! $this->token || ! $this->token->refresh_token) {
             Log::error('TeamLeader: No refresh token available');
+
             return false;
         }
 
@@ -116,11 +120,12 @@ class TeamLeaderService
             'grant_type' => 'refresh_token',
         ]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             Log::error('TeamLeader: Failed to refresh token', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+
             return false;
         }
 
@@ -153,13 +158,14 @@ class TeamLeaderService
     {
         $webhookUrl = route('teamleader.webhook');
 
-        $response = $this->prepareRequest()->post(self::BASE_URL . 'webhooks.list');
+        $response = $this->prepareRequest()->post(self::BASE_URL.'webhooks.list');
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             Log::error('TeamLeader: Failed to list webhooks', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+
             return null;
         }
 
@@ -168,11 +174,12 @@ class TeamLeaderService
         foreach ($webhooks as $webhook) {
             if ($webhook['url'] === $webhookUrl) {
                 $this->token->update(['webhook_id' => $webhook['id'] ?? 'existing']);
+
                 return $webhook['id'] ?? 'existing';
             }
         }
 
-        $response = $this->prepareRequest()->post(self::BASE_URL . 'webhooks.register', [
+        $response = $this->prepareRequest()->post(self::BASE_URL.'webhooks.register', [
             'url' => $webhookUrl,
             'types' => [
                 'company.added',
@@ -186,11 +193,12 @@ class TeamLeaderService
             ],
         ]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             Log::error('TeamLeader: Failed to register webhook', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+
             return null;
         }
 
@@ -202,13 +210,13 @@ class TeamLeaderService
 
     public function deleteWebhook(): bool
     {
-        if (!$this->token || !$this->token->webhook_id) {
+        if (! $this->token || ! $this->token->webhook_id) {
             return true;
         }
 
         $webhookUrl = route('teamleader.webhook');
 
-        $response = $this->prepareRequest()->post(self::BASE_URL . 'webhooks.unregister', [
+        $response = $this->prepareRequest()->post(self::BASE_URL.'webhooks.unregister', [
             'url' => $webhookUrl,
             'types' => [
                 'company.added',
@@ -222,7 +230,7 @@ class TeamLeaderService
             ],
         ]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             Log::warning('TeamLeader: Failed to unregister webhook', [
                 'status' => $response->status(),
                 'body' => $response->body(),
@@ -248,16 +256,16 @@ class TeamLeaderService
 
     public function testConnection(): array
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             return [
                 'success' => false,
                 'message' => 'Not connected to TeamLeader',
             ];
         }
 
-        $response = $this->prepareRequest()->get(self::BASE_URL . 'users.me');
+        $response = $this->prepareRequest()->get(self::BASE_URL.'users.me');
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             return [
                 'success' => false,
                 'message' => 'Failed to connect to TeamLeader API',
@@ -293,7 +301,7 @@ class TeamLeaderService
 
     protected function diagnoseToken(): array
     {
-        if (!$this->token) {
+        if (! $this->token) {
             return [
                 'status' => 'missing',
                 'message' => 'No token found in database',
@@ -327,7 +335,7 @@ class TeamLeaderService
 
     protected function diagnoseWebhook(): array
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             return [
                 'status' => 'disconnected',
                 'message' => 'Not connected - cannot check webhooks',
@@ -336,7 +344,7 @@ class TeamLeaderService
 
         $storedWebhookId = $this->token?->webhook_id;
 
-        if (!$storedWebhookId) {
+        if (! $storedWebhookId) {
             return [
                 'status' => 'not_registered',
                 'message' => 'No webhook ID stored locally',
@@ -345,9 +353,9 @@ class TeamLeaderService
 
         // Check if webhook still exists on Teamleader side
         try {
-            $response = $this->prepareRequest()->post(self::BASE_URL . 'webhooks.list');
+            $response = $this->prepareRequest()->post(self::BASE_URL.'webhooks.list');
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return [
                     'status' => 'error',
                     'message' => 'Failed to list webhooks from Teamleader API',
@@ -367,7 +375,7 @@ class TeamLeaderService
                 }
             }
 
-            if (!$found) {
+            if (! $found) {
                 return [
                     'status' => 'missing_remote',
                     'message' => 'Webhook registered locally but NOT found on Teamleader side - this is likely why sync stopped',
@@ -385,14 +393,14 @@ class TeamLeaderService
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
-                'message' => 'Exception checking webhooks: ' . $e->getMessage(),
+                'message' => 'Exception checking webhooks: '.$e->getMessage(),
             ];
         }
     }
 
     protected function diagnoseApi(): array
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             return [
                 'status' => 'disconnected',
                 'message' => 'Not connected',
@@ -401,9 +409,9 @@ class TeamLeaderService
 
         try {
             // Test basic API access
-            $response = $this->prepareRequest()->get(self::BASE_URL . 'users.me');
+            $response = $this->prepareRequest()->get(self::BASE_URL.'users.me');
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return [
                     'status' => 'error',
                     'message' => 'API call failed',
@@ -422,7 +430,7 @@ class TeamLeaderService
             ];
 
             // Test contacts.list to specifically check contact access
-            $contactsResponse = $this->prepareRequest()->post(self::BASE_URL . 'contacts.list', [
+            $contactsResponse = $this->prepareRequest()->post(self::BASE_URL.'contacts.list', [
                 'page' => ['size' => 1, 'number' => 1],
             ]);
 
@@ -435,16 +443,16 @@ class TeamLeaderService
             return [
                 'status' => 'ok',
                 'message' => 'API is responding correctly',
-                'user' => ($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''),
+                'user' => ($user['first_name'] ?? '').' '.($user['last_name'] ?? ''),
                 'rate_limit' => $rateLimitInfo,
                 'contacts_accessible' => $contactsOk,
                 'contacts_total_on_teamleader' => $contactsTotal,
-                'contacts_error' => !$contactsOk ? mb_substr($contactsResponse->body(), 0, 300) : null,
+                'contacts_error' => ! $contactsOk ? mb_substr($contactsResponse->body(), 0, 300) : null,
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
-                'message' => 'Exception: ' . $e->getMessage(),
+                'message' => 'Exception: '.$e->getMessage(),
             ];
         }
     }
@@ -466,7 +474,7 @@ class TeamLeaderService
 
     public function reRegisterWebhook(): array
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             return ['success' => false, 'message' => 'Not connected'];
         }
 
