@@ -234,5 +234,24 @@ jobs:
       - name: Run migrations
         run: php artisan migrate --force --no-interaction
 
+      - name: Seed minimal reference data
+        # Feature tests use factories that reference FK-constrained codes (roles,
+        # event names, classifier types). The schema dump only seeds `migrations`.
+        run: php artisan db:seed --class='Database\Seeders\Testing\MinimalDataSeeder' --force --no-interaction
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        # Blade views use `@vite()`, so feature tests that render pages need a
+        # populated `public/build/manifest.json`.
+        run: npm run build
+
       - name: Execute Unit and Feature tests
         run: ./vendor/bin/pest --testsuite=Unit,Feature --exclude-group=arch

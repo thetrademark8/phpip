@@ -19,7 +19,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
-            'default_role' => 'DRO', // Default role
+            'default_role' => 'DBRO', // Default read-only role
         ];
     }
 }

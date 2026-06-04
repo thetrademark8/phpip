@@ -16,7 +16,7 @@ test('rule index page is accessible to users with DBRW role', function () {
 
 test('rule index page requires proper authorization', function () {
     // Create a user without proper role
-    $user = User::factory()->create(['default_role' => 'DRO']);
+    $user = User::factory()->create(['default_role' => 'DBRO']);
     $this->actingAs($user);
 
     // Try to access rules page
