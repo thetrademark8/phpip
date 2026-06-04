@@ -669,6 +669,8 @@
   "Classifier image": "Classifier image",
   "No classifiers assigned to this matter": "No classifiers assigned to this matter",
   "Remove classifier \"{value}\"?": "Remove classifier \"{value}\"?",
+  "A classifier with this value already exists for this matter and type.": "A classifier with this value already exists for this matter and type.",
+  "A classifier linked to this matter already exists for this type.": "A classifier linked to this matter already exists for this type.",
   "Merge Document": "Merge Document",
   "Drop a DOCX template file or click to select": "Drop a DOCX template file or click to select",
   "Drop DOCX file here": "Drop DOCX file here",

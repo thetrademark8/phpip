@@ -668,6 +668,8 @@
   "Classifier image": "Image de l'attribut",
   "No classifiers assigned to this matter": "Aucun attribut assigné à ce dossier",
   "Remove classifier \"{value}\"?": "Supprimer l'attribut \"{value}\" ?",
+  "A classifier with this value already exists for this matter and type.": "Un attribut avec cette valeur existe déjà pour ce dossier et ce type.",
+  "A classifier linked to this matter already exists for this type.": "Un attribut lié à ce dossier existe déjà pour ce type.",
   "Merge Document": "Fusionner le document",
   "Drop a DOCX template file or click to select": "Déposer un fichier modèle DOCX ou cliquer pour sélectionner",
   "Drop DOCX file here": "Déposer le fichier DOCX ici",
