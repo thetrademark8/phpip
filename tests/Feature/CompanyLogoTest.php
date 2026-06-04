@@ -18,18 +18,6 @@ class CompanyLogoTest extends TestCase
         expect($logoPath)->toBe('images/logos/sample-logo.svg');
     }
 
-    public function test_login_page_displays_logo_when_configured(): void
-    {
-        config(['app.company_logo' => 'images/logos/sample-logo.svg']);
-        config(['app.company_name' => 'Test IP Firm']);
-
-        $response = $this->get('/login');
-
-        $response->assertStatus(200);
-        $response->assertSee('images/logos/sample-logo.svg');
-        $response->assertSee('Test IP Firm');
-    }
-
     public function test_login_page_works_without_logo(): void
     {
         config(['app.company_logo' => '']);
@@ -40,42 +28,11 @@ class CompanyLogoTest extends TestCase
         $response->assertDontSee('<img src=');
     }
 
-    public function test_navbar_displays_logo_when_configured(): void
-    {
-        config(['app.company_logo' => 'images/logos/sample-logo.svg']);
-        config(['app.company_name' => 'Test IP Firm']);
-
-        // Create a simple view that uses the app layout
-        $testView = view('layouts.app')->render();
-
-        expect($testView)->toContain('images/logos/sample-logo.svg');
-        expect($testView)->toContain('Test IP Firm');
-    }
-
-    public function test_navbar_hides_app_name_when_logo_configured(): void
-    {
-        config(['app.company_logo' => 'images/logos/sample-logo.svg']);
-        config(['app.name' => 'MyTestApp']);
-
-        $testView = view('layouts.app')->render();
-
-        // Should have the logo
-        expect($testView)->toContain('images/logos/sample-logo.svg');
-        // The navbar should not contain the app name as visible text
-        // Using a unique app name to avoid matching the title tag
-        expect($testView)->not->toMatch('/<a[^>]*navbar-brand[^>]*>.*MyTestApp.*<\/a>/s');
-    }
-
-    public function test_navbar_shows_app_name_when_no_logo(): void
-    {
-        config(['app.company_logo' => '']);
-        config(['app.name' => 'phpIP']);
-
-        $testView = view('layouts.app')->render();
-
-        // Should display the app name
-        expect($testView)->toContain('>phpIP<');
-        // Should not have an img tag
-        expect($testView)->not->toContain('<img src=');
-    }
+    // The other navbar/logo tests rendered `layouts.app` directly and asserted
+    // raw HTML against `app.company_logo` / `app.company_name`. Since the
+    // navbar moved to Inertia/Vue (see `resources/js/components/Navigation.vue`
+    // and `resources/js/Layouts/GuestLayout.vue`), the logo is no longer
+    // emitted server-side and these assertions can no longer be expressed at
+    // the Blade level. They need to be rewritten as Inertia/Vue tests; until
+    // then we keep only the assertions that still make sense on the SSR shell.
 }
