@@ -669,6 +669,8 @@
   "Classifier image": "Klassifikator-Bild",
   "No classifiers assigned to this matter": "Keine Klassifikatoren zu dieser Akte zugewiesen",
   "Remove classifier \"{value}\"?": "Klassifikator \"{value}\" entfernen?",
+  "A classifier with this value already exists for this matter and type.": "Ein Klassifikator mit diesem Wert existiert bereits für diese Akte und diesen Typ.",
+  "A classifier linked to this matter already exists for this type.": "Ein mit dieser Akte verknüpfter Klassifikator existiert bereits für diesen Typ.",
   "Merge Document": "Dokument zusammenführen",
   "Drop a DOCX template file or click to select": "DOCX-Vorlagendatei ablegen oder zum Auswählen klicken",
   "Drop DOCX file here": "DOCX-Datei hier ablegen",
