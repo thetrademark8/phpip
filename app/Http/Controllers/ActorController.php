@@ -13,6 +13,44 @@ use Inertia\Inertia;
 
 class ActorController extends Controller
 {
+    /**
+     * Validation rules matching the actor table schema (column sizes and FKs),
+     * so user mistakes surface as field errors instead of SQL failures.
+     */
+    protected function actorRules(?Actor $actor = null): array
+    {
+        $ignoreId = $actor?->id ?? 'NULL';
+
+        return [
+            'name' => ($actor ? 'sometimes|' : '') . 'required|string|max:100',
+            'first_name' => 'nullable|string|max:60',
+            'display_name' => 'nullable|string|max:30|unique:actor,display_name,' . $ignoreId,
+            'login' => 'nullable|string|max:16|unique:actor,login,' . $ignoreId,
+            'email' => 'nullable|email|max:45',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:256',
+            'address_mailing' => 'nullable|string|max:256',
+            'address_billing' => 'nullable|string|max:256',
+            'country' => 'nullable|string|max:2|exists:country,iso',
+            'country_mailing' => 'nullable|string|max:2|exists:country,iso',
+            'country_billing' => 'nullable|string|max:2|exists:country,iso',
+            'nationality' => 'nullable|string|max:2|exists:country,iso',
+            'language' => 'nullable|string|max:2',
+            'function' => 'nullable|string|max:45',
+            'company_id' => 'nullable|exists:actor,id',
+            'parent_id' => 'nullable|exists:actor,id',
+            'site_id' => 'nullable|exists:actor,id',
+            'default_role' => 'nullable|string|max:5|exists:actor_role,code',
+            'legal_form' => 'nullable|string|max:60',
+            'registration_no' => 'nullable|string|max:20',
+            'VAT_number' => 'nullable|string|max:45',
+            'ren_discount' => 'nullable|numeric|min:0',
+            'phy_person' => 'boolean',
+            'small_entity' => 'boolean',
+            'warn' => 'boolean',
+        ];
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -172,30 +210,9 @@ class ActorController extends Controller
         // Use ActorPolicy for create authorization
         Gate::forUser($user)->authorize('create', Actor::class);
 
-        // Whitelist of fields that can be submitted during actor creation
-        $editableFields = [
-            'name', 'first_name', 'display_name', 'email', 'phone', 'address',
-            'country', 'nationality', 'language', 'function', 'company_id',
-            'phy_person', 'small_entity', 'warn',
-        ];
-
-        // Simple validation rules
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:100',
-            'first_name' => 'nullable|string|max:100',
-            'display_name' => 'nullable|string|max:100',
-            'email' => 'nullable|email|max:100',
-            'phone' => 'nullable|string|max:50',
-            'address' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:2',
-            'nationality' => 'nullable|string|max:2',
-            'language' => 'nullable|string|max:5',
-            'function' => 'nullable|string|max:100',
-            'company_id' => 'nullable|exists:actor,id',
-            'phy_person' => 'boolean',
-            'small_entity' => 'boolean',
-            'warn' => 'boolean',
-        ]);
+        $actorRules = $this->actorRules();
+        $editableFields = array_keys($actorRules);
+        $validatedData = $request->validate($actorRules);
 
         $actorData = $validatedData;
 
@@ -216,6 +233,9 @@ class ActorController extends Controller
                 'ip' => $request->ip(),
             ]);
         }
+
+        // The ren_discount column is NOT NULL without a default value
+        $actorData['ren_discount'] = $actorData['ren_discount'] ?? 0;
 
         try {
             $actor = Actor::create($actorData);
@@ -288,16 +308,8 @@ class ActorController extends Controller
         // Use ActorPolicy for update authorization
         Gate::forUser($user)->authorize('update', $actor);
 
-        $actorInfo = $actor->load(['company:id,name', 'parent:id,name', 'site:id,name', 'droleInfo', 'countryInfo:iso,name', 'country_mailingInfo:iso,name', 'country_billingInfo:iso,name', 'nationalityInfo:iso,name']);
-        $actorComments = $actor->getTableComments();
-
-        // Filter actor data based on user permissions
-        $filteredActor = $this->filterActorData($actorInfo, $user);
-
-        return Inertia::render('Actor/Edit', [
-            'actor' => $filteredActor,
-            'comments' => $actorComments,
-        ]);
+        // Editing happens inline on the show page; there is no dedicated edit page
+        return redirect()->route('actor.show', $actor);
     }
 
     public function update(Request $request, Actor $actor)
@@ -307,28 +319,26 @@ class ActorController extends Controller
         // Use ActorPolicy for update authorization
         Gate::forUser($user)->authorize('update', $actor);
 
-        // Simple validation rules
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:100',
-            'first_name' => 'nullable|string|max:100',
-            'display_name' => 'nullable|string|max:100',
-            'email' => 'nullable|email|max:100',
-            'phone' => 'nullable|string|max:50',
-            'address' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:2',
-            'nationality' => 'nullable|string|max:2',
-            'language' => 'nullable|string|max:5',
-            'function' => 'nullable|string|max:100',
-            'company_id' => 'nullable|exists:actor,id',
-            'phy_person' => 'boolean',
-            'small_entity' => 'boolean',
-            'warn' => 'boolean',
-        ]);
+        // Only validate the fields actually sent, so single-field inline edits work
+        $validatedData = $request->validate(
+            array_intersect_key($this->actorRules($actor), $request->all())
+        );
 
         $updateData = $validatedData;
 
         // Add system fields
         $updateData['updater'] = $user->login;
+
+        // The ren_discount column is NOT NULL
+        if (array_key_exists('ren_discount', $updateData) && $updateData['ren_discount'] === null) {
+            $updateData['ren_discount'] = 0;
+        }
+
+        // `login` is hidden from JSON responses, so edit forms send it back as null;
+        // ignore it to avoid wiping database user logins
+        if (array_key_exists('login', $updateData) && $updateData['login'] === null) {
+            unset($updateData['login']);
+        }
 
         try {
             // Store original values for logging
@@ -352,7 +362,7 @@ class ActorController extends Controller
             }
 
             return response()->json([
-                'actor' => $this->filterActorData($actor->fresh(), $user),
+                'actor' => $actor->fresh(),
                 'message' => __('actor.messages.updated_successfully'),
             ]);
 

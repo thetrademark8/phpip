@@ -167,6 +167,7 @@ class CategoryController extends Controller
                 DB::table('task_rules')->where('for_category', $oldCode)->update(['for_category' => $newCode]);
                 DB::table('classifier_type')->where('for_category', $oldCode)->update(['for_category' => $newCode]);
                 DB::table('default_actor')->where('for_category', $oldCode)->update(['for_category' => $newCode]);
+                DB::table('fees')->where('for_category', $oldCode)->update(['for_category' => $newCode]);
 
                 DB::table('matter_category')->where('code', $oldCode)->update($data);
 

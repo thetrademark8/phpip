@@ -4,6 +4,8 @@
       v-model="localValue"
       :type="type"
       :options="options"
+      :display-value="displayValue"
+      :autocomplete-endpoint="autocompleteEndpoint"
       :placeholder="placeholder"
       :editable="editable && !form.processing"
       :loading="form.processing"
@@ -56,6 +58,14 @@ const props = defineProps({
   type: {
     type: String,
     default: 'text'
+  },
+  displayValue: {
+    type: String,
+    default: null
+  },
+  autocompleteEndpoint: {
+    type: String,
+    default: ''
   },
   options: {
     type: Array,

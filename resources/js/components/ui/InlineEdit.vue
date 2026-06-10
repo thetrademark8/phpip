@@ -31,11 +31,33 @@
       v-else
       class="inline-flex items-center gap-1"
     >
-      <!-- Text input -->
-      <Input
-        v-if="type === 'text'"
+      <!-- Textarea input -->
+      <Textarea
+        v-if="type === 'textarea'"
         ref="inputRef"
         v-model="editValue"
+        :placeholder="placeholder"
+        :class="cn('min-w-64', inputClass)"
+        rows="3"
+        @keydown.escape="cancel"
+      />
+
+      <!-- Autocomplete input -->
+      <AutocompleteInput
+        v-else-if="type === 'autocomplete'"
+        v-model="editValue"
+        v-model:display-model-value="editDisplay"
+        :endpoint="autocompleteEndpoint"
+        :placeholder="placeholder"
+        :class="cn('min-w-48', inputClass)"
+      />
+
+      <!-- Text input (also covers email, number, etc.) -->
+      <Input
+        v-else-if="type !== 'select' && type !== 'date'"
+        ref="inputRef"
+        v-model="editValue"
+        :type="type"
         :placeholder="placeholder"
         :class="cn('h-7 px-2', inputClass)"
         @keydown.enter="save"
@@ -112,6 +134,8 @@ import { Edit2, Check, X, Loader2 } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import AutocompleteInput from '@/components/ui/form/AutocompleteInput.vue'
 import {
   Select,
   SelectContent,
@@ -129,7 +153,15 @@ const props = defineProps({
   type: {
     type: String,
     default: 'text',
-    validator: (value) => ['text', 'select', 'date'].includes(value)
+    validator: (value) => ['text', 'email', 'number', 'select', 'date', 'textarea', 'autocomplete'].includes(value)
+  },
+  displayValue: {
+    type: String,
+    default: null
+  },
+  autocompleteEndpoint: {
+    type: String,
+    default: ''
   },
   options: {
     type: Array,
@@ -174,33 +206,39 @@ const emit = defineEmits(['update:modelValue', 'save', 'cancel'])
 // Local state
 const isEditing = ref(false)
 const editValue = ref('')
+const editDisplay = ref('')
 const hovering = ref(false)
 const inputRef = ref(null)
 
 // Computed
 const displayValue = computed(() => {
+  if (props.displayValue !== null && props.displayValue !== '') {
+    return props.displayValue
+  }
+
   if (props.format && props.modelValue) {
     return props.format(props.modelValue)
   }
-  
+
   if (props.type === 'select' && props.options.length > 0) {
     const option = props.options.find(opt => opt.value === props.modelValue)
     return option ? option.label : props.modelValue
   }
-  
+
   return props.modelValue || ''
 })
 
 // Methods
 const startEdit = async () => {
   if (!props.editable) return
-  
+
   isEditing.value = true
-  editValue.value = props.modelValue || ''
-  
+  editValue.value = props.modelValue ?? ''
+  editDisplay.value = props.displayValue || ''
+
   await nextTick()
   inputRef.value?.focus()
-  inputRef.value?.select()
+  inputRef.value?.select?.()
 }
 
 const save = async () => {

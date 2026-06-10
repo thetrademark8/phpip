@@ -39,7 +39,7 @@
               {{ t('actors.fields.warn') }}
             </Badge>
             <Badge variant="secondary">
-              {{ (actor?.phy_person || (operation === 'create' && actorForm.phy_person)) ? t('actors.types.physical') : t('actors.types.legal') }}
+              {{ ((isEditMode || operation === 'create') ? actorForm.phy_person : actor?.phy_person) ? t('actors.types.physical') : t('actors.types.legal') }}
             </Badge>
           </div>
           <Button 
@@ -51,6 +51,16 @@
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actors.modal.viewMode') : t('actors.modal.editMode') }}
           </Button>
+        </div>
+
+        <!-- Validation errors -->
+        <div v-if="Object.keys(actorForm.errors).length" class="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <div class="flex items-start gap-2">
+            <AlertCircle class="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+            <ul class="text-sm text-destructive space-y-1">
+              <li v-for="(message, field) in actorForm.errors" :key="field">{{ message }}</li>
+            </ul>
+          </div>
         </div>
 
         <!-- Show restriction summary if any fields are restricted -->

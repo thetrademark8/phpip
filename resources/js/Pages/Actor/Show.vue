@@ -75,12 +75,11 @@
                     </div>
                     <EditableField
                       id="name"
-                      :value="actor.name"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="name"
-                      :disabled="!isFieldEditable('name')"
-                      :class="getFieldClasses('name')"
-                      @update="handleUpdate"
+                      :model-value="actor.name"
+                      field="name"
+                      :url="`/actor/${actor.id}`"
+                      :editable="isFieldEditable('name')"
+                      @saved="handleUpdate"
                     />
                   </div>
                   <div>
@@ -104,13 +103,12 @@
                     </div>
                     <EditableField
                       id="first_name"
-                      :value="actor.first_name"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="first_name"
+                      :model-value="actor.first_name"
+                      field="first_name"
+                      :url="`/actor/${actor.id}`"
                       :placeholder="'-'"
-                      :disabled="!isFieldEditable('first_name')"
-                      :class="getFieldClasses('first_name')"
-                      @update="handleUpdate"
+                      :editable="isFieldEditable('first_name')"
+                      @saved="handleUpdate"
                     />
                   </div>
                 </div>
@@ -119,11 +117,12 @@
                   <Label html-for="display_name">{{ t('actors.fields.displayName') }}</Label>
                   <EditableField
                     id="display_name"
-                    :value="actor.display_name"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="display_name"
+                    :model-value="actor.display_name"
+                    field="display_name"
+                    :url="`/actor/${actor.id}`"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('display_name')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -131,11 +130,13 @@
                   <Label html-for="address">{{ t('actors.fields.address') }}</Label>
                   <EditableField
                     id="address"
-                    :value="actor.address"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="address"
+                    :model-value="actor.address"
+                    field="address"
+                    :url="`/actor/${actor.id}`"
                     type="textarea"
-                    @update="handleUpdate"
+                    :placeholder="'-'"
+                    :editable="isFieldEditable('address')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -144,26 +145,30 @@
                     <Label html-for="country">{{ t('actors.fields.country') }}</Label>
                     <EditableField
                       id="country"
-                      :value="actor.countryInfo?.name"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="country"
+                      :model-value="actor.country"
+                      :display-value="actor.countryInfo?.name"
+                      field="country"
+                      :url="`/actor/${actor.id}`"
                       type="autocomplete"
-                      autocomplete-url="/country/autocomplete"
+                      autocomplete-endpoint="/country/autocomplete"
                       :placeholder="'-'"
-                      @update="handleUpdate"
+                      :editable="isFieldEditable('country')"
+                      @saved="handleUpdate"
                     />
                   </div>
                   <div>
                     <Label html-for="nationality">{{ t('actors.fields.nationality') }}</Label>
                     <EditableField
                       id="nationality"
-                      :value="actor.nationalityInfo?.name"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="nationality"
+                      :model-value="actor.nationality"
+                      :display-value="actor.nationalityInfo?.name"
+                      field="nationality"
+                      :url="`/actor/${actor.id}`"
                       type="autocomplete"
-                      autocomplete-url="/country/autocomplete"
+                      autocomplete-endpoint="/country/autocomplete"
                       :placeholder="'-'"
-                      @update="handleUpdate"
+                      :editable="isFieldEditable('nationality')"
+                      @saved="handleUpdate"
                     />
                   </div>
                 </div>
@@ -173,22 +178,24 @@
                     <Label html-for="language">{{ t('actors.fields.language') }}</Label>
                     <EditableField
                       id="language"
-                      :value="actor.language"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="language"
+                      :model-value="actor.language"
+                      field="language"
+                      :url="`/actor/${actor.id}`"
                       :placeholder="'fr/en/de'"
-                      @update="handleUpdate"
+                      :editable="isFieldEditable('language')"
+                      @saved="handleUpdate"
                     />
                   </div>
                   <div>
                     <Label html-for="function">{{ t('actors.fields.function') }}</Label>
                     <EditableField
                       id="function"
-                      :value="actor.function"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="function"
+                      :model-value="actor.function"
+                      field="function"
+                      :url="`/actor/${actor.id}`"
                       :placeholder="'-'"
-                      @update="handleUpdate"
+                      :editable="isFieldEditable('function')"
+                      @saved="handleUpdate"
                     />
                   </div>
                 </div>
@@ -197,13 +204,15 @@
                   <Label html-for="company_id">{{ t('actors.fields.employer') }}</Label>
                   <EditableField
                     id="company_id"
-                    :value="actor.company?.name"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="company_id"
+                    :model-value="actor.company_id"
+                    :display-value="actor.company?.name"
+                    field="company_id"
+                    :url="`/actor/${actor.id}`"
                     type="autocomplete"
-                    autocomplete-url="/actor/autocomplete"
+                    autocomplete-endpoint="/actor/autocomplete"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('company_id')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -211,9 +220,9 @@
                   <div class="flex items-center space-x-2">
                     <Checkbox
                       id="phy_person"
-                      :checked="actor.phy_person"
+                      :model-value="Boolean(actor.phy_person)"
                       :disabled="!isFieldEditable('phy_person')"
-                      @update:checked="updateCheckbox('phy_person', $event)"
+                      @update:model-value="updateCheckbox('phy_person', $event)"
                     />
                     <Label
                       html-for="phy_person"
@@ -240,9 +249,9 @@
                   <div class="flex items-center space-x-2">
                     <Checkbox
                       id="small_entity"
-                      :checked="actor.small_entity"
+                      :model-value="Boolean(actor.small_entity)"
                       :disabled="!isFieldEditable('small_entity')"
-                      @update:checked="updateCheckbox('small_entity', $event)"
+                      @update:model-value="updateCheckbox('small_entity', $event)"
                     />
                     <Label
                       html-for="small_entity"
@@ -281,11 +290,13 @@
                   <Label html-for="address_mailing">{{ t('actors.fields.addressMailing') }}</Label>
                   <EditableField
                     id="address_mailing"
-                    :value="actor.address_mailing"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="address_mailing"
+                    :model-value="actor.address_mailing"
+                    field="address_mailing"
+                    :url="`/actor/${actor.id}`"
                     type="textarea"
-                    @update="handleUpdate"
+                    :placeholder="'-'"
+                    :editable="isFieldEditable('address_mailing')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -293,13 +304,15 @@
                   <Label html-for="country_mailing">{{ t('actors.fields.countryMailing') }}</Label>
                   <EditableField
                     id="country_mailing"
-                    :value="actor.country_mailingInfo?.name"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="country_mailing"
+                    :model-value="actor.country_mailing"
+                    :display-value="actor.country_mailingInfo?.name"
+                    field="country_mailing"
+                    :url="`/actor/${actor.id}`"
                     type="autocomplete"
-                    autocomplete-url="/country/autocomplete"
+                    autocomplete-endpoint="/country/autocomplete"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('country_mailing')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -307,11 +320,13 @@
                   <Label html-for="address_billing">{{ t('actors.fields.addressBilling') }}</Label>
                   <EditableField
                     id="address_billing"
-                    :value="actor.address_billing"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="address_billing"
+                    :model-value="actor.address_billing"
+                    field="address_billing"
+                    :url="`/actor/${actor.id}`"
                     type="textarea"
-                    @update="handleUpdate"
+                    :placeholder="'-'"
+                    :editable="isFieldEditable('address_billing')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -319,13 +334,15 @@
                   <Label html-for="country_billing">{{ t('actors.fields.countryBilling') }}</Label>
                   <EditableField
                     id="country_billing"
-                    :value="actor.country_billingInfo?.name"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="country_billing"
+                    :model-value="actor.country_billing"
+                    :display-value="actor.country_billingInfo?.name"
+                    field="country_billing"
+                    :url="`/actor/${actor.id}`"
                     type="autocomplete"
-                    autocomplete-url="/country/autocomplete"
+                    autocomplete-endpoint="/country/autocomplete"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('country_billing')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -334,23 +351,25 @@
                     <Label html-for="email">{{ t('actors.fields.email') }}</Label>
                     <EditableField
                       id="email"
-                      :value="actor.email"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="email"
+                      :model-value="actor.email"
+                      field="email"
+                      :url="`/actor/${actor.id}`"
                       type="email"
                       :placeholder="'-'"
-                      @update="handleUpdate"
+                      :editable="isFieldEditable('email')"
+                      @saved="handleUpdate"
                     />
                   </div>
                   <div>
                     <Label html-for="phone">{{ t('actors.fields.phone') }}</Label>
                     <EditableField
                       id="phone"
-                      :value="actor.phone"
-                      :update-url="`/actor/${actor.id}`"
-                      field-name="phone"
+                      :model-value="actor.phone"
+                      field="phone"
+                      :url="`/actor/${actor.id}`"
                       :placeholder="'-'"
-                      @update="handleUpdate"
+                      :editable="isFieldEditable('phone')"
+                      @saved="handleUpdate"
                     />
                   </div>
                 </div>
@@ -368,11 +387,12 @@
                   <Label html-for="login">{{ t('actors.fields.userName') }}</Label>
                   <EditableField
                     id="login"
-                    :value="actor.login"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="login"
+                    :model-value="actor.login"
+                    field="login"
+                    :url="`/actor/${actor.id}`"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('login')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -388,22 +408,24 @@
                   </Label>
                   <EditableField
                     id="default_role"
-                    :value="actor.droleInfo?.name"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="default_role"
+                    :model-value="actor.default_role"
+                    :display-value="actor.droleInfo?.name"
+                    field="default_role"
+                    :url="`/actor/${actor.id}`"
                     type="autocomplete"
-                    autocomplete-url="/role/autocomplete"
+                    autocomplete-endpoint="/role/autocomplete"
                     :placeholder="'-'"
-                    :disabled="!!actor.login"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('default_role') && !actor.login"
+                    @saved="handleUpdate"
                   />
                 </div>
 
                 <div class="flex items-center space-x-2">
                   <Checkbox
                     id="warn"
-                    :checked="actor.warn"
-                    @update:checked="updateCheckbox('warn', $event)"
+                    :model-value="Boolean(actor.warn)"
+                    :disabled="!isFieldEditable('warn')"
+                    @update:model-value="updateCheckbox('warn', $event)"
                   />
                   <Label html-for="warn">{{ t('actors.fields.warn') }}</Label>
                 </div>
@@ -412,12 +434,13 @@
                   <Label html-for="ren_discount">{{ t('actors.fields.renewalDiscount') }}</Label>
                   <EditableField
                     id="ren_discount"
-                    :value="actor.ren_discount"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="ren_discount"
+                    :model-value="actor.ren_discount"
+                    field="ren_discount"
+                    :url="`/actor/${actor.id}`"
                     type="number"
                     :placeholder="t('actors.fields.discountHint')"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('ren_discount')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -425,11 +448,12 @@
                   <Label html-for="legal_form">{{ t('actors.fields.legalForm') }}</Label>
                   <EditableField
                     id="legal_form"
-                    :value="actor.legal_form"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="legal_form"
+                    :model-value="actor.legal_form"
+                    field="legal_form"
+                    :url="`/actor/${actor.id}`"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('legal_form')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -437,11 +461,12 @@
                   <Label html-for="registration_no">{{ t('actors.fields.registrationNo') }}</Label>
                   <EditableField
                     id="registration_no"
-                    :value="actor.registration_no"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="registration_no"
+                    :model-value="actor.registration_no"
+                    field="registration_no"
+                    :url="`/actor/${actor.id}`"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('registration_no')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -449,11 +474,12 @@
                   <Label html-for="VAT_number">{{ t('actors.fields.vatNumber') }}</Label>
                   <EditableField
                     id="VAT_number"
-                    :value="actor.VAT_number"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="VAT_number"
+                    :model-value="actor.VAT_number"
+                    field="VAT_number"
+                    :url="`/actor/${actor.id}`"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('VAT_number')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -461,13 +487,15 @@
                   <Label html-for="parent_id">{{ t('actors.fields.parentCompany') }}</Label>
                   <EditableField
                     id="parent_id"
-                    :value="actor.parent?.name"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="parent_id"
+                    :model-value="actor.parent_id"
+                    :display-value="actor.parent?.name"
+                    field="parent_id"
+                    :url="`/actor/${actor.id}`"
                     type="autocomplete"
-                    autocomplete-url="/actor/autocomplete"
+                    autocomplete-endpoint="/actor/autocomplete"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('parent_id')"
+                    @saved="handleUpdate"
                   />
                 </div>
 
@@ -475,13 +503,15 @@
                   <Label html-for="site_id">{{ t('actors.fields.workSite') }}</Label>
                   <EditableField
                     id="site_id"
-                    :value="actor.site?.name"
-                    :update-url="`/actor/${actor.id}`"
-                    field-name="site_id"
+                    :model-value="actor.site_id"
+                    :display-value="actor.site?.name"
+                    field="site_id"
+                    :url="`/actor/${actor.id}`"
                     type="autocomplete"
-                    autocomplete-url="/actor/autocomplete"
+                    autocomplete-endpoint="/actor/autocomplete"
                     :placeholder="'-'"
-                    @update="handleUpdate"
+                    :editable="isFieldEditable('site_id')"
+                    @saved="handleUpdate"
                   />
                 </div>
               </div>
@@ -588,7 +618,7 @@
           {{ t('actors.show.backToList') }}
         </Button>
         <Button
-          v-if="canDeleteActor(actor)"
+          v-if="canDeleteActor"
           variant="destructive"
           @click="confirmDelete"
         >
@@ -802,7 +832,7 @@ function navigateToMatter(matterId) {
 }
 
 // Handle field updates
-function handleUpdate(field, value) {
+function handleUpdate() {
   // Reload only the actor data
   router.reload({ only: ['actor'] })
 }
@@ -820,12 +850,13 @@ async function updateCheckbox(field, checked) {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'X-CSRF-TOKEN': page.props.csrf_token,
         'X-Requested-With': 'XMLHttpRequest',
       },
       body: JSON.stringify({ [field]: checked })
     })
-    
+
     if (response.ok) {
       router.reload({ only: ['actor'] })
     }

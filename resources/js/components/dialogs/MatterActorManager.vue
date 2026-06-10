@@ -209,7 +209,7 @@
                         v-if="actor.company_name"
                         class="text-sm text-muted-foreground"
                       >
-                        {{ translated(translatedactor.company_name) }}
+                        {{ actor.company_name }}
                       </div>
                       <div class="flex gap-4 text-sm text-muted-foreground">
                         <span v-if="actor.actor_ref">{{ t('Ref') }}: {{ actor.actor_ref }}</span>
