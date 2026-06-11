@@ -219,6 +219,12 @@ const props = defineProps({
     type: String,
     default: 'asc',
   },
+  // When true, rows are displayed in the order received (sorting is done by the server);
+  // header clicks only update the sorting state and emit 'sort-change'
+  manualSorting: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:selected', 'sort-change'])
@@ -243,6 +249,7 @@ const table = useVueTable({
   getCoreRowModel: getCoreRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
   getSortedRowModel: getSortedRowModel(),
+  manualSorting: props.manualSorting,
   onSortingChange: updaterOrValue => {
     sorting.value = typeof updaterOrValue === 'function' 
       ? updaterOrValue(sorting.value) 

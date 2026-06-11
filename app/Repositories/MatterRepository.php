@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Matter;
 use App\Repositories\Contracts\MatterRepositoryInterface;
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -104,7 +105,9 @@ class MatterRepository implements MatterRepositoryInterface
 
         // Group by the sort key and additional fields to match old implementation
         $query->groupBy(...$groupByFields)
-            ->orderBy($actualSortKey, $sortDir);
+            ->orderBy($actualSortKey, $sortDir)
+            // Tiebreaker keeps pagination deterministic when the sort column has equal values
+            ->orderBy('matter.id', $sortDir);
 
         return $query->paginate($perPage);
     }
@@ -163,7 +166,8 @@ class MatterRepository implements MatterRepositoryInterface
 
         // Group by the sort key and additional fields to match old implementation
         $query->groupBy(...$groupByFields)
-            ->orderBy($actualSortKey, $sortDir);
+            ->orderBy($actualSortKey, $sortDir)
+            ->orderBy('matter.id', $sortDir);
 
         return $query->get();
     }
@@ -471,22 +475,25 @@ class MatterRepository implements MatterRepositoryInterface
     }
 
     /**
-     * Map frontend sort keys to database columns
+     * Map frontend sort keys to database columns or select aliases
      */
-    protected function mapSortKey(string $sortKey): string
+    protected function mapSortKey(string $sortKey): string|Expression
     {
         return match ($sortKey) {
             'id' => 'matter.id',
             'caseref' => 'matter.caseref',
             'Ref' => 'matter.uid',
             'country' => 'matter.country',
+            'country_name' => 'country_name',
             'Cat' => 'matter.category_code',
             'Status' => 'Status',
             'Status_date' => 'Status_date',
             'Client' => 'Client',
             'Applicant' => 'Applicant',
             'Agent' => 'Agent',
+            'Owner' => 'Owner',
             'Title' => 'Title',
+            'classes' => 'classes',
             'Inventor1' => 'Inventor1',
             'Filed' => 'fil.event_date',
             'FilNo' => 'fil.detail',
@@ -494,6 +501,8 @@ class MatterRepository implements MatterRepositoryInterface
             'PubNo' => 'pub.detail',
             'Granted' => 'grt.event_date',
             'GrtNo' => 'grt.detail',
+            'registration_date' => DB::raw('COALESCE(grt.event_date, reg.event_date, regdp.event_date)'),
+            'renewal_due' => 'renewal_due',
             default => 'matter.id'
         };
     }

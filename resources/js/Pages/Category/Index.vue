@@ -81,6 +81,7 @@
             :page-size="15"
             :sort-field="sort"
             :sort-direction="direction"
+            manual-sorting
             :get-row-id="(row) => row.code"
             @sort-change="handleSortChange"
           />
