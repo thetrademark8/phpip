@@ -65,7 +65,9 @@ class RenewalQueryService implements RenewalQueryServiceInterface
 
             switch ($key) {
                 case 'Title':
-                    $query->where('tit.value', 'LIKE', "%$value%");
+                    // classifier.value uses utf8mb4_bin (case preservation), so force an
+                    // accent- and case-insensitive collation for searching
+                    $query->whereRaw('tit.value COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]);
                     break;
                 case 'Case':
                     $query->where('matter.caseref', 'LIKE', "$value%");
