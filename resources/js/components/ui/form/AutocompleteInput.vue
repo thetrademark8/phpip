@@ -117,6 +117,11 @@ const showDropdown = ref(false)
 const highlightedIndex = ref(-1)
 const loading = ref(false)
 const selectedItem = ref(null)
+// Snapshot of display/model values captured on focus, used to detect whether the user
+// actually changed anything before blur. Without this, allowFreeText would overwrite a
+// distinct modelValue (e.g., a code like "DP") with the displayValue (e.g., "Design Patent")
+// on every focus+blur cycle, even when the user did not type.
+const focusSnapshot = ref(null)
 
 // Watch for external value changes
 watch(() => props.modelValue, (newValue) => {
@@ -181,7 +186,16 @@ const handleInput = (event) => {
 
   // If free text is allowed, immediately update the model value
   if (props.allowFreeText) {
-    emit('update:modelValue', displayValue.value)
+    // When the user types back to the original display captured at focus, restore the
+    // original modelValue. This matters when display and modelValue represent different
+    // things (e.g., display is a translated name and modelValue is a FK code).
+    if (focusSnapshot.value && displayValue.value === focusSnapshot.value.display) {
+      if (props.modelValue !== focusSnapshot.value.model) {
+        emit('update:modelValue', focusSnapshot.value.model)
+      }
+    } else {
+      emit('update:modelValue', displayValue.value)
+    }
   } else {
     // Clear the actual value if the display value doesn't match
     if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {
@@ -195,6 +209,11 @@ const handleInput = (event) => {
 }
 
 const handleFocus = () => {
+  focusSnapshot.value = {
+    display: displayValue.value,
+    model: props.modelValue,
+  }
+
   if (filteredSuggestions.value.length > 0) {
     showDropdown.value = true
   } else if (props.minLength === 0) {
@@ -211,9 +230,22 @@ const handleBlur = () => {
 
     // If free text is allowed, keep the typed value
     if (props.allowFreeText) {
-      // Keep the current display value and update model value
-      emit('update:modelValue', displayValue.value)
-      emit('update:displayModelValue', displayValue.value)
+      if (selectedItem.value && displayValue.value === getItemLabel(selectedItem.value)) {
+        // A suggestion was selected and the display still matches it: selectSuggestion
+        // already emitted the correct modelValue (the FK key), so do nothing here.
+      } else if (focusSnapshot.value && displayValue.value === focusSnapshot.value.display) {
+        // No effective change since focus: preserve the original modelValue rather than
+        // overwriting it with the display string.
+        if (props.modelValue !== focusSnapshot.value.model) {
+          emit('update:modelValue', focusSnapshot.value.model)
+        }
+      } else {
+        // The user typed a value that doesn't match any selection or the initial display:
+        // accept it as free text.
+        emit('update:modelValue', displayValue.value)
+        emit('update:displayModelValue', displayValue.value)
+      }
+      focusSnapshot.value = null
     } else {
       // Revert to selected item if no new selection
       if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {

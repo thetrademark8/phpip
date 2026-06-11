@@ -87,7 +87,11 @@ class CategoryController extends Controller
         $request->validate([
             'code' => 'required|unique:matter_category|max:5',
             'category' => 'required|max:45',
-            'display_with' => 'required',
+            'display_with' => [
+                'required',
+                'max:5',
+                $this->displayWithRule($request->input('code')),
+            ],
         ]);
         $request->merge(['creator' => Auth::user()->login]);
 
@@ -124,7 +128,11 @@ class CategoryController extends Controller
         $request->validate([
             'code' => 'required|unique:matter_category,code,'.$category->code.',code|max:5',
             'category' => 'required|max:45',
-            'display_with' => 'required',
+            'display_with' => [
+                'required',
+                'max:5',
+                $this->displayWithRule($request->input('code')),
+            ],
         ]);
 
         $request->merge(['updater' => Auth::user()->login]);
@@ -196,6 +204,30 @@ class CategoryController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Build a validation closure ensuring `display_with` is either the category's own code
+     * (self-reference, typical for top-level categories) or an existing category code.
+     *
+     * Without this, the frontend may send the human-readable category name as `display_with`,
+     * which then triggers a foreign-key constraint violation at the database level.
+     */
+    protected function displayWithRule(?string $code): \Closure
+    {
+        return function (string $attribute, mixed $value, \Closure $fail) use ($code) {
+            if (! is_string($value) || $value === '') {
+                return;
+            }
+
+            if ($code !== null && $value === $code) {
+                return;
+            }
+
+            if (! Category::whereKey($value)->exists()) {
+                $fail(__('validation.exists', ['attribute' => $attribute]));
+            }
+        };
     }
 
     public function autocomplete(Request $request)
