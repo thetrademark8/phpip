@@ -99,6 +99,9 @@ class MinimalDataSeeder extends Seeder
             ['code' => 'REG', 'name' => '{"en": "Registered", "fr": "Enregistré"}', 'is_task' => 0, 'status_event' => 1, 'use_matter_resp' => 0, 'unique' => 1],
             ['code' => 'REN', 'name' => '{"en": "Renewal", "fr": "Annuité"}', 'is_task' => 1, 'status_event' => 0, 'use_matter_resp' => 0, 'unique' => 0],
             ['code' => 'PRI', 'name' => '{"en": "Priority Claimed", "fr": "Priorité revendiquée"}', 'is_task' => 0, 'status_event' => 0, 'use_matter_resp' => 0, 'unique' => 0],
+            ['code' => 'PRID', 'name' => '{"en": "Priority Deadline", "fr": "Délai de priorité"}', 'is_task' => 1, 'status_event' => 0, 'use_matter_resp' => 0, 'unique' => 1],
+            ['code' => 'WAT', 'name' => '{"en": "Watch", "fr": "Surveillance"}', 'is_task' => 1, 'status_event' => 0, 'use_matter_resp' => 1, 'unique' => 0],
+            ['code' => 'FOP', 'name' => '{"en": "File Opposition", "fr": "Déposer opposition"}', 'is_task' => 1, 'status_event' => 0, 'use_matter_resp' => 1, 'unique' => 1],
         ];
 
         DB::table('event_name')->insertOrIgnore($events);

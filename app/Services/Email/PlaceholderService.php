@@ -124,7 +124,8 @@ class PlaceholderService
             $values['{{matter.registration_date}}'] = ($this->matter->grant ?? $this->matter->registration)?->event_date?->isoFormat('L');
             $values['{{matter.registration_number}}'] = ($this->matter->grant ?? $this->matter->registration)?->detail;
             $values['{{matter.publication_date}}'] = $this->matter->publication?->event_date?->isoFormat('L');
-            $values['{{matter.opposition_deadline}}'] = $this->getTaskDueDate('FOP');
+            $values['{{matter.opposition_deadline}}'] = $this->getTaskDueDate('FOP')
+                ?? $this->getTaskDueDate('WAT', triggerEventCode: 'PUB');
             $values['{{matter.priority_deadline}}'] = $this->getTaskDueDate('PRID');
             $values['{{matter.expire_date}}'] = $this->matter->expire_date ? \Carbon\Carbon::parse($this->matter->expire_date)->isoFormat('L') : null;
             $values['{{matter.next_renewal}}'] = $this->getTaskDueDate('REN', true);
@@ -187,19 +188,40 @@ class PlaceholderService
 
     /**
      * Get the due date of a specific task for the current matter.
+     *
+     * Tasks are attached to the matter's own events, so the matter is searched
+     * first. Some tasks (e.g. PRID) are only created on the family's container
+     * matter, so the container is used as a fallback when nothing is found.
      */
-    protected function getTaskDueDate(string $taskCode, bool $onlyPending = false): ?string
+    protected function getTaskDueDate(string $taskCode, bool $onlyPending = false, ?string $triggerEventCode = null): ?string
     {
         if (! $this->matter) {
             return null;
         }
 
-        $matter = $this->matter->container_id
-            ? Matter::find($this->matter->container_id) ?? $this->matter
-            : $this->matter;
+        $dueDate = $this->findTaskDueDate($this->matter, $taskCode, $onlyPending, $triggerEventCode);
 
+        if ($dueDate === null && $this->matter->container_id) {
+            $container = Matter::find($this->matter->container_id);
+            if ($container) {
+                $dueDate = $this->findTaskDueDate($container, $taskCode, $onlyPending, $triggerEventCode);
+            }
+        }
+
+        return $dueDate;
+    }
+
+    /**
+     * Find the earliest due date of a task on the given matter.
+     */
+    protected function findTaskDueDate(Matter $matter, string $taskCode, bool $onlyPending, ?string $triggerEventCode): ?string
+    {
         $query = $matter->tasks()
             ->where('task.code', $taskCode);
+
+        if ($triggerEventCode) {
+            $query->where('event.code', $triggerEventCode);
+        }
 
         if ($onlyPending) {
             $query->where('task.done', 0);
