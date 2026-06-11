@@ -88,6 +88,7 @@
             :get-row-class="getRowClass"
             :sort-field="sortField"
             :sort-direction="sortDirection"
+            manual-sorting
             @update:selected="handleSelection"
             @sort-change="handleSortChange"
           />
