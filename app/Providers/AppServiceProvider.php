@@ -72,8 +72,10 @@ class AppServiceProvider extends ServiceProvider
 
             // Use LOWER() for case-insensitive search and utf8mb4_unicode_ci for broader compatibility
             // Search with contains pattern (%value%) instead of prefix (value%)
+            // Fall back to the raw column value when the row does not contain valid JSON
+            // (e.g. legacy plain-text rows in translatable columns such as country.name)
             return $this->whereRaw(
-                "LOWER(JSON_UNQUOTE(JSON_EXTRACT($column, '$.\"$locale\"'))) LIKE LOWER(?)",
+                "LOWER(CASE WHEN JSON_VALID($column) = 1 THEN JSON_UNQUOTE(JSON_EXTRACT($column, '$.\"$locale\"')) ELSE $column END) LIKE LOWER(?)",
                 ["%$value%"]
             );
         });
