@@ -61,7 +61,7 @@ class TranslatedAttributesSeeder extends Seeder
             'DBRW' => ['en' => 'DB Read/Write',    'fr' => 'BDD Lecture/écriture', 'de' => 'DB Lese-/Schreibzugriff'],
             'DEL' => ['en' => 'Delegate',         'fr' => 'Délégataire',          'de' => 'Bevollmächtigter'],
             'FAGT' => ['en' => 'Former Agent',     'fr' => 'Ancien agent',         'de' => 'Ehemaliger Vertreter'],
-            'FOWN' => ['en' => 'Former Owner',     'fr' => 'Ancien titulairte',    'de' => 'Ehemaliger Inhaber'],
+            'FOWN' => ['en' => 'Former Owner',     'fr' => 'Ancien titulaire',     'de' => 'Ehemaliger Inhaber'],
             'INV' => ['en' => 'Inventor',         'fr' => 'Inventeur',            'de' => 'Erfinder'],
             'LCN' => ['en' => 'Licensee',         'fr' => 'Licencié',             'de' => 'Lizenznehmer'],
             'OFF' => ['en' => 'Patent Office',    'fr' => 'Office des brevets',   'de' => 'Patentamt'],
