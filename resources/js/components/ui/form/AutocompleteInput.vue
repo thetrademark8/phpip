@@ -197,6 +197,10 @@ const handleInput = (event) => {
 const handleFocus = () => {
   if (filteredSuggestions.value.length > 0) {
     showDropdown.value = true
+  } else if (props.minLength === 0) {
+    // Open as a dropdown listing all options without requiring the user to type
+    showDropdown.value = true
+    searchSuggestions(displayValue.value)
   }
 }
 

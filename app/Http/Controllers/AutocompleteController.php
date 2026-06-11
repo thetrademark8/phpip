@@ -117,10 +117,14 @@ class AutocompleteController extends Controller
 
     public function role(Request $request): JsonResponse
     {
-        $query = Role::whereJsonLike('name', $request->term)
-            ->orWhereLike('code', "{$request->term}%");
+        $query = Role::where(function ($q) use ($request) {
+            $q->whereJsonLike('name', $request->term)
+                ->orWhereLike('code', "{$request->term}%");
+        });
 
-        $roles = $query->orderBy('name')->take(10)->get();
+        // Roles are a small reference table: return the full list so the
+        // field can act as a dropdown when no term is typed
+        $roles = $query->orderBy('name')->get();
         $results = $roles->map(function ($item) {
             return [
                 'key' => $item->code,
