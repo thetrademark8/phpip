@@ -12,21 +12,22 @@ class UpdateMadridCountries extends Command
     protected $description = 'Update Madrid Protocol member countries (set wo=1)';
 
     /**
-     * Madrid Protocol member countries (as of 2024)
-     * Source: WIPO - https://www.wipo.int/madrid/en/members/
+     * Madrid Protocol member countries (as of June 2026)
+     * Source: WIPO - https://www.wipo.int/en/web/madrid-system/members/index
      */
     private array $madridProtocolCountries = [
         'AF', 'AL', 'DZ', 'AG', 'AM', 'AU', 'AT', 'AZ', 'BH', 'BY',
-        'BE', 'BT', 'BA', 'BW', 'BR', 'BN', 'BG', 'KH', 'CA', 'CN',
-        'CO', 'HR', 'CU', 'CY', 'CZ', 'KP', 'DK', 'EG', 'EE', 'SZ',
-        'FI', 'FR', 'GM', 'GE', 'DE', 'GH', 'GR', 'HU', 'IS', 'IN',
-        'ID', 'IR', 'IE', 'IL', 'IT', 'JP', 'KZ', 'KE', 'KG', 'LA',
-        'LV', 'LS', 'LR', 'LI', 'LT', 'LU', 'MG', 'MW', 'MY', 'MV',
-        'MT', 'MU', 'MX', 'MC', 'MN', 'ME', 'MA', 'MZ', 'NA', 'NL',
-        'NZ', 'MK', 'NO', 'OM', 'PK', 'PH', 'PL', 'PT', 'KR', 'MD',
-        'RO', 'RU', 'RW', 'SM', 'ST', 'RS', 'SL', 'SG', 'SK', 'SI',
-        'ZA', 'ES', 'SD', 'SE', 'CH', 'SY', 'TJ', 'TH', 'TT', 'TN',
-        'TR', 'TM', 'UA', 'AE', 'GB', 'US', 'UZ', 'VN', 'ZM', 'ZW',
+        'BE', 'BZ', 'BT', 'BA', 'BW', 'BR', 'BN', 'BG', 'CV', 'KH',
+        'CA', 'CL', 'CN', 'CO', 'HR', 'CU', 'CY', 'CZ', 'KP', 'DK',
+        'EG', 'EE', 'SZ', 'FI', 'FR', 'GM', 'GE', 'DE', 'GH', 'GD',
+        'GR', 'HU', 'IS', 'IN', 'ID', 'IR', 'IE', 'IL', 'IT', 'JM',
+        'JP', 'KZ', 'KE', 'KG', 'LA', 'LV', 'LS', 'LR', 'LI', 'LT',
+        'LU', 'MG', 'MW', 'MY', 'MV', 'MT', 'MU', 'MX', 'MC', 'MN',
+        'ME', 'MA', 'MZ', 'NA', 'NL', 'NZ', 'MK', 'NO', 'OM', 'PK',
+        'PH', 'PL', 'PT', 'QA', 'KR', 'MD', 'RO', 'RU', 'RW', 'SM',
+        'ST', 'RS', 'SL', 'SG', 'SK', 'SI', 'ZA', 'ES', 'SD', 'SE',
+        'CH', 'SY', 'TJ', 'TH', 'TT', 'TN', 'TR', 'TM', 'UA', 'AE',
+        'GB', 'US', 'UZ', 'VN', 'ZM', 'ZW',
         'EM', 'OA', 'BX', 'LK',
     ];
 
