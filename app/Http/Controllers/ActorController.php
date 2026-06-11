@@ -172,6 +172,13 @@ class ActorController extends Controller
         // Use ActorPolicy for create authorization
         Gate::forUser($user)->authorize('create', Actor::class);
 
+        // Whitelist of fields that can be submitted during actor creation
+        $editableFields = [
+            'name', 'first_name', 'display_name', 'email', 'phone', 'address',
+            'country', 'nationality', 'language', 'function', 'company_id',
+            'phy_person', 'small_entity', 'warn',
+        ];
+
         // Simple validation rules
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
