@@ -442,7 +442,9 @@ class MatterRepository implements MatterRepositoryInterface
                 'Agent' => $query->whereRaw('LOWER(IFNULL(IFNULL(agt.display_name, agt.name), IFNULL(agtc.display_name, agtc.name))) LIKE ?', ["%$lowerValue%"]),
                 'Contact' => $query->whereRaw('LOWER(IFNULL(cnt.display_name, cnt.name)) LIKE ?', ["%$lowerValue%"]),
                 'AgtRef' => $query->whereRaw('LOWER(IFNULL(agtlnk.actor_ref, agtclnk.actor_ref)) LIKE ?', ["$lowerValue%"]),
-                'Title' => $query->whereRaw('LOWER(concat_ws(" ", tit1.value, tit2.value, tit3.value)) LIKE ?', ["%$lowerValue%"]),
+                // classifier.value uses utf8mb4_bin (case preservation), so force an
+                // accent- and case-insensitive collation for searching
+                'Title' => $query->whereRaw("concat_ws(' ', tit1.value, tit2.value, tit3.value) COLLATE utf8mb4_unicode_ci LIKE ?", ["%$value%"]),
                 'Inventor1' => $query->whereRaw('LOWER(IFNULL(inv.display_name, inv.name)) LIKE ?', ["%$lowerValue%"]),
                 'Filed' => $this->applyDateFilter($query, 'fil.event_date', $value),
                 'FilNo' => $query->whereRaw('LOWER(fil.detail) LIKE ?', ["$lowerValue%"]),
@@ -457,7 +459,7 @@ class MatterRepository implements MatterRepositoryInterface
                     $q->whereRaw('LOWER(grt.detail) LIKE ?', ["%$lowerValue%"])
                         ->orWhereRaw('LOWER(reg.detail) LIKE ?', ["%$lowerValue%"]);
                 }),
-                'classes' => $query->whereRaw('LOWER(tmcl.value) LIKE ?', ["%$lowerValue%"]),
+                'classes' => $query->whereRaw('tmcl.value COLLATE utf8mb4_unicode_ci LIKE ?', ["%$value%"]),
                 'responsible' => $query->where(function ($q) use ($lowerValue) {
                     $q->whereRaw('LOWER(matter.responsible) LIKE ?', ["$lowerValue%"])
                         ->orWhereRaw('LOWER(del.login) LIKE ?', ["$lowerValue%"]);
