@@ -83,7 +83,7 @@ class MatterEmailNotification extends Notification implements ShouldQueue
         }
 
         // Add attachments - reload from database to avoid serialization issues
-        if (! empty($this->attachmentIds)) {
+        if (!empty($this->attachmentIds)) {
             $attachments = MatterAttachment::whereIn('id', $this->attachmentIds)->get();
 
             foreach ($attachments as $attachment) {
@@ -130,8 +130,8 @@ class MatterEmailNotification extends Notification implements ShouldQueue
                 $headers = $symfonyMessage->getHeaders();
                 $userEmail = Auth::user()->email;
                 if ($userEmail) {
-                    $headers->addTextHeader('X-Confirm-Reading-To', '<'.$userEmail.'>');
-                    $headers->addTextHeader('Return-receipt-to', '<'.$userEmail.'>');
+                    $headers->addTextHeader('X-Confirm-Reading-To', '<' . $userEmail . '>');
+                    $headers->addTextHeader('Return-receipt-to', '<' . $userEmail . '>');
                 }
             });
         }

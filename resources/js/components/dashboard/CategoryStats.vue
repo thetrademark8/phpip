@@ -30,7 +30,11 @@
               >
                 {{ translated(category.category) }}
               </Link>
-              <Badge v-if="category.new > 0" variant="secondary" class="text-xs">
+              <Badge
+                v-if="category.new > 0"
+                variant="secondary"
+                class="text-xs"
+              >
                 {{ category.new }} {{ $t('dashboard.categories.new') }}
               </Badge>
             </div>
@@ -41,14 +45,17 @@
                 size="icon"
                 variant="ghost"
                 class="h-6 w-6"
-                @click="openCreateMatter(category.code)"
                 :title="`Create ${category.category}`"
+                @click="openCreateMatter(category.code)"
               >
                 <Plus class="h-3 w-3" />
               </Button>
             </div>
           </div>
-          <Progress :value="category.percentage" class="h-2" />
+          <Progress
+            :value="category.percentage"
+            class="h-2"
+          />
         </div>
       </div>
     </CardContent>

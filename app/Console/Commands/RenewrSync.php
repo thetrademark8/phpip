@@ -31,7 +31,7 @@ class RenewrSync extends Command
         try {
             // Get Renewr actor ID
             $renewrActor = Actor::where('name', 'LIKE', 'Renewr%')->first();
-            if (! $renewrActor) {
+            if (!$renewrActor) {
                 throw new \Exception('No Renewr in actor table');
             }
 
@@ -42,8 +42,8 @@ class RenewrSync extends Command
 
             $this->displayStats();
         } catch (\Exception $e) {
-            Log::error('Portfolio renewal processing failed: '.$e->getMessage());
-            $this->error('Portfolio renewal processing failed: '.$e->getMessage());
+            Log::error('Portfolio renewal processing failed: ' . $e->getMessage());
+            $this->error('Portfolio renewal processing failed: ' . $e->getMessage());
 
             return 1;
         }
@@ -55,7 +55,7 @@ class RenewrSync extends Command
     {
         yield from $this->fetchPages(config('renewr.url'), [
             'Accept: application/json',
-            'X-API-KEY: '.config('renewr.api_key'),
+            'X-API-KEY: ' . config('renewr.api_key'),
         ], 'api_data');
     }
 
@@ -88,7 +88,7 @@ class RenewrSync extends Command
 
         $headers = [
             'Accept: application/json',
-            'Authorization: Bearer '.$bearer_token,
+            'Authorization: Bearer ' . $bearer_token,
         ];
 
         yield from $this->fetchPages(config('renewr.url'), $headers, 'demo_data');
@@ -101,7 +101,7 @@ class RenewrSync extends Command
         $totalPages = null;
 
         // Try to get total pages from cache metadata
-        $metaCacheFile = $this->getCacheFilePath($cacheKey.'_meta');
+        $metaCacheFile = $this->getCacheFilePath($cacheKey . '_meta');
         if (file_exists($metaCacheFile)) {
             $meta = json_decode(file_get_contents($metaCacheFile));
             $totalPages = $meta->totalPages ?? null;
@@ -122,14 +122,14 @@ class RenewrSync extends Command
                 $response = curl_exec($ch);
 
                 if (curl_errno($ch)) {
-                    throw new \Exception('API request failed: '.curl_error($ch));
+                    throw new \Exception('API request failed: ' . curl_error($ch));
                 }
 
                 curl_close($ch);
 
                 $result = json_decode($response);
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new \Exception('JSON Decode Error: '.json_last_error_msg());
+                    throw new \Exception('JSON Decode Error: ' . json_last_error_msg());
                 }
 
                 if (empty($result)) {
@@ -169,7 +169,7 @@ class RenewrSync extends Command
                 $this->stats['patsprocessed']++;
 
                 $matter = $this->findAndValidateMatter($renewrPatent, $renewrActor);
-                if (! $matter) {
+                if (!$matter) {
                     continue;
                 }
 
@@ -185,7 +185,7 @@ class RenewrSync extends Command
 
     private function findAndValidateMatter($renewrPatent, $renewrActor)
     {
-        if (! $renewrPatent->providerId) {
+        if (!$renewrPatent->providerId) {
             $this->warn("No providerId for patent: $renewrPatent->clientCaseRef");
 
             return null;
@@ -195,7 +195,7 @@ class RenewrSync extends Command
             $query->where('actor_id', $renewrActor->id);
         }])->find($renewrPatent->providerId);
 
-        if (! $matter) {
+        if (!$matter) {
             $this->warn("No data for providerId: $renewrPatent->providerId");
             $this->stats['unrecognized']++;
 
@@ -231,7 +231,7 @@ class RenewrSync extends Command
                 ->first();
 
             if ($task) {
-                if (! (config('renewr.skip_done') && $task->done)) {
+                if (!(config('renewr.skip_done') && $task->done)) {
                     $this->updateRenewal($task, $renewal, $renewrPatent);
                 }
             } else {
@@ -264,23 +264,23 @@ class RenewrSync extends Command
             $updates['fee'] = $fee;
         }
 
-        if (! empty($renewal->dateOfPayment) && (! $task->done_date || $renewal->dateOfPayment != $task->done_date->format('Y-m-d'))) {
+        if (!empty($renewal->dateOfPayment) && (!$task->done_date || $renewal->dateOfPayment != $task->done_date->format('Y-m-d'))) {
             $updates['done_date'] = $renewal->dateOfPayment;
             $updates['step'] = -1;
-            if (! $task->invoice_step) {
+            if (!$task->invoice_step) {
                 $updates['invoice_step'] = 1;
             }
         }
 
-        if (! empty($updates)) {
+        if (!empty($updates)) {
             $updates['updated_at'] = now();
             $updates['updater'] = 'Renewr';
 
             $task->update($updates);
 
-            $this->info('Updated '.collect($updates)->except(['updated_at', 'updater'])->map(function ($value, $key) {
+            $this->info('Updated ' . collect($updates)->except(['updated_at', 'updater'])->map(function ($value, $key) {
                 return "$key=$value";
-            })->implode(', ')." for renewal $renewal->renewalYearNumber in $renewrPatent->providerId ($renewrPatent->clientCaseRef)");
+            })->implode(', ') . " for renewal $renewal->renewalYearNumber in $renewrPatent->providerId ($renewrPatent->clientCaseRef)");
 
             $this->stats['updated']++;
         }
@@ -294,7 +294,7 @@ class RenewrSync extends Command
             ? $matter->filing->id
             : $matter->grant->id;
 
-        if (! $triggerEvent) {
+        if (!$triggerEvent) {
             $this->warn("Could not find trigger event for renewal $renewal->renewalYearNumber in $renewrPatent->clientCaseRef");
 
             return;
@@ -317,7 +317,7 @@ class RenewrSync extends Command
             'trigger_id' => $triggerEvent,
         ]);
 
-        if (! empty($renewal->dateOfPayment)) {
+        if (!empty($renewal->dateOfPayment)) {
             $task->update([
                 'done_date' => $renewal->dateOfPayment,
                 'step' => -1,
@@ -365,7 +365,7 @@ class RenewrSync extends Command
      */
     private function getCacheFilePath(string $key, ?int $page = null): string
     {
-        $filename = "renewrsync_{$key}".($page !== null ? "_page{$page}" : '').'.json';
+        $filename = "renewrsync_{$key}" . ($page !== null ? "_page{$page}" : '') . '.json';
 
         return storage_path("app/cache/$filename");
     }
@@ -376,7 +376,7 @@ class RenewrSync extends Command
     private function hasValidPageCache(string $key, int $page): bool
     {
         $cacheFile = $this->getCacheFilePath($key, $page);
-        if (! file_exists($cacheFile)) {
+        if (!file_exists($cacheFile)) {
             return false;
         }
 
@@ -404,7 +404,7 @@ class RenewrSync extends Command
         $cacheFile = $this->getCacheFilePath($key, $page);
         $cacheDir = dirname($cacheFile);
 
-        if (! is_dir($cacheDir)) {
+        if (!is_dir($cacheDir)) {
             mkdir($cacheDir, 0755, true);
         }
 

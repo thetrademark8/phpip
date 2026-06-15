@@ -29,11 +29,11 @@ class EventNameController extends Controller
         ]);
 
         // Apply filters
-        if (! is_null($code)) {
-            $query->whereLike('code', $code.'%');
+        if (!is_null($code)) {
+            $query->whereLike('code', $code . '%');
         }
 
-        if (! is_null($name)) {
+        if (!is_null($name)) {
             $query->whereJsonLike('name', $name);
         }
 
@@ -139,7 +139,7 @@ class EventNameController extends Controller
         Gate::authorize('except_client');
 
         $request->validate([
-            'code' => 'required|unique:event_name,code,'.$eventname->code.',code|max:5',
+            'code' => 'required|unique:event_name,code,' . $eventname->code . ',code|max:5',
             'name' => 'required|max:45',
             'notes' => 'max:160',
             'is_task' => 'boolean',

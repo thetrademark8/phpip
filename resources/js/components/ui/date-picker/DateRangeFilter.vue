@@ -1,10 +1,10 @@
 <template>
   <DateRangePicker
     :model-value="modelValue"
-    @update:model-value="$emit('update:modelValue', $event)"
     :placeholder="placeholder || t('Select date range')"
     :number-of-months="1"
     button-class="w-full"
+    @update:model-value="$emit('update:modelValue', $event)"
   />
 </template>
 

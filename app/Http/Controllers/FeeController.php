@@ -15,19 +15,19 @@ class FeeController extends Controller
 
         // Apply filters
         if ($request->filled('Origin')) {
-            $query->where('for_origin', 'LIKE', $request->Origin.'%');
+            $query->where('for_origin', 'LIKE', $request->Origin . '%');
         }
 
         if ($request->filled('Category')) {
-            $query->where('for_category', 'LIKE', $request->Category.'%');
+            $query->where('for_category', 'LIKE', $request->Category . '%');
         }
 
         if ($request->filled('Qt')) {
-            $query->where('qt', 'LIKE', $request->Qt.'%');
+            $query->where('qt', 'LIKE', $request->Qt . '%');
         }
 
         if ($request->filled('Country')) {
-            $query->where('for_country', 'LIKE', $request->Country.'%');
+            $query->where('for_country', 'LIKE', $request->Country . '%');
         }
 
         // Handle sorting

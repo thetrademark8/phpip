@@ -29,7 +29,7 @@ class RefreshTranslations extends Command
 
         // Backup existing translations if not using force
         $backups = [];
-        if (! $this->option('force')) {
+        if (!$this->option('force')) {
             foreach ($tables as $table => $config) {
                 $backups[$table] = DB::table($table)
                     ->whereNotNull($config['column'])
@@ -46,14 +46,14 @@ class RefreshTranslations extends Command
         $seeder->run();
 
         // Restore user customizations if not using force
-        if (! $this->option('force')) {
+        if (!$this->option('force')) {
             foreach ($tables as $table => $config) {
                 if (empty($backups[$table])) {
                     continue;
                 }
 
                 foreach ($backups[$table] as $key => $translations) {
-                    if (! is_array($translations)) {
+                    if (!is_array($translations)) {
                         continue;
                     }
 

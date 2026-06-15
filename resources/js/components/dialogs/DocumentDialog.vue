@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>
@@ -10,15 +13,24 @@
         </DialogDescription>
       </DialogHeader>
 
-      <DialogSkeleton v-if="loading" :fields="3" />
+      <DialogSkeleton
+        v-if="loading"
+        :fields="3"
+      />
 
-      <div v-else-if="templateClass || operation === 'create'" class="space-y-4">
+      <div
+        v-else-if="templateClass || operation === 'create'"
+        class="space-y-4"
+      >
         <!-- Mode Toggle -->
-        <div v-if="operation !== 'create' && canWrite" class="flex justify-end">
+        <div
+          v-if="operation !== 'create' && canWrite"
+          class="flex justify-end"
+        >
           <Button 
-            @click="toggleEditMode" 
             variant="outline" 
-            size="sm"
+            size="sm" 
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.view') : t('actions.edit') }}
@@ -85,23 +97,29 @@
         <div class="flex justify-between w-full">
           <Button
             v-if="canWrite && isEditMode && operation !== 'create'"
-            @click="confirmDelete"
             variant="destructive"
+            @click="confirmDelete"
           >
             <Trash2 class="mr-2 h-4 w-4" />
             {{ t('actions.delete') }}
           </Button>
 
           <div class="flex gap-2">
-            <Button @click="$emit('update:open', false)" variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('update:open', false)"
+            >
               {{ t('actions.cancel') }}
             </Button>
             <Button
               v-if="isEditMode || operation === 'create'"
-              @click="handleSubmit"
               :disabled="form.processing"
+              @click="handleSubmit"
             >
-              <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+              <Loader2
+                v-if="form.processing"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
               {{ operation === 'create' ? t('actions.create') : t('actions.save') }}
             </Button>
           </div>

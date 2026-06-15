@@ -36,7 +36,7 @@ class PermissionHelper
      */
     public static function isNotClient(User $user): bool
     {
-        return $user->default_role !== 'CLI' && ! empty($user->default_role);
+        return $user->default_role !== 'CLI' && !empty($user->default_role);
     }
 
     /**
@@ -68,6 +68,6 @@ class PermissionHelper
      */
     public static function canWrite(User $user): bool
     {
-        return $user->default_role !== 'CLI' && ! empty($user->default_role);
+        return $user->default_role !== 'CLI' && !empty($user->default_role);
     }
 }

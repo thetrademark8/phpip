@@ -18,7 +18,7 @@ class EmailPreviewController extends Controller
      */
     public function show(Request $request, $template)
     {
-        if (! app()->environment('local')) {
+        if (!app()->environment('local')) {
             abort(404);
         }
 
@@ -32,7 +32,7 @@ class EmailPreviewController extends Controller
 
             return response($html)->header('Content-Type', 'text/html');
         } catch (\Exception $e) {
-            return response('<h1>Error</h1><p>'.$e->getMessage().'</p><pre>'.$e->getTraceAsString().'</pre>');
+            return response('<h1>Error</h1><p>' . $e->getMessage() . '</p><pre>' . $e->getTraceAsString() . '</pre>');
         }
     }
 
@@ -41,7 +41,7 @@ class EmailPreviewController extends Controller
         // Create sample data for testing
         $matter = Matter::with(['client', 'classifiers'])->first();
 
-        if (! $matter) {
+        if (!$matter) {
             // Create fake matter data if none exists
             $matter = new Matter([
                 'id' => 1,
@@ -178,7 +178,7 @@ class EmailPreviewController extends Controller
      */
     public function index()
     {
-        if (! app()->environment('local')) {
+        if (!app()->environment('local')) {
             abort(404);
         }
 
@@ -193,7 +193,7 @@ class EmailPreviewController extends Controller
         $html .= '<ul>';
 
         foreach ($templates as $key => $name) {
-            $html .= '<li><a href="'.route('email.preview', $key).'" target="_blank">'.$name.'</a></li>';
+            $html .= '<li><a href="' . route('email.preview', $key) . '" target="_blank">' . $name . '</a></li>';
         }
 
         $html .= '</ul>';

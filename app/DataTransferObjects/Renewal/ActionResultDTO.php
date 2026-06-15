@@ -48,7 +48,7 @@ class ActionResultDTO
             $result['error'] = $this->error;
         }
 
-        if (! empty($this->data)) {
+        if (!empty($this->data)) {
             $result['data'] = $this->data;
         }
 

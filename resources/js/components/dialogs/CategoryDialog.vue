@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>
@@ -10,19 +13,25 @@
         </DialogDescription>
       </DialogHeader>
       
-      <DialogSkeleton v-if="loading" :fields="4" />
+      <DialogSkeleton
+        v-if="loading"
+        :fields="4"
+      />
       
-      <div v-else-if="category || operation === 'create'" class="space-y-6">
+      <div
+        v-else-if="category || operation === 'create'"
+        class="space-y-6"
+      >
         <!-- Mode Toggle -->
         <div class="flex items-center justify-between border-b pb-4">
           <Badge variant="secondary">
             {{ t('categories.badge') }}
           </Badge>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canWrite && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canWrite && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.viewMode') : t('actions.editMode') }}
@@ -30,7 +39,10 @@
         </div>
 
         <!-- Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+        <form
+          class="space-y-4"
+          @submit.prevent="handleSubmit"
+        >
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label class="mb-2">{{ t('categories.fields.code') }} *</Label>
@@ -41,7 +53,10 @@
                 maxlength="5"
                 required
               />
-              <p v-if="form.errors.code" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.code"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.code }}
               </p>
             </div>
@@ -55,7 +70,10 @@
                 maxlength="45"
                 required
               />
-              <p v-if="form.errors.category" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.category"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.category }}
               </p>
             </div>
@@ -75,13 +93,19 @@
             <p class="text-xs text-muted-foreground mt-1">
               {{ operation === 'create' ? t('categories.help.displayWithCreate') : t('categories.help.displayWith') }}
             </p>
-            <p v-if="form.errors.display_with" class="text-sm text-destructive mt-1">
+            <p
+              v-if="form.errors.display_with"
+              class="text-sm text-destructive mt-1"
+            >
               {{ form.errors.display_with }}
             </p>
           </div>
 
           <!-- Metadata -->
-          <div v-if="category && operation !== 'create'" class="pt-4 border-t space-y-2 text-sm text-muted-foreground">
+          <div
+            v-if="category && operation !== 'create'"
+            class="pt-4 border-t space-y-2 text-sm text-muted-foreground"
+          >
             <div v-if="category.creator">
               {{ t('common.createdBy') }}: {{ category.creator }}
               <span v-if="category.created_at"> {{ t('common.on') }} {{ formatDate(category.created_at) }}</span>
@@ -98,25 +122,31 @@
         <div class="flex justify-between w-full">
           <Button
             v-if="canWrite && isEditMode && operation !== 'create'"
-            @click="confirmDelete"
             variant="destructive"
+            @click="confirmDelete"
           >
             <Trash2 class="mr-2 h-4 w-4" />
             {{ t('actions.delete') }}
           </Button>
           
-          <div v-else></div>
+          <div v-else />
           
           <div class="flex gap-2">
-            <Button @click="$emit('update:open', false)" variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('update:open', false)"
+            >
               {{ t('actions.cancel') }}
             </Button>
             <Button
               v-if="isEditMode || operation === 'create'"
-              @click="handleSubmit"
               :disabled="form.processing"
+              @click="handleSubmit"
             >
-              <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+              <Loader2
+                v-if="form.processing"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
               {{ operation === 'create' ? t('actions.create') : t('actions.save') }}
             </Button>
           </div>

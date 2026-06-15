@@ -1,15 +1,24 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-3xl max-h-[80vh]">
       <DialogHeader>
         <DialogTitle>{{ $t('email.preview') }}</DialogTitle>
       </DialogHeader>
 
-      <div v-if="loading" class="flex items-center justify-center py-12">
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-12"
+      >
         <Loader2 class="h-8 w-8 animate-spin" />
       </div>
 
-      <div v-else class="space-y-4">
+      <div
+        v-else
+        class="space-y-4"
+      >
         <!-- Email Metadata -->
         <EmailMetadata
           :recipients="recipients"
@@ -23,19 +32,24 @@
         <!-- Subject -->
         <div>
           <Label class="text-muted-foreground text-xs">{{ $t('email.subject') }}</Label>
-          <div class="font-medium text-lg">{{ preview?.subject }}</div>
+          <div class="font-medium text-lg">
+            {{ preview?.subject }}
+          </div>
         </div>
 
         <Separator />
 
         <!-- Email Body -->
         <div class="email-preview-body prose prose-sm max-w-none">
-          <div v-html="preview?.body"></div>
+          <div v-html="preview?.body" />
         </div>
       </div>
 
       <DialogFooter class="gap-2 sm:gap-0">
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ $t('Close') }}
         </Button>
         <Button @click="$emit('send')">

@@ -102,7 +102,7 @@ class CsvImportService
                 $stats['inserted']++;
 
             } catch (\Exception $e) {
-                Log::error("CsvImportService: Error on row {$rowNumber}: ".$e->getMessage());
+                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
                 $stats['errors']++;
             }
         }
@@ -146,13 +146,13 @@ class CsvImportService
 
             // Convert translatable columns to JSON format
             if (in_array($key, $translatableColumns) && $parsedValue !== null) {
-                if (! $this->isValidJson($parsedValue)) {
+                if (!$this->isValidJson($parsedValue)) {
                     $parsedValue = json_encode(['en' => $parsedValue, 'fr' => $parsedValue, 'de' => $parsedValue], JSON_UNESCAPED_UNICODE);
                 }
 
                 // Wrap in CAST(... AS JSON) so MySQL treats the value as JSON instead of
                 // rejecting it with error 3144 ("string with CHARACTER SET 'binary'").
-                $parsedValue = DB::raw('CAST('.DB::getPdo()->quote($parsedValue).' AS JSON)');
+                $parsedValue = DB::raw('CAST(' . DB::getPdo()->quote($parsedValue) . ' AS JSON)');
             }
 
             $transformed[$key] = $parsedValue;
@@ -166,7 +166,7 @@ class CsvImportService
      */
     private function isValidJson(mixed $value): bool
     {
-        if (! is_string($value)) {
+        if (!is_string($value)) {
             return false;
         }
 
@@ -288,7 +288,7 @@ class CsvImportService
         $useCompositeMatch = is_array($uniqueKey);
 
         // For simple keys, pre-fetch existing keys for batch upsert tracking
-        if (! $useCompositeMatch) {
+        if (!$useCompositeMatch) {
             $existingKeys = $this->getExistingKeys($table, $uniqueKey);
         }
 
@@ -358,18 +358,18 @@ class CsvImportService
                     }
                 }
             } catch (\Exception $e) {
-                Log::error("CsvImportService: Error on row {$rowNumber}: ".$e->getMessage());
+                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
                 $stats['errors']++;
             }
         }
 
         // Flush remaining batch (simple key mode only)
-        if (! empty($batch)) {
+        if (!empty($batch)) {
             try {
                 $updateColumns = array_diff(array_keys($batch[0]), $uniqueKeyArray);
                 DB::table($table)->upsert($batch, $uniqueKeyArray, array_values($updateColumns));
             } catch (\Exception $e) {
-                Log::error('CsvImportService: Error flushing batch: '.$e->getMessage());
+                Log::error('CsvImportService: Error flushing batch: ' . $e->getMessage());
                 $stats['errors'] += count($batch);
                 $stats['inserted'] = max(0, $stats['inserted'] - count($batch));
                 $stats['updated'] = max(0, $stats['updated'] - count($batch));
@@ -446,7 +446,7 @@ class CsvImportService
 
                 $rows[] = $data;
             } catch (\Exception $e) {
-                Log::error("CsvImportService: Error on row {$rowNumber}: ".$e->getMessage());
+                Log::error("CsvImportService: Error on row {$rowNumber}: " . $e->getMessage());
                 $stats['errors']++;
             }
         }

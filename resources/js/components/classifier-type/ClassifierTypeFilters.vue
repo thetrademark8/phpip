@@ -2,37 +2,46 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <!-- Code Filter -->
     <div class="space-y-2">
-      <Label for="filter-code" class="mb-2">{{ $t('classifierTypes.fields.code') }}</Label>
+      <Label
+        for="filter-code"
+        class="mb-2"
+      >{{ $t('classifierTypes.fields.code') }}</Label>
       <Input
         id="filter-code"
         :model-value="filters.Code"
-        @update:model-value="debouncedUpdate('Code', $event)"
         :placeholder="$t('classifierTypes.placeholders.code')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Code', $event)"
       />
     </div>
 
     <!-- Type Filter -->
     <div class="space-y-2">
-      <Label for="filter-type" class="mb-2">{{ $t('classifierTypes.fields.type') }}</Label>
+      <Label
+        for="filter-type"
+        class="mb-2"
+      >{{ $t('classifierTypes.fields.type') }}</Label>
       <Input
         id="filter-type"
         :model-value="filters.Type"
-        @update:model-value="debouncedUpdate('Type', $event)"
         :placeholder="$t('classifierTypes.placeholders.type')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Type', $event)"
       />
     </div>
 
     <!-- Category Filter -->
     <div class="space-y-2">
-      <Label for="filter-category" class="mb-2">{{ $t('classifierTypes.fields.category') }}</Label>
+      <Label
+        for="filter-category"
+        class="mb-2"
+      >{{ $t('classifierTypes.fields.category') }}</Label>
       <Input
         id="filter-category"
         :model-value="filters.Category"
-        @update:model-value="debouncedUpdate('Category', $event)"
         :placeholder="$t('classifierTypes.placeholders.category')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Category', $event)"
       />
     </div>
   </div>

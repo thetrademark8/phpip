@@ -1,5 +1,8 @@
 <template>
-  <Dialog v-model:open="dialogOpen" :max-width="maxWidth">
+  <Dialog
+    v-model:open="dialogOpen"
+    :max-width="maxWidth"
+  >
     <DialogScrollContent>
       <DialogHeader>
         <DialogTitle>
@@ -15,21 +18,27 @@
       </DialogHeader>
       
       <!-- Loading state -->
-      <div v-if="loading" class="flex items-center justify-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-8"
+      >
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
       
-      <div v-else class="space-y-6">
+      <div
+        v-else
+        class="space-y-6"
+      >
         <!-- Mode Toggle -->
         <div class="flex items-center justify-between border-b pb-4">
           <Badge variant="secondary">
             {{ t('types.badge') }}
           </Badge>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canWrite && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canWrite && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.viewMode') : t('actions.editMode') }}
@@ -37,32 +46,46 @@
         </div>
 
         <!-- Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-        <!-- Code (only for create) -->
-        <div v-if="operation === 'create'" class="space-y-2">
-          <Label for="type-code" class="mb-2">{{ t('types.fields.code') }}</Label>
-          <Input
-            id="type-code"
-            v-model="form.code"
-            :placeholder="t('types.placeholders.code')"
-            maxlength="5"
-            class="uppercase"
-            required
-          />
-          <p class="text-sm text-muted-foreground">{{ t('types.hints.code') }}</p>
-        </div>
+        <form
+          class="space-y-4"
+          @submit.prevent="handleSubmit"
+        >
+          <!-- Code (only for create) -->
+          <div
+            v-if="operation === 'create'"
+            class="space-y-2"
+          >
+            <Label
+              for="type-code"
+              class="mb-2"
+            >{{ t('types.fields.code') }}</Label>
+            <Input
+              id="type-code"
+              v-model="form.code"
+              :placeholder="t('types.placeholders.code')"
+              maxlength="5"
+              class="uppercase"
+              required
+            />
+            <p class="text-sm text-muted-foreground">
+              {{ t('types.hints.code') }}
+            </p>
+          </div>
         
-        <!-- Type -->
-        <div class="space-y-2">
-          <Label for="type-type" class="mb-2">{{ t('types.fields.type') }}</Label>
-          <Input
-            id="type-type"
-            v-model="form.type"
-            :disabled="!isEditMode && operation !== 'create'"
-            :placeholder="t('types.placeholders.type')"
-            required
-          />
-        </div>
+          <!-- Type -->
+          <div class="space-y-2">
+            <Label
+              for="type-type"
+              class="mb-2"
+            >{{ t('types.fields.type') }}</Label>
+            <Input
+              id="type-type"
+              v-model="form.type"
+              :disabled="!isEditMode && operation !== 'create'"
+              :placeholder="t('types.placeholders.type')"
+              required
+            />
+          </div>
         
           <!-- Footer Actions -->
           <DialogFooter>
@@ -71,9 +94,9 @@
               <div>
                 <Button
                   v-if="isEditMode"
-                  @click="confirmDelete"
                   type="button"
                   variant="destructive"
+                  @click="confirmDelete"
                 >
                   <Trash2 class="mr-2 h-4 w-4" />
                   {{ t('actions.delete') }}
@@ -83,9 +106,9 @@
               <!-- Right side actions -->
               <div class="flex gap-2">
                 <Button
-                  @click="dialogOpen = false"
                   type="button"
                   variant="outline"
+                  @click="dialogOpen = false"
                 >
                   {{ t('actions.cancel') }}
                 </Button>
@@ -96,7 +119,7 @@
                   :disabled="form.processing"
                 >
                   <template v-if="form.processing">
-                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
                     {{ t('common.saving') }}
                   </template>
                   <template v-else>

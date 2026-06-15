@@ -33,7 +33,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
 
         if (config('renewal.invoice.backend') === 'dolibarr' && $toInvoice) {
             $result = $this->processDolibarrInvoices($renewals);
-            if (! $result['success']) {
+            if (!$result['success']) {
                 return ActionResultDTO::error($result['error']);
             }
             $num = $result['count'];
@@ -50,14 +50,14 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
     public function searchClient(string $clientName): array
     {
         $apikey = config('renewal.api.DOLAPIKEY');
-        if (! $apikey) {
+        if (!$apikey) {
             return ['error' => ['code' => 500, 'message' => 'API key not configured']];
         }
 
         $curl = curl_init();
-        $httpheader = ['DOLAPIKEY: '.$apikey];
-        $data = ['sqlfilters' => '(t.nom:like:"'.$clientName.'%")'];
-        $url = config('renewal.api.dolibarr_url').'/thirdparties?'.http_build_query($data);
+        $httpheader = ['DOLAPIKEY: ' . $apikey];
+        $data = ['sqlfilters' => '(t.nom:like:"' . $clientName . '%")'];
+        $url = config('renewal.api.dolibarr_url') . '/thirdparties?' . http_build_query($data);
 
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -79,14 +79,14 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
     public function createDolibarrInvoice(array $invoiceData): array
     {
         $apikey = config('renewal.api.DOLAPIKEY');
-        if (! $apikey) {
+        if (!$apikey) {
             return ['success' => false, 'error' => 'API key not configured'];
         }
 
         $curl = curl_init();
-        $url = config('renewal.api.dolibarr_url').'/invoices';
+        $url = config('renewal.api.dolibarr_url') . '/invoices';
         $httpheader = [
-            'DOLAPIKEY: '.$apikey,
+            'DOLAPIKEY: ' . $apikey,
             'Content-Type: application/json',
         ];
 
@@ -130,7 +130,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
             }
 
             $desc .= Carbon::parse($renewal->event_date)->isoFormat('LL');
-            $desc .= ' en '.$renewal->country_FR;
+            $desc .= ' en ' . $renewal->country_FR;
 
             if ($renewal->title) {
                 $desc .= "\nSujet : {$renewal->title}";
@@ -140,7 +140,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
                 $desc .= " ({$renewal->client_ref})";
             }
 
-            $desc .= "\nÉchéance le ".Carbon::parse($renewal->due_date)->isoFormat('LL');
+            $desc .= "\nÉchéance le " . Carbon::parse($renewal->due_date)->isoFormat('LL');
 
             // Add fee line
             if ($feeDTO->cost != 0) {
@@ -181,7 +181,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
     private function processDolibarrInvoices($renewals): array
     {
         $apikey = config('renewal.api.DOLAPIKEY');
-        if (! $apikey) {
+        if (!$apikey) {
             return ['success' => false, 'error' => 'API is not configured'];
         }
 
@@ -219,7 +219,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
 
             $result = $this->createDolibarrInvoice($invoiceData);
 
-            if (! $result['success']) {
+            if (!$result['success']) {
                 return ['success' => false, 'error' => $result['error']];
             }
 

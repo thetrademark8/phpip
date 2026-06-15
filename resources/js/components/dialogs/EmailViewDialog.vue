@@ -1,15 +1,24 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-3xl max-h-[80vh]">
       <DialogHeader>
         <DialogTitle>{{ $t('email.viewEmail') }}</DialogTitle>
       </DialogHeader>
 
-      <div v-if="loading" class="flex items-center justify-center py-12">
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-12"
+      >
         <Loader2 class="h-8 w-8 animate-spin" />
       </div>
 
-      <div v-else-if="email" class="space-y-4">
+      <div
+        v-else-if="email"
+        class="space-y-4"
+      >
         <!-- Email Metadata -->
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div>
@@ -36,7 +45,10 @@
             <Badge :variant="getStatusVariant(email.status)">
               {{ $t(`email.status.${email.status}`) }}
             </Badge>
-            <span v-if="email.error_message" class="ml-2 text-sm text-destructive">
+            <span
+              v-if="email.error_message"
+              class="ml-2 text-sm text-destructive"
+            >
               {{ email.error_message }}
             </span>
           </div>
@@ -46,14 +58,16 @@
 
         <div>
           <Label class="text-muted-foreground text-xs">{{ $t('email.subject') }}</Label>
-          <div class="font-medium text-lg">{{ email.subject }}</div>
+          <div class="font-medium text-lg">
+            {{ email.subject }}
+          </div>
         </div>
 
         <Separator />
 
         <!-- Email Body -->
         <div class="email-view-body prose prose-sm max-w-none">
-          <div v-html="email.body_html"></div>
+          <div v-html="email.body_html" />
         </div>
 
         <!-- Attachments -->
@@ -76,7 +90,10 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ $t('Close') }}
         </Button>
       </DialogFooter>

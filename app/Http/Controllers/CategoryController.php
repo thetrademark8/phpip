@@ -22,11 +22,11 @@ class CategoryController extends Controller
 
         $query = Category::query();
 
-        if (! is_null($Code)) {
-            $query->whereLike('code', $Code.'%');
+        if (!is_null($Code)) {
+            $query->whereLike('code', $Code . '%');
         }
 
-        if (! is_null($Category)) {
+        if (!is_null($Category)) {
             $query->whereJsonLike('category', $Category);
         }
 
@@ -126,7 +126,7 @@ class CategoryController extends Controller
         Gate::authorize('readwrite');
 
         $request->validate([
-            'code' => 'required|unique:matter_category,code,'.$category->code.',code|max:5',
+            'code' => 'required|unique:matter_category,code,' . $category->code . ',code|max:5',
             'category' => 'required|max:45',
             'display_with' => [
                 'required',
@@ -216,7 +216,7 @@ class CategoryController extends Controller
     protected function displayWithRule(?string $code): \Closure
     {
         return function (string $attribute, mixed $value, \Closure $fail) use ($code) {
-            if (! is_string($value) || $value === '') {
+            if (!is_string($value) || $value === '') {
                 return;
             }
 
@@ -224,7 +224,7 @@ class CategoryController extends Controller
                 return;
             }
 
-            if (! Category::whereKey($value)->exists()) {
+            if (!Category::whereKey($value)->exists()) {
                 $fail(__('validation.exists', ['attribute' => $attribute]));
             }
         };

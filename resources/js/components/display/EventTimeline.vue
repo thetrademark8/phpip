@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-border"></div>
+    <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-border" />
     
     <div class="space-y-6">
       <div
@@ -15,7 +15,7 @@
             index === 0 ? 'bg-primary' : 'bg-muted-foreground'
           )"
           :style="{ top: '0.75rem' }"
-        ></div>
+        />
         
         <!-- Event content -->
         <div class="ml-10 flex-1">
@@ -28,7 +28,9 @@
           >
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <h4 class="font-semibold">{{ event.info?.name ? translated(event.info.name) : event.code }}</h4>
+                <h4 class="font-semibold">
+                  {{ event.info?.name ? translated(event.info.name) : event.code }}
+                </h4>
                 <p class="text-sm text-muted-foreground mt-1">
                   <EditableField
                     v-if="enableInlineEdit"
@@ -43,7 +45,10 @@
                   <span v-else>{{ formatDate(event.event_date) }}</span>
                 </p>
                 
-                <div v-if="event.detail || enableInlineEdit" class="mt-2 text-sm">
+                <div
+                  v-if="event.detail || enableInlineEdit"
+                  class="mt-2 text-sm"
+                >
                   <EditableField
                     v-if="enableInlineEdit"
                     :model-value="event.detail || ''"
@@ -57,8 +62,13 @@
                 </div>
                 
                 <!-- Show associated tasks -->
-                <div v-if="showTasks && event.tasks && event.tasks.length > 0" class="mt-3 space-y-2">
-                  <div class="text-sm font-medium">Tasks:</div>
+                <div
+                  v-if="showTasks && event.tasks && event.tasks.length > 0"
+                  class="mt-3 space-y-2"
+                >
+                  <div class="text-sm font-medium">
+                    Tasks:
+                  </div>
                   <div
                     v-for="task in event.tasks"
                     :key="task.id"
@@ -73,7 +83,10 @@
                 </div>
               </div>
               
-              <div v-if="editable" class="ml-4 flex items-center gap-2">
+              <div
+                v-if="editable"
+                class="ml-4 flex items-center gap-2"
+              >
                 <Button
                   size="icon"
                   variant="ghost"
@@ -86,13 +99,13 @@
                     :class="recalculatingEventId === event.id && 'animate-spin'"
                   />
                 </Button>
-<!--                <Button-->
-<!--                  size="icon"-->
-<!--                  variant="ghost"-->
-<!--                  @click.stop="emit('edit', event)"-->
-<!--                >-->
-<!--                  <Edit2 class="h-4 w-4" />-->
-<!--                </Button>-->
+                <!--                <Button-->
+                <!--                  size="icon"-->
+                <!--                  variant="ghost"-->
+                <!--                  @click.stop="emit('edit', event)"-->
+                <!--                >-->
+                <!--                  <Edit2 class="h-4 w-4" />-->
+                <!--                </Button>-->
                 <Button
                   size="icon"
                   variant="ghost"
@@ -107,7 +120,10 @@
       </div>
     </div>
     
-    <div v-if="events.length === 0" class="text-center py-8 text-muted-foreground">
+    <div
+      v-if="events.length === 0"
+      class="text-center py-8 text-muted-foreground"
+    >
       No events to display
     </div>
   </div>

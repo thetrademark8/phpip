@@ -13,11 +13,11 @@ class TeamLeaderRefreshTokenCommand extends Command
 
     public function handle(TeamLeaderService $service): int
     {
-        if (! $service->isEnabled() || ! $service->isConnected()) {
+        if (!$service->isEnabled() || !$service->isConnected()) {
             return self::SUCCESS;
         }
 
-        if (! $service->isTokenExpiringSoon()) {
+        if (!$service->isTokenExpiringSoon()) {
             $this->info('Token is still valid, no refresh needed.');
 
             return self::SUCCESS;

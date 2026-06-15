@@ -23,20 +23,20 @@ The purpose is to create/update each (renewal) task in phpIP by setting the fiel
 */
 
 $aqs = parse_ini_file('aqs.ini');
-$jwt_payload = '{"sub":"OMNIPAT","qsh":"/me/patents","iat":'.time().',"exp":'.time() + 1000 .'}';
+$jwt_payload = '{"sub":"OMNIPAT","qsh":"/me/patents","iat":' . time() . ',"exp":' . time() + 1000 . '}';
 
 function base64UrlEncode($data)
 {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
-$jwt_signature = base64UrlEncode(hash_hmac('sha256', $aqs['jwt_header_encoded'].'.'.base64UrlEncode($jwt_payload), $aqs['jwt_secret'], true));
+$jwt_signature = base64UrlEncode(hash_hmac('sha256', $aqs['jwt_header_encoded'] . '.' . base64UrlEncode($jwt_payload), $aqs['jwt_secret'], true));
 
-$bearer_token = $aqs['jwt_header_encoded'].'.'.base64UrlEncode($jwt_payload).'.'.$jwt_signature;
+$bearer_token = $aqs['jwt_header_encoded'] . '.' . base64UrlEncode($jwt_payload) . '.' . $jwt_signature;
 
 $headers = [
     'Accept: application/xml',
-    'Authorization: Bearer '.$bearer_token,
+    'Authorization: Bearer ' . $bearer_token,
 ];
 
 // Or for stream implementation
@@ -70,7 +70,7 @@ $xml = new SimpleXMLElement($data);
 
 $db = new mysqli($aqs['mysql_host'], $aqs['mysql_user'], $aqs['mysql_pwd'], $aqs['mysql_db'], null, $aqs['mysql_socket']); // Connect to database
 if ($db->connect_errno) {
-    echo 'Failed to connect to MySQL: ('.$db->connect_errno.') '.$db->connect_error;
+    echo 'Failed to connect to MySQL: (' . $db->connect_errno . ') ' . $db->connect_error;
     exit;
 }
 
@@ -104,7 +104,7 @@ $mandateOn = $xml->xpath('/response/item[mandate!="OFF"]');
 // Process patents retrieved from AQS
 
 foreach ($mandateOn as $AQSpatent) {
-    if (! $AQSpatent->events) {
+    if (!$AQSpatent->events) {
         // Patent has no renewals - skip
         continue;
     }
@@ -118,8 +118,8 @@ foreach ($mandateOn as $AQSpatent) {
 		    WHERE matter_actor_lnk.actor_id = $aqs_id
 		    AND matter.id = $AQSpatent->uniqueClientId";
         $result = $db->query($q);
-        if (! $result) {
-            echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+        if (!$result) {
+            echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
         }
         if ($result->num_rows == 0) {
             echo "\nWARNING: no data for UID: $AQSpatent->uniqueClientId | serviceProviderId: $AQSpatent->serviceProviderId. AQS may have been removed from case";
@@ -128,7 +128,7 @@ foreach ($mandateOn as $AQSpatent) {
             continue;
         }
         $myPatent = $result->fetch_object();
-        if (strpos($myPatent->caseref.$myPatent->alt_ref, trim($AQSpatent->clientReference)) === false) {
+        if (strpos($myPatent->caseref . $myPatent->alt_ref, trim($AQSpatent->clientReference)) === false) {
             // This case is OK but the reference needs to be checked
             echo "\nWARNING: REFCLI $AQSpatent->clientReference does not match $myPatent->caseref or $myPatent->alt_ref for UID $AQSpatent->uniqueClientId";
             $unrecognized++;
@@ -158,14 +158,14 @@ foreach ($mandateOn as $AQSpatent) {
         continue;
     }
 
-    if ($myPatent->actor_ref != $AQSpatent->serviceProviderFamilyReference.$AQSpatent->country.'-'.$AQSpatent->origin.'-'.$AQSpatent->applicationType) {
+    if ($myPatent->actor_ref != $AQSpatent->serviceProviderFamilyReference . $AQSpatent->country . '-' . $AQSpatent->origin . '-' . $AQSpatent->applicationType) {
         // AQS ref needs updating
         $q = "UPDATE matter_actor_lnk SET actor_ref = '$AQSpatent->serviceProviderFamilyReference$AQSpatent->country-$AQSpatent->origin-$AQSpatent->applicationType', updated_at = Now(), updater = 'AQS'
 		    WHERE matter_id = $AQSpatent->uniqueClientId
 		    AND actor_id = $aqs_id";
         $res = $db->query($q);
-        if (! $res) {
-            echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+        if (!$res) {
+            echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
         }
     }
 
@@ -189,8 +189,8 @@ foreach ($mandateOn as $AQSpatent) {
 		    AND event.matter_id = $AQSpatent->uniqueClientId
 		    AND CAST(task.detail AS UNSIGNED) = $renewal->year";
         $result = $db->query($q);
-        if (! $result) {
-            echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+        if (!$result) {
+            echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
         }
         $myRenewal = $result->fetch_object();
         $serviceProviderFee = $aqs['aqs_fee'];
@@ -237,7 +237,7 @@ foreach ($mandateOn as $AQSpatent) {
             if (strlen($renewal->paymentDate) > 0 && $renewal->paymentDate != $myRenewal->done_date) {
                 $set[] = "done_date = '$renewal->paymentDate'";
                 $set[] = 'step = -1';
-                if (! $myRenewal->invoice_step) {
+                if (!$myRenewal->invoice_step) {
                     $set[] = 'invoice_step = 1';
                 }
             }
@@ -246,12 +246,12 @@ foreach ($mandateOn as $AQSpatent) {
                 $set[] = "notes = 'Cancelled'";
             }
             if ($set) {
-                $q = 'UPDATE task SET '.implode(', ', $set).", updated_at = Now(), updater = 'AQS' WHERE id = '$myRenewal->id'";
+                $q = 'UPDATE task SET ' . implode(', ', $set) . ", updated_at = Now(), updater = 'AQS' WHERE id = '$myRenewal->id'";
                 $result = $db->query($q);
-                if (! $result) {
-                    echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+                if (!$result) {
+                    echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
                 }
-                echo "\nUpdated ".implode(', ', $set)." for annuity $renewal->year in $AQSpatent->uniqueClientId ($AQSpatent->clientReference-$AQSpatent->country)";
+                echo "\nUpdated " . implode(', ', $set) . " for annuity $renewal->year in $AQSpatent->uniqueClientId ($AQSpatent->clientReference-$AQSpatent->country)";
                 $updated++;
             }
         } else {
@@ -268,11 +268,11 @@ foreach ($mandateOn as $AQSpatent) {
 				    AND code = 'FIL'";
             }
             $result = $db->query($q);
-            if (! $result) {
-                echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+            if (!$result) {
+                echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
             }
             $myRenewal = $result->fetch_object();
-            if (! $myRenewal) {
+            if (!$myRenewal) {
                 // No trigger event found
                 echo "\nWARNING: Could not find trigger event for renewal $renewal->year ($renewal->dueDate) in $AQSpatent->clientReference$AQSpatent->country-$AQSpatent->origin-$AQSpatent->applicationType - Aborted";
 
@@ -297,8 +297,8 @@ foreach ($mandateOn as $AQSpatent) {
                 $q = "INSERT INTO task (code, detail, done_date, due_date, currency, cost, fee, notes, trigger_id, step, invoice_step, created_at, creator, updated_at)
 				    VALUES ('REN', '$renewal->year', '$renewal->paymentDate', '$renewal->dueDate', '$renewal->clientCurrency', $cost, $fee, 'Invoiced by AQS', $trigger_id, -1, 1, Now(), 'AQS', Now())";
                 $result = $db->query($q);
-                if (! $result) {
-                    echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+                if (!$result) {
+                    echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
                 } else {
                     $somethingupdated = "invoiced cost $renewal->invoicedFees->total";
                 }
@@ -307,8 +307,8 @@ foreach ($mandateOn as $AQSpatent) {
                 $q = "INSERT INTO task (code, detail, due_date, cost, fee, notes, trigger_id, created_at, creator, updated_at)
 				    VALUES ('REN', '$renewal->year', '$renewal->dueDate', $cost, $fee, 'Estimated', '$trigger_id', Now(), 'AQS', Now())";
                 $result = $db->query($q);
-                if (! $result) {
-                    echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+                if (!$result) {
+                    echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
                 } else {
                     $somethingupdated = "estimated cost $cost";
                 }
@@ -317,8 +317,8 @@ foreach ($mandateOn as $AQSpatent) {
                 $q = "INSERT INTO task (code, detail, done_date, due_date, trigger_id, step, invoice_step, created_at, creator, updated_at)
 				    VALUES ('REN', '$renewal->year', '$renewal->paymentDate', '$renewal->dueDate', '$trigger_id', -1, 1, Now(), 'AQS', Now())";
                 $result = $db->query($q);
-                if (! $result) {
-                    echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+                if (!$result) {
+                    echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
                 } else {
                     $somethingupdated = "paid on $renewal->paymentDate but not invoiced";
                 }
@@ -327,8 +327,8 @@ foreach ($mandateOn as $AQSpatent) {
                 $q = "INSERT INTO task (code, detail, due_date, currency, cost, fee, notes, trigger_id, created_at, creator, updated_at)
 				    VALUES ('REN', '$renewal->year', '$renewal->dueDate', '$renewal->clientCurrency', $cost, $fee, 'Invoiced by AQS', '$trigger_id', Now(), 'AQS', Now())";
                 $result = $db->query($q);
-                if (! $result) {
-                    echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+                if (!$result) {
+                    echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
                 } else {
                     $somethingupdated = "invoiced cost $cost (but no payment date)";
                 }
@@ -337,8 +337,8 @@ foreach ($mandateOn as $AQSpatent) {
                 $q = "INSERT INTO task (code, detail, due_date, notes, trigger_id, created_at, creator, updated_at)
 				    VALUES ('REN', '$renewal->year', '$renewal->dueDate', 'Cancelled', '$trigger_id', Now(), 'AQS', Now())";
                 $result = $db->query($q);
-                if (! $result) {
-                    echo "\nInvalid query: (error ".$db->errno.') '.$db->error;
+                if (!$result) {
+                    echo "\nInvalid query: (error " . $db->errno . ') ' . $db->error;
                 } else {
                     $somethingupdated = 'cancelled';
                 }

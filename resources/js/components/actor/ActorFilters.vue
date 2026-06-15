@@ -8,7 +8,10 @@
           :checked="props.filters.phy_person === true || props.filters.phy_person === 1"
           @update:checked="(value) => updateFilter('phy_person', value)"
         />
-        <Label htmlFor="physical-only" class="cursor-pointer">
+        <Label
+          html-for="physical-only"
+          class="cursor-pointer"
+        >
           {{ t('actors.filters.physicalPersonOnly') }}
         </Label>
       </div>
@@ -19,7 +22,10 @@
           :checked="props.filters.warn === true || props.filters.warn === 1"
           @update:checked="(value) => updateFilter('warn', value)"
         />
-        <Label htmlFor="warned-only" class="cursor-pointer">
+        <Label
+          html-for="warned-only"
+          class="cursor-pointer"
+        >
           {{ t('actors.filters.warnedOnly') }}
         </Label>
       </div>
@@ -30,7 +36,10 @@
           :checked="props.filters.has_login === true || props.filters.has_login === 1"
           @update:checked="(value) => updateFilter('has_login', value)"
         />
-        <Label htmlFor="users-only" class="cursor-pointer">
+        <Label
+          html-for="users-only"
+          class="cursor-pointer"
+        >
           {{ t('actors.filters.usersOnly') }}
         </Label>
       </div>
@@ -40,7 +49,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <!-- Name -->
       <div class="space-y-2">
-        <Label htmlFor="name-filter">{{ t('actors.filters.labels.name') }}</Label>
+        <Label html-for="name-filter">{{ t('actors.filters.labels.name') }}</Label>
         <Input
           id="name-filter"
           type="text"
@@ -52,7 +61,7 @@
 
       <!-- First Name -->
       <div class="space-y-2">
-        <Label htmlFor="first-name-filter">{{ t('actors.filters.labels.firstName') }}</Label>
+        <Label html-for="first-name-filter">{{ t('actors.filters.labels.firstName') }}</Label>
         <Input
           id="first-name-filter"
           type="text"
@@ -64,7 +73,7 @@
 
       <!-- Display Name -->
       <div class="space-y-2">
-        <Label htmlFor="display-name-filter">{{ t('actors.filters.labels.displayName') }}</Label>
+        <Label html-for="display-name-filter">{{ t('actors.filters.labels.displayName') }}</Label>
         <Input
           id="display-name-filter"
           type="text"
@@ -76,21 +85,21 @@
 
       <!-- Company/Employer -->
       <div class="space-y-2">
-        <Label htmlFor="company-filter">{{ t('actors.filters.labels.company') }}</Label>
+        <Label html-for="company-filter">{{ t('actors.filters.labels.company') }}</Label>
         <AutocompleteInput
           id="company-filter"
           :placeholder="t('actors.filters.placeholders.company')"
           :model-value="props.filters.company"
-          @update:model-value="debouncedUpdate('company', $event)"
           endpoint="/actor/autocomplete"
           value-key="name"
           label-key="name"
+          @update:model-value="debouncedUpdate('company', $event)"
         />
       </div>
 
       <!-- Email -->
       <div class="space-y-2">
-        <Label htmlFor="email-filter">{{ t('actors.filters.labels.email') }}</Label>
+        <Label html-for="email-filter">{{ t('actors.filters.labels.email') }}</Label>
         <Input
           id="email-filter"
           type="email"
@@ -102,7 +111,7 @@
 
       <!-- Phone -->
       <div class="space-y-2">
-        <Label htmlFor="phone-filter">{{ t('actors.filters.labels.phone') }}</Label>
+        <Label html-for="phone-filter">{{ t('actors.filters.labels.phone') }}</Label>
         <Input
           id="phone-filter"
           type="text"
@@ -114,35 +123,35 @@
 
       <!-- Country -->
       <div class="space-y-2">
-        <Label htmlFor="country-filter">{{ t('actors.filters.labels.country') }}</Label>
+        <Label html-for="country-filter">{{ t('actors.filters.labels.country') }}</Label>
         <AutocompleteInput
           id="country-filter"
           :placeholder="t('actors.filters.placeholders.country')"
           :model-value="props.filters.country"
-          @update:model-value="debouncedUpdate('country', $event)"
           endpoint="/country/autocomplete"
           value-key="iso"
           label-key="name"
+          @update:model-value="debouncedUpdate('country', $event)"
         />
       </div>
 
       <!-- Default Role -->
       <div class="space-y-2">
-        <Label htmlFor="role-filter">{{ t('actors.filters.labels.defaultRole') }}</Label>
+        <Label html-for="role-filter">{{ t('actors.filters.labels.defaultRole') }}</Label>
         <AutocompleteInput
           id="role-filter"
           :placeholder="t('actors.filters.placeholders.defaultRole')"
           :model-value="props.filters.role"
-          @update:model-value="debouncedUpdate('default_role', $event)"
           endpoint="/role/autocomplete"
           value-key="name"
           label-key="name"
+          @update:model-value="debouncedUpdate('default_role', $event)"
         />
       </div>
 
       <!-- Type Selector -->
       <div class="space-y-2">
-        <Label htmlFor="type-filter">{{ t('actors.filters.labels.type') }}</Label>
+        <Label html-for="type-filter">{{ t('actors.filters.labels.type') }}</Label>
         <Select
           id="type-filter"
           :model-value="props.filters.selector || undefined"
@@ -152,10 +161,18 @@
             <SelectValue :placeholder="t('actors.filters.placeholders.type')" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{{ t('actors.filters.types.all') }}</SelectItem>
-            <SelectItem value="phy_p">{{ t('actors.filters.types.physical') }}</SelectItem>
-            <SelectItem value="leg_p">{{ t('actors.filters.types.legal') }}</SelectItem>
-            <SelectItem value="warn">{{ t('actors.filters.types.warn') }}</SelectItem>
+            <SelectItem value="all">
+              {{ t('actors.filters.types.all') }}
+            </SelectItem>
+            <SelectItem value="phy_p">
+              {{ t('actors.filters.types.physical') }}
+            </SelectItem>
+            <SelectItem value="leg_p">
+              {{ t('actors.filters.types.legal') }}
+            </SelectItem>
+            <SelectItem value="warn">
+              {{ t('actors.filters.types.warn') }}
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -92,7 +92,7 @@ class EventController extends Controller
             $newStatus = $eventName->getTranslation('name', app()->getLocale());
 
             // If we don't have an old status, get the current one (excluding this new event)
-            if (! $oldStatus) {
+            if (!$oldStatus) {
                 $oldStatus = $this->getCurrentMatterStatus($event->matter, $event->id);
             }
 
@@ -122,10 +122,10 @@ class EventController extends Controller
             return response()->json(['message' => 'Tasks recalculated successfully']);
         } catch (\Exception $e) {
             if (request()->inertia()) {
-                return redirect()->back()->with('error', 'Failed to recalculate tasks: '.$e->getMessage());
+                return redirect()->back()->with('error', 'Failed to recalculate tasks: ' . $e->getMessage());
             }
 
-            return response()->json(['error' => 'Failed to recalculate tasks: '.$e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to recalculate tasks: ' . $e->getMessage()], 500);
         }
     }
 

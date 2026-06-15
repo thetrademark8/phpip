@@ -43,7 +43,7 @@ class ValidateDateFields
     public function handle(Request $request, Closure $next): Response
     {
         // Only process POST, PUT, PATCH requests with form data
-        if (! in_array($request->method(), ['POST', 'PUT', 'PATCH'])) {
+        if (!in_array($request->method(), ['POST', 'PUT', 'PATCH'])) {
             return $next($request);
         }
 
@@ -54,8 +54,8 @@ class ValidateDateFields
 
         // Check for date fields and validate them
         foreach ($data as $key => $value) {
-            if ($this->isDateField($key) && ! empty($value)) {
-                if (! $this->datePickerService->isValidDate($value)) {
+            if ($this->isDateField($key) && !empty($value)) {
+                if (!$this->datePickerService->isValidDate($value)) {
                     $errors[$key] = "The {$key} field must be a valid date in format dd/mm/yyyy.";
                 } else {
                     // Convert to ISO format for storage
@@ -68,7 +68,7 @@ class ValidateDateFields
         }
 
         // If there are validation errors, return them
-        if (! empty($errors)) {
+        if (!empty($errors)) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => 'The given data was invalid.',
@@ -80,7 +80,7 @@ class ValidateDateFields
         }
 
         // Merge converted dates back into request
-        if (! empty($convertedData)) {
+        if (!empty($convertedData)) {
             $request->merge($convertedData);
         }
 
@@ -107,7 +107,7 @@ class ValidateDateFields
         }
 
         // Check for _at fields that might be dates (but exclude timestamps)
-        if (str_ends_with($fieldName, '_at') && ! in_array($fieldName, ['created_at', 'updated_at', 'deleted_at'])) {
+        if (str_ends_with($fieldName, '_at') && !in_array($fieldName, ['created_at', 'updated_at', 'deleted_at'])) {
             return true;
         }
 

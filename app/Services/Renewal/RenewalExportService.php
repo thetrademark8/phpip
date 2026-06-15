@@ -73,13 +73,13 @@ class RenewalExportService implements RenewalExportServiceInterface
             'ID', 'Case', 'Client', 'Title', 'Due Date', 'Cost', 'Fee', 'Total',
         ]);
 
-        $filename = now()->format('YmdHis').'_invoicing.csv';
+        $filename = now()->format('YmdHis') . '_invoicing.csv';
 
         return response()->streamDownload(function () use ($renewals, $captions) {
             $output = fopen('php://output', 'w');
 
             // Add BOM for UTF-8
-            fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+            fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
             // Write headers
             fputcsv($output, $captions, ';');
@@ -93,7 +93,7 @@ class RenewalExportService implements RenewalExportServiceInterface
             fclose($output);
         }, $filename, [
             'Content-Type' => 'application/csv',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
     }
 
@@ -101,7 +101,7 @@ class RenewalExportService implements RenewalExportServiceInterface
     {
         $renewals = $this->renewalRepository->findByIds($renewalIds);
 
-        if (! $this->validateForXmlExport($renewals)) {
+        if (!$this->validateForXmlExport($renewals)) {
             throw new \InvalidArgumentException('XML export requires all renewals to be from the same jurisdiction');
         }
 
@@ -140,7 +140,7 @@ class RenewalExportService implements RenewalExportServiceInterface
             $this->renewalRepository->markAsDone($renewalIds, now()->toDateString());
         }
 
-        $filename = 'payment_'.now()->format('YmdHis').'.xml';
+        $filename = 'payment_' . now()->format('YmdHis') . '.xml';
 
         return response()->streamDownload(
             function () use ($xml) {

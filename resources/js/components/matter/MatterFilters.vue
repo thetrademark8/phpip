@@ -2,7 +2,6 @@
   <div class="space-y-4">
     <!-- Toggles -->
     <div class="flex flex-wrap gap-4">
-
       <!-- Switches -->
       <div class="flex items-center space-x-6">
         <div class="flex items-center space-x-2">
@@ -11,18 +10,27 @@
             :checked="props.filters.Ctnr === true || props.filters.Ctnr === 1"
             @update:checked="(value) => updateFilter('Ctnr', value)"
           />
-          <Label htmlFor="show-containers" class="cursor-pointer">
+          <Label
+            html-for="show-containers"
+            class="cursor-pointer"
+          >
             {{ t('matter.filters.showContainers') }}
           </Label>
         </div>
 
-        <div v-if="$page.props.auth.user.role !== 'CLI'" class="flex items-center space-x-2">
+        <div
+          v-if="$page.props.auth.user.role !== 'CLI'"
+          class="flex items-center space-x-2"
+        >
           <Switch
             id="show-mine"
             :checked="props.filters.responsible === $page.props.auth.user.login"
             @update:checked="(value) => updateFilter('responsible', value ? $page.props.auth.user.login : '')"
           />
-          <Label htmlFor="show-mine" class="cursor-pointer">
+          <Label
+            html-for="show-mine"
+            class="cursor-pointer"
+          >
             {{ t('matter.filters.showMine') }}
           </Label>
         </div>
@@ -33,7 +41,10 @@
             :checked="props.filters.include_dead === true || props.filters.include_dead === 1"
             @update:checked="(value) => updateFilter('include_dead', value)"
           />
-          <Label htmlFor="include-dead" class="cursor-pointer">
+          <Label
+            html-for="include-dead"
+            class="cursor-pointer"
+          >
             {{ t('matter.filters.includeDead') }}
           </Label>
         </div>
@@ -44,20 +55,20 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <!-- Category -->
       <div class="space-y-2">
-        <Label htmlFor="cat-filter">{{ t('matter.filters.labels.category') }}</Label>
+        <Label html-for="cat-filter">{{ t('matter.filters.labels.category') }}</Label>
         <TranslatedSelect
           id="cat-filter"
           :placeholder="t('matter.filters.placeholders.category')"
           :model-value="props.filters.Cat"
-          @update:model-value="updateFilter('Cat', $event)"
           :options="props.categoryOptions"
           :allow-clear="true"
+          @update:model-value="updateFilter('Cat', $event)"
         />
       </div>
 
       <!-- Title -->
       <div class="space-y-2">
-        <Label htmlFor="title-filter">{{ t('matter.filters.labels.title') }}</Label>
+        <Label html-for="title-filter">{{ t('matter.filters.labels.title') }}</Label>
         <Input
           id="title-filter"
           type="text"
@@ -68,53 +79,56 @@
       </div>
 
       <!-- Client -->
-      <div v-if="$page.props.auth.user.role !== 'CLI'" class="space-y-2">
-        <Label htmlFor="client-filter">{{ t('matter.filters.labels.client') }}</Label>
+      <div
+        v-if="$page.props.auth.user.role !== 'CLI'"
+        class="space-y-2"
+      >
+        <Label html-for="client-filter">{{ t('matter.filters.labels.client') }}</Label>
         <AutocompleteInput
           id="client-filter"
           :placeholder="t('matter.filters.placeholders.client')"
           :model-value="props.filters.Client"
-          @update:model-value="debouncedUpdate('Client', $event)"
           endpoint="/actor/autocomplete"
           value-key="value"
           label-key="value"
           allow-free-text
+          @update:model-value="debouncedUpdate('Client', $event)"
         />
       </div>
 
       <!-- Owner -->
       <div class="space-y-2">
-        <Label htmlFor="owner-filter">{{ t('matter.filters.labels.owner') }}</Label>
+        <Label html-for="owner-filter">{{ t('matter.filters.labels.owner') }}</Label>
         <AutocompleteInput
           id="owner-filter"
           :placeholder="t('matter.filters.placeholders.owner')"
           :model-value="props.filters.Owner"
-          @update:model-value="debouncedUpdate('Owner', $event)"
           endpoint="/actor/autocomplete"
           value-key="value"
           label-key="value"
           allow-free-text
+          @update:model-value="debouncedUpdate('Owner', $event)"
         />
       </div>
 
       <!-- Country -->
       <div class="space-y-2">
-        <Label htmlFor="country-filter">{{ t('matter.filters.labels.country') }}</Label>
+        <Label html-for="country-filter">{{ t('matter.filters.labels.country') }}</Label>
         <Combobox
           id="country-filter"
           :placeholder="t('matter.filters.placeholders.country')"
           :model-value="props.filters.country"
-          @update:model-value="updateFilter('country', $event)"
           :options="props.countryOptions"
           :search-placeholder="t('Search countries...')"
           :empty-text="t('No country found.')"
           :allow-clear="true"
+          @update:model-value="updateFilter('country', $event)"
         />
       </div>
 
       <!-- Classes -->
       <div class="space-y-2">
-        <Label htmlFor="classes-filter">{{ t('matter.filters.labels.classes') }}</Label>
+        <Label html-for="classes-filter">{{ t('matter.filters.labels.classes') }}</Label>
         <Input
           id="classes-filter"
           type="text"
@@ -126,22 +140,22 @@
 
       <!-- Status -->
       <div class="space-y-2">
-        <Label htmlFor="status-filter">{{ t('matter.filters.labels.status') }}</Label>
+        <Label html-for="status-filter">{{ t('matter.filters.labels.status') }}</Label>
         <Combobox
           id="status-filter"
           :placeholder="t('matter.filters.placeholders.status')"
           :model-value="props.filters.Status"
-          @update:model-value="updateFilter('Status', $event)"
           :options="props.statusOptions"
           :search-placeholder="t('Search statuses...')"
           :empty-text="t('No status found.')"
           :allow-clear="true"
+          @update:model-value="updateFilter('Status', $event)"
         />
       </div>
 
       <!-- Reference -->
       <div class="space-y-2">
-        <Label htmlFor="ref-filter">{{ t('matter.filters.labels.reference') }}</Label>
+        <Label html-for="ref-filter">{{ t('matter.filters.labels.reference') }}</Label>
         <Input
           id="ref-filter"
           type="text"
@@ -153,7 +167,7 @@
 
       <!-- Filing Number -->
       <div class="space-y-2">
-        <Label htmlFor="filno-filter">{{ t('matter.filters.labels.filingNumber') }}</Label>
+        <Label html-for="filno-filter">{{ t('matter.filters.labels.filingNumber') }}</Label>
         <Input
           id="filno-filter"
           type="text"
@@ -165,7 +179,7 @@
 
       <!-- Registration Number -->
       <div class="space-y-2">
-        <Label htmlFor="registration-number-filter">{{ t('matter.filters.labels.registrationNumber') }}</Label>
+        <Label html-for="registration-number-filter">{{ t('matter.filters.labels.registrationNumber') }}</Label>
         <Input
           id="registration-number-filter"
           type="text"
@@ -177,7 +191,7 @@
 
       <!-- Filing Date -->
       <div class="space-y-2 relative">
-        <Label htmlFor="filed-filter">{{ t('matter.filters.labels.filingDate') }}</Label>
+        <Label html-for="filed-filter">{{ t('matter.filters.labels.filingDate') }}</Label>
         <DateRangeFilter
           :model-value="props.filters.Filed"
           @update:model-value="updateFilter('Filed', $event)"
@@ -186,7 +200,7 @@
 
       <!-- Publication Date -->
       <div class="space-y-2">
-        <Label htmlFor="pub-filter">{{ t('matter.filters.labels.publicationDate') }}</Label>
+        <Label html-for="pub-filter">{{ t('matter.filters.labels.publicationDate') }}</Label>
         <DateRangeFilter
           :model-value="props.filters.Published"
           @update:model-value="updateFilter('Published', $event)"
@@ -195,7 +209,7 @@
 
       <!-- Registration Date -->
       <div class="space-y-2">
-        <Label htmlFor="registration-date-filter">{{ t('matter.filters.labels.registrationDate') }}</Label>
+        <Label html-for="registration-date-filter">{{ t('matter.filters.labels.registrationDate') }}</Label>
         <DateRangeFilter
           :model-value="props.filters.registration_date"
           @update:model-value="updateFilter('registration_date', $event)"
@@ -204,7 +218,7 @@
 
       <!-- Client Reference -->
       <div class="space-y-2">
-        <Label htmlFor="clref-filter">{{ t('matter.filters.labels.clientReference') }}</Label>
+        <Label html-for="clref-filter">{{ t('matter.filters.labels.clientReference') }}</Label>
         <Input
           id="clref-filter"
           type="text"
@@ -216,7 +230,7 @@
 
       <!-- Agent -->
       <div class="space-y-2">
-        <Label htmlFor="agent-filter">{{ t('matter.filters.labels.agent') }}</Label>
+        <Label html-for="agent-filter">{{ t('matter.filters.labels.agent') }}</Label>
         <Input
           id="agent-filter"
           type="text"
@@ -228,16 +242,16 @@
 
       <!-- Contact -->
       <div class="space-y-2">
-        <Label htmlFor="contact-filter">{{ t('matter.filters.labels.contact') }}</Label>
+        <Label html-for="contact-filter">{{ t('matter.filters.labels.contact') }}</Label>
         <AutocompleteInput
           id="contact-filter"
           :placeholder="t('matter.filters.placeholders.contact')"
           :model-value="props.filters.Contact"
-          @update:model-value="debouncedUpdate('Contact', $event)"
           endpoint="/actor/autocomplete"
           value-key="value"
           label-key="value"
           allow-free-text
+          @update:model-value="debouncedUpdate('Contact', $event)"
         />
       </div>
     </div>

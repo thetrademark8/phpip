@@ -38,7 +38,7 @@ class HandleStatusChange implements ShouldQueue
                 $task->update([
                     'done' => 1,
                     'done_date' => now(),
-                    'notes' => $task->notes ? $task->notes."\nAuto-cancelled due to matter status: {$newStatus}" : "Auto-cancelled due to matter status: {$newStatus}",
+                    'notes' => $task->notes ? $task->notes . "\nAuto-cancelled due to matter status: {$newStatus}" : "Auto-cancelled due to matter status: {$newStatus}",
                 ]);
             }
 

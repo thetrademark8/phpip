@@ -34,13 +34,13 @@ class TeamLeaderSyncCommand extends Command
 
     public function handle(): int
     {
-        if (! $this->service->isEnabled()) {
+        if (!$this->service->isEnabled()) {
             $this->error('TeamLeader integration is not enabled.');
 
             return self::FAILURE;
         }
 
-        if (! $this->service->isConnected()) {
+        if (!$this->service->isConnected()) {
             $this->error('Not connected to TeamLeader. Please authenticate first via the web interface.');
 
             return self::FAILURE;
@@ -49,8 +49,8 @@ class TeamLeaderSyncCommand extends Command
         $this->info('Starting TeamLeader synchronization...');
         $this->newLine();
 
-        $syncCompanies = ! $this->option('contacts-only');
-        $syncContacts = ! $this->option('companies-only');
+        $syncCompanies = !$this->option('contacts-only');
+        $syncContacts = !$this->option('companies-only');
         $force = $this->option('force');
 
         if ($syncCompanies) {
@@ -91,7 +91,7 @@ class TeamLeaderSyncCommand extends Command
                 ],
             ]);
 
-            if (! $response) {
+            if (!$response) {
                 $this->error('Failed to fetch companies list');
 
                 return;
@@ -119,7 +119,7 @@ class TeamLeaderSyncCommand extends Command
     {
         $reference = TeamleaderReference::where('teamleader_id', $company['id'])->first();
 
-        if ($reference && ! $force) {
+        if ($reference && !$force) {
             $this->skipped++;
 
             return;
@@ -149,7 +149,7 @@ class TeamLeaderSyncCommand extends Command
                 ],
             ]);
 
-            if (! $response) {
+            if (!$response) {
                 return;
             }
 
@@ -185,7 +185,7 @@ class TeamLeaderSyncCommand extends Command
                 ],
             ]);
 
-            if (! $response) {
+            if (!$response) {
                 $this->error('Failed to fetch contacts list');
 
                 return;
@@ -213,13 +213,13 @@ class TeamLeaderSyncCommand extends Command
     {
         $reference = TeamleaderReference::where('teamleader_id', $contact['id'])->first();
 
-        if ($reference && ! $force) {
+        if ($reference && !$force) {
             $this->skipped++;
 
             return;
         }
 
-        $name = trim(($contact['first_name'] ?? '').' '.($contact['last_name'] ?? ''));
+        $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
         $this->line("  Syncing contact: {$name}");
 
         ContactHandler::added(['id' => $contact['id']], $this->service);
@@ -233,7 +233,7 @@ class TeamLeaderSyncCommand extends Command
 
         while ($retries < $maxRetries) {
             $response = $this->service->prepareRequest()
-                ->post(TeamLeaderService::BASE_URL.$endpoint, $data);
+                ->post(TeamLeaderService::BASE_URL . $endpoint, $data);
 
             $json = $response->json();
 

@@ -10,7 +10,9 @@
     <div class="flex items-start justify-between">
       <div class="flex-1">
         <div class="flex items-center gap-2">
-          <h3 class="font-semibold text-lg">{{ matter.caseref }}</h3>
+          <h3 class="font-semibold text-lg">
+            {{ matter.caseref }}
+          </h3>
           <StatusBadge 
             v-if="matter.dead !== undefined"
             :status="matter.dead ? 'dead' : 'active'"
@@ -18,7 +20,10 @@
           />
         </div>
         
-        <p v-if="displayTitle" class="text-sm text-muted-foreground mt-1">
+        <p
+          v-if="displayTitle"
+          class="text-sm text-muted-foreground mt-1"
+        >
           {{ displayTitle }}
         </p>
         
@@ -39,19 +44,30 @@
           </div>
         </div>
         
-        <div v-if="matter.client" class="mt-2 text-sm">
+        <div
+          v-if="matter.client"
+          class="mt-2 text-sm"
+        >
           <span class="text-muted-foreground">Client:</span>
           <span class="ml-1 font-medium">{{ clientName }}</span>
         </div>
       </div>
       
-      <div v-if="showActions" class="ml-4">
+      <div
+        v-if="showActions"
+        class="ml-4"
+      >
         <slot name="actions" />
       </div>
     </div>
     
-    <div v-if="showTasks && tasks.length > 0" class="mt-4 pt-4 border-t">
-      <div class="text-sm font-medium mb-2">Upcoming Tasks</div>
+    <div
+      v-if="showTasks && tasks.length > 0"
+      class="mt-4 pt-4 border-t"
+    >
+      <div class="text-sm font-medium mb-2">
+        Upcoming Tasks
+      </div>
       <div class="space-y-1">
         <div
           v-for="task in tasks.slice(0, 3)"

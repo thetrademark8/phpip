@@ -1,14 +1,17 @@
 <template>
   <div class="tiptap-editor border rounded-lg overflow-hidden">
     <!-- Toolbar -->
-    <div v-if="editor && !disabled" class="border-b bg-muted/30 p-1.5 flex flex-wrap gap-0.5">
+    <div
+      v-if="editor && !disabled"
+      class="border-b bg-muted/30 p-1.5 flex flex-wrap gap-0.5"
+    >
       <Button
         variant="ghost"
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('bold') }"
-        @click="editor.chain().focus().toggleBold().run()"
         :title="$t('editor.bold')"
+        @click="editor.chain().focus().toggleBold().run()"
       >
         <Bold class="h-4 w-4" />
       </Button>
@@ -17,8 +20,8 @@
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('italic') }"
-        @click="editor.chain().focus().toggleItalic().run()"
         :title="$t('editor.italic')"
+        @click="editor.chain().focus().toggleItalic().run()"
       >
         <Italic class="h-4 w-4" />
       </Button>
@@ -27,21 +30,24 @@
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('strike') }"
-        @click="editor.chain().focus().toggleStrike().run()"
         :title="$t('editor.strikethrough')"
+        @click="editor.chain().focus().toggleStrike().run()"
       >
         <Strikethrough class="h-4 w-4" />
       </Button>
 
-      <Separator orientation="vertical" class="mx-1 h-6" />
+      <Separator
+        orientation="vertical"
+        class="mx-1 h-6"
+      />
 
       <Button
         variant="ghost"
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('heading', { level: 1 }) }"
-        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
         :title="$t('editor.heading1')"
+        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
       >
         <Heading1 class="h-4 w-4" />
       </Button>
@@ -50,8 +56,8 @@
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('heading', { level: 2 }) }"
-        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
         :title="$t('editor.heading2')"
+        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
       >
         <Heading2 class="h-4 w-4" />
       </Button>
@@ -60,21 +66,24 @@
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('heading', { level: 3 }) }"
-        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
         :title="$t('editor.heading3')"
+        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
       >
         <Heading3 class="h-4 w-4" />
       </Button>
 
-      <Separator orientation="vertical" class="mx-1 h-6" />
+      <Separator
+        orientation="vertical"
+        class="mx-1 h-6"
+      />
 
       <Button
         variant="ghost"
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('bulletList') }"
-        @click="editor.chain().focus().toggleBulletList().run()"
         :title="$t('editor.bulletList')"
+        @click="editor.chain().focus().toggleBulletList().run()"
       >
         <List class="h-4 w-4" />
       </Button>
@@ -83,8 +92,8 @@
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('orderedList') }"
-        @click="editor.chain().focus().toggleOrderedList().run()"
         :title="$t('editor.orderedList')"
+        @click="editor.chain().focus().toggleOrderedList().run()"
       >
         <ListOrdered class="h-4 w-4" />
       </Button>
@@ -93,21 +102,24 @@
         size="sm"
         class="h-8 w-8 p-0"
         :class="{ 'bg-muted': editor.isActive('blockquote') }"
-        @click="editor.chain().focus().toggleBlockquote().run()"
         :title="$t('editor.quote')"
+        @click="editor.chain().focus().toggleBlockquote().run()"
       >
         <Quote class="h-4 w-4" />
       </Button>
 
-      <Separator orientation="vertical" class="mx-1 h-6" />
+      <Separator
+        orientation="vertical"
+        class="mx-1 h-6"
+      />
 
       <Button
         variant="ghost"
         size="sm"
         class="h-8 w-8 p-0"
-        @click="setLink"
         :class="{ 'bg-muted': editor.isActive('link') }"
         :title="$t('editor.link')"
+        @click="setLink"
       >
         <LinkIcon class="h-4 w-4" />
       </Button>
@@ -116,21 +128,24 @@
         variant="ghost"
         size="sm"
         class="h-8 w-8 p-0"
-        @click="editor.chain().focus().unsetLink().run()"
         :title="$t('editor.removeLink')"
+        @click="editor.chain().focus().unsetLink().run()"
       >
         <Unlink class="h-4 w-4" />
       </Button>
 
-      <Separator orientation="vertical" class="mx-1 h-6" />
+      <Separator
+        orientation="vertical"
+        class="mx-1 h-6"
+      />
 
       <Button
         variant="ghost"
         size="sm"
         class="h-8 w-8 p-0"
-        @click="editor.chain().focus().undo().run()"
         :disabled="!editor.can().undo()"
         :title="$t('editor.undo')"
+        @click="editor.chain().focus().undo().run()"
       >
         <Undo class="h-4 w-4" />
       </Button>
@@ -138,9 +153,9 @@
         variant="ghost"
         size="sm"
         class="h-8 w-8 p-0"
-        @click="editor.chain().focus().redo().run()"
         :disabled="!editor.can().redo()"
         :title="$t('editor.redo')"
+        @click="editor.chain().focus().redo().run()"
       >
         <Redo class="h-4 w-4" />
       </Button>

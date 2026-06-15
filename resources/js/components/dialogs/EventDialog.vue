@@ -1,12 +1,21 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle>{{ mode === 'create' ? t('Add Event') : t('Edit Event') }}</DialogTitle>
       </DialogHeader>
-      <form @submit.prevent="handleSubmit" class="space-y-4">
+      <form
+        class="space-y-4"
+        @submit.prevent="handleSubmit"
+      >
         <div class="space-y-2">
-          <Label htmlFor="code" class="mb-2">{{ t('Event Type') }}</Label>
+          <Label
+            html-for="code"
+            class="mb-2"
+          >{{ t('Event Type') }}</Label>
           <AutocompleteInput
             id="code"
             v-model="form.code"
@@ -21,7 +30,10 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="event_date" class="mb-2">{{ t('Event Date') }}</Label>
+          <Label
+            html-for="event_date"
+            class="mb-2"
+          >{{ t('Event Date') }}</Label>
           <DatePicker
             id="event_date"
             v-model="form.event_date"
@@ -30,7 +42,10 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="detail" class="mb-2">{{ detailLabel }}</Label>
+          <Label
+            html-for="detail"
+            class="mb-2"
+          >{{ detailLabel }}</Label>
           <Input
             id="detail"
             v-model="form.detail"
@@ -38,7 +53,10 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="link" class="mb-2">{{ t('Link') }}</Label>
+          <Label
+            html-for="link"
+            class="mb-2"
+          >{{ t('Link') }}</Label>
           <Input
             id="link"
             v-model="form.link"
@@ -46,7 +64,10 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="notes" class="mb-2">{{ t('Notes') }}</Label>
+          <Label
+            html-for="notes"
+            class="mb-2"
+          >{{ t('Notes') }}</Label>
           <Textarea
             id="notes"
             v-model="form.notes"
@@ -55,10 +76,17 @@
           />
         </div>
         <DialogFooter>
-          <Button type="button" variant="outline" @click="$emit('update:open', false)">
+          <Button
+            type="button"
+            variant="outline"
+            @click="$emit('update:open', false)"
+          >
             {{ t('Cancel') }}
           </Button>
-          <Button type="submit" :disabled="form.processing">
+          <Button
+            type="submit"
+            :disabled="form.processing"
+          >
             {{ mode === 'create' ? t('Add Event') : t('Update Event') }}
           </Button>
         </DialogFooter>

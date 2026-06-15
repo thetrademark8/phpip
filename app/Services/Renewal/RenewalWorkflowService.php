@@ -58,7 +58,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
             DB::beginTransaction();
 
             // Validate step
-            if (! $this->isValidStep($step)) {
+            if (!$this->isValidStep($step)) {
                 DB::rollback();
 
                 return ActionResultDTO::error('Invalid step value');
@@ -77,7 +77,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to update step: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to update step: ' . $e->getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
             DB::beginTransaction();
 
             // Validate invoice step
-            if (! $this->isValidInvoiceStep($invoiceStep)) {
+            if (!$this->isValidInvoiceStep($invoiceStep)) {
                 DB::rollback();
 
                 return ActionResultDTO::error('Invalid invoice step value');
@@ -121,7 +121,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to update invoice step: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to update invoice step: ' . $e->getMessage());
         }
     }
 
@@ -168,7 +168,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to set grace period: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to set grace period: ' . $e->getMessage());
         }
     }
 
@@ -194,7 +194,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
             $date = $doneDate ?? Carbon::now()->format('Y-m-d');
 
             // Validate date
-            if (! $this->isValidDate($date)) {
+            if (!$this->isValidDate($date)) {
                 DB::rollback();
 
                 return ActionResultDTO::error('Invalid date format');
@@ -214,7 +214,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to mark as done: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to mark as done: ' . $e->getMessage());
         }
     }
 
@@ -259,7 +259,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to abandon renewals: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to abandon renewals: ' . $e->getMessage());
         }
     }
 
@@ -311,7 +311,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to mark as payment order received: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to mark as payment order received: ' . $e->getMessage());
         }
     }
 
@@ -410,13 +410,13 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
             DB::beginTransaction();
 
             // Validate both steps
-            if (! $this->isValidStep($step)) {
+            if (!$this->isValidStep($step)) {
                 DB::rollback();
 
                 return ActionResultDTO::error('Invalid step value');
             }
 
-            if (! $this->isValidInvoiceStep($invoiceStep)) {
+            if (!$this->isValidInvoiceStep($invoiceStep)) {
                 DB::rollback();
 
                 return ActionResultDTO::error('Invalid invoice step value');
@@ -436,7 +436,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to update steps: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to update steps: ' . $e->getMessage());
         }
     }
 
@@ -469,7 +469,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to mark as lapsing: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to mark as lapsing: ' . $e->getMessage());
         }
     }
 
@@ -487,8 +487,8 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
     private function createAbandonEvent($renewal): void
     {
         // Verify that the matter relation exists
-        if (! $renewal->matter) {
-            throw new \Exception('Cannot create abandon event: matter not found for renewal '.$renewal->id);
+        if (!$renewal->matter) {
+            throw new \Exception('Cannot create abandon event: matter not found for renewal ' . $renewal->id);
         }
 
         // Create abandon event in the event table
@@ -497,7 +497,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
             'code' => 'ABA',
             'event_date' => Carbon::now(),
             'detail' => 'Renewal abandoned',
-            'notes' => 'Renewal '.$renewal->id.' abandoned',
+            'notes' => 'Renewal ' . $renewal->id . ' abandoned',
         ]);
     }
 

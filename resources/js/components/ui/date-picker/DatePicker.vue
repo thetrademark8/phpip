@@ -13,7 +13,10 @@
         <span>{{ displayValue }}</span>
       </Button>
     </PopoverTrigger>
-    <PopoverContent class="w-auto p-0" align="start">
+    <PopoverContent
+      class="w-auto p-0"
+      align="start"
+    >
       <Calendar
         v-model="calendarValue"
         show-month-year-select

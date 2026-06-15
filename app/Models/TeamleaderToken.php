@@ -26,7 +26,7 @@ class TeamleaderToken extends Model
 
     public function isExpired(): bool
     {
-        if (! $this->expires_at) {
+        if (!$this->expires_at) {
             return true;
         }
 
@@ -35,6 +35,6 @@ class TeamleaderToken extends Model
 
     public function isValid(): bool
     {
-        return $this->access_token && ! $this->isExpired();
+        return $this->access_token && !$this->isExpired();
     }
 }

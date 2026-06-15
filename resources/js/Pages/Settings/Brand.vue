@@ -3,12 +3,20 @@
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       <!-- Header -->
       <div class="space-y-2">
-        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{{ t('Brand Settings') }}</h1>
-        <p class="text-lg text-muted-foreground">{{ t('Manage branding, logo and email signature for your company') }}</p>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {{ t('Brand Settings') }}
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          {{ t('Manage branding, logo and email signature for your company') }}
+        </p>
       </div>
 
       <!-- Success Message -->
-      <Alert v-if="successMessage" variant="default" class="border-green-500 bg-green-50 dark:bg-green-950">
+      <Alert
+        v-if="successMessage"
+        variant="default"
+        class="border-green-500 bg-green-50 dark:bg-green-950"
+      >
         <CheckCircle2 class="h-4 w-4 text-green-600" />
         <AlertDescription class="text-green-800 dark:text-green-200">
           {{ successMessage }}
@@ -16,7 +24,10 @@
       </Alert>
 
       <!-- Error Message -->
-      <Alert v-if="errorMessage" variant="destructive">
+      <Alert
+        v-if="errorMessage"
+        variant="destructive"
+      >
         <CheckCircle2 class="h-4 w-4" />
         <AlertDescription>
           {{ errorMessage }}
@@ -38,14 +49,30 @@
           <!-- Site Logo -->
           <div class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold">{{ t('Site Logo') }}</h3>
-              <p class="text-sm text-muted-foreground">{{ t('Displayed in the navigation bar and login page') }}</p>
+              <h3 class="text-sm font-semibold">
+                {{ t('Site Logo') }}
+              </h3>
+              <p class="text-sm text-muted-foreground">
+                {{ t('Displayed in the navigation bar and login page') }}
+              </p>
             </div>
-            <div v-if="siteLogo" class="p-4 rounded-lg border bg-muted/30 inline-block">
-              <img :src="siteLogo" :alt="t('Site Logo')" class="max-h-16 max-w-xs object-contain" />
+            <div
+              v-if="siteLogo"
+              class="p-4 rounded-lg border bg-muted/30 inline-block"
+            >
+              <img
+                :src="siteLogo"
+                :alt="t('Site Logo')"
+                class="max-h-16 max-w-xs object-contain"
+              >
             </div>
-            <div v-else class="p-4 rounded-lg border border-dashed bg-muted/20">
-              <p class="text-sm text-muted-foreground italic">{{ t('No logo uploaded') }}</p>
+            <div
+              v-else
+              class="p-4 rounded-lg border border-dashed bg-muted/20"
+            >
+              <p class="text-sm text-muted-foreground italic">
+                {{ t('No logo uploaded') }}
+              </p>
             </div>
             <div class="flex items-end gap-3">
               <div class="space-y-2 flex-1">
@@ -55,11 +82,22 @@
                   class="cursor-pointer"
                   @change="siteFile = $event.target.files?.[0] ?? null"
                 />
-                <p class="text-xs text-muted-foreground">{{ t('Accepted formats: PNG, JPG, SVG, GIF (max 2MB)') }}</p>
+                <p class="text-xs text-muted-foreground">
+                  {{ t('Accepted formats: PNG, JPG, SVG, GIF (max 2MB)') }}
+                </p>
               </div>
-              <Button :disabled="!siteFile || isUploadingSite" @click="upload('site')">
-                <Upload v-if="!isUploadingSite" class="mr-2 h-4 w-4" />
-                <span v-else class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+              <Button
+                :disabled="!siteFile || isUploadingSite"
+                @click="upload('site')"
+              >
+                <Upload
+                  v-if="!isUploadingSite"
+                  class="mr-2 h-4 w-4"
+                />
+                <span
+                  v-else
+                  class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full"
+                />
                 {{ isUploadingSite ? t('Uploading...') : t('Upload') }}
               </Button>
             </div>
@@ -70,14 +108,30 @@
           <!-- Email Logo -->
           <div class="space-y-4">
             <div class="space-y-1">
-              <h3 class="text-sm font-semibold">{{ t('Email Logo') }}</h3>
-              <p class="text-sm text-muted-foreground">{{ t('Displayed in email signatures and headers. Falls back to the site logo if not set.') }}</p>
+              <h3 class="text-sm font-semibold">
+                {{ t('Email Logo') }}
+              </h3>
+              <p class="text-sm text-muted-foreground">
+                {{ t('Displayed in email signatures and headers. Falls back to the site logo if not set.') }}
+              </p>
             </div>
-            <div v-if="emailLogo" class="p-4 rounded-lg border bg-muted/30 inline-block">
-              <img :src="emailLogo" :alt="t('Email Logo')" class="max-h-16 max-w-xs object-contain" />
+            <div
+              v-if="emailLogo"
+              class="p-4 rounded-lg border bg-muted/30 inline-block"
+            >
+              <img
+                :src="emailLogo"
+                :alt="t('Email Logo')"
+                class="max-h-16 max-w-xs object-contain"
+              >
             </div>
-            <div v-else class="p-4 rounded-lg border border-dashed bg-muted/20">
-              <p class="text-sm text-muted-foreground italic">{{ t('No logo uploaded — using site logo') }}</p>
+            <div
+              v-else
+              class="p-4 rounded-lg border border-dashed bg-muted/20"
+            >
+              <p class="text-sm text-muted-foreground italic">
+                {{ t('No logo uploaded — using site logo') }}
+              </p>
             </div>
             <div class="flex items-end gap-3">
               <div class="space-y-2 flex-1">
@@ -87,11 +141,22 @@
                   class="cursor-pointer"
                   @change="emailFile = $event.target.files?.[0] ?? null"
                 />
-                <p class="text-xs text-muted-foreground">{{ t('Accepted formats: PNG, JPG, SVG, GIF (max 2MB)') }}</p>
+                <p class="text-xs text-muted-foreground">
+                  {{ t('Accepted formats: PNG, JPG, SVG, GIF (max 2MB)') }}
+                </p>
               </div>
-              <Button :disabled="!emailFile || isUploadingEmail" @click="upload('email')">
-                <Upload v-if="!isUploadingEmail" class="mr-2 h-4 w-4" />
-                <span v-else class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+              <Button
+                :disabled="!emailFile || isUploadingEmail"
+                @click="upload('email')"
+              >
+                <Upload
+                  v-if="!isUploadingEmail"
+                  class="mr-2 h-4 w-4"
+                />
+                <span
+                  v-else
+                  class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full"
+                />
                 {{ isUploadingEmail ? t('Uploading...') : t('Upload') }}
               </Button>
             </div>
@@ -108,15 +173,27 @@
           </CardTitle>
         </CardHeader>
         <CardContent class="pt-0">
-          <Tabs default-value="signature" class="w-full">
+          <Tabs
+            default-value="signature"
+            class="w-full"
+          >
             <TabsList class="grid w-full grid-cols-3">
-              <TabsTrigger value="signature">{{ t('Email Signature') }}</TabsTrigger>
-              <TabsTrigger value="header">{{ t('Email Header') }}</TabsTrigger>
-              <TabsTrigger value="footer">{{ t('Email Footer') }}</TabsTrigger>
+              <TabsTrigger value="signature">
+                {{ t('Email Signature') }}
+              </TabsTrigger>
+              <TabsTrigger value="header">
+                {{ t('Email Header') }}
+              </TabsTrigger>
+              <TabsTrigger value="footer">
+                {{ t('Email Footer') }}
+              </TabsTrigger>
             </TabsList>
 
             <!-- Signature Tab -->
-            <TabsContent value="signature" class="space-y-4 mt-6">
+            <TabsContent
+              value="signature"
+              class="space-y-4 mt-6"
+            >
               <div class="space-y-2">
                 <label class="text-sm font-medium leading-none">
                   {{ t('Email Signature') }}
@@ -133,7 +210,10 @@
             </TabsContent>
 
             <!-- Header Tab -->
-            <TabsContent value="header" class="space-y-4 mt-6">
+            <TabsContent
+              value="header"
+              class="space-y-4 mt-6"
+            >
               <div class="space-y-2">
                 <label class="text-sm font-medium leading-none">
                   {{ t('Email Header') }}
@@ -150,7 +230,10 @@
             </TabsContent>
 
             <!-- Footer Tab -->
-            <TabsContent value="footer" class="space-y-4 mt-6">
+            <TabsContent
+              value="footer"
+              class="space-y-4 mt-6"
+            >
               <div class="space-y-2">
                 <label class="text-sm font-medium leading-none">
                   {{ t('Email Footer') }}
@@ -200,16 +283,28 @@
           :disabled="isLoadingPreview"
           @click="fetchPreview"
         >
-          <Eye v-if="!isLoadingPreview" class="mr-2 h-4 w-4" />
-          <span v-if="isLoadingPreview" class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+          <Eye
+            v-if="!isLoadingPreview"
+            class="mr-2 h-4 w-4"
+          />
+          <span
+            v-if="isLoadingPreview"
+            class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full"
+          />
           {{ t('Preview') }}
         </Button>
         <Button
           :disabled="isSaving"
           @click="saveSettings"
         >
-          <Save v-if="!isSaving" class="mr-2 h-4 w-4" />
-          <span v-if="isSaving" class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+          <Save
+            v-if="!isSaving"
+            class="mr-2 h-4 w-4"
+          />
+          <span
+            v-if="isSaving"
+            class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full"
+          />
           {{ isSaving ? t('Saving...') : t('Save Settings') }}
         </Button>
       </div>
@@ -222,7 +317,11 @@
               <Eye class="h-5 w-5 text-primary" />
               {{ t('Email Preview') }}
             </CardTitle>
-            <Button variant="ghost" size="sm" @click="previewHtml = ''">
+            <Button
+              variant="ghost"
+              size="sm"
+              @click="previewHtml = ''"
+            >
               &times;
             </Button>
           </div>

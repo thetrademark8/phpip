@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-background flex flex-col items-stretch justify-start">
     <Navigation
-      @openCreateMatter="handleOpenCreateMatter"
+      @open-create-matter="handleOpenCreateMatter"
     />
     <main class="flex-1 p-4">
       <slot />

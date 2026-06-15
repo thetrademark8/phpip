@@ -196,7 +196,7 @@ class RenewalController extends Controller
 
             return response($xmlContent, 200)
                 ->header('Content-Type', 'text/xml')
-                ->header('Content-Disposition', 'attachment; filename="payment_'.date('YmdHis').'.xml"');
+                ->header('Content-Disposition', 'attachment; filename="payment_' . date('YmdHis') . '.xml"');
         }
 
         return to_route('renewal.index', ['step' => 2])

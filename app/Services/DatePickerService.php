@@ -209,7 +209,7 @@ class DatePickerService implements DatePickerServiceInterface
         // Extract parts
         preg_match('/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/', $dateString, $matches);
 
-        if (! $matches) {
+        if (!$matches) {
             return 'd/m/Y'; // Default to DD/MM/YYYY
         }
 
@@ -244,7 +244,7 @@ class DatePickerService implements DatePickerServiceInterface
      */
     public function convertLegacyDate(?string $legacyDate): ?string
     {
-        if (! $legacyDate) {
+        if (!$legacyDate) {
             return null;
         }
 

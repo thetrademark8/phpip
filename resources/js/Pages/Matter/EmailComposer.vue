@@ -5,13 +5,20 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
           <Link :href="`/matter/${matter.id}`">
-            <Button variant="ghost" size="sm">
+            <Button
+              variant="ghost"
+              size="sm"
+            >
               <ArrowLeft class="h-4 w-4 mr-1" />
               {{ $t('Back') }}
             </Button>
           </Link>
-          <h1 class="text-xl font-semibold">{{ $t('email.compose') }}</h1>
-          <Badge variant="outline">{{ matter.uid }}</Badge>
+          <h1 class="text-xl font-semibold">
+            {{ $t('email.compose') }}
+          </h1>
+          <Badge variant="outline">
+            {{ matter.uid }}
+          </Badge>
         </div>
       </div>
 
@@ -20,7 +27,9 @@
         <!-- Left Panel: Placeholders -->
         <Card class="lg:col-span-1">
           <CardHeader class="py-3">
-            <CardTitle class="text-sm">{{ $t('email.placeholders') }}</CardTitle>
+            <CardTitle class="text-sm">
+              {{ $t('email.placeholders') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <PlaceholderPanel
@@ -35,27 +44,44 @@
           <!-- Template Selection -->
           <Card>
             <CardHeader class="py-3">
-              <CardTitle class="text-sm">{{ $t('email.selectTemplate') }}</CardTitle>
+              <CardTitle class="text-sm">
+                {{ $t('email.selectTemplate') }}
+              </CardTitle>
             </CardHeader>
             <CardContent class="space-y-2">
               <div class="flex gap-2">
-                <Select v-model="templateLanguage" class="w-24">
+                <Select
+                  v-model="templateLanguage"
+                  class="w-24"
+                >
                   <SelectTrigger class="w-24">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem :value="null">{{ $t('All') }}</SelectItem>
-                    <SelectItem v-for="lang in availableLanguages" :key="lang" :value="lang">
+                    <SelectItem :value="null">
+                      {{ $t('All') }}
+                    </SelectItem>
+                    <SelectItem
+                      v-for="lang in availableLanguages"
+                      :key="lang"
+                      :value="lang"
+                    >
                       {{ lang.toUpperCase() }}
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <Select v-model="selectedTemplateId" @update:modelValue="handleTemplateChange" class="flex-1">
+                <Select
+                  v-model="selectedTemplateId"
+                  class="flex-1"
+                  @update:model-value="handleTemplateChange"
+                >
                   <SelectTrigger>
                     <SelectValue :placeholder="$t('email.selectTemplate')" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem :value="null">{{ $t('email.noTemplate') }}</SelectItem>
+                    <SelectItem :value="null">
+                      {{ $t('email.noTemplate') }}
+                    </SelectItem>
                     <SelectItem
                       v-for="template in filteredTemplates"
                       :key="template.id"
@@ -72,7 +98,9 @@
           <!-- Subject -->
           <Card>
             <CardHeader class="py-3">
-              <CardTitle class="text-sm">{{ $t('email.subject') }}</CardTitle>
+              <CardTitle class="text-sm">
+                {{ $t('email.subject') }}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <Input
@@ -85,7 +113,9 @@
           <!-- Body -->
           <Card>
             <CardHeader class="py-3">
-              <CardTitle class="text-sm">{{ $t('email.body') }}</CardTitle>
+              <CardTitle class="text-sm">
+                {{ $t('email.body') }}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <TipTapEditor
@@ -99,7 +129,9 @@
           <!-- CC/BCC -->
           <Card>
             <CardHeader class="py-3">
-              <CardTitle class="text-sm">CC / BCC</CardTitle>
+              <CardTitle class="text-sm">
+                CC / BCC
+              </CardTitle>
             </CardHeader>
             <CardContent class="space-y-4">
               <EmailTagInput
@@ -121,7 +153,9 @@
           <!-- Recipients -->
           <Card>
             <CardHeader class="py-3">
-              <CardTitle class="text-sm">{{ $t('email.recipients') }}</CardTitle>
+              <CardTitle class="text-sm">
+                {{ $t('email.recipients') }}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <RecipientSelector
@@ -134,7 +168,9 @@
           <!-- Attachments -->
           <Card>
             <CardHeader class="py-3">
-              <CardTitle class="text-sm">{{ $t('email.attachments') }}</CardTitle>
+              <CardTitle class="text-sm">
+                {{ $t('email.attachments') }}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <AttachmentManager
@@ -153,16 +189,16 @@
               <Button
                 class="w-full"
                 variant="outline"
-                @click="previewEmail"
                 :disabled="!canSend || previewing"
+                @click="previewEmail"
               >
                 <Eye class="h-4 w-4 mr-2" />
                 {{ $t('email.preview') }}
               </Button>
               <Button
                 class="w-full"
-                @click="openConfirmDialog"
                 :disabled="!canSend || sending"
+                @click="openConfirmDialog"
               >
                 <Send class="h-4 w-4 mr-2" />
                 {{ $t('email.send') }}
@@ -175,7 +211,9 @@
       <!-- Email History Section -->
       <Card>
         <CardHeader class="py-3">
-          <CardTitle class="text-sm">{{ $t('email.history') }}</CardTitle>
+          <CardTitle class="text-sm">
+            {{ $t('email.history') }}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <EmailHistory

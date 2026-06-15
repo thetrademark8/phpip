@@ -1,6 +1,9 @@
 <template>
   <div class="space-y-2">
-    <Label v-if="label" class="text-xs">{{ label }}</Label>
+    <Label
+      v-if="label"
+      class="text-xs"
+    >{{ label }}</Label>
     <div class="flex gap-2">
       <Input
         v-model="inputValue"
@@ -12,21 +15,27 @@
       <Button
         variant="outline"
         size="sm"
-        @click="addEmail"
         :disabled="!isValidInput"
         :title="$t('email.addEmail')"
+        @click="addEmail"
       >
         <Plus class="h-4 w-4" />
       </Button>
     </div>
 
     <!-- Validation hint -->
-    <p v-if="inputValue && !isValidInput" class="text-xs text-destructive">
+    <p
+      v-if="inputValue && !isValidInput"
+      class="text-xs text-destructive"
+    >
       {{ $t('email.invalidEmail') }}
     </p>
 
     <!-- Email badges -->
-    <div v-if="modelValue.length" class="flex flex-wrap gap-1">
+    <div
+      v-if="modelValue.length"
+      class="flex flex-wrap gap-1"
+    >
       <Badge
         v-for="(email, idx) in modelValue"
         :key="idx"

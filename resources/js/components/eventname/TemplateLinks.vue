@@ -1,7 +1,10 @@
 <template>
   <div class="space-y-4">
     <!-- Add new template link -->
-    <div v-if="canEdit" class="border-b pb-4">
+    <div
+      v-if="canEdit"
+      class="border-b pb-4"
+    >
       <Label class="mb-2">{{ $t('Add Template Link') }}</Label>
       <div class="flex gap-2">
         <AutocompleteInput
@@ -12,12 +15,18 @@
           class="flex-1"
         />
         <Button 
-          @click="addTemplateLink"
           :disabled="!newTemplateId || adding"
           size="sm"
+          @click="addTemplateLink"
         >
-          <Plus v-if="!adding" class="h-4 w-4 mr-2" />
-          <Loader2 v-else class="h-4 w-4 mr-2 animate-spin" />
+          <Plus
+            v-if="!adding"
+            class="h-4 w-4 mr-2"
+          />
+          <Loader2
+            v-else
+            class="h-4 w-4 mr-2 animate-spin"
+          />
           {{ $t('Add') }}
         </Button>
       </div>
@@ -27,18 +36,32 @@
     <div class="space-y-3">
       <h4 class="text-sm font-medium">
         {{ $t('Linked Templates') }}
-        <span v-if="templateLinks.length > 0" class="text-muted-foreground">
+        <span
+          v-if="templateLinks.length > 0"
+          class="text-muted-foreground"
+        >
           ({{ templateLinks.length }})
         </span>
       </h4>
       
-      <div v-if="templateLinks.length === 0" class="text-center py-8 text-muted-foreground">
+      <div
+        v-if="templateLinks.length === 0"
+        class="text-center py-8 text-muted-foreground"
+      >
         <FileText class="h-12 w-12 mx-auto mb-2 opacity-50" />
         <p>{{ $t('No template links configured') }}</p>
-        <p v-if="canEdit" class="text-sm">{{ $t('Add a template class above to get started') }}</p>
+        <p
+          v-if="canEdit"
+          class="text-sm"
+        >
+          {{ $t('Add a template class above to get started') }}
+        </p>
       </div>
       
-      <div v-else class="space-y-2">
+      <div
+        v-else
+        class="space-y-2"
+      >
         <div
           v-for="link in templateLinks"
           :key="link.id"
@@ -58,10 +81,10 @@
           
           <Button
             v-if="canEdit"
-            @click="removeTemplateLink(link)"
             variant="ghost"
             size="sm"
             class="text-destructive hover:text-destructive hover:bg-destructive/10"
+            @click="removeTemplateLink(link)"
           >
             <X class="h-4 w-4" />
           </Button>

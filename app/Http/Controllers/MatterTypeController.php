@@ -18,11 +18,11 @@ class MatterTypeController extends Controller
 
         $type = MatterType::query();
 
-        if (! is_null($Code)) {
-            $type = $type->whereLike('code', $Code.'%');
+        if (!is_null($Code)) {
+            $type = $type->whereLike('code', $Code . '%');
         }
 
-        if (! is_null($Type)) {
+        if (!is_null($Type)) {
             $type = $type->whereJsonLike('type', $Type);
         }
 

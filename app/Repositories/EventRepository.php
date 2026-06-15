@@ -49,7 +49,7 @@ class EventRepository implements EventRepositoryInterface
     {
         $event = Event::find($id);
 
-        if (! $event) {
+        if (!$event) {
             return false;
         }
 
@@ -81,7 +81,7 @@ class EventRepository implements EventRepositoryInterface
     {
         $event = Event::find($id);
 
-        if (! $event) {
+        if (!$event) {
             return false;
         }
 
@@ -105,23 +105,23 @@ class EventRepository implements EventRepositoryInterface
     {
         $query = Event::with(['matter', 'tasks']);
 
-        if (! empty($filters['code'])) {
+        if (!empty($filters['code'])) {
             $query->where('code', $filters['code']);
         }
 
-        if (! empty($filters['matter_id'])) {
+        if (!empty($filters['matter_id'])) {
             $query->where('matter_id', $filters['matter_id']);
         }
 
-        if (! empty($filters['from_date'])) {
+        if (!empty($filters['from_date'])) {
             $query->where('event_date', '>=', $filters['from_date']);
         }
 
-        if (! empty($filters['until_date'])) {
+        if (!empty($filters['until_date'])) {
             $query->where('event_date', '<=', $filters['until_date']);
         }
 
-        if (! empty($filters['done'])) {
+        if (!empty($filters['done'])) {
             $query->whereHas('tasks', function ($q) use ($filters) {
                 $q->where('done', $filters['done']);
             });

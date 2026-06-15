@@ -157,17 +157,17 @@ class RenewalQueryService implements RenewalQueryServiceInterface
         $with_step = false;
         $with_invoice = false;
         $filterArray = $filters->toArray();
-        if (! empty($filterArray)) {
-            if (! empty($filterArray['step']) && $step != 0) {
+        if (!empty($filterArray)) {
+            if (!empty($filterArray['step']) && $step != 0) {
                 $with_step = true;
             }
-            if (! empty($filterArray['invoice_step']) && $filterArray['invoice_step'] != 0) {
+            if (!empty($filterArray['invoice_step']) && $filterArray['invoice_step'] != 0) {
                 $with_invoice = true;
             }
         }
 
         // Only display pending renewals at the beginning of the pipeline
-        if (! ($with_step || $with_invoice)) {
+        if (!($with_step || $with_invoice)) {
             // Use whereRaw without table prefix to match old query
             $query->whereRaw('done = 0');
         }

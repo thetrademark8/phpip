@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-lg">
       <DialogHeader>
         <DialogTitle>{{ $t('Merge Document') }}</DialogTitle>
@@ -10,14 +13,16 @@
       
       <div
         class="h-40 bg-muted flex flex-col items-center justify-center text-center p-4 cursor-pointer hover:bg-muted/80 transition-colors rounded-lg border-2 border-dashed"
+        :class="{ 'bg-primary/10 border-primary': isDragging }"
         @dragover.prevent="isDragging = true"
         @dragleave.prevent="isDragging = false"
         @drop.prevent="handleDrop"
         @click="selectFile"
-        :class="{ 'bg-primary/10 border-primary': isDragging }"
       >
         <FileText class="h-10 w-10 mb-3 text-muted-foreground" />
-        <p class="text-sm font-medium">{{ $t('Drop DOCX file here') }}</p>
+        <p class="text-sm font-medium">
+          {{ $t('Drop DOCX file here') }}
+        </p>
         <p class="text-xs text-muted-foreground mt-1">
           {{ $t('Or click to select a template') }}
         </p>
@@ -27,7 +32,7 @@
           accept=".docx"
           class="hidden"
           @change="handleFileSelect"
-        />
+        >
       </div>
 
       <div class="text-center mt-4">
@@ -41,7 +46,10 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ $t('Cancel') }}
         </Button>
       </DialogFooter>

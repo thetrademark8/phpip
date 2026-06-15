@@ -184,13 +184,13 @@ class SampleEventsSeeder extends Seeder
 
         switch ($country) {
             case 'US':
-                return $year.'/'.$number;
+                return $year . '/' . $number;
             case 'EP':
-                return substr($year, -2).$number;
+                return substr($year, -2) . $number;
             case 'WO':
-                return $year.'/'.str_pad(rand(1, 99999), 6, '0', STR_PAD_LEFT);
+                return $year . '/' . str_pad(rand(1, 99999), 6, '0', STR_PAD_LEFT);
             default:
-                return $year.'-'.$number;
+                return $year . '-' . $number;
         }
     }
 
@@ -206,9 +206,9 @@ class SampleEventsSeeder extends Seeder
             case 'EM':
                 return str_pad($number * 100 + rand(10, 99), 9, '0', STR_PAD_LEFT);
             case 'US':
-                return rand(86, 90).'/'.rand(100000, 999999);
+                return rand(86, 90) . '/' . rand(100000, 999999);
             default:
-                return $year.$number;
+                return $year . $number;
         }
     }
 
@@ -217,6 +217,6 @@ class SampleEventsSeeder extends Seeder
      */
     private function generateDesignNumber($country, $date)
     {
-        return 'D'.$date->format('Y').rand(1000, 9999);
+        return 'D' . $date->format('Y') . rand(1000, 9999);
     }
 }

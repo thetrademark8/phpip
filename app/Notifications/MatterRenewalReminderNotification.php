@@ -104,7 +104,7 @@ class MatterRenewalReminderNotification extends Notification implements ShouldQu
 
         $matterText = $count === 1 ? 'matter' : 'matters';
 
-        return "[phpIP] Renewal {$reminderLabel}: {$count} {$matterText} expiring in {$this->monthsRemaining} month".($this->monthsRemaining > 1 ? 's' : '');
+        return "[phpIP] Renewal {$reminderLabel}: {$count} {$matterText} expiring in {$this->monthsRemaining} month" . ($this->monthsRemaining > 1 ? 's' : '');
     }
 
     private function getFrenchSubject(int $count): string
@@ -132,6 +132,6 @@ class MatterRenewalReminderNotification extends Notification implements ShouldQu
 
         $matterText = $count === 1 ? 'Akte' : 'Akten';
 
-        return "[phpIP] Verlangerung - {$reminderLabel}: {$count} {$matterText} lauft in {$this->monthsRemaining} Monat".($this->monthsRemaining > 1 ? 'en' : '').' ab';
+        return "[phpIP] Verlangerung - {$reminderLabel}: {$count} {$matterText} lauft in {$this->monthsRemaining} Monat" . ($this->monthsRemaining > 1 ? 'en' : '') . ' ab';
     }
 }

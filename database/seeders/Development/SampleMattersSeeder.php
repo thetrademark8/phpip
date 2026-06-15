@@ -205,7 +205,7 @@ class SampleMattersSeeder extends Seeder
         for ($i = 0; $i < $patsToCreate; $i++) {
             $patNum = $existingPatentCount + $i + 1;
             $matter = Matter::factory()->patent()->create([
-                'caseref' => 'PAT-'.str_pad($patNum, 3, '0', STR_PAD_LEFT),
+                'caseref' => 'PAT-' . str_pad($patNum, 3, '0', STR_PAD_LEFT),
             ]);
 
             // Add random client
@@ -241,7 +241,7 @@ class SampleMattersSeeder extends Seeder
         for ($i = 0; $i < $desToCreate; $i++) {
             $desNum = $existingDesignCount + $i + 1;
             $matter = Matter::factory()->design()->create([
-                'caseref' => 'DES-'.str_pad($desNum, 3, '0', STR_PAD_LEFT),
+                'caseref' => 'DES-' . str_pad($desNum, 3, '0', STR_PAD_LEFT),
             ]);
 
             $client = Actor::where('phy_person', 0)->inRandomOrder()->first()

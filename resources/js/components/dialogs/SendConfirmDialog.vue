@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-md">
       <DialogHeader>
         <DialogTitle>{{ $t('email.confirmSend') }}</DialogTitle>
@@ -22,15 +25,23 @@
         <!-- Subject -->
         <div>
           <Label class="text-muted-foreground text-xs">{{ $t('email.subject') }}</Label>
-          <p class="font-medium mt-1">{{ subject }}</p>
+          <p class="font-medium mt-1">
+            {{ subject }}
+          </p>
         </div>
       </div>
 
       <DialogFooter class="gap-2 sm:gap-0">
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ $t('Cancel') }}
         </Button>
-        <Button @click="$emit('confirm')" :disabled="sending">
+        <Button
+          :disabled="sending"
+          @click="$emit('confirm')"
+        >
           <Send class="h-4 w-4 mr-2" />
           {{ sending ? $t('email.sending') : $t('email.send') }}
         </Button>

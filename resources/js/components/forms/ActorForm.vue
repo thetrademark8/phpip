@@ -2,7 +2,10 @@
   <form @submit.prevent="handleSubmit">
     <div class="space-y-6">
       <!-- Show restriction summary if any fields are restricted -->
-      <div v-if="hasRestrictedFields" class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+      <div
+        v-if="hasRestrictedFields"
+        class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4"
+      >
         <div class="flex items-start gap-2">
           <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
           <div>
@@ -17,7 +20,9 @@
       </div>
       <!-- Basic Information -->
       <div class="space-y-4">
-        <h3 class="text-lg font-semibold">Basic Information</h3>
+        <h3 class="text-lg font-semibold">
+          Basic Information
+        </h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Name -->
@@ -30,7 +35,10 @@
             <template #label>
               <div class="flex items-center gap-2">
                 <span>Name</span>
-                <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
+                <div
+                  v-if="!isFieldEditable('name')"
+                  class="flex items-center gap-1"
+                >
                   <Lock class="h-3 w-3 text-muted-foreground" />
                   <div class="relative group">
                     <AlertCircle 
@@ -63,7 +71,10 @@
             <template #label>
               <div class="flex items-center gap-2">
                 <span>First name</span>
-                <div v-if="!isFieldEditable('first_name')" class="flex items-center gap-1">
+                <div
+                  v-if="!isFieldEditable('first_name')"
+                  class="flex items-center gap-1"
+                >
                   <Lock class="h-3 w-3 text-muted-foreground" />
                   <div class="relative group">
                     <AlertCircle 
@@ -147,7 +158,9 @@
 
       <!-- Contact Details -->
       <div class="space-y-4">
-        <h3 class="text-lg font-semibold">Contact Details</h3>
+        <h3 class="text-lg font-semibold">
+          Contact Details
+        </h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Address -->
@@ -188,7 +201,10 @@
             <template #label>
               <div class="flex items-center gap-2">
                 <span>Email</span>
-                <div v-if="!isFieldEditable('email')" class="flex items-center gap-1">
+                <div
+                  v-if="!isFieldEditable('email')"
+                  class="flex items-center gap-1"
+                >
                   <Lock class="h-3 w-3 text-muted-foreground" />
                   <div class="relative group">
                     <AlertCircle 
@@ -227,7 +243,6 @@
           </FormField>
         </div>
       </div>
-
     </div>
   </form>
 </template>

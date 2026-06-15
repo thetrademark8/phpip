@@ -8,7 +8,11 @@
 
     <!-- Form fields skeleton -->
     <div class="space-y-4">
-      <div v-for="i in fields" :key="i" class="space-y-2">
+      <div
+        v-for="i in fields"
+        :key="i"
+        class="space-y-2"
+      >
         <Skeleton class="h-4 w-24" />
         <Skeleton class="h-10 w-full" />
       </div>

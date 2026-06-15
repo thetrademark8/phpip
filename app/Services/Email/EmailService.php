@@ -118,7 +118,7 @@ class EmailService
         $footer = EmailSetting::get('email_footer', '');
         $signature = self::renderSignature();
 
-        return $header.$body.$footer.$signature;
+        return $header . $body . $footer . $signature;
     }
 
     /**

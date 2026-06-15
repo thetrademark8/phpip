@@ -1,5 +1,8 @@
 <template>
-  <Dialog v-model:open="dialogOpen" :max-width="maxWidth">
+  <Dialog
+    v-model:open="dialogOpen"
+    :max-width="maxWidth"
+  >
     <DialogScrollContent>
       <DialogHeader>
         <div class="flex items-center justify-between">
@@ -16,10 +19,10 @@
             </DialogDescription>
           </div>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canWrite && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canWrite && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.viewMode') : t('actions.editMode') }}
@@ -28,11 +31,17 @@
       </DialogHeader>
       
       <!-- Loading state -->
-      <div v-if="loading" class="flex items-center justify-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-8"
+      >
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
       
-      <div v-else class="space-y-6">
+      <div
+        v-else
+        class="space-y-6"
+      >
         <!-- Mode Badge -->
         <div class="flex items-center justify-between border-b pb-4">
           <Badge variant="secondary">
@@ -41,10 +50,16 @@
         </div>
 
         <!-- Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+        <form
+          class="space-y-4"
+          @submit.prevent="handleSubmit"
+        >
           <!-- Code -->
           <div class="space-y-2">
-            <Label for="classifier-type-code" class="mb-2">{{ t('classifierTypes.fields.code') }} *</Label>
+            <Label
+              for="classifier-type-code"
+              class="mb-2"
+            >{{ t('classifierTypes.fields.code') }} *</Label>
             <Input
               id="classifier-type-code"
               v-model="form.code"
@@ -53,14 +68,20 @@
               maxlength="5"
               required
             />
-            <p v-if="form.errors.code" class="text-sm text-destructive">
+            <p
+              v-if="form.errors.code"
+              class="text-sm text-destructive"
+            >
               {{ form.errors.code }}
             </p>
           </div>
           
           <!-- Type -->
           <div class="space-y-2">
-            <Label for="classifier-type-type" class="mb-2">{{ t('classifierTypes.fields.type') }} *</Label>
+            <Label
+              for="classifier-type-type"
+              class="mb-2"
+            >{{ t('classifierTypes.fields.type') }} *</Label>
             <Input
               id="classifier-type-type"
               v-model="form.type"
@@ -69,14 +90,20 @@
               maxlength="45"
               required
             />
-            <p v-if="form.errors.type" class="text-sm text-destructive">
+            <p
+              v-if="form.errors.type"
+              class="text-sm text-destructive"
+            >
               {{ form.errors.type }}
             </p>
           </div>
           
           <!-- Display Order -->
           <div class="space-y-2">
-            <Label for="classifier-type-display-order" class="mb-2">{{ t('classifierTypes.fields.displayOrder') }}</Label>
+            <Label
+              for="classifier-type-display-order"
+              class="mb-2"
+            >{{ t('classifierTypes.fields.displayOrder') }}</Label>
             <Input
               id="classifier-type-display-order"
               v-model="form.display_order"
@@ -88,7 +115,10 @@
           
           <!-- Category -->
           <div class="space-y-2">
-            <Label for="classifier-type-category" class="mb-2">{{ t('classifierTypes.fields.category') }}</Label>
+            <Label
+              for="classifier-type-category"
+              class="mb-2"
+            >{{ t('classifierTypes.fields.category') }}</Label>
             <AutocompleteInput
               id="classifier-type-category"
               v-model="form.for_category"
@@ -106,12 +136,18 @@
               v-model:checked="form.main_display"
               :disabled="!isEditMode && operation !== 'create'"
             />
-            <Label for="classifier-type-main-display" class="mb-2">{{ t('classifierTypes.fields.mainDisplay') }}</Label>
+            <Label
+              for="classifier-type-main-display"
+              class="mb-2"
+            >{{ t('classifierTypes.fields.mainDisplay') }}</Label>
           </div>
           
           <!-- Notes -->
           <div class="space-y-2">
-            <Label for="classifier-type-notes" class="mb-2">{{ t('classifierTypes.fields.notes') }}</Label>
+            <Label
+              for="classifier-type-notes"
+              class="mb-2"
+            >{{ t('classifierTypes.fields.notes') }}</Label>
             <Textarea
               id="classifier-type-notes"
               v-model="form.notes"
@@ -128,9 +164,9 @@
               <div>
                 <Button
                   v-if="isEditMode && operation !== 'create'"
-                  @click="confirmDelete"
                   type="button"
                   variant="destructive"
+                  @click="confirmDelete"
                 >
                   <Trash2 class="mr-2 h-4 w-4" />
                   {{ t('actions.delete') }}
@@ -140,9 +176,9 @@
               <!-- Right side actions -->
               <div class="flex gap-2">
                 <Button
-                  @click="dialogOpen = false"
                   type="button"
                   variant="outline"
+                  @click="dialogOpen = false"
                 >
                   {{ t('actions.cancel') }}
                 </Button>
@@ -153,7 +189,7 @@
                   :disabled="form.processing"
                 >
                   <template v-if="form.processing">
-                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
                     {{ t('common.saving') }}
                   </template>
                   <template v-else>

@@ -13,7 +13,10 @@
     />
 
     <!-- Pagination Controls -->
-    <div v-if="renewals.length > perPage" class="flex items-center justify-between px-4 py-3 border-t">
+    <div
+      v-if="renewals.length > perPage"
+      class="flex items-center justify-between px-4 py-3 border-t"
+    >
       <p class="text-sm text-muted-foreground">
         {{ t('dashboard.pagination.showing', { from: paginationFrom, to: paginationTo, total: renewals.length }) }}
       </p>

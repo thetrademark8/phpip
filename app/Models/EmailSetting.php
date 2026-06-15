@@ -52,7 +52,7 @@ class EmailSetting extends Model
     {
         $path = static::get('site_logo');
 
-        if (! $path) {
+        if (!$path) {
             return null;
         }
 
@@ -66,7 +66,7 @@ class EmailSetting extends Model
     {
         $path = static::get('email_logo');
 
-        if (! $path) {
+        if (!$path) {
             return static::siteLogoUrl();
         }
 

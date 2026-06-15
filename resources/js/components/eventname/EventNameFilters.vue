@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Code -->
       <div class="space-y-2">
-        <Label htmlFor="code-filter">{{ t('Code') }}</Label>
+        <Label html-for="code-filter">{{ t('Code') }}</Label>
         <Input
           id="code-filter"
           type="text"
@@ -16,7 +16,7 @@
 
       <!-- Name -->
       <div class="space-y-2">
-        <Label htmlFor="name-filter">{{ t('Name') }}</Label>
+        <Label html-for="name-filter">{{ t('Name') }}</Label>
         <Input
           id="name-filter"
           type="text"

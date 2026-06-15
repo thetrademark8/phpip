@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle>{{ dialogTitle }}</DialogTitle>

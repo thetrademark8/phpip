@@ -15,7 +15,10 @@
         <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
-    <PopoverContent class="w-[--reka-popover-trigger-width] p-0" align="start">
+    <PopoverContent
+      class="w-[--reka-popover-trigger-width] p-0"
+      align="start"
+    >
       <div class="flex flex-col">
         <div class="flex items-center border-b px-3">
           <Search class="mr-2 h-4 w-4 shrink-0 opacity-50" />
@@ -24,7 +27,7 @@
             v-model="searchQuery"
             :placeholder="searchPlaceholder"
             class="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-          />
+          >
         </div>
         <div class="max-h-60 overflow-auto py-1">
           <div

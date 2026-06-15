@@ -18,13 +18,13 @@ class StorageMigrateToPrefix extends Command
         $prefix = config('filesystems.disks.s3.root');
         $bucket = config('filesystems.disks.s3.bucket');
 
-        if (! $prefix) {
+        if (!$prefix) {
             $this->error('No S3 prefix configured (filesystems.disks.s3.root is empty). Set AWS_BUCKET_PREFIX or APP_URL before running this command.');
 
             return self::FAILURE;
         }
 
-        if (! $bucket) {
+        if (!$bucket) {
             $this->error('No S3 bucket configured.');
 
             return self::FAILURE;
@@ -45,7 +45,7 @@ class StorageMigrateToPrefix extends Command
 
         foreach ($attachments as $attachment) {
             $oldKey = $attachment->path;
-            $newKey = $prefixClean.'/'.ltrim($oldKey, '/');
+            $newKey = $prefixClean . '/' . ltrim($oldKey, '/');
 
             try {
                 $existsOld = $legacy->exists($oldKey);
@@ -58,7 +58,7 @@ class StorageMigrateToPrefix extends Command
                     continue;
                 }
 
-                if (! $existsOld) {
+                if (!$existsOld) {
                     $stats['missing']++;
                     $this->warn(sprintf('  [missing] %s (attachment id=%d)', $oldKey, $attachment->id));
 
@@ -67,10 +67,10 @@ class StorageMigrateToPrefix extends Command
 
                 $this->line(sprintf('  [copy] %s -> %s', $oldKey, $newKey));
 
-                if (! $dryRun) {
+                if (!$dryRun) {
                     $client->copyObject([
                         'Bucket' => $bucket,
-                        'CopySource' => urlencode($bucket.'/'.$oldKey),
+                        'CopySource' => urlencode($bucket . '/' . $oldKey),
                         'Key' => $newKey,
                     ]);
                 }

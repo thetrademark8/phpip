@@ -62,7 +62,7 @@ class RenewalFilterDTO
 
     public function hasTextFilters(): bool
     {
-        return ! empty($this->title) || ! empty($this->name);
+        return !empty($this->title) || !empty($this->name);
     }
 
     public function hasStepFilter(): bool

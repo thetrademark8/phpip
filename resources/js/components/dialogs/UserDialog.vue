@@ -1,5 +1,8 @@
 <template>
-  <Dialog v-model:open="dialogOpen" :max-width="maxWidth">
+  <Dialog
+    v-model:open="dialogOpen"
+    :max-width="maxWidth"
+  >
     <DialogScrollContent>
       <DialogHeader>
         <div class="flex items-center justify-between">
@@ -16,10 +19,10 @@
             </DialogDescription>
           </div>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canWrite && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canWrite && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.viewMode') : t('actions.editMode') }}
@@ -28,31 +31,48 @@
       </DialogHeader>
       
       <!-- Loading state -->
-      <div v-if="loading" class="flex items-center justify-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-8"
+      >
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
       
-      <div v-else class="space-y-6">
+      <div
+        v-else
+        class="space-y-6"
+      >
         <!-- Mode Badge -->
         <div class="flex items-center justify-between border-b pb-4">
           <Badge variant="secondary">
             {{ t('User') }}
           </Badge>
-          <div v-if="user && user.warn" class="flex items-center gap-2 text-destructive">
+          <div
+            v-if="user && user.warn"
+            class="flex items-center gap-2 text-destructive"
+          >
             <AlertTriangle class="h-4 w-4" />
             <span class="text-sm">{{ t('users.warning') }}</span>
           </div>
         </div>
 
         <!-- Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form
+          class="space-y-6"
+          @submit.prevent="handleSubmit"
+        >
           <!-- User Info Section -->
           <div class="space-y-4">
-            <h3 class="text-lg font-medium">{{ t('User Info') }}</h3>
+            <h3 class="text-lg font-medium">
+              {{ t('User Info') }}
+            </h3>
             
             <!-- Name -->
             <div class="space-y-2">
-              <Label for="user-name" class="mb-2">{{ t('Name') }} *</Label>
+              <Label
+                for="user-name"
+                class="mb-2"
+              >{{ t('Name') }} *</Label>
               <Input
                 id="user-name"
                 v-model="form.name"
@@ -61,14 +81,20 @@
                 maxlength="100"
                 required
               />
-              <p v-if="form.errors.name" class="text-sm text-destructive">
+              <p
+                v-if="form.errors.name"
+                class="text-sm text-destructive"
+              >
                 {{ form.errors.name }}
               </p>
             </div>
             
             <!-- Email -->
             <div class="space-y-2">
-              <Label for="user-email" class="mb-2">{{ t('Email') }} *</Label>
+              <Label
+                for="user-email"
+                class="mb-2"
+              >{{ t('Email') }} *</Label>
               <Input
                 id="user-email"
                 v-model="form.email"
@@ -77,14 +103,20 @@
                 :placeholder="t('Email')"
                 required
               />
-              <p v-if="form.errors.email" class="text-sm text-destructive">
+              <p
+                v-if="form.errors.email"
+                class="text-sm text-destructive"
+              >
                 {{ form.errors.email }}
               </p>
             </div>
             
             <!-- Phone -->
             <div class="space-y-2">
-              <Label for="user-phone" class="mb-2">{{ t('Phone') }}</Label>
+              <Label
+                for="user-phone"
+                class="mb-2"
+              >{{ t('Phone') }}</Label>
               <Input
                 id="user-phone"
                 v-model="form.phone"
@@ -96,7 +128,10 @@
             
             <!-- Role -->
             <div class="space-y-2">
-              <Label for="user-role" class="mb-2">{{ t('Role') }} *</Label>
+              <Label
+                for="user-role"
+                class="mb-2"
+              >{{ t('Role') }} *</Label>
               <AutocompleteInput
                 id="user-role"
                 v-model="form.default_role"
@@ -106,14 +141,20 @@
                 :placeholder="t('Role')"
                 required
               />
-              <p v-if="form.errors.default_role" class="text-sm text-destructive">
+              <p
+                v-if="form.errors.default_role"
+                class="text-sm text-destructive"
+              >
                 {{ form.errors.default_role }}
               </p>
             </div>
             
             <!-- Company -->
             <div class="space-y-2">
-              <Label for="user-company" class="mb-2">{{ t('Company') }}</Label>
+              <Label
+                for="user-company"
+                class="mb-2"
+              >{{ t('Company') }}</Label>
               <AutocompleteInput
                 id="user-company"
                 v-model="form.company_id"
@@ -126,24 +167,43 @@
             
             <!-- Language -->
             <div class="space-y-2">
-              <Label for="user-language" class="mb-2">{{ t('Language') }} *</Label>
-              <Select v-model="form.language" :disabled="!isEditMode && operation !== 'create'">
+              <Label
+                for="user-language"
+                class="mb-2"
+              >{{ t('Language') }} *</Label>
+              <Select
+                v-model="form.language"
+                :disabled="!isEditMode && operation !== 'create'"
+              >
                 <SelectTrigger id="user-language">
                   <SelectValue :placeholder="t('Language')" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="en_GB">English (British)</SelectItem>
-                  <SelectItem value="en_US">English (American)</SelectItem>
-                  <SelectItem value="fr">Français</SelectItem>
-                  <SelectItem value="de">Deutsch</SelectItem>
-                  <SelectItem value="es">Español</SelectItem>
+                  <SelectItem value="en_GB">
+                    English (British)
+                  </SelectItem>
+                  <SelectItem value="en_US">
+                    English (American)
+                  </SelectItem>
+                  <SelectItem value="fr">
+                    Français
+                  </SelectItem>
+                  <SelectItem value="de">
+                    Deutsch
+                  </SelectItem>
+                  <SelectItem value="es">
+                    Español
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <!-- Notes -->
             <div class="space-y-2">
-              <Label for="user-notes" class="mb-2">{{ t('Notes') }}</Label>
+              <Label
+                for="user-notes"
+                class="mb-2"
+              >{{ t('Notes') }}</Label>
               <Textarea
                 id="user-notes"
                 v-model="form.notes"
@@ -156,11 +216,16 @@
 
           <!-- Credentials Section -->
           <div class="space-y-4">
-            <h3 class="text-lg font-medium">{{ t('Credentials') }}</h3>
+            <h3 class="text-lg font-medium">
+              {{ t('Credentials') }}
+            </h3>
             
             <!-- Username (Login) -->
             <div class="space-y-2">
-              <Label for="user-login" class="mb-2">{{ t('User name') }} *</Label>
+              <Label
+                for="user-login"
+                class="mb-2"
+              >{{ t('User name') }} *</Label>
               <Input
                 id="user-login"
                 v-model="form.login"
@@ -168,14 +233,20 @@
                 :placeholder="t('User name')"
                 required
               />
-              <p v-if="form.errors.login" class="text-sm text-destructive">
+              <p
+                v-if="form.errors.login"
+                class="text-sm text-destructive"
+              >
                 {{ form.errors.login }}
               </p>
             </div>
             
             <!-- Password -->
             <div class="space-y-2">
-              <Label for="user-password" class="mb-2">{{ t('Password') }} {{ operation !== 'create' ? '' : '*' }}</Label>
+              <Label
+                for="user-password"
+                class="mb-2"
+              >{{ t('Password') }} {{ operation !== 'create' ? '' : '*' }}</Label>
               <Input
                 id="user-password"
                 v-model="form.password"
@@ -184,17 +255,29 @@
                 :placeholder="operation === 'create' ? t('Password') : t('Leave empty to keep password')"
                 :required="operation === 'create'"
               />
-              <p v-if="form.errors.password" class="text-sm text-destructive">
+              <p
+                v-if="form.errors.password"
+                class="text-sm text-destructive"
+              >
                 {{ form.errors.password }}
               </p>
-              <p v-if="(isEditMode || operation === 'create') && form.password" class="text-xs text-muted-foreground">
+              <p
+                v-if="(isEditMode || operation === 'create') && form.password"
+                class="text-xs text-muted-foreground"
+              >
                 {{ t('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.') }}
               </p>
             </div>
             
             <!-- Confirm Password -->
-            <div v-if="form.password || operation === 'create'" class="space-y-2">
-              <Label for="user-password-confirmation" class="mb-2">{{ t('Confirm Password') }} {{ operation !== 'create' ? '' : '*' }}</Label>
+            <div
+              v-if="form.password || operation === 'create'"
+              class="space-y-2"
+            >
+              <Label
+                for="user-password-confirmation"
+                class="mb-2"
+              >{{ t('Confirm Password') }} {{ operation !== 'create' ? '' : '*' }}</Label>
               <Input
                 id="user-password-confirmation"
                 v-model="form.password_confirmation"
@@ -203,7 +286,10 @@
                 :placeholder="t('Confirm password')"
                 :required="operation === 'create' || form.password"
               />
-              <p v-if="form.errors.password_confirmation" class="text-sm text-destructive">
+              <p
+                v-if="form.errors.password_confirmation"
+                class="text-sm text-destructive"
+              >
                 {{ form.errors.password_confirmation }}
               </p>
             </div>
@@ -216,9 +302,9 @@
               <div>
                 <Button
                   v-if="isEditMode && operation !== 'create'"
-                  @click="confirmDelete"
                   type="button"
                   variant="destructive"
+                  @click="confirmDelete"
                 >
                   <Trash2 class="mr-2 h-4 w-4" />
                   {{ t('actions.delete') }}
@@ -228,9 +314,9 @@
               <!-- Right side actions -->
               <div class="flex gap-2">
                 <Button
-                  @click="dialogOpen = false"
                   type="button"
                   variant="outline"
+                  @click="dialogOpen = false"
                 >
                   {{ t('actions.cancel') }}
                 </Button>
@@ -241,7 +327,7 @@
                   :disabled="form.processing"
                 >
                   <template v-if="form.processing">
-                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
                     {{ t('common.saving') }}
                   </template>
                   <template v-else>

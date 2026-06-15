@@ -6,11 +6,14 @@
         <TableHead>
           <TableRow>
             <!-- Selection Checkbox Column -->
-            <TableHeader v-if="selectable" class="w-[50px]">
+            <TableHeader
+              v-if="selectable"
+              class="w-[50px]"
+            >
               <Checkbox
                 :model-value="table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')"
-                @update:model-value="value => table.toggleAllPageRowsSelected(!!value)"
                 aria-label="Select all"
+                @update:model-value="value => table.toggleAllPageRowsSelected(!!value)"
               />
             </TableHeader>
 
@@ -27,9 +30,18 @@
               >
                 {{ header.column.columnDef.header }}
                 <template v-if="header.column.getCanSort()">
-                  <ArrowUpDown v-if="!header.column.getIsSorted()" class="h-4 w-4" />
-                  <ArrowUp v-else-if="header.column.getIsSorted() === 'asc'" class="h-4 w-4" />
-                  <ArrowDown v-else-if="header.column.getIsSorted() === 'desc'" class="h-4 w-4" />
+                  <ArrowUpDown
+                    v-if="!header.column.getIsSorted()"
+                    class="h-4 w-4"
+                  />
+                  <ArrowUp
+                    v-else-if="header.column.getIsSorted() === 'asc'"
+                    class="h-4 w-4"
+                  />
+                  <ArrowDown
+                    v-else-if="header.column.getIsSorted() === 'desc'"
+                    class="h-4 w-4"
+                  />
                 </template>
               </div>
             </TableHeader>
@@ -55,8 +67,8 @@
               <TableCell v-if="selectable">
                 <Checkbox
                   :model-value="row.getIsSelected()"
-                  @update:model-value="value => row.toggleSelected(!!value)"
                   :aria-label="`Select row ${row.index + 1}`"
+                  @update:model-value="value => row.toggleSelected(!!value)"
                 />
               </TableCell>
 
@@ -67,15 +79,18 @@
                 :class="cell.column.columnDef.meta?.cellClass"
               >
                 <component
-                  v-if="cell.column.columnDef.cell"
                   :is="cell.column.columnDef.cell"
+                  v-if="cell.column.columnDef.cell"
                   v-bind="cell.getContext()"
                 />
                 <span v-else>{{ cell.getValue() }}</span>
               </TableCell>
             </TableRow>
           </template>
-          <TableRow v-else class="h-[60px]">
+          <TableRow
+            v-else
+            class="h-[60px]"
+          >
             <TableCell 
               :colspan="table.getAllColumns().length + (selectable ? 1 : 0)" 
               class="text-center"
@@ -88,7 +103,10 @@
     </div>
 
     <!-- Pagination -->
-    <div v-if="!loading && showPagination && table.getPageCount() > 1" class="flex items-center justify-between px-2 py-4">
+    <div
+      v-if="!loading && showPagination && table.getPageCount() > 1"
+      class="flex items-center justify-between px-2 py-4"
+    >
       <div class="flex-1 text-sm text-muted-foreground">
         <template v-if="selectable">
           {{ table.getFilteredSelectedRowModel().rows.length }} of
@@ -98,7 +116,9 @@
       
       <div class="flex items-center space-x-6 lg:space-x-8">
         <div class="flex items-center space-x-2">
-          <p class="text-sm font-medium">Rows per page</p>
+          <p class="text-sm font-medium">
+            Rows per page
+          </p>
           <Select
             :model-value="`${table.getState().pagination.pageSize}`"
             @update:model-value="table.setPageSize(Number($event))"
@@ -107,7 +127,11 @@
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="pageSize in pageSizeOptions" :key="pageSize" :value="`${pageSize}`">
+              <SelectItem
+                v-for="pageSize in pageSizeOptions"
+                :key="pageSize"
+                :value="`${pageSize}`"
+              >
                 {{ pageSize }}
               </SelectItem>
             </SelectContent>
@@ -122,16 +146,16 @@
           <Button
             variant="outline"
             size="sm"
-            @click="table.previousPage()"
             :disabled="!table.getCanPreviousPage()"
+            @click="table.previousPage()"
           >
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
-            @click="table.nextPage()"
             :disabled="!table.getCanNextPage()"
+            @click="table.nextPage()"
           >
             Next
           </Button>

@@ -1,7 +1,12 @@
 <template>
   <div class="attachment-manager space-y-3">
     <div class="flex items-center justify-between">
-      <Button variant="outline" size="sm" @click="triggerUpload" :disabled="uploading">
+      <Button
+        variant="outline"
+        size="sm"
+        :disabled="uploading"
+        @click="triggerUpload"
+      >
         <Upload class="h-4 w-4 mr-1" />
         {{ $t('email.uploadFile') }}
       </Button>
@@ -11,20 +16,31 @@
         class="hidden"
         multiple
         @change="handleFileUpload"
-      />
+      >
     </div>
 
     <!-- Upload Progress -->
-    <div v-if="uploading" class="flex items-center gap-2 text-sm text-muted-foreground">
+    <div
+      v-if="uploading"
+      class="flex items-center gap-2 text-sm text-muted-foreground"
+    >
       <Loader2 class="h-4 w-4 animate-spin" />
       {{ $t('email.uploading') }}
     </div>
 
     <!-- Upload Error -->
-    <div v-if="uploadError" class="flex items-center gap-2 text-sm text-destructive">
+    <div
+      v-if="uploadError"
+      class="flex items-center gap-2 text-sm text-destructive"
+    >
       <AlertCircle class="h-4 w-4" />
       {{ uploadError }}
-      <Button variant="ghost" size="sm" class="h-6 px-2" @click="uploadError = null">
+      <Button
+        variant="ghost"
+        size="sm"
+        class="h-6 px-2"
+        @click="uploadError = null"
+      >
         <X class="h-3 w-3" />
       </Button>
     </div>
@@ -52,7 +68,10 @@
               <Check class="size-3.5" />
             </CheckboxIndicator>
           </CheckboxRoot>
-          <label :for="`attachment-${attachment.id}`" class="flex items-center gap-2 cursor-pointer min-w-0 flex-1">
+          <label
+            :for="`attachment-${attachment.id}`"
+            class="flex items-center gap-2 cursor-pointer min-w-0 flex-1"
+          >
             <FileIcon class="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span class="text-sm truncate">{{ attachment.original_name }}</span>
             <span class="text-xs text-muted-foreground flex-shrink-0">({{ attachment.size_formatted }})</span>
@@ -63,8 +82,8 @@
             variant="ghost"
             size="sm"
             class="h-7 w-7 p-0"
-            @click="downloadAttachment(attachment)"
             :title="$t('email.download')"
+            @click="downloadAttachment(attachment)"
           >
             <Download class="h-4 w-4" />
           </Button>
@@ -72,8 +91,8 @@
             variant="ghost"
             size="sm"
             class="h-7 w-7 p-0 text-destructive"
-            @click="$emit('delete', attachment)"
             :title="$t('email.delete')"
+            @click="$emit('delete', attachment)"
           >
             <Trash2 class="h-4 w-4" />
           </Button>
@@ -81,7 +100,10 @@
       </div>
     </CheckboxGroupRoot>
 
-    <div v-else class="text-sm text-muted-foreground py-2">
+    <div
+      v-else
+      class="text-sm text-muted-foreground py-2"
+    >
       {{ $t('email.noAttachments') }}
     </div>
   </div>

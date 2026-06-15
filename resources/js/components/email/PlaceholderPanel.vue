@@ -23,7 +23,10 @@
     <div class="overflow-y-auto space-y-1">
       <!-- Flat search results when searching -->
       <template v-if="searchQuery">
-        <div v-if="filteredPlaceholders.length === 0" class="text-sm text-muted-foreground py-4 text-center">
+        <div
+          v-if="filteredPlaceholders.length === 0"
+          class="text-sm text-muted-foreground py-4 text-center"
+        >
           {{ $t('email.noPlaceholdersFound') }}
         </div>
         <Button
@@ -59,8 +62,8 @@
                 variant="ghost"
                 size="sm"
                 class="w-full justify-start text-xs h-auto py-1.5 px-2 font-mono"
-                @click="$emit('insert', placeholder)"
                 :title="description"
+                @click="$emit('insert', placeholder)"
               >
                 <span class="truncate">{{ placeholder }}</span>
               </Button>

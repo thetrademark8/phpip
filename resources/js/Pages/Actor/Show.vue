@@ -2,16 +2,32 @@
   <MainLayout :title="actor.name">
     <div class="container mx-auto px-4 py-6">
       <div class="mb-6">
-        <h1 class="text-2xl font-bold tracking-tight">{{ actor.name }}</h1>
-        <p class="text-muted-foreground">{{ t('actors.show.editDetails') }}</p>
+        <h1 class="text-2xl font-bold tracking-tight">
+          {{ actor.name }}
+        </h1>
+        <p class="text-muted-foreground">
+          {{ t('actors.show.editDetails') }}
+        </p>
       </div>
 
-      <Tabs default-value="main" class="w-full" @update:model-value="handleTabChange">
+      <Tabs
+        default-value="main"
+        class="w-full"
+        @update:model-value="handleTabChange"
+      >
         <TabsList class="grid w-full grid-cols-4">
-          <TabsTrigger value="main">{{ t('actors.show.tabs.main') }}</TabsTrigger>
-          <TabsTrigger value="contact">{{ t('actors.show.tabs.contact') }}</TabsTrigger>
-          <TabsTrigger value="other">{{ t('actors.show.tabs.other') }}</TabsTrigger>
-          <TabsTrigger value="usedin">{{ t('actors.show.tabs.usedin') }}</TabsTrigger>
+          <TabsTrigger value="main">
+            {{ t('actors.show.tabs.main') }}
+          </TabsTrigger>
+          <TabsTrigger value="contact">
+            {{ t('actors.show.tabs.contact') }}
+          </TabsTrigger>
+          <TabsTrigger value="other">
+            {{ t('actors.show.tabs.other') }}
+          </TabsTrigger>
+          <TabsTrigger value="usedin">
+            {{ t('actors.show.tabs.usedin') }}
+          </TabsTrigger>
         </TabsList>
 
         <!-- Main Tab -->
@@ -19,7 +35,10 @@
           <Card>
             <CardContent class="pt-6">
               <!-- Show restriction summary if any fields are restricted -->
-              <div v-if="hasRestrictedFieldsInActor" class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mb-6">
+              <div
+                v-if="hasRestrictedFieldsInActor"
+                class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mb-6"
+              >
                 <div class="flex items-start gap-2">
                   <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
                   <div>
@@ -37,8 +56,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <div class="flex items-center gap-2 mb-2">
-                      <Label htmlFor="name">{{ t('actors.fields.name') }}</Label>
-                      <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
+                      <Label html-for="name">{{ t('actors.fields.name') }}</Label>
+                      <div
+                        v-if="!isFieldEditable('name')"
+                        class="flex items-center gap-1"
+                      >
                         <Lock class="h-3 w-3 text-muted-foreground" />
                         <div class="relative group">
                           <AlertCircle 
@@ -63,8 +85,11 @@
                   </div>
                   <div>
                     <div class="flex items-center gap-2 mb-2">
-                      <Label htmlFor="first_name">{{ t('actors.fields.firstName') }}</Label>
-                      <div v-if="!isFieldEditable('first_name')" class="flex items-center gap-1">
+                      <Label html-for="first_name">{{ t('actors.fields.firstName') }}</Label>
+                      <div
+                        v-if="!isFieldEditable('first_name')"
+                        class="flex items-center gap-1"
+                      >
                         <Lock class="h-3 w-3 text-muted-foreground" />
                         <div class="relative group">
                           <AlertCircle 
@@ -91,7 +116,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="display_name">{{ t('actors.fields.displayName') }}</Label>
+                  <Label html-for="display_name">{{ t('actors.fields.displayName') }}</Label>
                   <EditableField
                     id="display_name"
                     :value="actor.display_name"
@@ -103,7 +128,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="address">{{ t('actors.fields.address') }}</Label>
+                  <Label html-for="address">{{ t('actors.fields.address') }}</Label>
                   <EditableField
                     id="address"
                     :value="actor.address"
@@ -116,7 +141,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="country">{{ t('actors.fields.country') }}</Label>
+                    <Label html-for="country">{{ t('actors.fields.country') }}</Label>
                     <EditableField
                       id="country"
                       :value="actor.countryInfo?.name"
@@ -129,7 +154,7 @@
                     />
                   </div>
                   <div>
-                    <Label htmlFor="nationality">{{ t('actors.fields.nationality') }}</Label>
+                    <Label html-for="nationality">{{ t('actors.fields.nationality') }}</Label>
                     <EditableField
                       id="nationality"
                       :value="actor.nationalityInfo?.name"
@@ -145,7 +170,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="language">{{ t('actors.fields.language') }}</Label>
+                    <Label html-for="language">{{ t('actors.fields.language') }}</Label>
                     <EditableField
                       id="language"
                       :value="actor.language"
@@ -156,7 +181,7 @@
                     />
                   </div>
                   <div>
-                    <Label htmlFor="function">{{ t('actors.fields.function') }}</Label>
+                    <Label html-for="function">{{ t('actors.fields.function') }}</Label>
                     <EditableField
                       id="function"
                       :value="actor.function"
@@ -169,7 +194,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="company_id">{{ t('actors.fields.employer') }}</Label>
+                  <Label html-for="company_id">{{ t('actors.fields.employer') }}</Label>
                   <EditableField
                     id="company_id"
                     :value="actor.company?.name"
@@ -190,10 +215,16 @@
                       :disabled="!isFieldEditable('phy_person')"
                       @update:checked="updateCheckbox('phy_person', $event)"
                     />
-                    <Label htmlFor="phy_person" :class="{ 'text-muted-foreground': !isFieldEditable('phy_person') }">
+                    <Label
+                      html-for="phy_person"
+                      :class="{ 'text-muted-foreground': !isFieldEditable('phy_person') }"
+                    >
                       {{ t('actors.fields.physicalPerson') }}
                     </Label>
-                    <div v-if="!isFieldEditable('phy_person')" class="flex items-center gap-1">
+                    <div
+                      v-if="!isFieldEditable('phy_person')"
+                      class="flex items-center gap-1"
+                    >
                       <Lock class="h-3 w-3 text-muted-foreground" />
                       <div class="relative group">
                         <AlertCircle 
@@ -213,10 +244,16 @@
                       :disabled="!isFieldEditable('small_entity')"
                       @update:checked="updateCheckbox('small_entity', $event)"
                     />
-                    <Label htmlFor="small_entity" :class="{ 'text-muted-foreground': !isFieldEditable('small_entity') }">
+                    <Label
+                      html-for="small_entity"
+                      :class="{ 'text-muted-foreground': !isFieldEditable('small_entity') }"
+                    >
                       {{ t('actors.fields.smallEntity') }}
                     </Label>
-                    <div v-if="!isFieldEditable('small_entity')" class="flex items-center gap-1">
+                    <div
+                      v-if="!isFieldEditable('small_entity')"
+                      class="flex items-center gap-1"
+                    >
                       <Lock class="h-3 w-3 text-muted-foreground" />
                       <div class="relative group">
                         <AlertCircle 
@@ -241,7 +278,7 @@
             <CardContent class="pt-6">
               <div class="space-y-4">
                 <div>
-                  <Label htmlFor="address_mailing">{{ t('actors.fields.addressMailing') }}</Label>
+                  <Label html-for="address_mailing">{{ t('actors.fields.addressMailing') }}</Label>
                   <EditableField
                     id="address_mailing"
                     :value="actor.address_mailing"
@@ -253,7 +290,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="country_mailing">{{ t('actors.fields.countryMailing') }}</Label>
+                  <Label html-for="country_mailing">{{ t('actors.fields.countryMailing') }}</Label>
                   <EditableField
                     id="country_mailing"
                     :value="actor.country_mailingInfo?.name"
@@ -267,7 +304,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="address_billing">{{ t('actors.fields.addressBilling') }}</Label>
+                  <Label html-for="address_billing">{{ t('actors.fields.addressBilling') }}</Label>
                   <EditableField
                     id="address_billing"
                     :value="actor.address_billing"
@@ -279,7 +316,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="country_billing">{{ t('actors.fields.countryBilling') }}</Label>
+                  <Label html-for="country_billing">{{ t('actors.fields.countryBilling') }}</Label>
                   <EditableField
                     id="country_billing"
                     :value="actor.country_billingInfo?.name"
@@ -294,7 +331,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="email">{{ t('actors.fields.email') }}</Label>
+                    <Label html-for="email">{{ t('actors.fields.email') }}</Label>
                     <EditableField
                       id="email"
                       :value="actor.email"
@@ -306,7 +343,7 @@
                     />
                   </div>
                   <div>
-                    <Label htmlFor="phone">{{ t('actors.fields.phone') }}</Label>
+                    <Label html-for="phone">{{ t('actors.fields.phone') }}</Label>
                     <EditableField
                       id="phone"
                       :value="actor.phone"
@@ -328,7 +365,7 @@
             <CardContent class="pt-6">
               <div class="space-y-4">
                 <div>
-                  <Label htmlFor="login">{{ t('actors.fields.userName') }}</Label>
+                  <Label html-for="login">{{ t('actors.fields.userName') }}</Label>
                   <EditableField
                     id="login"
                     :value="actor.login"
@@ -340,9 +377,12 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="default_role">
+                  <Label html-for="default_role">
                     {{ t('actors.fields.defaultRole') }}
-                    <span v-if="actor.login" class="text-sm text-muted-foreground ml-2">
+                    <span
+                      v-if="actor.login"
+                      class="text-sm text-muted-foreground ml-2"
+                    >
                       {{ t('actors.fields.roleDisabledHint') }}
                     </span>
                   </Label>
@@ -365,11 +405,11 @@
                     :checked="actor.warn"
                     @update:checked="updateCheckbox('warn', $event)"
                   />
-                  <Label htmlFor="warn">{{ t('actors.fields.warn') }}</Label>
+                  <Label html-for="warn">{{ t('actors.fields.warn') }}</Label>
                 </div>
 
                 <div>
-                  <Label htmlFor="ren_discount">{{ t('actors.fields.renewalDiscount') }}</Label>
+                  <Label html-for="ren_discount">{{ t('actors.fields.renewalDiscount') }}</Label>
                   <EditableField
                     id="ren_discount"
                     :value="actor.ren_discount"
@@ -382,7 +422,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="legal_form">{{ t('actors.fields.legalForm') }}</Label>
+                  <Label html-for="legal_form">{{ t('actors.fields.legalForm') }}</Label>
                   <EditableField
                     id="legal_form"
                     :value="actor.legal_form"
@@ -394,7 +434,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="registration_no">{{ t('actors.fields.registrationNo') }}</Label>
+                  <Label html-for="registration_no">{{ t('actors.fields.registrationNo') }}</Label>
                   <EditableField
                     id="registration_no"
                     :value="actor.registration_no"
@@ -406,7 +446,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="VAT_number">{{ t('actors.fields.vatNumber') }}</Label>
+                  <Label html-for="VAT_number">{{ t('actors.fields.vatNumber') }}</Label>
                   <EditableField
                     id="VAT_number"
                     :value="actor.VAT_number"
@@ -418,7 +458,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="parent_id">{{ t('actors.fields.parentCompany') }}</Label>
+                  <Label html-for="parent_id">{{ t('actors.fields.parentCompany') }}</Label>
                   <EditableField
                     id="parent_id"
                     :value="actor.parent?.name"
@@ -432,7 +472,7 @@
                 </div>
 
                 <div>
-                  <Label htmlFor="site_id">{{ t('actors.fields.workSite') }}</Label>
+                  <Label html-for="site_id">{{ t('actors.fields.workSite') }}</Label>
                   <EditableField
                     id="site_id"
                     :value="actor.site?.name"
@@ -454,13 +494,27 @@
           <Card>
             <CardContent class="pt-6">
               <UsedInSkeleton v-if="loadingUsedIn" />
-              <div v-else class="space-y-6">
+              <div
+                v-else
+                class="space-y-6"
+              >
                 <!-- Matter Dependencies -->
                 <div>
-                  <h3 class="font-semibold mb-3">{{ t('actors.show.matterDependencies') }}</h3>
-                  <div v-if="usedInData?.matter_dependencies?.length" class="space-y-2">
-                    <div v-for="(matters, role) in groupedMatterDependencies" :key="role" class="border rounded-lg p-3">
-                      <div class="font-medium mb-2">{{ role }}</div>
+                  <h3 class="font-semibold mb-3">
+                    {{ t('actors.show.matterDependencies') }}
+                  </h3>
+                  <div
+                    v-if="usedInData?.matter_dependencies?.length"
+                    class="space-y-2"
+                  >
+                    <div
+                      v-for="(matters, role) in groupedMatterDependencies"
+                      :key="role"
+                      class="border rounded-lg p-3"
+                    >
+                      <div class="font-medium mb-2">
+                        {{ role }}
+                      </div>
                       <div class="flex flex-wrap gap-2">
                         <Badge
                           v-for="matter in matters"
@@ -474,17 +528,31 @@
                       </div>
                     </div>
                   </div>
-                  <div v-else class="text-muted-foreground">
+                  <div
+                    v-else
+                    class="text-muted-foreground"
+                  >
                     {{ t('actors.show.noDependencies') }}
                   </div>
                 </div>
 
                 <!-- Inter-Actor Dependencies -->
                 <div>
-                  <h3 class="font-semibold mb-3">{{ t('actors.show.interActorDependencies') }}</h3>
-                  <div v-if="usedInData?.other_dependencies?.length" class="space-y-2">
-                    <div v-for="(actors, dependency) in groupedOtherDependencies" :key="dependency" class="border rounded-lg p-3">
-                      <div class="font-medium mb-2">{{ dependency }}</div>
+                  <h3 class="font-semibold mb-3">
+                    {{ t('actors.show.interActorDependencies') }}
+                  </h3>
+                  <div
+                    v-if="usedInData?.other_dependencies?.length"
+                    class="space-y-2"
+                  >
+                    <div
+                      v-for="(actors, dependency) in groupedOtherDependencies"
+                      :key="dependency"
+                      class="border rounded-lg p-3"
+                    >
+                      <div class="font-medium mb-2">
+                        {{ dependency }}
+                      </div>
                       <div class="flex flex-wrap gap-2">
                         <Link
                           v-for="actor in actors"
@@ -497,7 +565,10 @@
                       </div>
                     </div>
                   </div>
-                  <div v-else class="text-muted-foreground">
+                  <div
+                    v-else
+                    class="text-muted-foreground"
+                  >
                     {{ t('actors.show.noDependencies') }}
                   </div>
                 </div>
@@ -509,11 +580,18 @@
 
       <!-- Actions -->
       <div class="mt-6 flex justify-between">
-        <Button @click="router.visit('/actor')" variant="outline">
+        <Button
+          variant="outline"
+          @click="router.visit('/actor')"
+        >
           <ArrowLeft class="mr-2 h-4 w-4" />
           {{ t('actors.show.backToList') }}
         </Button>
-        <Button v-if="canDeleteActor(actor)" @click="confirmDelete" variant="destructive">
+        <Button
+          v-if="canDeleteActor(actor)"
+          variant="destructive"
+          @click="confirmDelete"
+        >
           <Trash2 class="mr-2 h-4 w-4" />
           {{ t('actors.show.delete') }}
         </Button>

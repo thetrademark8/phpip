@@ -11,28 +11,67 @@
           >
             {{ matter.uid }}
           </Link>
-          <Badge variant="secondary">{{ translated(matter.category.category) }}</Badge>
-          <span v-if="matter.country_info" class="text-sm">{{ translated(matter.country_info.name) }}</span>
-          <Button size="sm" variant="secondary" @click="showCreateChildDialog = true" title="New Child">
+          <Badge variant="secondary">
+            {{ translated(matter.category.category) }}
+          </Badge>
+          <span
+            v-if="matter.country_info"
+            class="text-sm"
+          >{{ translated(matter.country_info.name) }}</span>
+          <Button
+            size="sm"
+            variant="secondary"
+            title="New Child"
+            @click="showCreateChildDialog = true"
+          >
             <FilePlus class="h-3 w-3" />
             {{ $t('New Child') }}
           </Button>
         </div>
 
-        <div v-if="canWrite" class="flex items-center gap-2">
-          <Button size="icon" variant="secondary" @click="generateEmail" title="Generate email">
+        <div
+          v-if="canWrite"
+          class="flex items-center gap-2"
+        >
+          <Button
+            size="icon"
+            variant="secondary"
+            title="Generate email"
+            @click="generateEmail"
+          >
             <Mail class="h-3 w-3" />
           </Button>
-          <Button size="icon" variant="secondary" @click="showFileMergeDialog = true" title="Merge document">
+          <Button
+            size="icon"
+            variant="secondary"
+            title="Merge document"
+            @click="showFileMergeDialog = true"
+          >
             <FileText class="h-3 w-3" />
           </Button>
-          <Button size="icon" variant="secondary" @click="exportMatter" title="Export">
+          <Button
+            size="icon"
+            variant="secondary"
+            title="Export"
+            @click="exportMatter"
+          >
             <Download class="h-3 w-3" />
           </Button>
-          <Button size="icon" variant="secondary" @click="showEditDialog = true" title="Edit">
+          <Button
+            size="icon"
+            variant="secondary"
+            title="Edit"
+            @click="showEditDialog = true"
+          >
             <Pencil class="h-3 w-3" />
           </Button>
-          <Button v-if="isEligibleForInternational" size="icon" variant="secondary" @click="showInternationalDialog = true" :title="t('Create National Matters')">
+          <Button
+            v-if="isEligibleForInternational"
+            size="icon"
+            variant="secondary"
+            :title="t('Create National Matters')"
+            @click="showInternationalDialog = true"
+          >
             <Globe class="h-3 w-3" />
           </Button>
         </div>
@@ -40,29 +79,40 @@
 
       <!-- Main 3-column Layout -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
-
         <!-- Left Column - Actors (25%) -->
         <div class="lg:col-span-1 space-y-3">
           <!-- Titles -->
           <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Titles') }}</h3>
+                <h3 class="font-semibold text-sm">
+                  {{ $t('Titles') }}
+                </h3>
                 <Button
-                    v-if="canWrite"
-                    variant="ghost"
-                    size="icon"
-                    class="h-5 w-5"
-                    @click="showTitleManagerDialog = true"
+                  v-if="canWrite"
+                  variant="ghost"
+                  size="icon"
+                  class="h-5 w-5"
+                  @click="showTitleManagerDialog = true"
                 >
                   <Settings class="h-3 w-3" />
                 </Button>
               </div>
             </CardHeader>
             <CardContent class="p-3">
-              <div v-for="(titleGroup, typeName) in titles" :key="typeName" class="mb-2">
-                <h4 class="font-medium text-xs text-muted-foreground mb-1">{{ typeName }}</h4>
-                <div v-for="title in titleGroup" :key="title.id" class="text-sm mb-1">
+              <div
+                v-for="(titleGroup, typeName) in titles"
+                :key="typeName"
+                class="mb-2"
+              >
+                <h4 class="font-medium text-xs text-muted-foreground mb-1">
+                  {{ typeName }}
+                </h4>
+                <div
+                  v-for="title in titleGroup"
+                  :key="title.id"
+                  class="text-sm mb-1"
+                >
                   {{ title.value }}
                 </div>
               </div>
@@ -72,7 +122,9 @@
           <!-- Office Links -->
           <Card v-if="matter.country_info">
             <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Official Links') }}</h3>
+              <h3 class="font-semibold text-sm">
+                {{ $t('Official Links') }}
+              </h3>
             </CardHeader>
             <CardContent class="p-3">
               <OfficeLinks :matter="matter" />
@@ -82,21 +134,25 @@
           <!-- Image -->
           <Card v-if="imageClassifier">
             <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Image') }}</h3>
+              <h3 class="font-semibold text-sm">
+                {{ $t('Image') }}
+              </h3>
             </CardHeader>
             <CardContent class="p-2">
               <img
                 :src="`/classifier/${imageClassifier.id}/img`"
                 class="w-full h-auto max-h-32 object-contain"
                 alt="Matter image"
-              />
+              >
             </CardContent>
           </Card>
 
           <!-- Key Dates & Status -->
           <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Key Information') }}</h3>
+              <h3 class="font-semibold text-sm">
+                {{ $t('Key Information') }}
+              </h3>
             </CardHeader>
             <CardContent class="p-3">
               <div class="grid grid-cols-1 gap-3 text-sm">
@@ -104,11 +160,11 @@
                   <span class="font-medium">{{ $t('Status:') }}</span>
                   <div class="mt-1">
                     <StatusBadge
-                        v-for="event in statusEvents.slice(0,2)"
-                        :key="event.id"
-                        :status="event.code"
-                        :date="event.event_date"
-                        class="mr-2 mb-1"
+                      v-for="event in statusEvents.slice(0,2)"
+                      :key="event.id"
+                      :status="event.code"
+                      :date="event.event_date"
+                      class="mr-2 mb-1"
                     />
                   </div>
                 </div>
@@ -119,12 +175,18 @@
                 <div v-if="matter.filing">
                   <span class="font-medium">{{ $t('Filed:') }}</span>
                   <span class="ml-2">{{ formatDate(matter.filing.event_date) }}</span>
-                  <span v-if="matter.filing.detail" class="text-xs text-muted-foreground ml-1">({{ matter.filing.detail }})</span>
+                  <span
+                    v-if="matter.filing.detail"
+                    class="text-xs text-muted-foreground ml-1"
+                  >({{ matter.filing.detail }})</span>
                 </div>
                 <div v-if="matter.grant || matter.registration">
                   <span class="font-medium">{{ $t('Registered:') }}</span>
                   <span class="ml-2">{{ formatDate((matter.grant || matter.registration)?.event_date) }}</span>
-                  <span v-if="(matter.grant || matter.registration)?.detail" class="text-xs text-muted-foreground ml-1">
+                  <span
+                    v-if="(matter.grant || matter.registration)?.detail"
+                    class="text-xs text-muted-foreground ml-1"
+                  >
                     ({{ (matter.grant || matter.registration)?.detail }})
                   </span>
                 </div>
@@ -135,10 +197,18 @@
               </div>
 
               <!-- Classes for TM -->
-              <div v-if="tmClasses.length > 0" class="mt-3 pt-3 border-t">
+              <div
+                v-if="tmClasses.length > 0"
+                class="mt-3 pt-3 border-t"
+              >
                 <span class="font-medium text-sm">{{ $t('Classes:') }}</span>
                 <div class="mt-1 flex flex-wrap gap-1">
-                  <Badge v-for="cls in tmClasses" :key="cls.id" variant="outline" class="text-xs">
+                  <Badge
+                    v-for="cls in tmClasses"
+                    :key="cls.id"
+                    variant="outline"
+                    class="text-xs"
+                  >
                     {{ cls.value }}
                   </Badge>
                 </div>
@@ -147,30 +217,56 @@
           </Card>
 
           <!-- Related Matters Below Attributes -->
-          <Card v-if="hasRelatedMatters" class="mt-3">
+          <Card
+            v-if="hasRelatedMatters"
+            class="mt-3"
+          >
             <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Related Matters') }}</h3>
+              <h3 class="font-semibold text-sm">
+                {{ $t('Related Matters') }}
+              </h3>
             </CardHeader>
             <CardContent class="p-3">
               <dl class="space-y-2 text-sm">
-                <div v-if="matter.container_id" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">Container:</dt>
+                <div
+                  v-if="matter.container_id"
+                  class="flex flex-col"
+                >
+                  <dt class="font-medium text-muted-foreground text-xs">
+                    Container:
+                  </dt>
                   <dd class="ml-2">
-                    <Link :href="`/matter/${matter.container_id}`" class="text-primary hover:underline text-xs">
+                    <Link
+                      :href="`/matter/${matter.container_id}`"
+                      class="text-primary hover:underline text-xs"
+                    >
                       {{ matter.container.uid }}
                     </Link>
                   </dd>
                 </div>
-                <div v-if="matter.parent_id" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">Parent:</dt>
+                <div
+                  v-if="matter.parent_id"
+                  class="flex flex-col"
+                >
+                  <dt class="font-medium text-muted-foreground text-xs">
+                    Parent:
+                  </dt>
                   <dd class="ml-2">
-                    <Link :href="`/matter/${matter.parent_id}`" class="text-primary hover:underline text-xs">
+                    <Link
+                      :href="`/matter/${matter.parent_id}`"
+                      class="text-primary hover:underline text-xs"
+                    >
                       {{ matter.parent.uid }}
                     </Link>
                   </dd>
                 </div>
-                <div v-if="matter.family && matter.family.length > 0" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">Family:</dt>
+                <div
+                  v-if="matter.family && matter.family.length > 0"
+                  class="flex flex-col"
+                >
+                  <dt class="font-medium text-muted-foreground text-xs">
+                    Family:
+                  </dt>
                   <dd class="ml-2 space-y-1">
                     <Link
                       v-for="familyMatter in matter.family"
@@ -182,8 +278,13 @@
                     </Link>
                   </dd>
                 </div>
-                <div v-if="matter.children && matter.children.length > 0" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">Children:</dt>
+                <div
+                  v-if="matter.children && matter.children.length > 0"
+                  class="flex flex-col"
+                >
+                  <dt class="font-medium text-muted-foreground text-xs">
+                    Children:
+                  </dt>
                   <dd class="ml-2 space-y-1">
                     <Link
                       v-for="child in matter.children"
@@ -195,8 +296,13 @@
                     </Link>
                   </dd>
                 </div>
-                <div v-if="matter.linked_by && matter.linked_by.length > 0" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">Linked:</dt>
+                <div
+                  v-if="matter.linked_by && matter.linked_by.length > 0"
+                  class="flex flex-col"
+                >
+                  <dt class="font-medium text-muted-foreground text-xs">
+                    Linked:
+                  </dt>
                   <dd class="ml-2 space-y-1">
                     <Link
                       v-for="linked in matter.linked_by"
@@ -208,8 +314,13 @@
                     </Link>
                   </dd>
                 </div>
-                <div v-if="matter.priority_to && matter.priority_to.length > 0" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">Priority:</dt>
+                <div
+                  v-if="matter.priority_to && matter.priority_to.length > 0"
+                  class="flex flex-col"
+                >
+                  <dt class="font-medium text-muted-foreground text-xs">
+                    Priority:
+                  </dt>
                   <dd class="ml-2 space-y-1">
                     <Link
                       v-for="priority in matter.priority_to"
@@ -229,25 +340,39 @@
           <Card class="mt-3">
             <CardHeader class="py-2 px-3 bg-secondary">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Attributes') }}</h3>
+                <h3 class="font-semibold text-sm">
+                  {{ $t('Attributes') }}
+                </h3>
                 <Button
-                    v-if="canWrite"
-                    variant="ghost"
-                    size="icon"
-                    class="h-5 w-5"
-                    @click="showClassifierManagerDialog = true"
+                  v-if="canWrite"
+                  variant="ghost"
+                  size="icon"
+                  class="h-5 w-5"
+                  @click="showClassifierManagerDialog = true"
                 >
                   <Settings class="h-3 w-3" />
                 </Button>
               </div>
             </CardHeader>
             <CardContent class="p-3">
-              <dl v-if="attributeClassifiers.length > 0" class="space-y-2 text-sm">
-                <div v-for="classifier in attributeClassifiers" :key="classifier.id" class="flex flex-col">
-                  <dt class="font-medium text-muted-foreground text-xs">{{ translated(classifier.type_name) }}:</dt>
+              <dl
+                v-if="attributeClassifiers.length > 0"
+                class="space-y-2 text-sm"
+              >
+                <div
+                  v-for="classifier in attributeClassifiers"
+                  :key="classifier.id"
+                  class="flex flex-col"
+                >
+                  <dt class="font-medium text-muted-foreground text-xs">
+                    {{ translated(classifier.type_name) }}:
+                  </dt>
                   <dd class="ml-2">
                     <template v-if="classifier.linked_matter_id">
-                      <Link :href="`/matter/${classifier.linked_matter_id}`" class="text-primary hover:underline text-xs">
+                      <Link
+                        :href="`/matter/${classifier.linked_matter_id}`"
+                        class="text-primary hover:underline text-xs"
+                      >
                         {{ classifier.linked_matter?.uid || classifier.value }}
                       </Link>
                     </template>
@@ -267,7 +392,10 @@
                   </dd>
                 </div>
               </dl>
-              <div v-else class="text-center py-4 text-sm text-muted-foreground">
+              <div
+                v-else
+                class="text-center py-4 text-sm text-muted-foreground"
+              >
                 {{ $t('No classifiers assigned to this matter') }}
               </div>
             </CardContent>
@@ -276,18 +404,19 @@
 
         <!-- Middle Column - Main Information (50%) -->
         <div class="lg:col-span-2 space-y-3">
-
           <!-- Events -->
           <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Events') }}</h3>
+                <h3 class="font-semibold text-sm">
+                  {{ $t('Events') }}
+                </h3>
                 <Button
-                    v-if="canWrite"
-                    variant="ghost"
-                    size="icon"
-                    class="h-5 w-5"
-                    @click="showEventManagerDialog = true"
+                  v-if="canWrite"
+                  variant="ghost"
+                  size="icon"
+                  class="h-5 w-5"
+                  @click="showEventManagerDialog = true"
                 >
                   <Settings class="h-3 w-3" />
                 </Button>
@@ -295,8 +424,8 @@
             </CardHeader>
             <CardContent class="p-3">
               <EventsTab
-                  :events="matter.events"
-                  :can-write="canWrite"
+                :events="matter.events"
+                :can-write="canWrite"
               />
             </CardContent>
           </Card>
@@ -304,10 +433,15 @@
           <!-- Tasks & Renewals -->
           <div class="grid gap-3 grid-cols-1">
             <Card>
-              <CardHeader class="py-2 px-3" :class="matter.tasks_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'">
+              <CardHeader
+                class="py-2 px-3"
+                :class="matter.tasks_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'"
+              >
                 <h3 class="font-semibold text-sm flex items-center justify-between">
                   {{ $t('Pending Tasks') }}
-                  <Badge :variant="matter.tasks_pending.length > 0 ? 'warning' : 'secondary'">{{ matter.tasks_pending.length }}</Badge>
+                  <Badge :variant="matter.tasks_pending.length > 0 ? 'warning' : 'secondary'">
+                    {{ matter.tasks_pending.length }}
+                  </Badge>
                 </h3>
               </CardHeader>
               <CardContent class="p-3 overflow-y-auto">
@@ -318,7 +452,10 @@
                   :enable-inline-edit="canWrite"
                   :compact="true"
                 />
-                <div v-else class="text-center py-4 text-sm text-muted-foreground">
+                <div
+                  v-else
+                  class="text-center py-4 text-sm text-muted-foreground"
+                >
                   {{ $t('No pending tasks') }}
                 </div>
               </CardContent>
@@ -328,7 +465,9 @@
               <CardHeader class="py-2 px-3 bg-secondary">
                 <h3 class="font-semibold text-sm flex items-center justify-between">
                   {{ $t('Completed Tasks') }}
-                  <Badge variant="secondary">{{ matter.tasks_done.length }}</Badge>
+                  <Badge variant="secondary">
+                    {{ matter.tasks_done.length }}
+                  </Badge>
                 </h3>
               </CardHeader>
               <CardContent class="p-3 overflow-y-auto">
@@ -341,21 +480,22 @@
                 />
               </CardContent>
             </Card>
-
           </div>
 
           <!-- Notes -->
           <Card>
             <CardHeader class="py-2 px-3 bg-secondary">
-              <h3 class="font-semibold text-sm">{{ $t('Notes') }}</h3>
+              <h3 class="font-semibold text-sm">
+                {{ $t('Notes') }}
+              </h3>
             </CardHeader>
             <CardContent class="p-3 overflow-y-auto">
               <NotesTab
-                  :notes="matter.notes"
-                  :matter-id="matter.id"
-                  :can-edit="canWrite"
-                  :compact="true"
-                  @update="handleNotesUpdate"
+                :notes="matter.notes"
+                :matter-id="matter.id"
+                :can-edit="canWrite"
+                :compact="true"
+                @update="handleNotesUpdate"
               />
             </CardContent>
           </Card>
@@ -363,19 +503,19 @@
 
         <!-- Right Column - Titles & Image (25%) -->
         <div class="lg:col-span-1 space-y-3">
-
-
           <!-- Actors -->
           <Card class="h-fit">
             <CardHeader class="py-2 px-3 bg-secondary">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-sm">{{ $t('Actors') }}</h3>
+                <h3 class="font-semibold text-sm">
+                  {{ $t('Actors') }}
+                </h3>
                 <Button
-                    v-if="canWrite"
-                    variant="ghost"
-                    size="icon"
-                    class="h-5 w-5"
-                    @click="showActorManagerDialog = true"
+                  v-if="canWrite"
+                  variant="ghost"
+                  size="icon"
+                  class="h-5 w-5"
+                  @click="showActorManagerDialog = true"
                 >
                   <Settings class="h-3 w-3" />
                 </Button>
@@ -383,25 +523,30 @@
             </CardHeader>
             <CardContent class="p-3">
               <ActorList
-                  :actors="matter.actors"
-                  :matter-id="matter.id"
-                  :container-id="matter.container_id"
-                  :enable-inline-edit="false"
-                  :editable="canWrite"
-                  :compact="true"
-                  @update="handleActorUpdate"
-                  @edit="handleActorEdit"
-                  @remove="handleActorRemove"
+                :actors="matter.actors"
+                :matter-id="matter.id"
+                :container-id="matter.container_id"
+                :enable-inline-edit="false"
+                :editable="canWrite"
+                :compact="true"
+                @update="handleActorUpdate"
+                @edit="handleActorEdit"
+                @remove="handleActorRemove"
               />
             </CardContent>
           </Card>
 
           <!-- Renewals -->
           <Card>
-            <CardHeader class="py-2 px-3" :class="matter.renewals_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'">
+            <CardHeader
+              class="py-2 px-3"
+              :class="matter.renewals_pending.length > 0 ? 'bg-warning/10' : 'bg-secondary'"
+            >
               <h3 class="font-semibold text-sm flex items-center justify-between">
                 {{ $t('Renewals') }}
-                <Badge :variant="matter.renewals_pending.length > 0 ? 'warning' : 'secondary'">{{ matter.renewals_pending.length }}</Badge>
+                <Badge :variant="matter.renewals_pending.length > 0 ? 'warning' : 'secondary'">
+                  {{ matter.renewals_pending.length }}
+                </Badge>
               </h3>
             </CardHeader>
             <CardContent class="p-3 overflow-y-auto">
@@ -411,7 +556,10 @@
                 :matter-id="matter.id"
                 :can-write="canWrite"
               />
-              <div v-else class="text-center py-4 text-sm text-muted-foreground">
+              <div
+                v-else
+                class="text-center py-4 text-sm text-muted-foreground"
+              >
                 {{ $t('No pending renewals') }}
               </div>
             </CardContent>
@@ -424,11 +572,22 @@
         <Card>
           <CardHeader class="py-2 px-3 bg-secondary">
             <div class="flex items-center justify-between">
-              <h3 class="font-semibold text-sm">{{ $t('Complete Timeline') }}</h3>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <ChevronDown v-if="!timelineOpen" class="h-4 w-4" />
-                  <ChevronUp v-else class="h-4 w-4" />
+              <h3 class="font-semibold text-sm">
+                {{ $t('Complete Timeline') }}
+              </h3>
+              <CollapsibleTrigger as-child>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                >
+                  <ChevronDown
+                    v-if="!timelineOpen"
+                    class="h-4 w-4"
+                  />
+                  <ChevronUp
+                    v-else
+                    class="h-4 w-4"
+                  />
                 </Button>
               </CollapsibleTrigger>
             </div>

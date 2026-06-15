@@ -1,6 +1,11 @@
 <template>
-  <div v-if="officialLinks.length > 0" class="space-y-3">
-    <h4 class="font-medium text-sm text-muted-foreground">{{ t('Official Links') }}</h4>
+  <div
+    v-if="officialLinks.length > 0"
+    class="space-y-3"
+  >
+    <h4 class="font-medium text-sm text-muted-foreground">
+      {{ t('Official Links') }}
+    </h4>
     
     <div class="flex flex-wrap gap-2">
       <div 
@@ -13,13 +18,20 @@
         <Button
           variant="outline"
           size="sm"
-          @click="openOfficeLink(link.url)"
           :title="`${t('View on')} ${link.office_name} (${link.type}: ${link.number})`"
           class="text-xs rounded-r-none border-r-0"
+          @click="openOfficeLink(link.url)"
         >
-          <component :is="getIcon(link.icon)" class="mr-1 h-3 w-3" />
+          <component
+            :is="getIcon(link.icon)"
+            class="mr-1 h-3 w-3"
+          />
           {{ link.office }}
-          <Badge v-if="link.type !== 'filing'" variant="secondary" class="ml-1 text-xs">
+          <Badge
+            v-if="link.type !== 'filing'"
+            variant="secondary"
+            class="ml-1 text-xs"
+          >
             {{ t(link.type) }}
           </Badge>
         </Button>
@@ -28,19 +40,31 @@
         <Button
           variant="outline"
           size="sm"
-          @click.stop="copyLink(link)"
           :title="t('Copy link')"
           class="text-xs rounded-l-none px-2"
+          @click.stop="copyLink(link)"
         >
-          <Copy v-if="!copiedStates[`${link.office}-${link.type}`]" class="h-3 w-3" />
-          <Check v-else class="h-3 w-3 text-green-600" />
+          <Copy
+            v-if="!copiedStates[`${link.office}-${link.type}`]"
+            class="h-3 w-3"
+          />
+          <Check
+            v-else
+            class="h-3 w-3 text-green-600"
+          />
         </Button>
       </div>
     </div>
     
     <!-- Additional Info -->
-    <div v-if="showDetails" class="space-y-1 text-xs text-muted-foreground">
-      <div v-for="link in officialLinks" :key="`${link.office}-${link.type}-detail`">
+    <div
+      v-if="showDetails"
+      class="space-y-1 text-xs text-muted-foreground"
+    >
+      <div
+        v-for="link in officialLinks"
+        :key="`${link.office}-${link.type}-detail`"
+      >
         <strong>{{ link.office_name }}</strong>: 
         {{ t(link.type) }} {{ link.number }} 
         <span v-if="link.date">({{ formatDate(link.date) }})</span>
@@ -52,20 +76,26 @@
       v-if="officialLinks.length > 1"
       variant="ghost"
       size="sm"
-      @click="showDetails = !showDetails"
       class="text-xs p-1 h-auto"
+      @click="showDetails = !showDetails"
     >
       {{ showDetails ? t('Hide details') : t('Show details') }}
     </Button>
   </div>
   
   <!-- No Links Available -->
-  <div v-else-if="hasChecked" class="text-xs text-muted-foreground">
+  <div
+    v-else-if="hasChecked"
+    class="text-xs text-muted-foreground"
+  >
     {{ t('No official links available for this matter') }}
   </div>
   
   <!-- Loading State -->
-  <div v-else class="text-xs text-muted-foreground">
+  <div
+    v-else
+    class="text-xs text-muted-foreground"
+  >
     {{ t('Loading official links...') }}
   </div>
 </template>

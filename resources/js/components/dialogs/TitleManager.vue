@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>{{ $t('Manage Titles') }}</DialogTitle>
@@ -12,10 +15,15 @@
         <!-- Add Title Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ $t('Add Title') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ $t('Add Title') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form @submit.prevent="handleAddTitle" class="space-y-4">
+            <form
+              class="space-y-4"
+              @submit.prevent="handleAddTitle"
+            >
               <div class="grid grid-cols-2 gap-4">
                 <FormField
                   :label="$t('Type')"
@@ -45,7 +53,10 @@
                 </FormField>
               </div>
 
-              <Button type="submit" :disabled="addForm.processing">
+              <Button
+                type="submit"
+                :disabled="addForm.processing"
+              >
                 <Plus class="mr-2 h-4 w-4" />
                 {{ $t('Add Title') }}
               </Button>
@@ -56,12 +67,23 @@
         <!-- Current Titles Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ $t('Current Titles') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ $t('Current Titles') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div v-if="groupedTitles && Object.keys(groupedTitles).length > 0" class="space-y-4">
-              <div v-for="(titles, typeName) in groupedTitles" :key="typeName" class="space-y-2">
-                <h4 class="font-medium text-sm text-muted-foreground">{{ typeName }}</h4>
+            <div
+              v-if="groupedTitles && Object.keys(groupedTitles).length > 0"
+              class="space-y-4"
+            >
+              <div
+                v-for="(titles, typeName) in groupedTitles"
+                :key="typeName"
+                class="space-y-2"
+              >
+                <h4 class="font-medium text-sm text-muted-foreground">
+                  {{ typeName }}
+                </h4>
                 <div class="space-y-1">
                   <div
                     v-for="title in titles"
@@ -72,12 +94,15 @@
                       <Input
                         v-if="editingTitleId === title.id"
                         v-model="editForm.value"
-                        @keyup.enter="saveEdit(title)"
-                        @keyup.escape="cancelEdit"
                         class="max-w-md"
                         autofocus
+                        @keyup.enter="saveEdit(title)"
+                        @keyup.escape="cancelEdit"
                       />
-                      <div v-else class="font-medium">
+                      <div
+                        v-else
+                        class="font-medium"
+                      >
                         {{ title.value }}
                       </div>
                     </div>
@@ -110,8 +135,8 @@
                         v-if="editingTitleId !== title.id"
                         variant="ghost"
                         size="icon"
-                        @click="handleRemoveTitle(title)"
                         :disabled="removingTitleId === title.id"
+                        @click="handleRemoveTitle(title)"
                       >
                         <Trash2 class="h-4 w-4" />
                       </Button>
@@ -120,7 +145,10 @@
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-muted-foreground">
+            <div
+              v-else
+              class="text-center py-8 text-muted-foreground"
+            >
               {{ $t('No titles assigned to this matter') }}
             </div>
           </CardContent>
@@ -128,7 +156,10 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ $t('Close') }}
         </Button>
       </DialogFooter>

@@ -21,15 +21,15 @@ class ClassifierTypeController extends Controller
         $query = ClassifierType::query()->with(['category:code,category']);
 
         // Apply filters
-        if (! empty($Code)) {
-            $query->whereLike('code', $Code.'%');
+        if (!empty($Code)) {
+            $query->whereLike('code', $Code . '%');
         }
 
-        if (! empty($Type)) {
+        if (!empty($Type)) {
             $query->whereJsonLike('type', $Type);
         }
 
-        if (! empty($Category)) {
+        if (!empty($Category)) {
             $query->whereHas('category', function ($q) use ($Category) {
                 $q->whereJsonLike('category', $Category);
             });
@@ -101,7 +101,7 @@ class ClassifierTypeController extends Controller
     public function update(Request $request, ClassifierType $classifierType)
     {
         $request->validate([
-            'code' => 'required|max:5|unique:classifier_type,code,'.$classifierType->code.',code',
+            'code' => 'required|max:5|unique:classifier_type,code,' . $classifierType->code . ',code',
             'type' => 'required|max:45',
         ]);
 

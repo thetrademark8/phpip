@@ -1,19 +1,22 @@
 <template>
   <div>
     <DataTable
-        :columns="columns"
-        :data="paginatedTasks"
-        :loading="false"
-        :selectable="permissions.canWrite"
-        :show-pagination="false"
-        :empty-message="t('dashboard.tasks.no_tasks_found')"
-        :get-row-id="(row) => row.id"
-        :get-row-class="getRowClass"
-        @update:selected="handleSelection"
+      :columns="columns"
+      :data="paginatedTasks"
+      :loading="false"
+      :selectable="permissions.canWrite"
+      :show-pagination="false"
+      :empty-message="t('dashboard.tasks.no_tasks_found')"
+      :get-row-id="(row) => row.id"
+      :get-row-class="getRowClass"
+      @update:selected="handleSelection"
     />
 
     <!-- Pagination Controls -->
-    <div v-if="tasks.length > perPage" class="flex items-center justify-between px-4 py-3 border-t">
+    <div
+      v-if="tasks.length > perPage"
+      class="flex items-center justify-between px-4 py-3 border-t"
+    >
       <p class="text-sm text-muted-foreground">
         {{ t('dashboard.pagination.showing', { from: paginationFrom, to: paginationTo, total: tasks.length }) }}
       </p>

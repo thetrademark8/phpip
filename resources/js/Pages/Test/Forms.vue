@@ -1,6 +1,8 @@
 <template>
   <div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-8">Form components Test</h1>
+    <h1 class="text-3xl font-bold mb-8">
+      Form components Test
+    </h1>
     
     <div class="space-y-8">
       <!-- Matter Form Section -->
@@ -12,11 +14,20 @@
         <CardContent>
           <Tabs v-model="matterOperation">
             <TabsList class="grid w-full grid-cols-3">
-              <TabsTrigger value="new">New Matter</TabsTrigger>
-              <TabsTrigger value="child">Child Matter</TabsTrigger>
-              <TabsTrigger value="ops">OPS Matter</TabsTrigger>
+              <TabsTrigger value="new">
+                New Matter
+              </TabsTrigger>
+              <TabsTrigger value="child">
+                Child Matter
+              </TabsTrigger>
+              <TabsTrigger value="ops">
+                OPS Matter
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value="new" class="mt-4">
+            <TabsContent
+              value="new"
+              class="mt-4"
+            >
               <MatterForm
                 operation="new"
                 :category="sampleCategory"
@@ -24,7 +35,10 @@
                 :on-success="handleMatterSuccess"
               />
             </TabsContent>
-            <TabsContent value="child" class="mt-4">
+            <TabsContent
+              value="child"
+              class="mt-4"
+            >
               <MatterForm
                 operation="child"
                 :parent-matter="sampleParentMatter"
@@ -32,7 +46,10 @@
                 :on-success="handleMatterSuccess"
               />
             </TabsContent>
-            <TabsContent value="ops" class="mt-4">
+            <TabsContent
+              value="ops"
+              class="mt-4"
+            >
               <MatterForm
                 operation="ops"
                 :current-user="currentUser"
@@ -52,15 +69,25 @@
         <CardContent>
           <Tabs v-model="actorMode">
             <TabsList class="grid w-full grid-cols-2">
-              <TabsTrigger value="create">Create Actor</TabsTrigger>
-              <TabsTrigger value="edit">Edit Actor</TabsTrigger>
+              <TabsTrigger value="create">
+                Create Actor
+              </TabsTrigger>
+              <TabsTrigger value="edit">
+                Edit Actor
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value="create" class="mt-4">
+            <TabsContent
+              value="create"
+              class="mt-4"
+            >
               <ActorForm
                 :on-success="handleActorSuccess"
               />
             </TabsContent>
-            <TabsContent value="edit" class="mt-4">
+            <TabsContent
+              value="edit"
+              class="mt-4"
+            >
               <ActorForm
                 :actor="sampleActor"
                 :on-success="handleActorSuccess"
@@ -79,11 +106,20 @@
         <CardContent>
           <Tabs v-model="taskMode">
             <TabsList class="grid w-full grid-cols-3">
-              <TabsTrigger value="create">Create Task</TabsTrigger>
-              <TabsTrigger value="edit">Edit Task</TabsTrigger>
-              <TabsTrigger value="renewal">Renewal Task</TabsTrigger>
+              <TabsTrigger value="create">
+                Create Task
+              </TabsTrigger>
+              <TabsTrigger value="edit">
+                Edit Task
+              </TabsTrigger>
+              <TabsTrigger value="renewal">
+                Renewal Task
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value="create" class="mt-4">
+            <TabsContent
+              value="create"
+              class="mt-4"
+            >
               <TaskForm
                 :event-id="1"
                 :matter-id="1"
@@ -91,13 +127,19 @@
                 :on-success="handleTaskSuccess"
               />
             </TabsContent>
-            <TabsContent value="edit" class="mt-4">
+            <TabsContent
+              value="edit"
+              class="mt-4"
+            >
               <TaskForm
                 :task="sampleTask"
                 :on-success="handleTaskSuccess"
               />
             </TabsContent>
-            <TabsContent value="renewal" class="mt-4">
+            <TabsContent
+              value="renewal"
+              class="mt-4"
+            >
               <TaskForm
                 :event-id="1"
                 :matter-id="1"

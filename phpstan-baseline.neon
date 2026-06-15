@@ -1,0 +1,1789 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to method run\(\) on an unknown class Database\\Seeders\\TranslatedAttributesSeeder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Console/Commands/RefreshTranslations.php
+
+		-
+			message: '#^Instantiated class Database\\Seeders\\TranslatedAttributesSeeder not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Console/Commands/RefreshTranslations.php
+
+		-
+			message: '#^Relation ''client'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Console/Commands/SendMatterRenewalReminders.php
+
+		-
+			message: '#^Relation ''countryInfo'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Console/Commands/SendMatterRenewalReminders.php
+
+		-
+			message: '#^Relation ''titles'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Console/Commands/SendMatterRenewalReminders.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Console/Commands/SendTasksDueEmail.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Console/Commands/SendTasksRecapTestEmail.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Filesystem\\FilesystemAdapter\:\:getClient\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Console/Commands/StorageMigrateToPrefix.php
+
+		-
+			message: '#^Parameter \#1 \$seconds of function sleep expects int, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/TeamLeaderSyncCommand.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$default_role\.$#'
+			identifier: property.notFound
+			count: 7
+			path: app/Helpers/PermissionHelper.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$default_role\.$#'
+			identifier: property.notFound
+			count: 6
+			path: app/Http/Controllers/ActorController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/ActorController.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Controllers\\ActorController\:\:filterActorData\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Controllers/ActorController.php
+
+		-
+			message: '#^Relation ''company'' is not found in App\\Models\\Actor model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/ActorController.php
+
+		-
+			message: '#^Relation ''countryInfo'' is not found in App\\Models\\Actor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/ActorController.php
+
+		-
+			message: '#^Relation ''droleInfo'' is not found in App\\Models\\Actor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/ActorController.php
+
+		-
+			message: '#^Relation ''matters'' is not found in App\\Models\\Actor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/ActorController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/ActorPivotController.php
+
+		-
+			message: '#^Called ''take'' on Laravel collection, but could have been retrieved as a query\.$#'
+			identifier: larastan.noUnnecessaryCollectionCall
+			count: 2
+			path: app/Http/Controllers/ActorPivotController.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$values of method Illuminate\\Support\\Collection\<int,App\\Models\\Actor\>\:\:push\(\) expects App\\Models\\Actor, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AutocompleteController.php
+
+		-
+			message: '#^Parameter \#1 \.\.\.\$values of method Illuminate\\Support\\Collection\<int,App\\Models\\TemplateMember\>\:\:push\(\) expects App\\Models\\TemplateMember, array\<string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/AutocompleteController.php
+
+		-
+			message: '#^Relation ''filing'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/AutocompleteController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/CategoryController.php
+
+		-
+			message: '#^Relation ''displayWithInfo'' is not found in App\\Models\\Category model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/CategoryController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Classifier\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/ClassifierController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/ClassifierController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/ClassifierTypeController.php
+
+		-
+			message: '#^Relation ''category'' is not found in App\\Models\\ClassifierType model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/ClassifierTypeController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\DefaultActor\:\:\$actor\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DefaultActorController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\DefaultActor\:\:\$roleInfo\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DefaultActorController.php
+
+		-
+			message: '#^Relation ''actor'' is not found in App\\Models\\DefaultActor model\.$#'
+			identifier: larastan.relationExistence
+			count: 4
+			path: app/Http/Controllers/DefaultActorController.php
+
+		-
+			message: '#^Relation ''category'' is not found in App\\Models\\DefaultActor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/DefaultActorController.php
+
+		-
+			message: '#^Relation ''client'' is not found in App\\Models\\DefaultActor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/DefaultActorController.php
+
+		-
+			message: '#^Relation ''country'' is not found in App\\Models\\DefaultActor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/DefaultActorController.php
+
+		-
+			message: '#^Relation ''roleInfo'' is not found in App\\Models\\DefaultActor model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/DefaultActorController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Task\:\:\$trigger\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DocumentController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/DocumentController.php
+
+		-
+			message: '#^Relation ''classifiers'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/EmailPreviewController.php
+
+		-
+			message: '#^Relation ''client'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/EmailPreviewController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Event\:\:\$matter\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/EventController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/EventController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/EventNameController.php
+
+		-
+			message: '#^Relation ''categoryInfo'' is not found in App\\Models\\EventName model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/EventNameController.php
+
+		-
+			message: '#^Relation ''countryInfo'' is not found in App\\Models\\EventName model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/EventNameController.php
+
+		-
+			message: '#^Relation ''default_responsibleInfo'' is not found in App\\Models\\EventName model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/EventNameController.php
+
+		-
+			message: '#^Relation ''templateClass'' is not found in App\\Models\\EventClassLnk model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/EventNameController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/FeeController.php
+
+		-
+			message: '#^Relation ''category'' is not found in App\\Models\\Fee model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/FeeController.php
+
+		-
+			message: '#^Relation ''country'' is not found in App\\Models\\Fee model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/FeeController.php
+
+		-
+			message: '#^Relation ''origin'' is not found in App\\Models\\Fee model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/FeeController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$default_role\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/HomeController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/HomeController.php
+
+		-
+			message: '#^Relation ''info'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/HomeController.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 16
+			path: app/Http/Controllers/HomeController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$classifiers\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$events\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$filing\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$titles\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Matter\>\:\:\$category\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Matter\>\:\:\$classifiersNative\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Matter\>\:\:\$container\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Matter\>\:\:\$filing\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Matter\>\:\:\$grant\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Matter\>\:\:\$priority\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Matter\>\:\:\$publication\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 6
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$matter_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$shared\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Call to static method error\(\) on an unknown class App\\Http\\Controllers\\Log\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\MatterController\:\:info\(\) has invalid return type App\\Http\\Controllers\\Json\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\MatterController\:\:info\(\) should return App\\Http\\Controllers\\Json but returns App\\Models\\Matter\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Matter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\User\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 2
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Relation ''category'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Relation ''container'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Relation ''priority'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 3
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Relation ''status'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Relation ''tasksPending'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>category" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Variable \$grt might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: app/Http/Controllers/MatterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$client\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$actor\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$actor_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:attachmentFiles\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/MatterEmailController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MatterTypeController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/OptionsController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/OptionsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\User\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/OptionsController.php
+
+		-
+			message: '#^Call to an undefined method App\\Contracts\\Renewal\\RenewalEmailServiceInterface\:\:sendFormalCall\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/RenewalController.php
+
+		-
+			message: '#^Call to an undefined method App\\Contracts\\Renewal\\RenewalExportServiceInterface\:\:generatePaymentXml\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/RenewalController.php
+
+		-
+			message: '#^Call to an undefined method App\\Contracts\\Renewal\\RenewalLogServiceInterface\:\:getLogs\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/RenewalController.php
+
+		-
+			message: '#^Call to an undefined method App\\Contracts\\Renewal\\RenewalQueryServiceInterface\:\:getRenewalStats\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/RenewalController.php
+
+		-
+			message: '#^Call to an undefined method App\\Contracts\\Renewal\\RenewalWorkflowServiceInterface\:\:createOrders\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/RenewalController.php
+
+		-
+			message: '#^Call to an undefined method App\\Contracts\\Renewal\\RenewalWorkflowServiceInterface\:\:markInvoiced\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/RenewalController.php
+
+		-
+			message: '#^Call to an undefined method App\\Contracts\\Renewal\\RenewalWorkflowServiceInterface\:\:markPaid\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/RenewalController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/RoleController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/RuleController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$default_role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/TaskController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/TaskController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/TemplateMemberController.php
+
+		-
+			message: '#^Relation ''class'' is not found in App\\Models\\TemplateMember model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/TemplateMemberController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Relation ''company'' is not found in App\\Models\\User model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Relation ''roleInfo'' is not found in App\\Models\\User model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/HandleInertiaRequests.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/HandleInertiaRequests.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/HandleInertiaRequests.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$language\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/SetLocale.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Mail/sendCall.php
+
+		-
+			message: '#^PHPDoc type mixed of property App\\Mail\\sendCall\:\:\$subject is not covariant with PHPDoc type string of overridden property Illuminate\\Mail\\Mailable\:\:\$subject\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Mail/sendCall.php
+
+		-
+			message: '#^Relation ''class'' is not found in App\\Models\\TemplateMember model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Mail/sendCall.php
+
+		-
+			message: '#^Variable \$template might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: app/Mail/sendCall.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Models\\Actor\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/Actor.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Models\\ActorPivot\:\:\$guarded is not covariant with PHPDoc type array\<string\>\|bool of overridden property Illuminate\\Database\\Eloquent\\Relations\\Pivot\:\:\$guarded\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/ActorPivot.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Models\\ActorPivot\:\:\$hidden is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$hidden\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/ActorPivot.php
+
+		-
+			message: '#^Call to an undefined static method Illuminate\\Database\\Eloquent\\Model\:\:getTranslations\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Match arm comparison between ''pending'' and ''pending'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: app/Models/EmailLog.php
+
+		-
+			message: '#^Method App\\Models\\EmailSetting\:\:set\(\) should return static\(App\\Models\\EmailSetting\) but returns App\\Models\\EmailSetting\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/EmailSetting.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Event\:\:\$matter\.$#'
+			identifier: property.notFound
+			count: 6
+			path: app/Models/Event.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$applicants\.$#'
+			identifier: property.notFound
+			count: 5
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$client\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$countryInfo\.$#'
+			identifier: property.notFound
+			count: 6
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$filing\.$#'
+			identifier: property.notFound
+			count: 5
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$grant\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$owners\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$publication\.$#'
+			identifier: property.notFound
+			count: 5
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$titles\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$actor\.$#'
+			identifier: property.notFound
+			count: 6
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$default_role\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany\<App\\Models\\Event, \$this\(App\\Models\\Matter\)\>\:\:withDefault\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Matter.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 8
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Method App\\Models\\Matter\:\:getActorFromRole\(\) should return App\\Models\\MatterActors\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Matter.php
+
+		-
+			message: '#^PHPDoc tag @return with type App\\Models\\Actor\|null is not subtype of native type App\\Models\\MatterActors\|null\.$#'
+			identifier: return.phpDocType
+			count: 7
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Relation ''matters'' is not found in App\\Models\\Category model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>address_billing" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>country_billing" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/Matter.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Task\:\:\$matter\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Task.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$default_role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Task.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Task.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 5
+			path: app/Models/Task.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/MatterEmailNotification.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Notifications/MatterEmailNotification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/Renewal/BaseRenewalNotification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/Renewal/RenewalFirstCallNotification.php
+
+		-
+			message: '#^Relation ''class'' is not found in App\\Models\\TemplateMember model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Notifications/Renewal/RenewalFirstCallNotification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/Renewal/RenewalLastCallNotification.php
+
+		-
+			message: '#^Relation ''class'' is not found in App\\Models\\TemplateMember model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Notifications/Renewal/RenewalLastCallNotification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/Renewal/RenewalReminderCallNotification.php
+
+		-
+			message: '#^Relation ''class'' is not found in App\\Models\\TemplateMember model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Notifications/Renewal/RenewalReminderCallNotification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Task\:\:\$matter\.$#'
+			identifier: property.notFound
+			count: 8
+			path: app/Notifications/TaskReminderNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TaskReminderNotification\:\:getActionText\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TaskReminderNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TaskReminderNotification\:\:getClosingLine\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TaskReminderNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TaskReminderNotification\:\:getGreeting\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TaskReminderNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TaskReminderNotification\:\:getIntroLine\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TaskReminderNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TaskReminderNotification\:\:getSalutation\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TaskReminderNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TaskReminderNotification\:\:getTaskDetails\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TaskReminderNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TasksSummaryNotification\:\:getActionText\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TasksSummaryNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TasksSummaryNotification\:\:getClosingLine\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TasksSummaryNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TasksSummaryNotification\:\:getGreeting\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TasksSummaryNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TasksSummaryNotification\:\:getIntroLine\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TasksSummaryNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TasksSummaryNotification\:\:getSalutation\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TasksSummaryNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TasksSummaryNotification\:\:getStatisticsLine\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/TasksSummaryNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UrgentTasksNotification\:\:getActionText\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/UrgentTasksNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UrgentTasksNotification\:\:getClosingLine\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/UrgentTasksNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UrgentTasksNotification\:\:getGreeting\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/UrgentTasksNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UrgentTasksNotification\:\:getIntroLine\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/UrgentTasksNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UrgentTasksNotification\:\:getSalutation\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Notifications/UrgentTasksNotification.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$client\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Policies/MatterPolicy.php
+
+		-
+			message: '#^Class App\\Services\\Renewal\\Contracts\\RenewalOrderServiceInterface not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Class App\\Services\\Renewal\\Contracts\\RenewalPaymentServiceInterface not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Class App\\Services\\Renewal\\RenewalOrderService not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Class App\\Services\\Renewal\\RenewalPaymentService not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$address2\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$discount\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$feeStructure\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$postal_code\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$vat_rate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Relation ''feeStructure'' is not found in App\\Models\\Actor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Relation ''linkedMatters'' is not found in App\\Models\\Actor model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Relation ''roles'' is not found in App\\Models\\Actor model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Repositories/ActorRepository.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Event model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Repositories/EventRepository.php
+
+		-
+			message: '#^Relation ''tasks'' is not found in App\\Models\\Event model\.$#'
+			identifier: larastan.relationExistence
+			count: 6
+			path: app/Repositories/EventRepository.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$default_role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Repositories/MatterRepository.php
+
+		-
+			message: '#^Relation ''classifiers'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Repositories/MatterRepository.php
+
+		-
+			message: '#^Relation ''events'' is not found in App\\Models\\Matter model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Repositories/MatterRepository.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Task\:\:\$matter\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Repositories/RenewalRepository.php
+
+		-
+			message: '#^Relation ''event'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Repositories/RenewalRepository.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 5
+			path: app/Repositories/RenewalRepository.php
+
+		-
+			message: '#^Relation ''trigger'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Repositories/RenewalRepository.php
+
+		-
+			message: '#^Property App\\Services\\BrandedImportService\:\:\$matterCache is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Services/BrandedImportService.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Services/DatePickerService.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: app/Services/DatePickerService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/DateService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int\<13, max\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/DateService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int\<min, 12\> given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Services/DateService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$client\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$contact\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$events\.$#'
+			identifier: property.notFound
+			count: 11
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$inventors\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$prioritiesFromView\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$tasks\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$titles\.$#'
+			identifier: property.notFound
+			count: 7
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$actor\.$#'
+			identifier: property.notFound
+			count: 6
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$actor_ref\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Services/DocumentMergeService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/AttachmentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/EmailService.php
+
+		-
+			message: '#^Relation ''class'' is not found in App\\Models\\TemplateMember model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Services/Email/EmailService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$category\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$classifiers\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$countryInfo\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$filing\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$publication\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$registration\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$titles\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$actor\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$actor_ref\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\MatterActors\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$actor\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Illuminate\\Database\\Eloquent\\Model\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Services/Email/PlaceholderService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$classifiersNative\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$filing\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$grant\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$registration\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$actor_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$actor_ref\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$date_end\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$date_start\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$display_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$rate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$shared\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>login" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: app/Services/InternationalTrademarkService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$filing\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/LinkGeneratorService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$grant\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/LinkGeneratorService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$publication\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/LinkGeneratorService.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: app/Services/LinkGeneratorService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$classifiers\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MatterService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MatterService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$pivot\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MatterService.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany\:\:attach\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/MatterService.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/MatterService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Task\:\:\$matter\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/NotificationService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/NotificationService.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/NotificationService.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Task model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Services/NotificationService.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 2
+			path: app/Services/OPSService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$ref\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Renewal/RenewalEmailService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Actor\:\:\$vat_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Renewal/RenewalEmailService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Renewal/RenewalEmailService.php
+
+		-
+			message: '#^Property App\\Services\\Renewal\\RenewalEmailService\:\:\$matterRepository is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Services/Renewal/RenewalEmailService.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: app/Services/Renewal/RenewalEmailService.php
+
+		-
+			message: '#^Parameter \#2 \$value of method SimpleXMLElement\:\:addChild\(\) expects string\|null, float given\.$#'
+			identifier: argument.type
+			count: 6
+			path: app/Services/Renewal/RenewalExportService.php
+
+		-
+			message: '#^Parameter \#2 \$value of method SimpleXMLElement\:\:addChild\(\) expects string\|null, float\|int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/Renewal/RenewalExportService.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between float and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Services/Renewal/RenewalFeeCalculatorService.php
+
+		-
+			message: '#^Parameter \#3 \$value of function curl_setopt expects bool, int given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Services/Renewal/RenewalInvoiceService.php
+
+		-
+			message: '#^Relation ''creator'' is not found in App\\Models\\RenewalsLog model\.$#'
+			identifier: larastan.relationExistence
+			count: 3
+			path: app/Services/Renewal/RenewalLogService.php
+
+		-
+			message: '#^Relation ''task'' is not found in App\\Models\\RenewalsLog model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Services/Renewal/RenewalLogService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$login\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Renewal/RenewalQueryService.php
+
+		-
+			message: '#^Variable \$step might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: app/Services/Renewal/RenewalQueryService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Services/TeamLeader/Handlers/CompanyHandler.php
+
+		-
+			message: '#^Method App\\Services\\TeamLeader\\Handlers\\CompanyHandler\:\:upsert\(\) should return App\\Models\\Actor but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/TeamLeader/Handlers/CompanyHandler.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$company_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/TeamLeader/Handlers/ContactHandler.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$function\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/TeamLeader/Handlers/ContactHandler.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/TeamLeader/Handlers/ContactHandler.php
+
+		-
+			message: '#^Method App\\Services\\TeamLeader\\Handlers\\ContactHandler\:\:upsert\(\) should return App\\Models\\Actor but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/TeamLeader/Handlers/ContactHandler.php
+
+		-
+			message: '#^Parameter \#1 \$seconds of function sleep expects int, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/TeamLeader/Handlers/ContactHandler.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 2
+			path: app/Support/InstancePrefix.php
+
+		-
+			message: '#^Access to an undefined property Faker\\Generator\:\:\$catchPhrase\.$#'
+			identifier: property.notFound
+			count: 2
+			path: database/factories/ClassifierFactory.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Connection\:\:getDoctrineSchemaManager\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2025_04_02_184300_make_all_core_attributes_translatable.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$parent\.$#'
+			identifier: property.notFound
+			count: 1
+			path: database/seeders/Development/SampleClassifiersSeeder.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Matter\:\:\$parent\.$#'
+			identifier: property.notFound
+			count: 1
+			path: database/seeders/Development/SampleEventsSeeder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$detail\.$#'
+			identifier: property.notFound
+			count: 3
+			path: database/seeders/Development/SampleEventsSeeder.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int\<1, 99999\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: database/seeders/Development/SampleEventsSeeder.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int\<1000010, 9999999\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: database/seeders/Development/SampleEventsSeeder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 9
+			path: database/seeders/Development/SampleMattersSeeder.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int\<1, max\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: database/seeders/Development/SampleMattersSeeder.php
+
+		-
+			message: '#^Relation ''matter'' is not found in App\\Models\\Event model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: database/seeders/Development/SampleTasksSeeder.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Illuminate\\Console\\Command\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: database/seeders/Production/EventNameImportSeeder.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Illuminate\\Console\\Command\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: database/seeders/Production/TaskRulesImportSeeder.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: database/seeders/Production/TranslatedAttributesSeeder.php
+
+		-
+			message: '#^Variable \$taskRuleDetails in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: database/seeders/Production/TranslatedAttributesSeeder.php

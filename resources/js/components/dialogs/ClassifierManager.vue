@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>{{ $t('Manage Classifiers') }}</DialogTitle>
@@ -12,10 +15,15 @@
         <!-- Add Classifier Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ $t('Add Classifier') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ $t('Add Classifier') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form @submit.prevent="handleAddClassifier" class="space-y-4">
+            <form
+              class="space-y-4"
+              @submit.prevent="handleAddClassifier"
+            >
               <div class="grid grid-cols-2 gap-4">
                 <FormField
                   :label="$t('Type')"
@@ -85,7 +93,10 @@
                 />
               </FormField>
 
-              <Button type="submit" :disabled="addForm.processing">
+              <Button
+                type="submit"
+                :disabled="addForm.processing"
+              >
                 <Plus class="mr-2 h-4 w-4" />
                 {{ $t('Add Classifier') }}
               </Button>
@@ -96,12 +107,23 @@
         <!-- Current Classifiers Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ $t('Current Classifiers') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ $t('Current Classifiers') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div v-if="groupedClassifiers && Object.keys(groupedClassifiers).length > 0" class="space-y-4">
-              <div v-for="(classifiers, typeName) in groupedClassifiers" :key="typeName" class="space-y-2">
-                <h4 class="font-medium text-sm text-muted-foreground">{{ typeName }}</h4>
+            <div
+              v-if="groupedClassifiers && Object.keys(groupedClassifiers).length > 0"
+              class="space-y-4"
+            >
+              <div
+                v-for="(classifiers, typeName) in groupedClassifiers"
+                :key="typeName"
+                class="space-y-2"
+              >
+                <h4 class="font-medium text-sm text-muted-foreground">
+                  {{ typeName }}
+                </h4>
                 <div class="space-y-1">
                   <div
                     v-for="classifier in classifiers"
@@ -109,21 +131,27 @@
                     class="flex items-center justify-between p-2 border rounded-lg hover:bg-muted/50"
                   >
                     <div class="flex-1">
-                      <div v-if="classifier.type_code === 'IMG'" class="flex items-center gap-2">
+                      <div
+                        v-if="classifier.type_code === 'IMG'"
+                        class="flex items-center gap-2"
+                      >
                         <img 
                           :src="`/classifier/${classifier.id}/img`" 
                           class="h-12 w-12 object-contain border rounded"
                           :alt="$t('Classifier image')"
-                        />
+                        >
                         <span class="text-sm text-muted-foreground">{{ classifier.value }}</span>
                       </div>
-                      <div v-else-if="editingClassifierId === classifier.id" class="flex items-center gap-2">
+                      <div
+                        v-else-if="editingClassifierId === classifier.id"
+                        class="flex items-center gap-2"
+                      >
                         <Input
                           v-model="editForm.value"
-                          @keyup.enter="saveEdit(classifier)"
-                          @keyup.escape="cancelEdit"
                           class="max-w-md"
                           autofocus
+                          @keyup.enter="saveEdit(classifier)"
+                          @keyup.escape="cancelEdit"
                         />
                         <Button
                           variant="ghost"
@@ -140,9 +168,15 @@
                           <X class="h-4 w-4" />
                         </Button>
                       </div>
-                      <div v-else class="font-medium">
+                      <div
+                        v-else
+                        class="font-medium"
+                      >
                         {{ classifier.value }}
-                        <span v-if="classifier.lnk_matter_id" class="text-sm text-muted-foreground ml-2">
+                        <span
+                          v-if="classifier.lnk_matter_id"
+                          class="text-sm text-muted-foreground ml-2"
+                        >
                           (→ {{ classifier.linked_matter?.uid }})
                         </span>
                       </div>
@@ -159,8 +193,8 @@
                       <Button
                         variant="ghost"
                         size="icon"
-                        @click="handleRemoveClassifier(classifier)"
                         :disabled="removingClassifierId === classifier.id"
+                        @click="handleRemoveClassifier(classifier)"
                       >
                         <Trash2 class="h-4 w-4" />
                       </Button>
@@ -169,7 +203,10 @@
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-muted-foreground">
+            <div
+              v-else
+              class="text-center py-8 text-muted-foreground"
+            >
               {{ $t('No classifiers assigned to this matter') }}
             </div>
           </CardContent>
@@ -177,7 +214,10 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ $t('Close') }}
         </Button>
       </DialogFooter>

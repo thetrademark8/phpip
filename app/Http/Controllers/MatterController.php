@@ -205,7 +205,7 @@ class MatterController extends Controller
                 $parent_matter->caseref = Matter::where(
                     'caseref',
                     'like',
-                    $parent_matter->category->ref_prefix.'%'
+                    $parent_matter->category->ref_prefix . '%'
                 )->max('caseref');
                 $parent_matter->caseref++;
             }
@@ -214,7 +214,7 @@ class MatterController extends Controller
             $ref_prefix = \App\Models\Category::find($category_code)['ref_prefix'];
             $category = [
                 'code' => $category_code,
-                'next_caseref' => Matter::where('caseref', 'like', $ref_prefix.'%')
+                'next_caseref' => Matter::where('caseref', 'like', $ref_prefix . '%')
                     ->max('caseref'),
                 'name' => \App\Models\Category::find($category_code)['category'],
             ];
@@ -570,7 +570,7 @@ class MatterController extends Controller
                         $new_matter->events()->create(
                             [
                                 'code' => 'PRI',
-                                'detail' => $pri['country'].$pri['number'],
+                                'detail' => $pri['country'] . $pri['number'],
                                 'event_date' => $pri['date'],
                             ]
                         );
@@ -623,7 +623,7 @@ class MatterController extends Controller
                             );
                         }
                     }
-                    $new_matter->notes = 'Applicants: '.collect($app['applicants'])->implode('; ');
+                    $new_matter->notes = 'Applicants: ' . collect($app['applicants'])->implode('; ');
                 }
                 if (array_key_exists('inventors', $app)) {
                     foreach ($app['inventors'] as $inventor) {
@@ -659,7 +659,7 @@ class MatterController extends Controller
                             );
                         }
                     }
-                    $new_matter->notes .= "\nInventors: ".collect($app['inventors'])->implode(' - ');
+                    $new_matter->notes .= "\nInventors: " . collect($app['inventors'])->implode(' - ');
                 }
             } else {
                 $new_matter->container_id = $container_id;
@@ -678,7 +678,7 @@ class MatterController extends Controller
                             $new_matter->events()->create(
                                 [
                                     'code' => 'PRI',
-                                    'detail' => $pri['country'].$pri['number'],
+                                    'detail' => $pri['country'] . $pri['number'],
                                     'event_date' => $pri['date'],
                                 ]
                             );
@@ -920,7 +920,7 @@ class MatterController extends Controller
 
         return response()->streamDownload(function () use ($template) {
             $template->saveAs('php://output');
-        }, 'merged-'.$file->getClientOriginalName(), [
+        }, 'merged-' . $file->getClientOriginalName(), [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Transfer-Encoding' => 'binary',
             'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',

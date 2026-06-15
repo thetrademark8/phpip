@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return PermissionHelper::canReadOnly($user) && ! PermissionHelper::isClient($user);
+        return PermissionHelper::canReadOnly($user) && !PermissionHelper::isClient($user);
     }
 
     /**
@@ -20,7 +20,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return PermissionHelper::canReadOnly($user) && ! PermissionHelper::isClient($user);
+        return PermissionHelper::canReadOnly($user) && !PermissionHelper::isClient($user);
     }
 
     /**

@@ -24,27 +24,27 @@ class ActorController extends Controller
 
         // Name search
         if ($request->filled('Name')) {
-            $query->where('name', 'like', $request->Name.'%');
+            $query->where('name', 'like', $request->Name . '%');
         }
 
         // First name search
         if ($request->filled('first_name')) {
-            $query->where('first_name', 'like', $request->first_name.'%');
+            $query->where('first_name', 'like', $request->first_name . '%');
         }
 
         // Display name search
         if ($request->filled('display_name')) {
-            $query->where('display_name', 'like', $request->display_name.'%');
+            $query->where('display_name', 'like', $request->display_name . '%');
         }
 
         // Email search
         if ($request->filled('email')) {
-            $query->where('email', 'like', '%'.$request->email.'%');
+            $query->where('email', 'like', '%' . $request->email . '%');
         }
 
         // Phone search
         if ($request->filled('phone')) {
-            $query->where('phone', 'like', '%'.$request->phone.'%');
+            $query->where('phone', 'like', '%' . $request->phone . '%');
         }
 
         // Country filter
@@ -60,7 +60,7 @@ class ActorController extends Controller
         // Company/Employer search
         if ($request->filled('company')) {
             $query->whereHas('company', function ($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->company.'%');
+                $q->where('name', 'like', '%' . $request->company . '%');
             });
         }
 
@@ -126,7 +126,7 @@ class ActorController extends Controller
         // Filter actors for CLI users to only show actors related to their matters
         if ($user->default_role === 'CLI' || empty($user->default_role)) {
             $userMatterIds = $user->matters()->pluck('id')->toArray();
-            if (! empty($userMatterIds)) {
+            if (!empty($userMatterIds)) {
                 $query->whereHas('matters', function ($q) use ($userMatterIds) {
                     $q->whereIn('matter.id', $userMatterIds);
                 });
@@ -205,7 +205,7 @@ class ActorController extends Controller
         // Log field-level permission denials for security monitoring
         $deniedFields = collect($request->except(['_token', '_method']))->keys()
             ->filter(function ($field) use ($editableFields) {
-                return ! in_array($field, $editableFields) && ! in_array($field, ['_token', '_method']);
+                return !in_array($field, $editableFields) && !in_array($field, ['_token', '_method']);
             });
 
         if ($deniedFields->isNotEmpty()) {

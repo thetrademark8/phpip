@@ -152,7 +152,7 @@ class LinkGeneratorService
      */
     public function generateLink(string $office, string $number, string $countryCode = ''): ?string
     {
-        if (! isset($this->patterns[$office])) {
+        if (!isset($this->patterns[$office])) {
             return null;
         }
 
@@ -168,7 +168,7 @@ class LinkGeneratorService
         $formattedNumber = $this->formatNumberForOffice($cleanNumber, $office, $countryCode);
 
         // Validate number format for the specific office (use original clean number for validation)
-        if (! $this->isValidNumberFormat($office, $cleanNumber)) {
+        if (!$this->isValidNumberFormat($office, $cleanNumber)) {
             Log::warning('Invalid number format for office', [
                 'office' => $office,
                 'number' => $cleanNumber,
@@ -178,7 +178,7 @@ class LinkGeneratorService
         }
 
         // Check if this office requires a country prefix
-        if (! empty($pattern['requires_country_prefix']) && $pattern['requires_country_prefix']) {
+        if (!empty($pattern['requires_country_prefix']) && $pattern['requires_country_prefix']) {
             if (empty($countryCode)) {
                 Log::warning('Country code required for office but not provided', [
                     'office' => $office,
@@ -204,7 +204,7 @@ class LinkGeneratorService
         // Determine office based on country
         $office = $this->detectOfficeFromCountry($matter->country, $matter->category_code);
 
-        if (! $office) {
+        if (!$office) {
             return [];
         }
 
@@ -257,7 +257,7 @@ class LinkGeneratorService
 
         $baseOffice = $this->countryToOffice[$country] ?? null;
 
-        if (! $baseOffice) {
+        if (!$baseOffice) {
             return null;
         }
 
@@ -268,7 +268,7 @@ class LinkGeneratorService
 
         // Check if office supports this category
         $pattern = $this->patterns[$baseOffice] ?? null;
-        if (! $pattern || ! in_array($category, $pattern['categories'])) {
+        if (!$pattern || !in_array($category, $pattern['categories'])) {
             return null;
         }
 
@@ -341,7 +341,7 @@ class LinkGeneratorService
         $cleaned = preg_replace('/[^\w]/', '', $cleaned);
 
         // Re-add the variant suffix if it existed
-        return trim($cleaned.$variant);
+        return trim($cleaned . $variant);
     }
 
     /**
@@ -351,7 +351,7 @@ class LinkGeneratorService
     {
         $pattern = $this->patterns[$office] ?? null;
 
-        if (! $pattern || empty($pattern['number_format'])) {
+        if (!$pattern || empty($pattern['number_format'])) {
             return $number;
         }
 
@@ -367,11 +367,11 @@ class LinkGeneratorService
                 // INPI Design format requires FR{number}-{variant} (e.g., FR20200885-003).
                 // Strip any FR prefix to normalize, default variant to -001 when absent.
                 $base = preg_replace('/^FR/', '', $number);
-                if (! preg_match('/-\d+$/', $base)) {
+                if (!preg_match('/-\d+$/', $base)) {
                     $base .= '-001';
                 }
 
-                return 'FR'.$base;
+                return 'FR' . $base;
 
             case 'euipo_design_format':
                 // EUIPO Design format: {9-digit-number}-{variant} (e.g., 007708706-0001)
@@ -380,18 +380,18 @@ class LinkGeneratorService
                     $parts = explode('-', $number);
                     $baseNumber = str_pad($parts[0], 9, '0', STR_PAD_LEFT);
 
-                    return $baseNumber.'-'.$parts[1];
+                    return $baseNumber . '-' . $parts[1];
                 }
 
                 // No variant, pad number and add default variant
-                return str_pad($number, 9, '0', STR_PAD_LEFT).'-0001';
+                return str_pad($number, 9, '0', STR_PAD_LEFT) . '-0001';
 
             case 'wipo_design_format':
                 // WIPO Hague Design format: D{number} (e.g., D215987 for HAGUE.D215987)
                 // Handle various input formats: WIPO171702, DM/215987, DM215987, D215987, 215987
                 $cleanNumber = preg_replace('/^(WIPO|DM\/|DM|D)/', '', $number);
 
-                return 'D'.$cleanNumber;
+                return 'D' . $cleanNumber;
 
             default:
                 break;
@@ -441,7 +441,7 @@ class LinkGeneratorService
     {
         $office = $this->detectOfficeFromCountry($country, $category);
 
-        if (! $office) {
+        if (!$office) {
             return [];
         }
 

@@ -2,20 +2,28 @@
   <Card>
     <CardHeader>
       <div class="flex items-center justify-between">
-        <CardTitle class="text-base">{{ $t('Recent Activity') }}</CardTitle>
+        <CardTitle class="text-base">
+          {{ $t('Recent Activity') }}
+        </CardTitle>
         <Button
           size="sm"
           variant="ghost"
-          @click="loadMoreActivities"
           :disabled="loading || !hasMore"
+          @click="loadMoreActivities"
         >
           <RefreshCw :class="['h-3 w-3', loading && 'animate-spin']" />
         </Button>
       </div>
     </CardHeader>
     <CardContent class="p-0">
-      <ActivityItemSkeleton v-if="loading && activities.length === 0" :count="3" />
-      <div v-else-if="activities.length > 0" class="divide-y">
+      <ActivityItemSkeleton
+        v-if="loading && activities.length === 0"
+        :count="3"
+      />
+      <div
+        v-else-if="activities.length > 0"
+        class="divide-y"
+      >
         <div
           v-for="activity in activities"
           :key="`${activity.type}-${activity.id}-${activity.date}`"
@@ -23,11 +31,16 @@
         >
           <div class="flex gap-3">
             <div class="flex-shrink-0 mt-0.5">
-              <div :class="[
-                'w-8 h-8 rounded-full flex items-center justify-center',
-                getActivityColor(activity.type)
-              ]">
-                <component :is="getActivityIcon(activity.type)" class="h-4 w-4" />
+              <div
+                :class="[
+                  'w-8 h-8 rounded-full flex items-center justify-center',
+                  getActivityColor(activity.type)
+                ]"
+              >
+                <component
+                  :is="getActivityIcon(activity.type)"
+                  class="h-4 w-4"
+                />
               </div>
             </div>
             <div class="flex-1 space-y-1">
@@ -37,7 +50,10 @@
               </p>
               <p class="text-xs text-muted-foreground">
                 {{ formatRelativeTime(activity.date) }}
-                <span v-if="activity.details" class="ml-2">
+                <span
+                  v-if="activity.details"
+                  class="ml-2"
+                >
                   • {{ activity.details }}
                 </span>
               </p>
@@ -45,7 +61,10 @@
           </div>
         </div>
       </div>
-      <div v-else class="p-8 text-center text-muted-foreground">
+      <div
+        v-else
+        class="p-8 text-center text-muted-foreground"
+      >
         {{ $t('No recent activity') }}
       </div>
     </CardContent>

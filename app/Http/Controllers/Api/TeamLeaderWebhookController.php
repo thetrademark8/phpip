@@ -30,7 +30,7 @@ class TeamLeaderWebhookController extends Controller
         // Teamleader sends either "type" at root level, or the event type can be inferred
         $type = $payload['type'] ?? null;
 
-        if (! $type) {
+        if (!$type) {
             Log::warning('TeamLeader: Missing event type', ['payload' => $payload]);
 
             return response()->json(['error' => 'Missing event type'], 400);
@@ -42,11 +42,11 @@ class TeamLeaderWebhookController extends Controller
         $data = $payload['data'] ?? [];
         $subject = $payload['subject'] ?? [];
 
-        if (! isset($data['id']) && isset($subject['id'])) {
+        if (!isset($data['id']) && isset($subject['id'])) {
             $data['id'] = $subject['id'];
         }
 
-        if (! isset($data['id'])) {
+        if (!isset($data['id'])) {
             Log::error('TeamLeader: No entity ID found in webhook payload', [
                 'type' => $type,
                 'payload' => $payload,
@@ -57,7 +57,7 @@ class TeamLeaderWebhookController extends Controller
 
         [$entity, $action] = $this->parseEventType($type);
 
-        if (! $entity || ! $action) {
+        if (!$entity || !$action) {
             Log::warning('TeamLeader: Unknown event type', ['type' => $type]);
 
             return response()->json(['error' => 'Unknown event type'], 400);
@@ -65,7 +65,7 @@ class TeamLeaderWebhookController extends Controller
 
         $handlerClass = $this->handlers[$entity] ?? null;
 
-        if (! $handlerClass) {
+        if (!$handlerClass) {
             Log::warning('TeamLeader: No handler for entity', ['entity' => $entity]);
 
             return response()->json(['error' => 'No handler for entity'], 400);
@@ -73,7 +73,7 @@ class TeamLeaderWebhookController extends Controller
 
         $method = $this->normalizeAction($action);
 
-        if (! method_exists($handlerClass, $method)) {
+        if (!method_exists($handlerClass, $method)) {
             Log::warning('TeamLeader: Handler method not found', [
                 'handler' => $handlerClass,
                 'method' => $method,

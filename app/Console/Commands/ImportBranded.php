@@ -21,7 +21,7 @@ class ImportBranded extends Command
         $dryRun = $this->option('dry-run');
         $basePath = database_path("imports/branded/{$folder}");
 
-        if (! is_dir($basePath)) {
+        if (!is_dir($basePath)) {
             $this->error("Folder not found: {$basePath}");
 
             return self::FAILURE;
@@ -30,13 +30,13 @@ class ImportBranded extends Command
         $actorsFile = "{$basePath}/actors.csv";
         $mattersFile = "{$basePath}/matters.csv";
 
-        if (! file_exists($actorsFile)) {
+        if (!file_exists($actorsFile)) {
             $this->error("Actors file not found: {$actorsFile}");
 
             return self::FAILURE;
         }
 
-        if (! file_exists($mattersFile)) {
+        if (!file_exists($mattersFile)) {
             $this->error("Matters file not found: {$mattersFile}");
 
             return self::FAILURE;
@@ -100,7 +100,7 @@ class ImportBranded extends Command
         );
 
         if (count($result['warnings']) > 0) {
-            $this->warn('There were '.count($result['warnings']).' warning(s). Check the logs for details.');
+            $this->warn('There were ' . count($result['warnings']) . ' warning(s). Check the logs for details.');
         }
 
         return self::SUCCESS;

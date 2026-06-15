@@ -23,10 +23,18 @@
           <SelectValue :placeholder="t('templateMember.filters.languagePlaceholder')" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">{{ t('common.all') }}</SelectItem>
-          <SelectItem value="en">English</SelectItem>
-          <SelectItem value="fr">Français</SelectItem>
-          <SelectItem value="de">Deutsch</SelectItem>
+          <SelectItem value="all">
+            {{ t('common.all') }}
+          </SelectItem>
+          <SelectItem value="en">
+            English
+          </SelectItem>
+          <SelectItem value="fr">
+            Français
+          </SelectItem>
+          <SelectItem value="de">
+            Deutsch
+          </SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -45,9 +53,15 @@
           <SelectValue :placeholder="t('templateMember.filters.formatPlaceholder')" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">{{ t('common.all') }}</SelectItem>
-          <SelectItem value="TEXT">{{ t('templateMember.formats.text') }}</SelectItem>
-          <SelectItem value="HTML">{{ t('templateMember.formats.html') }}</SelectItem>
+          <SelectItem value="all">
+            {{ t('common.all') }}
+          </SelectItem>
+          <SelectItem value="TEXT">
+            {{ t('templateMember.formats.text') }}
+          </SelectItem>
+          <SelectItem value="HTML">
+            {{ t('templateMember.formats.html') }}
+          </SelectItem>
         </SelectContent>
       </Select>
     </div>

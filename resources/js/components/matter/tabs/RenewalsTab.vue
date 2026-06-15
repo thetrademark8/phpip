@@ -1,12 +1,15 @@
 <template>
   <div>
     <!-- Action bar -->
-    <div v-if="canWrite" class="flex items-center gap-2 mb-2">
+    <div
+      v-if="canWrite"
+      class="flex items-center gap-2 mb-2"
+    >
       <Button
         variant="secondary"
         size="sm"
-        @click="showConfirmDialog = true"
         :disabled="selectedIds.length === 0"
+        @click="showConfirmDialog = true"
       >
         {{ t('Clear selected on') }}
       </Button>
@@ -32,13 +35,13 @@
     <!-- Confirm dialog -->
     <ConfirmDialog
       :open="showConfirmDialog"
-      @update:open="showConfirmDialog = $event"
       :title="t('Confirm Renewal Completion')"
       :description="t('This action will mark the selected renewals as completed.')"
       :message="t('Are you sure you want to mark {count} renewal(s) as completed on {date}?', { count: selectedIds.length, date: clearDate })"
       :confirm-text="t('Complete Renewals')"
       :cancel-text="t('Cancel')"
       type="default"
+      @update:open="showConfirmDialog = $event"
       @confirm="clearSelected"
     />
   </div>

@@ -21,7 +21,10 @@
           {{ currency.code }} - {{ currency.name }}
         </SelectItem>
       </SelectGroup>
-      <div v-if="filteredCurrencies.length === 0" class="p-2 text-center text-sm text-muted-foreground">
+      <div
+        v-if="filteredCurrencies.length === 0"
+        class="p-2 text-center text-sm text-muted-foreground"
+      >
         No currencies found
       </div>
     </SelectContent>

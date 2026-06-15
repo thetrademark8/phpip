@@ -2,13 +2,21 @@
   <GuestLayout>
     <Card>
       <CardHeader>
-        <CardTitle class="text-2xl text-center">Login</CardTitle>
+        <CardTitle class="text-2xl text-center">
+          Login
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <form @submit.prevent="submit" class="space-y-6">
+        <form
+          class="space-y-6"
+          @submit.prevent="submit"
+        >
           <!-- Username Field -->
           <FormField>
-            <Label for="login" class="mb-2">User name</Label>
+            <Label
+              for="login"
+              class="mb-2"
+            >User name</Label>
             <Input
               id="login"
               v-model="form.login"
@@ -18,14 +26,20 @@
               autofocus
               :class="{ 'border-destructive': form.errors.login }"
             />
-            <p v-if="form.errors.login" class="text-sm text-destructive mt-1">
+            <p
+              v-if="form.errors.login"
+              class="text-sm text-destructive mt-1"
+            >
               {{ form.errors.login }}
             </p>
           </FormField>
 
           <!-- Password Field -->
           <FormField>
-            <Label for="password" class="mb-2">Password</Label>
+            <Label
+              for="password"
+              class="mb-2"
+            >Password</Label>
             <Input
               id="password"
               v-model="form.password"
@@ -34,7 +48,10 @@
               required
               :class="{ 'border-destructive': form.errors.password }"
             />
-            <p v-if="form.errors.password" class="text-sm text-destructive mt-1">
+            <p
+              v-if="form.errors.password"
+              class="text-sm text-destructive mt-1"
+            >
               {{ form.errors.password }}
             </p>
           </FormField>

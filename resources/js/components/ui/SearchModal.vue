@@ -2,7 +2,11 @@
   <Dialog v-model:open="isOpen">
     <DialogTrigger as-child>
       <slot name="trigger">
-        <Button variant="ghost" size="sm" class="text-muted-foreground">
+        <Button
+          variant="ghost"
+          size="sm"
+          class="text-muted-foreground"
+        >
           <Search class="h-4 w-4 mr-2" />
           Search
         </Button>
@@ -29,7 +33,10 @@
         </div>
         
         <!-- Advanced Filters -->
-        <div v-if="showAdvanced" class="space-y-3 pt-2 border-t">
+        <div
+          v-if="showAdvanced"
+          class="space-y-3 pt-2 border-t"
+        >
           <div class="grid grid-cols-2 gap-3">
             <div>
               <Label for="category">Category</Label>
@@ -38,10 +45,18 @@
                   <SelectValue placeholder="All categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All categories</SelectItem>
-                  <SelectItem value="PAT">Patent</SelectItem>
-                  <SelectItem value="TM">Trademark</SelectItem>
-                  <SelectItem value="DES">Design</SelectItem>
+                  <SelectItem value="">
+                    All categories
+                  </SelectItem>
+                  <SelectItem value="PAT">
+                    Patent
+                  </SelectItem>
+                  <SelectItem value="TM">
+                    Trademark
+                  </SelectItem>
+                  <SelectItem value="DES">
+                    Design
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -53,11 +68,21 @@
                   <SelectValue placeholder="All statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All statuses</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="dead">Dead</SelectItem>
+                  <SelectItem value="">
+                    All statuses
+                  </SelectItem>
+                  <SelectItem value="active">
+                    Active
+                  </SelectItem>
+                  <SelectItem value="pending">
+                    Pending
+                  </SelectItem>
+                  <SelectItem value="inactive">
+                    Inactive
+                  </SelectItem>
+                  <SelectItem value="dead">
+                    Dead
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -74,7 +99,10 @@
         </div>
         
         <!-- Results -->
-        <div v-if="results.length > 0" class="border rounded-lg max-h-[300px] overflow-y-auto">
+        <div
+          v-if="results.length > 0"
+          class="border rounded-lg max-h-[300px] overflow-y-auto"
+        >
           <div
             v-for="matter in results"
             :key="matter.id"
@@ -85,9 +113,14 @@
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
                   <span class="font-medium">{{ matter.uid }}</span>
-                  <StatusBadge :status="matter.status || 'active'" type="matter" />
+                  <StatusBadge
+                    :status="matter.status || 'active'"
+                    type="matter"
+                  />
                 </div>
-                <p class="text-sm text-muted-foreground">{{ matter.title }}</p>
+                <p class="text-sm text-muted-foreground">
+                  {{ matter.title }}
+                </p>
                 <p class="text-xs text-muted-foreground">
                   {{ matter.client?.name }} • {{ matter.category }}
                 </p>
@@ -98,12 +131,18 @@
         </div>
         
         <!-- No Results -->
-        <div v-else-if="hasSearched && results.length === 0" class="text-center py-8 text-muted-foreground">
+        <div
+          v-else-if="hasSearched && results.length === 0"
+          class="text-center py-8 text-muted-foreground"
+        >
           No matters found matching your search criteria.
         </div>
         
         <!-- Loading -->
-        <SearchResultSkeleton v-if="loading" :count="3" />
+        <SearchResultSkeleton
+          v-if="loading"
+          :count="3"
+        />
       </div>
       
       <div class="flex items-center justify-between pt-4 border-t">
@@ -117,10 +156,16 @@
         </Button>
         
         <div class="flex gap-2">
-          <Button variant="outline" @click="isOpen = false">
+          <Button
+            variant="outline"
+            @click="isOpen = false"
+          >
             Cancel
           </Button>
-          <Button @click="performSearch" :disabled="!searchQuery && !hasFilters">
+          <Button
+            :disabled="!searchQuery && !hasFilters"
+            @click="performSearch"
+          >
             Search
           </Button>
         </div>

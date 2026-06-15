@@ -22,11 +22,11 @@ class DocumentController extends Controller
         $Notes = $request->input('Notes');
         $Name = $request->input('Name');
         $template_classes = TemplateClass::query();
-        if (! is_null($Name)) {
-            $template_classes = $template_classes->whereLike('name', $Name.'%');
+        if (!is_null($Name)) {
+            $template_classes = $template_classes->whereLike('name', $Name . '%');
         }
-        if (! is_null($Notes)) {
-            $template_classes = $template_classes->whereLike('notes', $Notes.'%');
+        if (!is_null($Notes)) {
+            $template_classes = $template_classes->whereLike('notes', $Notes . '%');
         }
 
         $query = $template_classes->orderby('name');
@@ -113,7 +113,7 @@ class DocumentController extends Controller
         $view = 'documents.select';
         $event = null;
         $task = null;
-        if (! empty($filters)) {
+        if (!empty($filters)) {
             foreach ($filters as $key => $value) {
                 if ($value != '') {
                     switch ($key) {
@@ -201,14 +201,14 @@ class DocumentController extends Controller
             }
         }
         if (count($sendto_ids) != 0) {
-            $mailto = 'mailto:'.implode(',', Actor::whereIn('id', $sendto_ids)->pluck('email')->all());
+            $mailto = 'mailto:' . implode(',', Actor::whereIn('id', $sendto_ids)->pluck('email')->all());
             $sep = '?';
             $matter = Matter::find($request->matter_id);
             $event = Event::find($request->event_id);
             $task = Task::find($request->task_id);
             $description = implode("\n", $matter->getDescription($member->language));
             if (count($cc_ids) != 0) {
-                $mailto .= $sep.'cc='.implode(',', Actor::whereIn('id', $cc_ids)->pluck('email')->all());
+                $mailto .= $sep . 'cc=' . implode(',', Actor::whereIn('id', $cc_ids)->pluck('email')->all());
                 $sep = '&';
             }
             if ($member->subject != '') {
@@ -218,7 +218,7 @@ class DocumentController extends Controller
                         return $content;
                     }
                 } else {
-                    $mailto .= $sep.'subject='.rawurlencode($content);
+                    $mailto .= $sep . 'subject=' . rawurlencode($content);
                     $sep = '&';
                 }
             }
@@ -229,9 +229,9 @@ class DocumentController extends Controller
                 }
             } else {
                 if ($member->format == 'HTML') {
-                    $mailto .= $sep.'html-body='.rawurlencode($content);
+                    $mailto .= $sep . 'html-body=' . rawurlencode($content);
                 } else {
-                    $mailto .= $sep.'body='.rawurlencode($content);
+                    $mailto .= $sep . 'body=' . rawurlencode($content);
                 }
 
                 return json_encode(['mailto' => $mailto]);

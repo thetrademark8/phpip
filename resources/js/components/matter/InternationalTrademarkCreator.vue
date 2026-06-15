@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>{{ t('Create National Matters') }}</DialogTitle>
@@ -10,18 +13,41 @@
 
       <div class="space-y-6">
         <!-- Validation Status -->
-        <div v-if="validationData" class="space-y-2">
-          <div v-if="!validationData.valid" class="bg-destructive/10 border border-destructive rounded-lg p-4">
-            <h4 class="font-medium text-destructive mb-2">{{ t('Validation Errors') }}</h4>
+        <div
+          v-if="validationData"
+          class="space-y-2"
+        >
+          <div
+            v-if="!validationData.valid"
+            class="bg-destructive/10 border border-destructive rounded-lg p-4"
+          >
+            <h4 class="font-medium text-destructive mb-2">
+              {{ t('Validation Errors') }}
+            </h4>
             <ul class="list-disc list-inside text-sm text-destructive">
-              <li v-for="error in validationData.errors" :key="error">{{ error }}</li>
+              <li
+                v-for="error in validationData.errors"
+                :key="error"
+              >
+                {{ error }}
+              </li>
             </ul>
           </div>
 
-          <div v-if="validationData.warnings && validationData.warnings.length" class="bg-warning/10 border border-warning rounded-lg p-4">
-            <h4 class="font-medium text-warning mb-2">{{ t('Warnings') }}</h4>
+          <div
+            v-if="validationData.warnings && validationData.warnings.length"
+            class="bg-warning/10 border border-warning rounded-lg p-4"
+          >
+            <h4 class="font-medium text-warning mb-2">
+              {{ t('Warnings') }}
+            </h4>
             <ul class="list-disc list-inside text-sm text-warning">
-              <li v-for="warning in validationData.warnings" :key="warning">{{ warning }}</li>
+              <li
+                v-for="warning in validationData.warnings"
+                :key="warning"
+              >
+                {{ warning }}
+              </li>
             </ul>
           </div>
         </div>
@@ -30,7 +56,9 @@
         <div v-if="validationData?.valid">
           <Card>
             <CardHeader>
-              <CardTitle class="text-base">{{ t('Select Target Countries') }}</CardTitle>
+              <CardTitle class="text-base">
+                {{ t('Select Target Countries') }}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div class="space-y-4">
@@ -56,7 +84,11 @@
                         <span class="text-sm">
                           {{ translated(country.name) }} ({{ country.iso }})
                         </span>
-                        <Badge v-if="existingMatters[country.iso]" variant="secondary" class="ml-auto">
+                        <Badge
+                          v-if="existingMatters[country.iso]"
+                          variant="secondary"
+                          class="ml-auto"
+                        >
                           {{ t('Exists') }}
                         </Badge>
                       </label>
@@ -66,13 +98,25 @@
 
                 <!-- Quick Selection Buttons -->
                 <div class="flex gap-2 flex-wrap">
-                  <Button variant="outline" size="sm" @click="selectCommonCountries">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    @click="selectCommonCountries"
+                  >
                     {{ t('Select Common (US, EP, CN, JP)') }}
                   </Button>
-                  <Button variant="outline" size="sm" @click="selectAll">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    @click="selectAll"
+                  >
                     {{ t('Select All Available') }}
                   </Button>
-                  <Button variant="outline" size="sm" @click="clearSelection">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    @click="clearSelection"
+                  >
                     {{ t('Clear Selection') }}
                   </Button>
                 </div>
@@ -85,25 +129,37 @@
         <div v-if="selectedCountries.length > 0">
           <Card>
             <CardHeader>
-              <CardTitle class="text-base">{{ t('Preview - Matters to Create') }}</CardTitle>
+              <CardTitle class="text-base">
+                {{ t('Preview - Matters to Create') }}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div class="space-y-4">
                 <!-- Summary -->
                 <div class="grid grid-cols-2 gap-4 text-center">
                   <div class="bg-primary/10 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-primary">{{ estimation?.to_create || 0 }}</div>
-                    <div class="text-sm text-muted-foreground">{{ t('To Create') }}</div>
+                    <div class="text-2xl font-bold text-primary">
+                      {{ estimation?.to_create || 0 }}
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      {{ t('To Create') }}
+                    </div>
                   </div>
                   <div class="bg-warning/10 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-warning">{{ estimation?.to_skip || 0 }}</div>
-                    <div class="text-sm text-muted-foreground">{{ t('To Skip') }}</div>
+                    <div class="text-2xl font-bold text-warning">
+                      {{ estimation?.to_skip || 0 }}
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      {{ t('To Skip') }}
+                    </div>
                   </div>
                 </div>
 
                 <!-- Matter List Preview -->
                 <div class="space-y-2">
-                  <h4 class="font-medium">{{ t('New matters will be created') }}:</h4>
+                  <h4 class="font-medium">
+                    {{ t('New matters will be created') }}:
+                  </h4>
                   <div class="grid gap-2">
                     <div
                       v-for="countryIso in selectedCountries"
@@ -113,10 +169,16 @@
                       <span class="font-mono text-sm">
                         {{ matter.caseref }}{{ countryIso }}
                       </span>
-                      <Badge v-if="existingMatters[countryIso]" variant="outline">
+                      <Badge
+                        v-if="existingMatters[countryIso]"
+                        variant="outline"
+                      >
                         {{ t('Skip') }}
                       </Badge>
-                      <Badge v-else variant="default">
+                      <Badge
+                        v-else
+                        variant="default"
+                      >
                         {{ t('Create') }}
                       </Badge>
                     </div>
@@ -125,7 +187,9 @@
 
                 <!-- Data to Copy Options -->
                 <div>
-                  <h4 class="font-medium mb-2">{{ t('Data to copy from') }} {{ matter.uid }}:</h4>
+                  <h4 class="font-medium mb-2">
+                    {{ t('Data to copy from') }} {{ matter.uid }}:
+                  </h4>
                   <div class="grid gap-3">
                     <label class="flex items-center space-x-2">
                       <Checkbox v-model:model-value="copyOptions.actors" />
@@ -156,7 +220,10 @@
                   <span>{{ creationProgress }}/{{ selectedCountries.length }}</span>
                 </div>
                 <Progress :value="(creationProgress / selectedCountries.length) * 100" />
-                <div v-if="currentCountry" class="text-sm text-muted-foreground">
+                <div
+                  v-if="currentCountry"
+                  class="text-sm text-muted-foreground"
+                >
                   {{ t('Currently creating') }}: {{ getCountryName(currentCountry) }}
                 </div>
               </div>
@@ -168,13 +235,20 @@
         <div v-if="creationResults">
           <Card>
             <CardHeader>
-              <CardTitle class="text-base">{{ t('Creation Results') }}</CardTitle>
+              <CardTitle class="text-base">
+                {{ t('Creation Results') }}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div class="space-y-4">
                 <!-- Success Summary -->
-                <div v-if="creationResults.created.length" class="space-y-2">
-                  <h4 class="font-medium text-success">{{ t('Successfully Created') }} ({{ creationResults.created.length }})</h4>
+                <div
+                  v-if="creationResults.created.length"
+                  class="space-y-2"
+                >
+                  <h4 class="font-medium text-success">
+                    {{ t('Successfully Created') }} ({{ creationResults.created.length }})
+                  </h4>
                   <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                     <div
                       v-for="created in creationResults.created"
@@ -182,7 +256,10 @@
                       class="flex items-center space-x-2 p-2 bg-success/10 rounded"
                     >
                       <CheckCircle class="h-4 w-4 text-success" />
-                      <Link :href="`/matter/${created.matter_id}`" class="text-sm font-mono hover:underline">
+                      <Link
+                        :href="`/matter/${created.matter_id}`"
+                        class="text-sm font-mono hover:underline"
+                      >
                         {{ created.uid }}
                       </Link>
                     </div>
@@ -190,8 +267,13 @@
                 </div>
 
                 <!-- Skipped Summary -->
-                <div v-if="creationResults.skipped.length" class="space-y-2">
-                  <h4 class="font-medium text-warning">{{ t('Skipped') }} ({{ creationResults.skipped.length }})</h4>
+                <div
+                  v-if="creationResults.skipped.length"
+                  class="space-y-2"
+                >
+                  <h4 class="font-medium text-warning">
+                    {{ t('Skipped') }} ({{ creationResults.skipped.length }})
+                  </h4>
                   <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                     <div
                       v-for="skipped in creationResults.skipped"
@@ -206,8 +288,13 @@
                 </div>
 
                 <!-- Errors Summary -->
-                <div v-if="creationResults.errors.length" class="space-y-2">
-                  <h4 class="font-medium text-destructive">{{ t('Errors') }} ({{ creationResults.errors.length }})</h4>
+                <div
+                  v-if="creationResults.errors.length"
+                  class="space-y-2"
+                >
+                  <h4 class="font-medium text-destructive">
+                    {{ t('Errors') }} ({{ creationResults.errors.length }})
+                  </h4>
                   <div class="space-y-2">
                     <div
                       v-for="error in creationResults.errors"
@@ -216,8 +303,12 @@
                     >
                       <XCircle class="h-4 w-4 text-destructive mt-0.5" />
                       <div>
-                        <div class="text-sm font-medium">{{ getCountryName(error.country) }}</div>
-                        <div class="text-xs text-muted-foreground">{{ error.error }}</div>
+                        <div class="text-sm font-medium">
+                          {{ getCountryName(error.country) }}
+                        </div>
+                        <div class="text-xs text-muted-foreground">
+                          {{ error.error }}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -229,22 +320,29 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="closeDialog" :disabled="isCreating">
+        <Button
+          variant="outline"
+          :disabled="isCreating"
+          @click="closeDialog"
+        >
           {{ t('Close') }}
         </Button>
         <Button
           v-if="!creationResults"
-          @click="createNationalMatters"
           :disabled="!canCreate || isCreating"
           class="min-w-32"
+          @click="createNationalMatters"
         >
-          <Loader2 v-if="isCreating" class="mr-2 h-4 w-4 animate-spin" />
+          <Loader2
+            v-if="isCreating"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ isCreating ? t('Creating...') : t('Create {count} Matter(s)', { count: selectedCountries.length }) }}
         </Button>
         <Button
           v-if="creationResults"
-          @click="viewFamily"
           variant="default"
+          @click="viewFamily"
         >
           {{ t('View Family') }}
         </Button>

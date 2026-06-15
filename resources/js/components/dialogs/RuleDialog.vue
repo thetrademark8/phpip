@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
@@ -10,46 +13,73 @@
         </DialogDescription>
       </DialogHeader>
       
-      <DialogSkeleton v-if="loading" :fields="6" />
+      <DialogSkeleton
+        v-if="loading"
+        :fields="6"
+      />
       
-      <div v-else-if="rule || operation === 'create'" class="space-y-6">
+      <div
+        v-else-if="rule || operation === 'create'"
+        class="space-y-6"
+      >
         <!-- Mode Toggle -->
         <div class="flex items-center justify-between border-b pb-4">
           <div class="flex items-center gap-2">
             <Badge variant="secondary">
               {{ rule?.category ? translated(rule.category.category) : t('rules.fields.category') }}
             </Badge>
-            <Badge v-if="rule?.active" variant="default">
+            <Badge
+              v-if="rule?.active"
+              variant="default"
+            >
               {{ t('rules.fields.active') }}
             </Badge>
-            <Badge v-else-if="rule && !rule.active" variant="destructive">
+            <Badge
+              v-else-if="rule && !rule.active"
+              variant="destructive"
+            >
               {{ t('rules.fields.inactive') }}
             </Badge>
           </div>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canAdmin && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canAdmin && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.viewMode') : t('actions.editMode') }}
           </Button>
           <!-- Debug info -->
-          <div v-if="false" class="text-xs text-gray-500">
+          <div
+            v-if="false"
+            class="text-xs text-gray-500"
+          >
             canAdmin: {{ canAdmin }}, operation: {{ operation }}, user: {{ page.props.auth?.user?.role }}
           </div>
         </div>
 
         <!-- Tabbed Content -->
-        <Tabs defaultValue="main" class="w-full">
+        <Tabs
+          default-value="main"
+          class="w-full"
+        >
           <TabsList class="grid w-full grid-cols-3">
-            <TabsTrigger value="main">{{ $t('rules.tabs.main') }}</TabsTrigger>
-            <TabsTrigger value="conditions">{{ $t('rules.tabs.conditions') }}</TabsTrigger>
-            <TabsTrigger value="cost">{{ $t('rules.tabs.cost') }}</TabsTrigger>
+            <TabsTrigger value="main">
+              {{ $t('rules.tabs.main') }}
+            </TabsTrigger>
+            <TabsTrigger value="conditions">
+              {{ $t('rules.tabs.conditions') }}
+            </TabsTrigger>
+            <TabsTrigger value="cost">
+              {{ $t('rules.tabs.cost') }}
+            </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="main" class="space-y-4 mt-4">
+          <TabsContent
+            value="main"
+            class="space-y-4 mt-4"
+          >
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <Label class="mb-2">{{ t('rules.fields.task') }}</Label>
@@ -134,13 +164,25 @@
                   id="clear_task"
                   v-model="form.clear_task"
                 />
-                <Badge v-else-if="form.clear_task" variant="secondary" class="text-xs">
+                <Badge
+                  v-else-if="form.clear_task"
+                  variant="secondary"
+                  class="text-xs"
+                >
                   ✓ {{ t('rules.fields.clearTask') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ t('rules.fields.clearTask') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="clear_task" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="clear_task"
+                  class="font-normal"
+                >
                   {{ t('rules.fields.clearTaskDescription') }}
                 </Label>
               </div>
@@ -151,13 +193,25 @@
                   id="delete_task"
                   v-model="form.delete_task"
                 />
-                <Badge v-else-if="form.delete_task" variant="secondary" class="text-xs">
+                <Badge
+                  v-else-if="form.delete_task"
+                  variant="secondary"
+                  class="text-xs"
+                >
                   ✓ {{ t('rules.fields.deleteTask') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ t('rules.fields.deleteTask') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="delete_task" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="delete_task"
+                  class="font-normal"
+                >
                   {{ t('rules.fields.deleteTaskDescription') }}
                 </Label>
               </div>
@@ -168,13 +222,25 @@
                   id="active"
                   v-model="form.active"
                 />
-                <Badge v-else-if="form.active" variant="default" class="text-xs">
+                <Badge
+                  v-else-if="form.active"
+                  variant="default"
+                  class="text-xs"
+                >
                   ✓ {{ t('rules.fields.active') }}
                 </Badge>
-                <Badge v-else variant="destructive" class="text-xs">
+                <Badge
+                  v-else
+                  variant="destructive"
+                  class="text-xs"
+                >
                   {{ t('rules.fields.inactive') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="active" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="active"
+                  class="font-normal"
+                >
                   {{ t('rules.fields.activeDescription') }}
                 </Label>
               </div>
@@ -191,7 +257,10 @@
             </div>
           </TabsContent>
           
-          <TabsContent value="conditions" class="space-y-4 mt-4">
+          <TabsContent
+            value="conditions"
+            class="space-y-4 mt-4"
+          >
             <div class="grid grid-cols-3 gap-4">
               <div>
                 <Label class="mb-2">{{ t('rules.fields.days') }}</Label>
@@ -231,13 +300,25 @@
                   id="end_of_month"
                   v-model="form.end_of_month"
                 />
-                <Badge v-else-if="form.end_of_month" variant="secondary" class="text-xs">
+                <Badge
+                  v-else-if="form.end_of_month"
+                  variant="secondary"
+                  class="text-xs"
+                >
                   ✓ {{ t('rules.fields.endOfMonth') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ t('rules.fields.endOfMonth') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="end_of_month" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="end_of_month"
+                  class="font-normal"
+                >
                   {{ t('rules.fields.endOfMonthDescription') }}
                 </Label>
               </div>
@@ -248,13 +329,25 @@
                   id="use_priority"
                   v-model="form.use_priority"
                 />
-                <Badge v-else-if="form.use_priority" variant="secondary" class="text-xs">
+                <Badge
+                  v-else-if="form.use_priority"
+                  variant="secondary"
+                  class="text-xs"
+                >
                   ✓ {{ t('rules.fields.usePriority') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ t('rules.fields.usePriority') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="use_priority" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="use_priority"
+                  class="font-normal"
+                >
                   {{ t('rules.fields.usePriorityDescription') }}
                 </Label>
               </div>
@@ -265,13 +358,25 @@
                   id="recurring"
                   v-model="form.recurring"
                 />
-                <Badge v-else-if="form.recurring" variant="secondary" class="text-xs">
+                <Badge
+                  v-else-if="form.recurring"
+                  variant="secondary"
+                  class="text-xs"
+                >
                   ✓ {{ t('rules.fields.recurring') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ t('rules.fields.recurring') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="recurring" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="recurring"
+                  class="font-normal"
+                >
                   {{ t('rules.fields.recurringDescription') }}
                 </Label>
               </div>
@@ -333,7 +438,10 @@
             </div>
           </TabsContent>
           
-          <TabsContent value="cost" class="space-y-4 mt-4">
+          <TabsContent
+            value="cost"
+            class="space-y-4 mt-4"
+          >
             <div class="grid grid-cols-3 gap-4">
               <div>
                 <Label class="mb-2">{{ t('rules.fields.cost') }}</Label>
@@ -372,23 +480,29 @@
       </div>
         
       <DialogFooter>
-        <Button @click="$emit('update:open', false)" variant="outline">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ t('rules.dialog.cancel') }}
         </Button>
         <Button 
           v-if="canAdmin && isEditMode" 
-          @click="confirmDelete" 
-          variant="destructive"
+          variant="destructive" 
+          @click="confirmDelete"
         >
           <Trash2 class="mr-2 h-4 w-4" />
           {{ t('rules.dialog.delete') }}
         </Button>
         <Button
           v-if="isEditMode || operation === 'create'"
-          @click="handleSubmit"
           :disabled="form.processing"
+          @click="handleSubmit"
         >
-          <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+          <Loader2
+            v-if="form.processing"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ operation === 'create' ? t('rules.dialog.create') : t('rules.dialog.save') }}
         </Button>
       </DialogFooter>

@@ -28,8 +28,8 @@ class InternationalTrademarkService
 
         // Validate international matter
         $validation = $this->validateInternationalMatter($internationalMatter);
-        if (! empty($validation['errors'])) {
-            throw new \InvalidArgumentException('Invalid international matter: '.implode(', ', $validation['errors']));
+        if (!empty($validation['errors'])) {
+            throw new \InvalidArgumentException('Invalid international matter: ' . implode(', ', $validation['errors']));
         }
 
         $results = [
@@ -290,19 +290,19 @@ class InternationalTrademarkService
         }
 
         // Must be an eligible category
-        if (! in_array($matter->category_code, self::ELIGIBLE_CATEGORIES)) {
+        if (!in_array($matter->category_code, self::ELIGIBLE_CATEGORIES)) {
             $errors[] = 'Matter must be a trademark (TM) or design patent (DP) category';
         }
 
         // Must have filing event
-        if (! $matter->filing->exists()) {
+        if (!$matter->filing->exists()) {
             $errors[] = 'Matter must have a filing event';
         }
 
         // Should have registration for best results
         $hasRegistration = $matter->registration->exists() || $matter->grant->exists();
         $warnings = [];
-        if (! $hasRegistration) {
+        if (!$hasRegistration) {
             $warnings[] = 'Matter has no registration event - national matters will be created without registration data';
         }
 

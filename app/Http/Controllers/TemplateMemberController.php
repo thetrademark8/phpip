@@ -23,24 +23,24 @@ class TemplateMemberController extends Controller
         $Format = $request->format;
         $Category = $request->category;
         $template_members = TemplateMember::query();
-        if (! is_null($Summary)) {
+        if (!is_null($Summary)) {
             $template_members = $template_members->where('summary', 'LIKE', "%$Summary%");
         }
-        if (! is_null($Category)) {
+        if (!is_null($Category)) {
             $template_members = $template_members->where('category', 'LIKE', "$Category%");
         }
-        if (! is_null($Language)) {
+        if (!is_null($Language)) {
             $template_members = $template_members->where('language', 'LIKE', "$Language%");
         }
-        if (! is_null($Class)) {
+        if (!is_null($Class)) {
             $template_members = $template_members->whereHas('class', function ($query) use ($Class) {
                 $query->where('name', 'LIKE', "$Class%");
             });
         }
-        if (! is_null($Format)) {
-            $template_members = $template_members->where('format', 'like', $Format.'%');
+        if (!is_null($Format)) {
+            $template_members = $template_members->where('format', 'like', $Format . '%');
         }
-        if (! is_null($Style)) {
+        if (!is_null($Style)) {
             $template_members = $template_members->where('style', 'LIKE', "$Style%");
         }
 

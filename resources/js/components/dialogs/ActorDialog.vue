@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
@@ -7,19 +10,31 @@
         </DialogTitle>
         <DialogDescription>
           {{ operation === 'create' ? t('actors.modal.createDescription') : (isEditMode ? t('actors.modal.editDescription') : t('actors.modal.viewDescription')) }}
-          <span v-if="operation === 'create'" class="block text-xs text-muted-foreground mt-1">
+          <span
+            v-if="operation === 'create'"
+            class="block text-xs text-muted-foreground mt-1"
+          >
             {{ t('actors.modal.requiredHint') }}
           </span>
         </DialogDescription>
       </DialogHeader>
 
-      <DialogSkeleton v-if="loading" :fields="8" />
+      <DialogSkeleton
+        v-if="loading"
+        :fields="8"
+      />
 
-      <div v-else-if="actor || operation === 'create'" class="space-y-6">
+      <div
+        v-else-if="actor || operation === 'create'"
+        class="space-y-6"
+      >
         <!-- Mode Toggle -->
         <div class="flex items-center justify-between border-b pb-4">
           <div class="flex items-center gap-2">
-            <Badge v-if="actor?.warn || (operation === 'create' && actorForm.warn)" variant="destructive">
+            <Badge
+              v-if="actor?.warn || (operation === 'create' && actorForm.warn)"
+              variant="destructive"
+            >
               <AlertTriangle class="mr-1 h-3 w-3" />
               {{ t('actors.fields.warn') }}
             </Badge>
@@ -28,10 +43,10 @@
             </Badge>
           </div>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canWrite && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canWrite && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actors.modal.viewMode') : t('actors.modal.editMode') }}
@@ -39,7 +54,10 @@
         </div>
 
         <!-- Show restriction summary if any fields are restricted -->
-        <div v-if="hasRestrictedFields" class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mb-6">
+        <div
+          v-if="hasRestrictedFields"
+          class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mb-6"
+        >
           <div class="flex items-start gap-2">
             <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
             <div>
@@ -54,16 +72,30 @@
         </div>
         
         <!-- Tabbed Content -->
-        <Tabs default-value="main" class="w-full">
+        <Tabs
+          default-value="main"
+          class="w-full"
+        >
           <TabsList class="grid w-full grid-cols-4">
-            <TabsTrigger value="main">{{ t('actors.show.tabs.main') }}</TabsTrigger>
-            <TabsTrigger value="contact">{{ t('actors.show.tabs.contact') }}</TabsTrigger>
-            <TabsTrigger value="other">{{ t('actors.show.tabs.other') }}</TabsTrigger>
-            <TabsTrigger value="usedin">{{ t('actors.show.tabs.usedin') }}</TabsTrigger>
+            <TabsTrigger value="main">
+              {{ t('actors.show.tabs.main') }}
+            </TabsTrigger>
+            <TabsTrigger value="contact">
+              {{ t('actors.show.tabs.contact') }}
+            </TabsTrigger>
+            <TabsTrigger value="other">
+              {{ t('actors.show.tabs.other') }}
+            </TabsTrigger>
+            <TabsTrigger value="usedin">
+              {{ t('actors.show.tabs.usedin') }}
+            </TabsTrigger>
           </TabsList>
 
           <!-- Main Tab -->
-          <TabsContent value="main" class="space-y-4">
+          <TabsContent
+            value="main"
+            class="space-y-4"
+          >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <div class="flex items-center gap-2 mb-2">
@@ -71,7 +103,10 @@
                     {{ t('actors.fields.name') }}
                     <span class="text-destructive ml-1">*</span>
                   </Label>
-                  <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
+                  <div
+                    v-if="!isFieldEditable('name')"
+                    class="flex items-center gap-1"
+                  >
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
                       <AlertCircle
@@ -95,7 +130,10 @@
                     'border-destructive': actorForm.errors.name
                   }"
                 />
-                <p v-if="actorForm.errors.name" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="actorForm.errors.name"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ actorForm.errors.name }}
                 </p>
               </div>
@@ -181,26 +219,32 @@
               />
             </div>
 
-            <div v-if="isEditMode" class="flex items-center space-x-4">
+            <div
+              v-if="isEditMode"
+              class="flex items-center space-x-4"
+            >
               <div class="flex items-center space-x-2">
                 <Checkbox
                   id="phy_person"
                   v-model="actorForm.phy_person"
                 />
-                <Label htmlFor="phy_person">{{ t('actors.fields.physicalPerson') }}</Label>
+                <Label html-for="phy_person">{{ t('actors.fields.physicalPerson') }}</Label>
               </div>
               <div class="flex items-center space-x-2">
                 <Checkbox
                   id="small_entity"
                   v-model="actorForm.small_entity"
                 />
-                <Label htmlFor="small_entity">{{ t('actors.fields.smallEntity') }}</Label>
+                <Label html-for="small_entity">{{ t('actors.fields.smallEntity') }}</Label>
               </div>
             </div>
           </TabsContent>
 
           <!-- Contact Tab -->
-          <TabsContent value="contact" class="space-y-4">
+          <TabsContent
+            value="contact"
+            class="space-y-4"
+          >
             <div>
               <Label class="mb-2">{{ t('actors.fields.addressMailing') }}</Label>
               <Textarea
@@ -265,7 +309,10 @@
           </TabsContent>
 
           <!-- Other Tab -->
-          <TabsContent value="other" class="space-y-4">
+          <TabsContent
+            value="other"
+            class="space-y-4"
+          >
             <div>
               <Label class="mb-2">{{ t('actors.fields.userName') }}</Label>
               <Input
@@ -278,7 +325,10 @@
             <div>
               <Label class="mb-2">
                 {{ t('actors.fields.defaultRole') }}
-                <span v-if="actorForm.login" class="text-sm text-muted-foreground ml-2">
+                <span
+                  v-if="actorForm.login"
+                  class="text-sm text-muted-foreground ml-2"
+                >
                   {{ t('actors.fields.roleDisabledHint') }}
                 </span>
               </Label>
@@ -291,12 +341,15 @@
               />
             </div>
 
-            <div v-if="isEditMode" class="flex items-center space-x-2">
+            <div
+              v-if="isEditMode"
+              class="flex items-center space-x-2"
+            >
               <Checkbox
                 id="warn"
                 v-model="actorForm.warn"
               />
-              <Label htmlFor="warn">{{ t('actors.fields.warn') }}</Label>
+              <Label html-for="warn">{{ t('actors.fields.warn') }}</Label>
             </div>
 
             <div>
@@ -360,17 +413,37 @@
           </TabsContent>
 
           <!-- Used In Tab -->
-          <TabsContent value="usedin" @update:selected="loadUsedInData">
-            <div v-if="loadingUsedIn" class="flex justify-center py-8">
+          <TabsContent
+            value="usedin"
+            @update:selected="loadUsedInData"
+          >
+            <div
+              v-if="loadingUsedIn"
+              class="flex justify-center py-8"
+            >
               <Loader2 class="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
-            <div v-else class="space-y-6">
+            <div
+              v-else
+              class="space-y-6"
+            >
               <!-- Matter Dependencies -->
               <div>
-                <h3 class="font-semibold mb-3">{{ t('actors.show.matterDependencies') }}</h3>
-                <div v-if="usedInData?.matter_dependencies?.length" class="space-y-2">
-                  <div v-for="(matters, role) in groupedMatterDependencies" :key="role" class="border rounded-lg p-3">
-                    <div class="font-medium mb-2">{{ role }}</div>
+                <h3 class="font-semibold mb-3">
+                  {{ t('actors.show.matterDependencies') }}
+                </h3>
+                <div
+                  v-if="usedInData?.matter_dependencies?.length"
+                  class="space-y-2"
+                >
+                  <div
+                    v-for="(matters, role) in groupedMatterDependencies"
+                    :key="role"
+                    class="border rounded-lg p-3"
+                  >
+                    <div class="font-medium mb-2">
+                      {{ role }}
+                    </div>
                     <div class="flex flex-wrap gap-2">
                       <Badge
                         v-for="matter in matters"
@@ -384,17 +457,31 @@
                     </div>
                   </div>
                 </div>
-                <div v-else class="text-muted-foreground">
+                <div
+                  v-else
+                  class="text-muted-foreground"
+                >
                   {{ t('actors.show.noDependencies') }}
                 </div>
               </div>
 
               <!-- Inter-Actor Dependencies -->
               <div>
-                <h3 class="font-semibold mb-3">{{ t('actors.show.interActorDependencies') }}</h3>
-                <div v-if="usedInData?.other_dependencies?.length" class="space-y-2">
-                  <div v-for="(actors, dependency) in groupedOtherDependencies" :key="dependency" class="border rounded-lg p-3">
-                    <div class="font-medium mb-2">{{ dependency }}</div>
+                <h3 class="font-semibold mb-3">
+                  {{ t('actors.show.interActorDependencies') }}
+                </h3>
+                <div
+                  v-if="usedInData?.other_dependencies?.length"
+                  class="space-y-2"
+                >
+                  <div
+                    v-for="(actors, dependency) in groupedOtherDependencies"
+                    :key="dependency"
+                    class="border rounded-lg p-3"
+                  >
+                    <div class="font-medium mb-2">
+                      {{ dependency }}
+                    </div>
                     <div class="flex flex-wrap gap-2">
                       <Button
                         v-for="relatedActor in actors"
@@ -409,7 +496,10 @@
                     </div>
                   </div>
                 </div>
-                <div v-else class="text-muted-foreground">
+                <div
+                  v-else
+                  class="text-muted-foreground"
+                >
                   {{ t('actors.show.noDependencies') }}
                 </div>
               </div>
@@ -421,24 +511,30 @@
       <DialogFooter>
         <div class="flex justify-between w-full">
           <Button
-              v-if="canDelete && operation !== 'create'"
-              @click="confirmDelete"
-              variant="destructive"
+            v-if="canDelete && operation !== 'create'"
+            variant="destructive"
+            @click="confirmDelete"
           >
             <Trash2 class="mr-2 h-4 w-4" />
             {{ t('actors.show.delete') }}
           </Button>
 
           <div class="flex gap-2">
-            <Button @click="$emit('update:open', false)" variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('update:open', false)"
+            >
               {{ t('actions.cancel') }}
             </Button>
             <Button
-                v-if="isEditMode || operation === 'create'"
-                @click="handleSubmit"
-                :disabled="actorForm.processing"
+              v-if="isEditMode || operation === 'create'"
+              :disabled="actorForm.processing"
+              @click="handleSubmit"
             >
-              <Loader2 v-if="actorForm.processing" class="mr-2 h-4 w-4 animate-spin" />
+              <Loader2
+                v-if="actorForm.processing"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
               {{ operation === 'create' ? t('actors.modal.create') : t('actors.modal.save') }}
             </Button>
           </div>

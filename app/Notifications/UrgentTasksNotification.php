@@ -102,9 +102,9 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
     private function getSubject(int $totalTasks): string
     {
         return match ($this->language) {
-            'fr' => "[phpIP] Tâches urgentes ({$totalTasks} tâche".($totalTasks > 1 ? 's' : '').' nécessitent votre attention)',
-            'de' => "[phpIP] Dringende Aufgaben ({$totalTasks} Aufgabe".($totalTasks > 1 ? 'n' : '').' erfordern Ihre Aufmerksamkeit)',
-            default => "[phpIP] Urgent Tasks ({$totalTasks} task".($totalTasks > 1 ? 's' : '').' require your attention)',
+            'fr' => "[phpIP] Tâches urgentes ({$totalTasks} tâche" . ($totalTasks > 1 ? 's' : '') . ' nécessitent votre attention)',
+            'de' => "[phpIP] Dringende Aufgaben ({$totalTasks} Aufgabe" . ($totalTasks > 1 ? 'n' : '') . ' erfordern Ihre Aufmerksamkeit)',
+            default => "[phpIP] Urgent Tasks ({$totalTasks} task" . ($totalTasks > 1 ? 's' : '') . ' require your attention)',
         };
     }
 
@@ -128,20 +128,20 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
 
         if ($overdueCount > 0) {
             $part = match ($this->language) {
-                'fr' => "{$overdueCount} tâche".($overdueCount > 1 ? 's' : '').' en retard',
-                'de' => "{$overdueCount} überfällige Aufgabe".($overdueCount > 1 ? 'n' : ''),
-                default => "{$overdueCount} overdue task".($overdueCount > 1 ? 's' : ''),
+                'fr' => "{$overdueCount} tâche" . ($overdueCount > 1 ? 's' : '') . ' en retard',
+                'de' => "{$overdueCount} überfällige Aufgabe" . ($overdueCount > 1 ? 'n' : ''),
+                default => "{$overdueCount} overdue task" . ($overdueCount > 1 ? 's' : ''),
             };
-            $parts[] = '🚨 '.$part;
+            $parts[] = '🚨 ' . $part;
         }
 
         if ($dueSoonCount > 0) {
             $part = match ($this->language) {
-                'fr' => "{$dueSoonCount} tâche".($dueSoonCount > 1 ? 's' : '').' à échéance proche',
-                'de' => "{$dueSoonCount} bald fällige Aufgabe".($dueSoonCount > 1 ? 'n' : ''),
-                default => "{$dueSoonCount} task".($dueSoonCount > 1 ? 's' : '').' due soon',
+                'fr' => "{$dueSoonCount} tâche" . ($dueSoonCount > 1 ? 's' : '') . ' à échéance proche',
+                'de' => "{$dueSoonCount} bald fällige Aufgabe" . ($dueSoonCount > 1 ? 'n' : ''),
+                default => "{$dueSoonCount} task" . ($dueSoonCount > 1 ? 's' : '') . ' due soon',
             };
-            $parts[] = '⏰ '.$part;
+            $parts[] = '⏰ ' . $part;
         }
 
         $intro = match ($this->language) {
@@ -150,7 +150,7 @@ class UrgentTasksNotification extends Notification implements ShouldQueue
             default => 'You have tasks that require your immediate attention:',
         };
 
-        return $intro."\n\n".implode("\n", $parts);
+        return $intro . "\n\n" . implode("\n", $parts);
     }
 
     /**

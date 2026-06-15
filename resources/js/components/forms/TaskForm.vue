@@ -63,12 +63,15 @@
       </FormField>
 
       <!-- Status fields (for existing tasks) -->
-      <div v-if="task" class="space-y-4">
+      <div
+        v-if="task"
+        class="space-y-4"
+      >
         <!-- Done checkbox -->
         <div class="flex items-center space-x-2">
           <Checkbox
-            v-model:checked="form.done"
             id="done"
+            v-model:checked="form.done"
             @update:checked="handleDoneChange"
           />
           <Label for="done">{{ t('Task completed') }}</Label>
@@ -89,7 +92,10 @@
       </div>
 
       <!-- Cost and Fee fields (for renewals) -->
-      <div v-if="showFinancialFields" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div
+        v-if="showFinancialFields"
+        class="grid grid-cols-1 md:grid-cols-3 gap-4"
+      >
         <FormField
           :label="t('Cost')"
           name="cost"
@@ -126,11 +132,21 @@
               <SelectValue :placeholder="t('Select currency')" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="USD">USD</SelectItem>
-              <SelectItem value="EUR">EUR</SelectItem>
-              <SelectItem value="GBP">GBP</SelectItem>
-              <SelectItem value="JPY">JPY</SelectItem>
-              <SelectItem value="CHF">CHF</SelectItem>
+              <SelectItem value="USD">
+                USD
+              </SelectItem>
+              <SelectItem value="EUR">
+                EUR
+              </SelectItem>
+              <SelectItem value="GBP">
+                GBP
+              </SelectItem>
+              <SelectItem value="JPY">
+                JPY
+              </SelectItem>
+              <SelectItem value="CHF">
+                CHF
+              </SelectItem>
             </SelectContent>
           </Select>
         </FormField>
@@ -142,8 +158,8 @@
           v-if="onCancel"
           type="button"
           variant="outline"
-          @click="onCancel"
           :disabled="form.processing"
+          @click="onCancel"
         >
           {{ t('Cancel') }}
         </Button>
@@ -151,7 +167,10 @@
           type="submit"
           :disabled="form.processing"
         >
-          <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+          <Loader2
+            v-if="form.processing"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ task ? t('Update') : t('Create') }}
         </Button>
       </div>

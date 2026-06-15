@@ -109,7 +109,7 @@ class TaskController extends Controller
 
         // Handle detail field
         if ($request->has('detail')) {
-            if (! $task->getTranslation('detail', 'en', false)) {
+            if (!$task->getTranslation('detail', 'en', false)) {
                 // If setting a non-empty value and there was no previous English translation,
                 // ensure it's set for both current locale and fallback
                 $task->setTranslation('detail', 'en', $request->detail);

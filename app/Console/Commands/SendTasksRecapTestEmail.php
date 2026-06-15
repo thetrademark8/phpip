@@ -25,14 +25,14 @@ class SendTasksRecapTestEmail extends Command
     {
         $email = $this->argument('email');
 
-        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->error("Invalid email address: {$email}");
 
             return self::FAILURE;
         }
 
         $type = strtolower((string) $this->option('type'));
-        if (! in_array($type, ['summary', 'urgent'], true)) {
+        if (!in_array($type, ['summary', 'urgent'], true)) {
             $this->error("Invalid --type '{$type}'. Use 'summary' or 'urgent'.");
 
             return self::FAILURE;
@@ -40,7 +40,7 @@ class SendTasksRecapTestEmail extends Command
 
         $language = $this->option('language') ?: Config::get('app.locale', 'en');
         $supported = ['en', 'fr', 'de'];
-        if (! in_array($language, $supported, true)) {
+        if (!in_array($language, $supported, true)) {
             $this->warn("Unsupported language '{$language}', falling back to 'en'.");
             $language = 'en';
         }
@@ -73,7 +73,7 @@ class SendTasksRecapTestEmail extends Command
             // even if QUEUE_CONNECTION is configured for async processing.
             Notification::route('mail', $email)->notifyNow($notification);
         } catch (\Throwable $e) {
-            $this->error('Failed to send recap email: '.$e->getMessage());
+            $this->error('Failed to send recap email: ' . $e->getMessage());
 
             return self::FAILURE;
         }
@@ -96,7 +96,7 @@ class SendTasksRecapTestEmail extends Command
         // Pick an agent: explicit --agent, else the responsible of the first task, else any actor.
         $agent = $this->resolveAgent($agentLogin, $tasks);
 
-        if (! $agent) {
+        if (!$agent) {
             $this->error('No agent could be resolved. Provide --agent=<login> or seed at least one actor.');
 
             return self::FAILURE;
@@ -111,15 +111,15 @@ class SendTasksRecapTestEmail extends Command
         $this->line("  Recipient : {$email}");
         $this->line("  Agent     : {$agent->login} ({$agent->name})");
         $this->line("  Language  : {$language}");
-        $this->line('  Overdue   : '.count($overdueTasks));
-        $this->line('  Due soon  : '.count($dueSoonTasks));
+        $this->line('  Overdue   : ' . count($overdueTasks));
+        $this->line('  Due soon  : ' . count($dueSoonTasks));
 
         try {
             $notification = new UrgentTasksNotification($agent, $overdueTasks, $dueSoonTasks, $language);
 
             Notification::route('mail', $email)->notifyNow($notification);
         } catch (\Throwable $e) {
-            $this->error('Failed to send urgent tasks email: '.$e->getMessage());
+            $this->error('Failed to send urgent tasks email: ' . $e->getMessage());
 
             return self::FAILURE;
         }
