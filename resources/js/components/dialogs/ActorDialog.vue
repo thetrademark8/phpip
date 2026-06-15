@@ -7,6 +7,9 @@
         </DialogTitle>
         <DialogDescription>
           {{ operation === 'create' ? t('actors.modal.createDescription') : (isEditMode ? t('actors.modal.editDescription') : t('actors.modal.viewDescription')) }}
+          <span v-if="operation === 'create'" class="block text-xs text-muted-foreground mt-1">
+            {{ t('actors.modal.requiredHint') }}
+          </span>
         </DialogDescription>
       </DialogHeader>
 
@@ -64,12 +67,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <div class="flex items-center gap-2 mb-2">
-                  <Label>{{ t('actors.fields.name') }}</Label>
+                  <Label>
+                    {{ t('actors.fields.name') }}
+                    <span class="text-destructive ml-1">*</span>
+                  </Label>
                   <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
-                      <AlertCircle 
-                        class="h-3 w-3 text-orange-500 cursor-help" 
+                      <AlertCircle
+                        class="h-3 w-3 text-orange-500 cursor-help"
                         @click="showRestrictionFeedback('name')"
                       />
                       <div class="absolute left-0 top-5 bg-popover border rounded-md p-2 text-xs z-50 shadow-lg min-w-64 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -80,12 +86,18 @@
                 </div>
                 <Input
                   v-model="actorForm.name"
+                  required
+                  aria-required="true"
                   :disabled="!isFieldEditable('name') || (!isEditMode && operation !== 'create')"
                   :placeholder="t('actors.placeholders.name')"
                   :class="{
-                    'bg-muted/50 cursor-not-allowed text-muted-foreground opacity-75': !isFieldEditable('name')
+                    'bg-muted/50 cursor-not-allowed text-muted-foreground opacity-75': !isFieldEditable('name'),
+                    'border-destructive': actorForm.errors.name
                   }"
                 />
+                <p v-if="actorForm.errors.name" class="text-sm text-destructive mt-1">
+                  {{ actorForm.errors.name }}
+                </p>
               </div>
               <div>
                 <Label class="mb-2">{{ t('actors.fields.firstName') }}</Label>
