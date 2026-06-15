@@ -229,7 +229,7 @@ class ActorController extends Controller
             ]);
 
             if ($request->header('X-Inertia')) {
-                return redirect()->route('actor.show', $actor)
+                return redirect()->route('actor.index')
                     ->with('success', __('actor.messages.created_successfully'));
             }
 

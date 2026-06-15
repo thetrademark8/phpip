@@ -5,6 +5,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import { toast } from 'vue-sonner';
 import { createI18nInstance, updateI18nLocale } from './plugins/i18n';
 
 const appName = import.meta.env.VITE_APP_NAME || 'phpIP';
@@ -63,19 +64,32 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(i18n);
             
-        // Listen for Inertia navigation to update locale
+        // Listen for Inertia navigation to update locale and display flash messages
         if (typeof window !== 'undefined') {
+            const displayFlashMessages = (flash) => {
+                if (!flash) return;
+                if (flash.success) toast.success(flash.success);
+                if (flash.error) toast.error(flash.error);
+                if (flash.warning) toast.warning(flash.warning);
+                if (flash.info) toast.info(flash.info);
+            };
+
+            // Display flash messages from the initial page load
+            displayFlashMessages(props.initialPage?.props?.flash);
+
             document.addEventListener('inertia:success', (event) => {
                 const newPage = event.detail.page;
                 const newLocale = newPage?.props?.locale;
                 const newTranslations = newPage?.props?.translations;
-                
+
                 if (newLocale && newTranslations) {
                     updateI18nLocale(i18n, newLocale, newTranslations);
                 }
+
+                displayFlashMessages(newPage?.props?.flash);
             });
         }
-        
+
         return app.mount(el);
     },
     progress: {

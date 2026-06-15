@@ -25,11 +25,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, watch } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { router } from '@inertiajs/vue3'
 import Navigation from '@/components/Navigation.vue'
 import Footer from '@/components/Footer.vue'
-import { toast } from 'vue-sonner'
 import { Toaster } from '@/components/ui/sonner'
 import 'vue-sonner/style.css' // vue-sonner v2 requires this import
 import MatterDialog from '@/components/dialogs/MatterDialog.vue'
@@ -100,28 +99,4 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('openCreateMatterWithCategory', handleOpenCreateMatterWithCategory)
 })
-
-// Get page instance
-const page = usePage()
-
-// Watch for flash messages and display toasts
-watch(
-  () => page.props.flash,
-  (flash) => {
-    console.log(flash)
-    if (flash?.success) {
-      toast.success(flash.success)
-    }
-    if (flash?.error) {
-      toast.error(flash.error)
-    }
-    if (flash?.warning) {
-      toast.warning(flash.warning)
-    }
-    if (flash?.info) {
-      toast.info(flash.info)
-    }
-  },
-  { immediate: true, deep: true }
-)
 </script>
