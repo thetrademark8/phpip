@@ -8,6 +8,7 @@ de développement.
 
 | Document | Description |
 |----------|-------------|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Organisation du code (couches backend, Inertia/Vue, domaine métier). |
 | [TABLE_INTEGRATION.md](TABLE_INTEGRATION.md) | Pattern standard d'intégration des tableaux (DataTable + pagination). |
 | [TRANSLATIONS.md](TRANSLATIONS.md) | Gestion des traductions front (`t()`) et base de données (`translated()`). |
 | [LOCALIZATION.md](LOCALIZATION.md) | Localisation de l'application (langues, formats de date, refresh des traductions). |
@@ -18,12 +19,6 @@ de développement.
 |----------|-------------|
 | [AUTOMATIC_STATUS_MANAGEMENT.md](AUTOMATIC_STATUS_MANAGEMENT.md) | Annulation automatique des renouvellements sur statut terminal. |
 | [TASK_REMINDERS.md](TASK_REMINDERS.md) | Configuration des e-mails de rappel hebdomadaires (SMTP + cron). |
-
-## Vision produit
-
-| Document | Description |
-|----------|-------------|
-| [ROADMAP.md](ROADMAP.md) | Cahier des charges de la refonte (fonctionnalités à retirer, must-have, nice-to-have). |
 
 ## Installation
 

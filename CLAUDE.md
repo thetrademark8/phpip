@@ -54,12 +54,12 @@ composer analyse                    # PHPStan
 All project documentation is located in the `docs/` directory. Start with
 [`docs/README.md`](docs/README.md) for the full index. Key references:
 
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — Code organization (backend layers, Inertia/Vue, domain model)
 - [`docs/TABLE_INTEGRATION.md`](docs/TABLE_INTEGRATION.md) — Complete guide for implementing tables
 - [`docs/TRANSLATIONS.md`](docs/TRANSLATIONS.md) — Comprehensive translation handling guide
 - [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — Application localization (languages, date formats)
 - [`docs/AUTOMATIC_STATUS_MANAGEMENT.md`](docs/AUTOMATIC_STATUS_MANAGEMENT.md) — Automatic renewal cancellation on terminal status
 - [`docs/TASK_REMINDERS.md`](docs/TASK_REMINDERS.md) — Weekly reminder email setup (SMTP + cron)
-- [`docs/ROADMAP.md`](docs/ROADMAP.md) — Functional roadmap for the fork
 
 Server installation instructions live in the [`doc/`](doc/) directory.
 
