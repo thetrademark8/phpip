@@ -14,7 +14,7 @@ Head for the [Wiki](https://github.com/jjdejong/phpip/wiki) for further informat
 
 Big change. You need to run `git pull; composer install; php artisan migrate`. 
 
-For further information, read this comprehensive [guide](LOCALIZATION.md).
+For further information, read this comprehensive [guide](docs/LOCALIZATION.md).
 
 ## 2025-03-19 Implemented localization for the UI in English, French and German
 
