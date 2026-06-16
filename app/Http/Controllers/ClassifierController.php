@@ -71,7 +71,7 @@ class ClassifierController extends Controller
 
     public function update(Request $request, Classifier $classifier)
     {
-        if ($classifier->type->main_display && ! $request->filled('value')) {
+        if ($classifier->type->main_display && !$request->filled('value')) {
             $classifier->delete();
         } else {
             $request->merge(['updater' => Auth::user()->login]);

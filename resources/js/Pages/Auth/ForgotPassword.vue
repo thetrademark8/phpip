@@ -2,17 +2,25 @@
   <GuestLayout>
     <Card>
       <CardHeader>
-        <CardTitle class="text-2xl text-center">Forgot Password</CardTitle>
+        <CardTitle class="text-2xl text-center">
+          Forgot Password
+        </CardTitle>
         <CardDescription class="text-center">
           Enter your username and we'll send you a password reset link.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div
+          v-if="status"
+          class="mb-4 font-medium text-sm text-green-600"
+        >
           {{ status }}
         </div>
 
-        <form @submit.prevent="submit" class="space-y-6">
+        <form
+          class="space-y-6"
+          @submit.prevent="submit"
+        >
           <!-- Username Field -->
           <FormField>
             <Label for="login">User name</Label>
@@ -25,7 +33,10 @@
               autofocus
               :class="{ 'border-destructive': form.errors.login }"
             />
-            <p v-if="form.errors.login" class="text-sm text-destructive mt-1">
+            <p
+              v-if="form.errors.login"
+              class="text-sm text-destructive mt-1"
+            >
               {{ form.errors.login }}
             </p>
           </FormField>

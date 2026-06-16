@@ -53,7 +53,7 @@ class ImportTaskRules extends Command
     {
         $filePath = $this->option('file') ?? database_path(self::DEFAULT_FILE);
 
-        if (! file_exists($filePath)) {
+        if (!file_exists($filePath)) {
             $this->error("File not found: {$filePath}");
 
             return self::FAILURE;
@@ -71,7 +71,7 @@ class ImportTaskRules extends Command
         if ($this->option('force')) {
             $count = DB::table('task_rules')->count();
 
-            if (! $this->confirm("This will delete all {$count} existing task rules. Continue?")) {
+            if (!$this->confirm("This will delete all {$count} existing task rules. Continue?")) {
                 $this->info('Import cancelled.');
 
                 return self::SUCCESS;

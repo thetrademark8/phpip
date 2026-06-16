@@ -38,7 +38,7 @@ class MatterExportService
         $export_csv = fopen('php://memory', 'w');
 
         // Write BOM for UTF-8 encoding to ensure proper display of accented characters
-        fprintf($export_csv, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($export_csv, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
         // Write the column captions to the CSV file.
         fputcsv($export_csv, $captions, ';');
@@ -83,7 +83,7 @@ class MatterExportService
         rewind($export_csv);
 
         // Generate the filename for the CSV file.
-        $filename = Now()->isoFormat('YMMDDHHmmss').'_matters.csv';
+        $filename = Now()->isoFormat('YMMDDHHmmss') . '_matters.csv';
 
         // Return a streamed response for downloading the CSV file.
         return response()->stream(
@@ -93,7 +93,7 @@ class MatterExportService
             200,
             [
                 'Content-Type' => 'text/csv; charset=UTF-8',
-                'Content-Disposition' => 'attachment; filename='.$filename,
+                'Content-Disposition' => 'attachment; filename=' . $filename,
             ]
         );
     }

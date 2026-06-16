@@ -33,7 +33,7 @@ class ImportEventNames extends Command
     {
         $filePath = $this->option('file') ?? database_path(self::DEFAULT_FILE);
 
-        if (! file_exists($filePath)) {
+        if (!file_exists($filePath)) {
             $this->error("File not found: {$filePath}");
 
             return self::FAILURE;
@@ -51,7 +51,7 @@ class ImportEventNames extends Command
         if ($this->option('force')) {
             $count = DB::table('event_name')->count();
 
-            if (! $this->confirm("This will delete all {$count} existing event names. Continue?")) {
+            if (!$this->confirm("This will delete all {$count} existing event names. Continue?")) {
                 $this->info('Import cancelled.');
 
                 return self::SUCCESS;

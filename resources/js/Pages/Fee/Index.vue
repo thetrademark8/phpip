@@ -4,13 +4,19 @@
       <!-- Header with actions -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">{{ t('Fees') }}</h1>
+          <h1 class="text-2xl font-bold tracking-tight">
+            {{ t('Fees') }}
+          </h1>
           <p class="text-muted-foreground">
             {{ t('Manage costs and fees') }}
           </p>
         </div>
         <div class="flex gap-2">
-          <Button @click="openCreateDialog" v-if="canWrite" size="sm">
+          <Button
+            v-if="canWrite"
+            size="sm"
+            @click="openCreateDialog"
+          >
             <Plus class="mr-2 h-4 w-4" />
             {{ t('Add a new line') }}
           </Button>
@@ -18,24 +24,39 @@
       </div>
 
       <!-- Filters Card -->
-      <Collapsible v-model:open="isFiltersOpen" @update:open="saveFilterState">
+      <Collapsible
+        v-model:open="isFiltersOpen"
+        @update:open="saveFilterState"
+      >
         <Card>
           <CardHeader class="pb-3">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <CollapsibleTrigger as-child>
-                  <Button variant="ghost" size="sm" class="p-0 h-auto">
-                    <ChevronDown v-if="isFiltersOpen" class="h-4 w-4" />
-                    <ChevronUp v-else class="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    class="p-0 h-auto"
+                  >
+                    <ChevronDown
+                      v-if="isFiltersOpen"
+                      class="h-4 w-4"
+                    />
+                    <ChevronUp
+                      v-else
+                      class="h-4 w-4"
+                    />
                   </Button>
                 </CollapsibleTrigger>
-                <CardTitle class="text-base">{{ t('Filters') }}</CardTitle>
+                <CardTitle class="text-base">
+                  {{ t('Filters') }}
+                </CardTitle>
               </div>
               <Button
                 v-if="hasActiveFilters"
-                @click="clearFilters"
                 variant="ghost"
                 size="sm"
+                @click="clearFilters"
               >
                 Clear all
               </Button>
@@ -53,7 +74,10 @@
       </Collapsible>
 
       <!-- Active Filters -->
-      <div v-if="activeFilterBadges.length > 0" class="flex flex-wrap gap-2">
+      <div
+        v-if="activeFilterBadges.length > 0"
+        class="flex flex-wrap gap-2"
+      >
         <Badge
           v-for="badge in activeFilterBadges"
           :key="badge.key"
@@ -80,20 +104,28 @@
               <TableHead>
                 <!-- Group Headers -->
                 <TableRow class="text-primary-foreground">
-                  <TableHeader class="w-1/4 text-center border-r border-primary-foreground/20"></TableHeader>
+                  <TableHeader class="w-1/4 text-center border-r border-primary-foreground/20" />
                   <TableHeader class="w-1/3 text-center border-r border-primary-foreground/20">
                     <div class="grid grid-cols-2">
-                      <div class="py-2 border-r border-primary-foreground/20">{{ t('Standard') }}</div>
-                      <div class="py-2">{{ t('Reduced') }}</div>
+                      <div class="py-2 border-r border-primary-foreground/20">
+                        {{ t('Standard') }}
+                      </div>
+                      <div class="py-2">
+                        {{ t('Reduced') }}
+                      </div>
                     </div>
                   </TableHeader>
                   <TableHeader class="w-1/3 text-center border-r border-primary-foreground/20">
                     <div class="grid grid-cols-2">
-                      <div class="py-2 border-r border-primary-foreground/20 bg-info/20">{{ t('Grace Standard') }}</div>
-                      <div class="py-2">{{ t('Grace Reduced') }}</div>
+                      <div class="py-2 border-r border-primary-foreground/20 bg-info/20">
+                        {{ t('Grace Standard') }}
+                      </div>
+                      <div class="py-2">
+                        {{ t('Grace Reduced') }}
+                      </div>
                     </div>
                   </TableHeader>
-                  <TableHeader class="w-auto text-center"></TableHeader>
+                  <TableHeader class="w-auto text-center" />
                 </TableRow>
                 
                 <!-- Sub Headers -->
@@ -108,28 +140,49 @@
                   </TableHeader>
                   <TableHeader class="border-x border-primary-foreground/20">
                     <div class="grid grid-cols-4 gap-1 text-center">
-                      <div class="py-1">{{ t('Cost') }}</div>
-                      <div class="py-1">{{ t('Fee') }}</div>
-                      <div class="py-1">{{ t('Cost') }}</div>
-                      <div class="py-1">{{ t('Fee') }}</div>
+                      <div class="py-1">
+                        {{ t('Cost') }}
+                      </div>
+                      <div class="py-1">
+                        {{ t('Fee') }}
+                      </div>
+                      <div class="py-1">
+                        {{ t('Cost') }}
+                      </div>
+                      <div class="py-1">
+                        {{ t('Fee') }}
+                      </div>
                     </div>
                   </TableHeader>
                   <TableHeader class="border-x border-primary-foreground/20">
                     <div class="grid grid-cols-4 gap-1 text-center">
-                      <div class="py-1">{{ t('Cost') }}</div>
-                      <div class="py-1">{{ t('Fee') }}</div>
-                      <div class="py-1">{{ t('Cost') }}</div>
-                      <div class="py-1">{{ t('Fee') }}</div>
+                      <div class="py-1">
+                        {{ t('Cost') }}
+                      </div>
+                      <div class="py-1">
+                        {{ t('Fee') }}
+                      </div>
+                      <div class="py-1">
+                        {{ t('Cost') }}
+                      </div>
+                      <div class="py-1">
+                        {{ t('Fee') }}
+                      </div>
                     </div>
                   </TableHeader>
-                  <TableHeader class="text-center">{{ t('Currency') }}</TableHeader>
+                  <TableHeader class="text-center">
+                    {{ t('Currency') }}
+                  </TableHeader>
                 </TableRow>
               </TableHead>
               
               <!-- Table Body -->
               <TableBody>
                 <template v-if="loading">
-                  <TableRow v-for="i in 10" :key="i">
+                  <TableRow
+                    v-for="i in 10"
+                    :key="i"
+                  >
                     <TableCell colspan="4">
                       <div class="flex space-x-4">
                         <Skeleton class="h-4 w-full" />
@@ -239,7 +292,10 @@
                   </TableRow>
                 </template>
                 <TableRow v-else>
-                  <TableCell colspan="4" class="text-center py-8">
+                  <TableCell
+                    colspan="4"
+                    class="text-center py-8"
+                  >
                     {{ t('No fees found') }}
                   </TableCell>
                 </TableRow>

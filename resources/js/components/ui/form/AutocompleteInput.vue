@@ -4,13 +4,13 @@
       ref="inputRef"
       v-model="displayValue"
       v-bind="$attrs"
+      :class="cn('w-full', inputClass)"
+      :placeholder="placeholder"
+      autocomplete="off"
       @input="handleInput"
       @focus="handleFocus"
       @blur="handleBlur"
       @keydown="handleKeydown"
-      :class="cn('w-full', inputClass)"
-      :placeholder="placeholder"
-      autocomplete="off"
     />
     
     <!-- Loading indicator -->
@@ -31,16 +31,19 @@
           v-for="(suggestion, index) in filteredSuggestions"
           :key="suggestion.key || suggestion.id || index"
           type="button"
-          @mousedown.prevent="selectSuggestion(suggestion)"
           class="flex w-full items-center px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
           :class="{
             'bg-accent text-accent-foreground': highlightedIndex === index
           }"
+          @mousedown.prevent="selectSuggestion(suggestion)"
         >
           <span class="flex-1 text-left">
             {{ getItemLabel(suggestion) }}
           </span>
-          <span v-if="suggestion.subtitle" class="ml-2 text-xs text-muted-foreground">
+          <span
+            v-if="suggestion.subtitle"
+            class="ml-2 text-xs text-muted-foreground"
+          >
             {{ suggestion.subtitle }}
           </span>
         </button>

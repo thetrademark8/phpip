@@ -34,11 +34,17 @@
                 placeholder="Name"
                 @saved="emit('update', { ...actor, display_name: $event })"
               />
-              <span v-else :class="{ 'italic text-muted-foreground': actor.inherited }">
+              <span
+                v-else
+                :class="{ 'italic text-muted-foreground': actor.inherited }"
+              >
                 {{ actor.display_name || actor.name }}{{ actor.rate && actor.rate != 100 ? ` (${actor.rate}%)` : '' }}
               </span>
             </div>
-            <div v-if="actor.company_name" class="text-sm text-muted-foreground">
+            <div
+              v-if="actor.company_name"
+              class="text-sm text-muted-foreground"
+            >
               <EditableField
                 v-if="enableInlineEdit && !actor.inherited && canWrite"
                 :model-value="actor.company_name"
@@ -48,7 +54,10 @@
                 value-class="text-sm text-muted-foreground"
                 @saved="emit('update', { ...actor, company_name: $event })"
               />
-              <span v-else :class="{ 'italic': actor.inherited }">
+              <span
+                v-else
+                :class="{ 'italic': actor.inherited }"
+              >
                 {{ actor.company_name }}
               </span>
             </div>
@@ -63,7 +72,10 @@
                   value-class="text-sm text-muted-foreground"
                   @saved="emit('update', { ...actor, email: $event })"
                 />
-                <span v-else :class="{ 'italic': actor.inherited }">
+                <span
+                  v-else
+                  :class="{ 'italic': actor.inherited }"
+                >
                   {{ actor.email }}
                 </span>
               </span>
@@ -77,14 +89,20 @@
                   value-class="text-sm text-muted-foreground"
                   @saved="emit('update', { ...actor, phone: $event })"
                 />
-                <span v-else :class="{ 'italic': actor.inherited }">
+                <span
+                  v-else
+                  :class="{ 'italic': actor.inherited }"
+                >
                   {{ actor.phone }}
                 </span>
               </span>
             </div>
           </div>
           
-          <div v-if="editable" class="flex items-center gap-2 ml-4">
+          <div
+            v-if="editable"
+            class="flex items-center gap-2 ml-4"
+          >
             <Button
               v-if="canWrite"
               size="icon"

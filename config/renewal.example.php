@@ -100,7 +100,7 @@ return [
 <batch-payment dtd-version="" date-produced="" ro="">
   <header>
   	<sender>
-  		<name>'.env('COMPANY_NAME', 'NAME').'</name>
+  		<name>' . env('COMPANY_NAME', 'NAME') . '</name>
   		<registered-number></registered-number>
   	</sender>
     <send-date></send-date>

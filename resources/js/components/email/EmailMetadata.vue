@@ -4,7 +4,11 @@
     <div v-if="recipients?.length">
       <Label class="text-muted-foreground text-xs">{{ $t('email.to') }}</Label>
       <div class="flex flex-wrap gap-1 mt-1">
-        <Badge v-for="r in recipients" :key="r.id" variant="outline">
+        <Badge
+          v-for="r in recipients"
+          :key="r.id"
+          variant="outline"
+        >
           {{ r.name }} &lt;{{ r.email }}&gt;
         </Badge>
       </div>
@@ -14,7 +18,11 @@
     <div v-if="cc?.length">
       <Label class="text-muted-foreground text-xs">CC</Label>
       <div class="flex flex-wrap gap-1 mt-1">
-        <Badge v-for="email in cc" :key="email" variant="secondary">
+        <Badge
+          v-for="email in cc"
+          :key="email"
+          variant="secondary"
+        >
           {{ email }}
         </Badge>
       </div>
@@ -24,7 +32,11 @@
     <div v-if="bcc?.length">
       <Label class="text-muted-foreground text-xs">BCC</Label>
       <div class="flex flex-wrap gap-1 mt-1">
-        <Badge v-for="email in bcc" :key="email" variant="secondary">
+        <Badge
+          v-for="email in bcc"
+          :key="email"
+          variant="secondary"
+        >
           {{ email }}
         </Badge>
       </div>
@@ -34,7 +46,12 @@
     <div v-if="attachments?.length">
       <Label class="text-muted-foreground text-xs">{{ $t('email.attachments') }}</Label>
       <div class="flex flex-wrap gap-1 mt-1">
-        <Badge v-for="a in attachments" :key="a.id" variant="outline" class="gap-1">
+        <Badge
+          v-for="a in attachments"
+          :key="a.id"
+          variant="outline"
+          class="gap-1"
+        >
           <Paperclip class="h-3 w-3" />
           {{ a.original_name }}
         </Badge>

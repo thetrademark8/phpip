@@ -18,12 +18,18 @@
             <span class="font-medium">{{ recipient.name }}</span>
             <span class="text-muted-foreground text-xs">{{ recipient.email }}</span>
           </span>
-          <Badge variant="outline" class="text-xs">{{ recipient.role }}</Badge>
+          <Badge
+            variant="outline"
+            class="text-xs"
+          >{{ recipient.role }}</Badge>
         </label>
       </div>
     </div>
 
-    <div v-if="recipients.length === 0" class="text-sm text-muted-foreground py-2">
+    <div
+      v-if="recipients.length === 0"
+      class="text-sm text-muted-foreground py-2"
+    >
       {{ $t('email.noRecipients') }}
     </div>
   </div>

@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-md">
       <DialogHeader>
         <DialogTitle>{{ $t('Mark Task as Done') }}</DialogTitle>
@@ -14,12 +17,20 @@
             <Label class="mb-2">{{ $t('Task') }}</Label>
             <div class="text-sm text-muted-foreground">
               {{ translated(task?.info?.name) || task?.code }}
-              <div v-if="task?.detail" class="mt-1">{{ translated(task.detail) }}</div>
+              <div
+                v-if="task?.detail"
+                class="mt-1"
+              >
+                {{ translated(task.detail) }}
+              </div>
             </div>
           </div>
           
           <div class="space-y-2">
-            <Label for="done_date" class="mb-2">{{ $t('Completion Date') }}</Label>
+            <Label
+              for="done_date"
+              class="mb-2"
+            >{{ $t('Completion Date') }}</Label>
             <DateInput
               id="done_date"
               v-model="form.done_date"
@@ -33,8 +44,8 @@
           <Button
             type="button"
             variant="outline"
-            @click="$emit('update:open', false)"
             :disabled="form.processing"
+            @click="$emit('update:open', false)"
           >
             {{ $t('Cancel') }}
           </Button>

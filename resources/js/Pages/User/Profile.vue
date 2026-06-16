@@ -3,8 +3,12 @@
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       <!-- Header -->
       <div class="space-y-2">
-        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{{ $t('My Profile') }}</h1>
-        <p class="text-lg text-muted-foreground">{{ $t('User information') }}</p>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {{ $t('My Profile') }}
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          {{ $t('User information') }}
+        </p>
       </div>
 
       <!-- User Info Card -->
@@ -16,7 +20,10 @@
           </CardTitle>
         </CardHeader>
         <CardContent class="pt-0">
-          <form @submit.prevent="submitUserInfo" class="space-y-8">
+          <form
+            class="space-y-8"
+            @submit.prevent="submitUserInfo"
+          >
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
               <!-- Name -->
               <div class="space-y-3">
@@ -29,7 +36,10 @@
                     {{ $t('Name') }}
                     <span class="text-destructive ml-1">*</span>
                   </label>
-                  <div v-if="!isFieldEditable('name')" class="flex items-center gap-1">
+                  <div
+                    v-if="!isFieldEditable('name')"
+                    class="flex items-center gap-1"
+                  >
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
                       <AlertCircle 
@@ -56,10 +66,17 @@
                   :placeholder="$t('Enter your full name')"
                   :aria-describedby="!isFieldEditable('name') ? 'name-restriction' : undefined"
                 />
-                <div v-if="!isFieldEditable('name')" id="name-restriction" class="sr-only">
+                <div
+                  v-if="!isFieldEditable('name')"
+                  id="name-restriction"
+                  class="sr-only"
+                >
                   {{ getTranslatedRestrictionReason('name') }}
                 </div>
-                <p v-if="userForm.errors.name" class="text-sm text-destructive">
+                <p
+                  v-if="userForm.errors.name"
+                  class="text-sm text-destructive"
+                >
                   {{ userForm.errors.name }}
                 </p>
               </div>
@@ -75,7 +92,10 @@
                     {{ $t('Email') }}
                     <span class="text-destructive ml-1">*</span>
                   </label>
-                  <div v-if="!isFieldEditable('email')" class="flex items-center gap-1">
+                  <div
+                    v-if="!isFieldEditable('email')"
+                    class="flex items-center gap-1"
+                  >
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
                       <AlertCircle 
@@ -95,16 +115,23 @@
                   required
                   :disabled="!isFieldEditable('email')"
                   :class="getFieldClasses('email',
-                    'transition-all duration-200 focus:ring-2 focus:ring-ring/20 focus:border-ring',
-                    userForm.errors.email ? 'border-destructive focus:border-destructive focus:ring-destructive/20' : 'border-input hover:border-ring/50'
+                                          'transition-all duration-200 focus:ring-2 focus:ring-ring/20 focus:border-ring',
+                                          userForm.errors.email ? 'border-destructive focus:border-destructive focus:ring-destructive/20' : 'border-input hover:border-ring/50'
                   )"
                   :placeholder="$t('Enter your email address')"
                   :aria-describedby="!isFieldEditable('email') ? 'email-restriction' : undefined"
                 />
-                <div v-if="!isFieldEditable('email')" id="email-restriction" class="sr-only">
+                <div
+                  v-if="!isFieldEditable('email')"
+                  id="email-restriction"
+                  class="sr-only"
+                >
                   {{ getTranslatedRestrictionReason('email') }}
                 </div>
-                <p v-if="userForm.errors.email" class="text-sm text-destructive">
+                <p
+                  v-if="userForm.errors.email"
+                  class="text-sm text-destructive"
+                >
                   {{ userForm.errors.email }}
                 </p>
               </div>
@@ -119,7 +146,10 @@
                   >
                     {{ $t('Phone') }}
                   </label>
-                  <div v-if="!isFieldEditable('phone')" class="flex items-center gap-1">
+                  <div
+                    v-if="!isFieldEditable('phone')"
+                    class="flex items-center gap-1"
+                  >
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
                       <AlertCircle 
@@ -138,16 +168,23 @@
                   type="tel"
                   :disabled="!isFieldEditable('phone')"
                   :class="getFieldClasses('phone',
-                    'transition-all duration-200 focus:ring-2 focus:ring-ring/20 focus:border-ring',
-                    userForm.errors.phone ? 'border-destructive focus:border-destructive focus:ring-destructive/20' : 'border-input hover:border-ring/50'
+                                          'transition-all duration-200 focus:ring-2 focus:ring-ring/20 focus:border-ring',
+                                          userForm.errors.phone ? 'border-destructive focus:border-destructive focus:ring-destructive/20' : 'border-input hover:border-ring/50'
                   )"
                   :placeholder="$t('Enter your phone number')"
                   :aria-describedby="!isFieldEditable('phone') ? 'phone-restriction' : undefined"
                 />
-                <div v-if="!isFieldEditable('phone')" id="phone-restriction" class="sr-only">
+                <div
+                  v-if="!isFieldEditable('phone')"
+                  id="phone-restriction"
+                  class="sr-only"
+                >
                   {{ getTranslatedRestrictionReason('phone') }}
                 </div>
-                <p v-if="userForm.errors.phone" class="text-sm text-destructive">
+                <p
+                  v-if="userForm.errors.phone"
+                  class="text-sm text-destructive"
+                >
                   {{ userForm.errors.phone }}
                 </p>
               </div>
@@ -162,7 +199,10 @@
                   >
                     {{ $t('Role') }}
                   </label>
-                  <div v-if="!isFieldEditable('default_role')" class="flex items-center gap-1">
+                  <div
+                    v-if="!isFieldEditable('default_role')"
+                    class="flex items-center gap-1"
+                  >
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
                       <AlertCircle 
@@ -175,7 +215,10 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="!isFieldEditable('default_role')" class="relative">
+                <div
+                  v-if="!isFieldEditable('default_role')"
+                  class="relative"
+                >
                   <!-- Read-only display for restricted role field -->
                   <Input
                     :model-value="userForm.role_display || $t('No role assigned')"
@@ -198,10 +241,17 @@
                     'border-input hover:border-ring/50': !userForm.errors.default_role
                   }"
                 />
-                <div v-if="!isFieldEditable('default_role')" id="default_role-restriction" class="sr-only">
+                <div
+                  v-if="!isFieldEditable('default_role')"
+                  id="default_role-restriction"
+                  class="sr-only"
+                >
                   {{ getTranslatedRestrictionReason('default_role') }}
                 </div>
-                <p v-if="userForm.errors.default_role" class="text-sm text-destructive">
+                <p
+                  v-if="userForm.errors.default_role"
+                  class="text-sm text-destructive"
+                >
                   {{ userForm.errors.default_role }}
                 </p>
               </div>
@@ -216,7 +266,10 @@
                   >
                     {{ $t('Company') }}
                   </label>
-                  <div v-if="!isFieldEditable('company_id')" class="flex items-center gap-1">
+                  <div
+                    v-if="!isFieldEditable('company_id')"
+                    class="flex items-center gap-1"
+                  >
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
                       <AlertCircle 
@@ -229,7 +282,10 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="!isFieldEditable('company_id')" class="relative">
+                <div
+                  v-if="!isFieldEditable('company_id')"
+                  class="relative"
+                >
                   <!-- Read-only display for restricted company field -->
                   <Input
                     :model-value="userForm.company_display || $t('No company assigned')"
@@ -252,10 +308,17 @@
                     'border-input hover:border-ring/50': !userForm.errors.company_id
                   }"
                 />
-                <div v-if="!isFieldEditable('company_id')" id="company_id-restriction" class="sr-only">
+                <div
+                  v-if="!isFieldEditable('company_id')"
+                  id="company_id-restriction"
+                  class="sr-only"
+                >
                   {{ getTranslatedRestrictionReason('company_id') }}
                 </div>
-                <p v-if="userForm.errors.company_id" class="text-sm text-destructive">
+                <p
+                  v-if="userForm.errors.company_id"
+                  class="text-sm text-destructive"
+                >
                   {{ userForm.errors.company_id }}
                 </p>
               </div>
@@ -270,7 +333,10 @@
                   >
                     {{ $t('Language') }}
                   </label>
-                  <div v-if="!isFieldEditable('language')" class="flex items-center gap-1">
+                  <div
+                    v-if="!isFieldEditable('language')"
+                    class="flex items-center gap-1"
+                  >
                     <Lock class="h-3 w-3 text-muted-foreground" />
                     <div class="relative group">
                       <AlertCircle 
@@ -289,32 +355,67 @@
                 >
                   <SelectTrigger
                     :class="getFieldClasses('language',
-                      'transition-all duration-200 w-full',
-                      userForm.errors.language ? 'border-destructive focus:border-destructive focus:ring-destructive/20' : 'border-input hover:border-ring/50'
+                                            'transition-all duration-200 w-full',
+                                            userForm.errors.language ? 'border-destructive focus:border-destructive focus:ring-destructive/20' : 'border-input hover:border-ring/50'
                     )"
                     :aria-describedby="!isFieldEditable('language') ? 'language-restriction' : undefined"
                   >
                     <SelectValue :placeholder="$t('Select your preferred language')" />
                   </SelectTrigger>
                   <SelectContent class="z-50">
-                    <SelectItem value="en_GB" class="cursor-pointer hover:bg-accent">🇬🇧 English (British)</SelectItem>
-                    <SelectItem value="en_US" class="cursor-pointer hover:bg-accent">🇺🇸 English (American)</SelectItem>
-                    <SelectItem value="fr" class="cursor-pointer hover:bg-accent">🇫🇷 Français</SelectItem>
-                    <SelectItem value="de" class="cursor-pointer hover:bg-accent">🇩🇪 Deutsch</SelectItem>
-                    <SelectItem value="es" class="cursor-pointer hover:bg-accent">🇪🇸 Español</SelectItem>
+                    <SelectItem
+                      value="en_GB"
+                      class="cursor-pointer hover:bg-accent"
+                    >
+                      🇬🇧 English (British)
+                    </SelectItem>
+                    <SelectItem
+                      value="en_US"
+                      class="cursor-pointer hover:bg-accent"
+                    >
+                      🇺🇸 English (American)
+                    </SelectItem>
+                    <SelectItem
+                      value="fr"
+                      class="cursor-pointer hover:bg-accent"
+                    >
+                      🇫🇷 Français
+                    </SelectItem>
+                    <SelectItem
+                      value="de"
+                      class="cursor-pointer hover:bg-accent"
+                    >
+                      🇩🇪 Deutsch
+                    </SelectItem>
+                    <SelectItem
+                      value="es"
+                      class="cursor-pointer hover:bg-accent"
+                    >
+                      🇪🇸 Español
+                    </SelectItem>
                   </SelectContent>
                 </Select>
-                <div v-if="!isFieldEditable('language')" id="language-restriction" class="sr-only">
+                <div
+                  v-if="!isFieldEditable('language')"
+                  id="language-restriction"
+                  class="sr-only"
+                >
                   {{ getTranslatedRestrictionReason('language') }}
                 </div>
-                <p v-if="userForm.errors.language" class="text-sm text-destructive">
+                <p
+                  v-if="userForm.errors.language"
+                  class="text-sm text-destructive"
+                >
                   {{ userForm.errors.language }}
                 </p>
               </div>
             </div>
 
             <!-- Show restriction summary if any fields are restricted -->
-            <div v-if="hasRestrictedFieldsInForm" class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+            <div
+              v-if="hasRestrictedFieldsInForm"
+              class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4"
+            >
               <div class="flex items-start gap-2">
                 <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
@@ -334,14 +435,17 @@
               </p>
               <div class="text-right w-1/3">
                 <Button
-                    type="submit"
-                    :disabled="userForm.processing || !hasEditableFieldsInForm"
-                    class="w-full sm:w-auto px-8 font-medium transition-all duration-200 hover:scale-105 focus:scale-105"
-                    :class="{
-                      'opacity-50 cursor-not-allowed': !hasEditableFieldsInForm
-                    }"
+                  type="submit"
+                  :disabled="userForm.processing || !hasEditableFieldsInForm"
+                  class="w-full sm:w-auto px-8 font-medium transition-all duration-200 hover:scale-105 focus:scale-105"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !hasEditableFieldsInForm
+                  }"
                 >
-                  <Loader2 v-if="userForm.processing" class="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2
+                    v-if="userForm.processing"
+                    class="mr-2 h-4 w-4 animate-spin"
+                  />
                   <span v-if="userForm.processing">{{ $t('Updating...') }}</span>
                   <span v-else>{{ $t('Update Profile') }}</span>
                 </Button>
@@ -360,7 +464,10 @@
           </CardTitle>
         </CardHeader>
         <CardContent class="pt-0">
-          <form @submit.prevent="submitPassword" class="space-y-8">
+          <form
+            class="space-y-8"
+            @submit.prevent="submitPassword"
+          >
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
               <!-- Username (Read-only) -->
               <div class="lg:col-span-2">
@@ -426,19 +533,19 @@
               </div>
               <ul class="text-sm text-muted-foreground space-y-1 ml-6">
                 <li class="flex items-center gap-2">
-                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="w-1 h-1 bg-muted-foreground rounded-full" />
                   {{ $t('At least 8 characters long') }}
                 </li>
                 <li class="flex items-center gap-2">
-                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="w-1 h-1 bg-muted-foreground rounded-full" />
                   {{ $t('Contains uppercase and lowercase letters') }}
                 </li>
                 <li class="flex items-center gap-2">
-                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="w-1 h-1 bg-muted-foreground rounded-full" />
                   {{ $t('Contains at least one number') }}
                 </li>
                 <li class="flex items-center gap-2">
-                  <span class="w-1 h-1 bg-muted-foreground rounded-full"></span>
+                  <span class="w-1 h-1 bg-muted-foreground rounded-full" />
                   {{ $t('Contains at least one special character') }}
                 </li>
               </ul>
@@ -450,12 +557,15 @@
               </p>
               <div class="text-right w-1/3">
                 <Button
-                    type="submit"
-                    :disabled="passwordForm.processing || (!passwordForm.password && !passwordForm.password_confirmation)"
-                    variant="outline"
-                    class="w-full sm:w-auto  px-8 font-medium transition-all duration-200 hover:scale-105 focus:scale-105"
+                  type="submit"
+                  :disabled="passwordForm.processing || (!passwordForm.password && !passwordForm.password_confirmation)"
+                  variant="outline"
+                  class="w-full sm:w-auto  px-8 font-medium transition-all duration-200 hover:scale-105 focus:scale-105"
                 >
-                  <Loader2 v-if="passwordForm.processing" class="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2
+                    v-if="passwordForm.processing"
+                    class="mr-2 h-4 w-4 animate-spin"
+                  />
                   <span v-if="passwordForm.processing">{{ $t('Updating...') }}</span>
                   <span v-else>{{ $t('Update Password') }}</span>
                 </Button>

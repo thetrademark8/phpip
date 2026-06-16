@@ -20,14 +20,14 @@ class TaskEmailService
         $emailTo = config('tasks-email.email_to');
         $emailBcc = config('tasks-email.email_bcc');
 
-        if (! $emailTo) {
+        if (!$emailTo) {
             Log::info('No system summary email configured - skipping');
 
             return;
         }
 
         // Detect appropriate language if not specified
-        if (! $language) {
+        if (!$language) {
             $language = $this->detectSystemLanguage($tasks, $emailTo);
         }
 
@@ -68,7 +68,7 @@ class TaskEmailService
      */
     public function isSystemEmailConfigured(): bool
     {
-        return ! empty(config('tasks-email.email_to'));
+        return !empty(config('tasks-email.email_to'));
     }
 
     /**
@@ -101,7 +101,7 @@ class TaskEmailService
                 // ignoring empty/unsupported values so they don't drown out real preferences.
                 $languages = $responsibleActors
                     ->map(fn ($actor) => $actor->getLanguage())
-                    ->filter(fn ($lang) => ! empty($lang) && in_array($lang, $supportedLanguages, true))
+                    ->filter(fn ($lang) => !empty($lang) && in_array($lang, $supportedLanguages, true))
                     ->countBy();
 
                 if ($languages->isNotEmpty()) {
@@ -170,9 +170,9 @@ class TaskEmailService
     {
         $supportedLanguages = ['en', 'fr', 'de'];
 
-        if (! in_array($language, $supportedLanguages, true)) {
+        if (!in_array($language, $supportedLanguages, true)) {
             $fallback = config('app.locale', 'en');
-            if (! in_array($fallback, $supportedLanguages, true)) {
+            if (!in_array($fallback, $supportedLanguages, true)) {
                 $fallback = 'en';
             }
 

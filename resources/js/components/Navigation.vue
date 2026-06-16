@@ -4,19 +4,28 @@
       <div class="flex items-center justify-between h-16">
         <!-- Logo and Brand -->
         <div class="flex items-center">
-          <Link :href="route('home')" class="flex items-center">
+          <Link
+            :href="route('home')"
+            class="flex items-center"
+          >
             <img 
               v-if="$page.props.app.company_logo" 
               :src="$page.props.app.company_logo"
               :alt="$page.props.app.company_name || $page.props.app.name"
               class="h-10 w-auto max-w-[150px]"
             >
-            <span v-else class="text-xl font-semibold">{{ $page.props.app.name }}</span>
+            <span
+              v-else
+              class="text-xl font-semibold"
+            >{{ $page.props.app.name }}</span>
           </Link>
         </div>
 
         <!-- Search Modal (Desktop) -->
-        <div v-if="$page.props.auth.user" class="hidden md:block">
+        <div
+          v-if="$page.props.auth.user"
+          class="hidden md:block"
+        >
           <SearchModal />
         </div>
 
@@ -34,14 +43,22 @@
             <!-- Matters Dropdown -->
             <DropdownMenu>
               <DropdownMenuTrigger as-child>
-                <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
+                <Button
+                  variant="ghost"
+                  class="hover:bg-white/5 hover:text-primary-foreground"
+                >
                   {{ $t('Matters') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" class="w-48">
+              <DropdownMenuContent
+                align="start"
+                class="w-48"
+              >
                 <DropdownMenuItem as-child>
-                  <Link href="/matter">{{ $t('All') }}</Link>
+                  <Link href="/matter">
+                    {{ $t('All') }}
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   v-for="category in matterCategories"
@@ -64,17 +81,27 @@
             <!-- Renewals Dropdown -->
             <DropdownMenu v-if="canWrite">
               <DropdownMenuTrigger as-child>
-                <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
+                <Button
+                  variant="ghost"
+                  class="hover:bg-white/5 hover:text-primary-foreground"
+                >
                   {{ $t('Renewals') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" class="w-48">
+              <DropdownMenuContent
+                align="start"
+                class="w-48"
+              >
                 <DropdownMenuItem as-child>
-                  <Link :href="route('renewal.index')">{{ $t('Manage renewals') }}</Link>
+                  <Link :href="route('renewal.index')">
+                    {{ $t('Manage renewals') }}
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem as-child>
-                  <Link :href="route('fee.index')">{{ $t('Renewal fees') }}</Link>
+                  <Link :href="route('fee.index')">
+                    {{ $t('Renewal fees') }}
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -82,26 +109,38 @@
             <!-- Administration Dropdown (admin only) -->
             <DropdownMenu v-if="isAdmin">
               <DropdownMenuTrigger as-child>
-                <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
+                <Button
+                  variant="ghost"
+                  class="hover:bg-white/5 hover:text-primary-foreground"
+                >
                   {{ $t('Administration') }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" class="w-56">
+              <DropdownMenuContent
+                align="start"
+                class="w-56"
+              >
                 <!-- Emails Section -->
                 <DropdownMenuLabel>{{ $t('Emails') }}</DropdownMenuLabel>
                 <DropdownMenuItem as-child>
-                  <Link href="/template-member">{{ $t('Email templates') }}</Link>
+                  <Link href="/template-member">
+                    {{ $t('Email templates') }}
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem as-child>
-                  <Link href="/document">{{ $t('Email template classes') }}</Link>
+                  <Link href="/document">
+                    {{ $t('Email template classes') }}
+                  </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
                 <!-- Rules -->
                 <DropdownMenuItem as-child>
-                  <Link href="/rule">{{ $t('Rules') }}</Link>
+                  <Link href="/rule">
+                    {{ $t('Rules') }}
+                  </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -113,17 +152,37 @@
                 <div class="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                   {{ $t('Actors') }}
                 </div>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/actor">{{ $t('Actor list') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/actor">
+                    {{ $t('Actor list') }}
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/user">{{ $t('DB Users') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/user">
+                    {{ $t('DB Users') }}
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/role">{{ $t('Actor roles') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/role">
+                    {{ $t('Actor roles') }}
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/default_actor">{{ $t('Default actors') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/default_actor">
+                    {{ $t('Default actors') }}
+                  </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -132,31 +191,61 @@
                 <div class="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                   {{ $t('Configuration') }}
                 </div>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/eventname">{{ $t('Events') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/eventname">
+                    {{ $t('Events') }}
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/type">{{ $t('Matter types') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/type">
+                    {{ $t('Matter types') }}
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/category">{{ $t('Categories') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/category">
+                    {{ $t('Categories') }}
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/classifier_type">{{ $t('Classifier types') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/classifier_type">
+                    {{ $t('Classifier types') }}
+                  </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>{{ $t('Settings') }}</DropdownMenuLabel>
-                <DropdownMenuItem as-child class="pl-6">
-                  <Link href="/settings/brand">{{ $t('Brand Settings') }}</Link>
+                <DropdownMenuItem
+                  as-child
+                  class="pl-6"
+                >
+                  <Link href="/settings/brand">
+                    {{ $t('Brand Settings') }}
+                  </Link>
                 </DropdownMenuItem>
 
                 <!-- Integrations Section (only if any integration is enabled) -->
                 <template v-if="$page.props.app.teamleader_enabled">
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>{{ $t('Integrations') }}</DropdownMenuLabel>
-                  <DropdownMenuItem v-if="$page.props.app.teamleader_enabled" as-child>
-                    <Link href="/settings/teamleader">TeamLeader</Link>
+                  <DropdownMenuItem
+                    v-if="$page.props.app.teamleader_enabled"
+                    as-child
+                  >
+                    <Link href="/settings/teamleader">
+                      TeamLeader
+                    </Link>
                   </DropdownMenuItem>
                 </template>
               </DropdownMenuContent>
@@ -165,14 +254,22 @@
             <!-- User Dropdown -->
             <DropdownMenu>
               <DropdownMenuTrigger as-child>
-                <Button variant="ghost" class="hover:bg-white/5 hover:text-primary-foreground">
+                <Button
+                  variant="ghost"
+                  class="hover:bg-white/5 hover:text-primary-foreground"
+                >
                   {{ $page.props.auth.user.login }}
                   <ChevronDown class="ml-1 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" class="w-48">
+              <DropdownMenuContent
+                align="end"
+                class="w-48"
+              >
                 <DropdownMenuItem as-child>
-                  <Link href="/profile">{{ $t('My Profile') }}</Link>
+                  <Link href="/profile">
+                    {{ $t('My Profile') }}
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem @click="logout">
@@ -196,23 +293,35 @@
         <!-- Mobile menu button -->
         <Button 
           v-if="$page.props.auth.user"
-          @click="mobileMenuOpen = !mobileMenuOpen"
-          variant="ghost" 
-          size="icon"
+          variant="ghost"
+          size="icon" 
           class="md:hidden text-primary-foreground hover:bg-primary-foreground/10"
+          @click="mobileMenuOpen = !mobileMenuOpen"
         >
-          <Menu v-if="!mobileMenuOpen" class="h-6 w-6" />
-          <X v-else class="h-6 w-6" />
+          <Menu
+            v-if="!mobileMenuOpen"
+            class="h-6 w-6"
+          />
+          <X
+            v-else
+            class="h-6 w-6"
+          />
         </Button>
       </div>
 
       <!-- Mobile Menu -->
-      <div v-if="mobileMenuOpen && $page.props.auth.user" class="md:hidden pb-4">
+      <div
+        v-if="mobileMenuOpen && $page.props.auth.user"
+        class="md:hidden pb-4"
+      >
         <!-- Mobile Search -->
         <div class="mb-4">
           <SearchModal>
             <template #trigger>
-              <Button variant="secondary" class="w-full justify-start">
+              <Button
+                variant="secondary"
+                class="w-full justify-start"
+              >
                 <Search class="h-4 w-4 mr-2" />
                 {{ $t('Search') }} {{ $t('Matters') }}
               </Button>

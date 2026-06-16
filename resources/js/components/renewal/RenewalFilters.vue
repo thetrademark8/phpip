@@ -2,61 +2,76 @@
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <!-- Client Name Filter -->
     <div class="space-y-2">
-      <Label for="filter-name" class="mb-2">{{ $t('Client') }}</Label>
+      <Label
+        for="filter-name"
+        class="mb-2"
+      >{{ $t('Client') }}</Label>
       <Input
         id="filter-name"
         :model-value="filters.Name"
-        @update:model-value="debouncedUpdate('Name', $event)"
         :placeholder="$t('Client')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Name', $event)"
       />
     </div>
 
     <!-- Title Filter -->
     <div class="space-y-2">
-      <Label for="filter-title" class="mb-2">{{ $t('Title') }}</Label>
+      <Label
+        for="filter-title"
+        class="mb-2"
+      >{{ $t('Title') }}</Label>
       <Input
         id="filter-title"
         :model-value="filters.Title"
-        @update:model-value="debouncedUpdate('Title', $event)"
         :placeholder="$t('Title')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Title', $event)"
       />
     </div>
 
     <!-- Matter (Case) Filter -->
     <div class="space-y-2">
-      <Label for="filter-case" class="mb-2">{{ $t('Matter') }}</Label>
+      <Label
+        for="filter-case"
+        class="mb-2"
+      >{{ $t('Matter') }}</Label>
       <Input
         id="filter-case"
         :model-value="filters.Case"
-        @update:model-value="debouncedUpdate('Case', $event)"
         :placeholder="$t('Matter')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Case', $event)"
       />
     </div>
 
     <!-- Country Filter -->
     <div class="space-y-2">
-      <Label for="filter-country" class="mb-2">{{ $t('Country') }}</Label>
+      <Label
+        for="filter-country"
+        class="mb-2"
+      >{{ $t('Country') }}</Label>
       <Input
         id="filter-country"
         :model-value="filters.Country"
-        @update:model-value="debouncedUpdate('Country', $event)"
         :placeholder="$t('Ctry')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Country', $event)"
       />
     </div>
 
     <!-- Qt (Annuity) Filter -->
     <div class="space-y-2">
-      <Label for="filter-qt" class="mb-2">{{ $t('Qt') }}</Label>
+      <Label
+        for="filter-qt"
+        class="mb-2"
+      >{{ $t('Qt') }}</Label>
       <Input
         id="filter-qt"
         :model-value="filters.Qt"
-        @update:model-value="debouncedUpdate('Qt', $event)"
         :placeholder="$t('Qt')"
         class="w-full"
+        @update:model-value="debouncedUpdate('Qt', $event)"
       />
     </div>
 
@@ -68,7 +83,10 @@
           :checked="filters.grace_period"
           @update:checked="handleGracePeriodChange"
         />
-        <Label for="filter-grace" class="text-sm font-normal cursor-pointer">
+        <Label
+          for="filter-grace"
+          class="text-sm font-normal cursor-pointer"
+        >
           {{ $t('In grace period') }}
         </Label>
       </div>
@@ -76,23 +94,29 @@
 
     <!-- From Date Filter -->
     <div class="space-y-2">
-      <Label for="filter-fromdate" class="mb-2">{{ $t('From date') }}</Label>
+      <Label
+        for="filter-fromdate"
+        class="mb-2"
+      >{{ $t('From date') }}</Label>
       <DatePicker
         id="filter-fromdate"
         :model-value="filters.Fromdate"
-        @update:model-value="handleDateChange('Fromdate', $event)"
         :placeholder="$t('From selected date')"
+        @update:model-value="handleDateChange('Fromdate', $event)"
       />
     </div>
 
     <!-- Until Date Filter -->
     <div class="space-y-2">
-      <Label for="filter-untildate" class="mb-2">{{ $t('Until date') }}</Label>
+      <Label
+        for="filter-untildate"
+        class="mb-2"
+      >{{ $t('Until date') }}</Label>
       <DatePicker
         id="filter-untildate"
         :model-value="filters.Untildate"
-        @update:model-value="handleDateChange('Untildate', $event)"
         :placeholder="$t('Until selected date')"
+        @update:model-value="handleDateChange('Untildate', $event)"
       />
     </div>
   </div>

@@ -53,7 +53,7 @@ describe('CSV Export', function () {
         $content = ob_get_clean();
 
         // Assert - BOM should be present for UTF-8
-        expect(substr($content, 0, 3))->toBe(chr(0xEF).chr(0xBB).chr(0xBF));
+        expect(substr($content, 0, 3))->toBe(chr(0xEF) . chr(0xBB) . chr(0xBF));
     });
 });
 

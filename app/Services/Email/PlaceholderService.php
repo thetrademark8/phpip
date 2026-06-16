@@ -195,7 +195,7 @@ class PlaceholderService
      */
     protected function getTaskDueDate(string $taskCode, bool $onlyPending = false, ?string $triggerEventCode = null): ?string
     {
-        if (! $this->matter) {
+        if (!$this->matter) {
             return null;
         }
 
@@ -237,7 +237,7 @@ class PlaceholderService
      */
     protected function collectClassifierValues(array &$values): void
     {
-        if (! $this->matter) {
+        if (!$this->matter) {
             return;
         }
 

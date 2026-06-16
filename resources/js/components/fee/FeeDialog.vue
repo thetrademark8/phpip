@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
@@ -10,11 +13,20 @@
         </DialogDescription>
       </DialogHeader>
 
-      <DialogSkeleton v-if="loading" :fields="operation === 'create' ? 6 : 12" />
+      <DialogSkeleton
+        v-if="loading"
+        :fields="operation === 'create' ? 6 : 12"
+      />
 
-      <div v-else-if="fee || operation === 'create'" class="space-y-6">
+      <div
+        v-else-if="fee || operation === 'create'"
+        class="space-y-6"
+      >
         <!-- Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+        <form
+          class="space-y-4"
+          @submit.prevent="handleSubmit"
+        >
           <!-- Basic Information -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -28,7 +40,10 @@
                 label-key="name"
                 required
               />
-              <p v-if="form.errors.country" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.country"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.country }}
               </p>
             </div>
@@ -44,7 +59,10 @@
                 label-key="name"
                 required
               />
-              <p v-if="form.errors.category" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.category"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.category }}
               </p>
             </div>
@@ -61,7 +79,10 @@
                 label-key="name"
                 :placeholder="t('fees.placeholders.origin')"
               />
-              <p v-if="form.errors.origin" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.origin"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.origin }}
               </p>
             </div>
@@ -72,7 +93,10 @@
                 v-model="form.currency"
                 :placeholder="t('fees.placeholders.currency')"
               />
-              <p v-if="form.errors.currency" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.currency"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.currency }}
               </p>
             </div>
@@ -86,7 +110,10 @@
                 v-model="form.use_after"
                 :placeholder="t('fees.placeholders.use_after')"
               />
-              <p v-if="form.errors.use_after" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.use_after"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.use_after }}
               </p>
             </div>
@@ -97,14 +124,20 @@
                 v-model="form.use_before"
                 :placeholder="t('fees.placeholders.use_before')"
               />
-              <p v-if="form.errors.use_before" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.use_before"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.use_before }}
               </p>
             </div>
           </div>
 
           <!-- Quantity Range (Creation Mode Only) -->
-          <div v-if="operation === 'create'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div
+            v-if="operation === 'create'"
+            class="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
             <div>
               <Label class="mb-2">{{ t('fees.fields.from_qt') }} *</Label>
               <Input
@@ -114,7 +147,10 @@
                 min="1"
                 required
               />
-              <p v-if="form.errors.from_qt" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.from_qt"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.from_qt }}
               </p>
             </div>
@@ -128,15 +164,23 @@
                 min="1"
                 required
               />
-              <p v-if="form.errors.to_qt" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.to_qt"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.to_qt }}
               </p>
             </div>
           </div>
 
           <!-- Cost Fields (Edit Mode Only) -->
-          <div v-if="operation === 'edit'" class="space-y-4">
-            <h3 class="text-lg font-semibold">{{ t('fees.sections.costs') }}</h3>
+          <div
+            v-if="operation === 'edit'"
+            class="space-y-4"
+          >
+            <h3 class="text-lg font-semibold">
+              {{ t('fees.sections.costs') }}
+            </h3>
             
             <!-- Cost & Fee Groups -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -148,7 +192,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.cost')"
                 />
-                <p v-if="form.errors.cost" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.cost"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.cost }}
                 </p>
               </div>
@@ -161,7 +208,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.fee')"
                 />
-                <p v-if="form.errors.fee" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.fee"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.fee }}
                 </p>
               </div>
@@ -176,7 +226,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.cost_reduced')"
                 />
-                <p v-if="form.errors.cost_reduced" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.cost_reduced"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.cost_reduced }}
                 </p>
               </div>
@@ -189,7 +242,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.fee_reduced')"
                 />
-                <p v-if="form.errors.fee_reduced" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.fee_reduced"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.fee_reduced }}
                 </p>
               </div>
@@ -204,7 +260,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.cost_discounted')"
                 />
-                <p v-if="form.errors.cost_discounted" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.cost_discounted"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.cost_discounted }}
                 </p>
               </div>
@@ -217,7 +276,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.fee_discounted')"
                 />
-                <p v-if="form.errors.fee_discounted" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.fee_discounted"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.fee_discounted }}
                 </p>
               </div>
@@ -232,7 +294,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.cost_micro')"
                 />
-                <p v-if="form.errors.cost_micro" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.cost_micro"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.cost_micro }}
                 </p>
               </div>
@@ -245,7 +310,10 @@
                   step="0.01"
                   :placeholder="t('fees.placeholders.fee_micro')"
                 />
-                <p v-if="form.errors.fee_micro" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.fee_micro"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.fee_micro }}
                 </p>
               </div>
@@ -253,7 +321,10 @@
           </div>
 
           <!-- Metadata -->
-          <div v-if="fee && operation === 'edit'" class="pt-4 border-t space-y-2 text-sm text-muted-foreground">
+          <div
+            v-if="fee && operation === 'edit'"
+            class="pt-4 border-t space-y-2 text-sm text-muted-foreground"
+          >
             <div>
               <strong>{{ t('fees.fields.qt') }}:</strong> {{ fee.qt }}
             </div>
@@ -273,24 +344,30 @@
         <div class="flex justify-between w-full">
           <Button
             v-if="operation === 'edit' && canWrite"
-            @click="confirmDelete"
             variant="destructive"
+            @click="confirmDelete"
           >
             <Trash2 class="mr-2 h-4 w-4" />
             {{ t('actions.delete') }}
           </Button>
           
-          <div v-else></div>
+          <div v-else />
           
           <div class="flex gap-2">
-            <Button @click="$emit('update:open', false)" variant="outline">
+            <Button
+              variant="outline"
+              @click="$emit('update:open', false)"
+            >
               {{ t('actions.cancel') }}
             </Button>
             <Button
-              @click="handleSubmit"
               :disabled="form.processing"
+              @click="handleSubmit"
             >
-              <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+              <Loader2
+                v-if="form.processing"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
               {{ operation === 'create' ? t('actions.create') : t('actions.save') }}
             </Button>
           </div>

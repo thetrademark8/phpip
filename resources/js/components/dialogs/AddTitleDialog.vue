@@ -1,12 +1,18 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-lg">
       <DialogHeader>
         <DialogTitle>Add Title</DialogTitle>
       </DialogHeader>
-      <form @submit.prevent="handleSubmit" class="space-y-4">
+      <form
+        class="space-y-4"
+        @submit.prevent="handleSubmit"
+      >
         <div class="space-y-2">
-          <Label htmlFor="type">Type</Label>
+          <Label html-for="type">Type</Label>
           <AutocompleteInput
             id="type"
             v-model="form.type_code"
@@ -19,7 +25,7 @@
           />
         </div>
         <div class="space-y-2">
-          <Label htmlFor="value">Value</Label>
+          <Label html-for="value">Value</Label>
           <Input
             id="value"
             v-model="form.value"
@@ -28,10 +34,17 @@
           />
         </div>
         <DialogFooter>
-          <Button type="button" variant="outline" @click="$emit('update:open', false)">
+          <Button
+            type="button"
+            variant="outline"
+            @click="$emit('update:open', false)"
+          >
             Cancel
           </Button>
-          <Button type="submit" :disabled="form.processing">
+          <Button
+            type="submit"
+            :disabled="form.processing"
+          >
             Add Title
           </Button>
         </DialogFooter>

@@ -1,82 +1,85 @@
 <template>
-  <Tabs v-model="activeTab" class="w-full">
+  <Tabs
+    v-model="activeTab"
+    class="w-full"
+  >
     <TabsList class="grid w-full grid-flow-col auto-cols-fr">
       <TabsTrigger 
         value="first-call"
-        @click="handleTabClick(0, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(0, null) }"
+        @click="handleTabClick(0, null)"
       >
         {{ $t('First call') }}
       </TabsTrigger>
       <TabsTrigger 
         value="reminder"
-        @click="handleTabClick(2, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(2, null) }"
+        @click="handleTabClick(2, null)"
       >
         {{ $t('Reminder') }}
       </TabsTrigger>
       <TabsTrigger 
         value="payment"
-        @click="handleTabClick(4, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(4, null) }"
+        @click="handleTabClick(4, null)"
       >
         {{ $t('Payment') }}
       </TabsTrigger>
       <TabsTrigger 
         v-if="config.receipt_tabs"
         value="receipts"
-        @click="handleTabClick(6, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(6, null) }"
+        @click="handleTabClick(6, null)"
       >
         {{ $t('Receipts') }}
       </TabsTrigger>
       <TabsTrigger 
         v-if="config.receipt_tabs"
         value="receipts-received"
-        @click="handleTabClick(8, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(8, null) }"
+        @click="handleTabClick(8, null)"
       >
         {{ $t('Receipts received') }}
       </TabsTrigger>
       <TabsTrigger 
         value="abandoned"
-        @click="handleTabClick(12, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(12, null) }"
+        @click="handleTabClick(12, null)"
       >
         {{ $t('Abandoned') }}
       </TabsTrigger>
       <TabsTrigger 
         value="lapsed"
-        @click="handleTabClick(14, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(14, null) }"
+        @click="handleTabClick(14, null)"
       >
         {{ $t('Lapsed') }}
       </TabsTrigger>
       <TabsTrigger 
         value="closed"
-        @click="handleTabClick(10, null)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(10, null) }"
+        @click="handleTabClick(10, null)"
       >
         {{ $t('Closed') }}
       </TabsTrigger>
       <TabsTrigger 
         value="invoicing"
-        @click="handleTabClick(null, 1)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(null, 1) }"
+        @click="handleTabClick(null, 1)"
       >
         {{ $t('Invoicing') }}
       </TabsTrigger>
       <TabsTrigger 
         value="invoiced"
-        @click="handleTabClick(null, 2)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(null, 2) }"
+        @click="handleTabClick(null, 2)"
       >
         {{ $t('Invoiced') }}
       </TabsTrigger>
       <TabsTrigger 
         value="invoices-paid"
-        @click="handleTabClick(null, 3)"
         :class="{ 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground': isActiveTab(null, 3) }"
+        @click="handleTabClick(null, 3)"
       >
         {{ $t('Invoices paid') }}
       </TabsTrigger>

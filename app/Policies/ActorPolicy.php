@@ -13,7 +13,7 @@ class ActorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return PermissionHelper::canReadOnly($user) && ! PermissionHelper::isClient($user);
+        return PermissionHelper::canReadOnly($user) && !PermissionHelper::isClient($user);
     }
 
     /**
@@ -21,7 +21,7 @@ class ActorPolicy
      */
     public function view(User $user, Actor $actor): bool
     {
-        return PermissionHelper::canReadOnly($user) && ! PermissionHelper::isClient($user);
+        return PermissionHelper::canReadOnly($user) && !PermissionHelper::isClient($user);
     }
 
     /**

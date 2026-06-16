@@ -2,13 +2,18 @@
   <GuestLayout>
     <Card>
       <CardHeader>
-        <CardTitle class="text-2xl text-center">Reset Password</CardTitle>
+        <CardTitle class="text-2xl text-center">
+          Reset Password
+        </CardTitle>
         <CardDescription class="text-center">
           Please enter your new password below.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form @submit.prevent="submit" class="space-y-6">
+        <form
+          class="space-y-6"
+          @submit.prevent="submit"
+        >
           <!-- Username Field -->
           <FormField>
             <Label for="login">User name</Label>
@@ -21,7 +26,10 @@
               autofocus
               :class="{ 'border-destructive': form.errors.login }"
             />
-            <p v-if="form.errors.login" class="text-sm text-destructive mt-1">
+            <p
+              v-if="form.errors.login"
+              class="text-sm text-destructive mt-1"
+            >
               {{ form.errors.login }}
             </p>
           </FormField>
@@ -37,7 +45,10 @@
               required
               :class="{ 'border-destructive': form.errors.password }"
             />
-            <p v-if="form.errors.password" class="text-sm text-destructive mt-1">
+            <p
+              v-if="form.errors.password"
+              class="text-sm text-destructive mt-1"
+            >
               {{ form.errors.password }}
             </p>
           </FormField>
@@ -53,7 +64,10 @@
               required
               :class="{ 'border-destructive': form.errors.password_confirmation }"
             />
-            <p v-if="form.errors.password_confirmation" class="text-sm text-destructive mt-1">
+            <p
+              v-if="form.errors.password_confirmation"
+              class="text-sm text-destructive mt-1"
+            >
               {{ form.errors.password_confirmation }}
             </p>
           </FormField>

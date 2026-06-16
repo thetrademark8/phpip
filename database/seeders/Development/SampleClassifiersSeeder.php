@@ -119,7 +119,7 @@ class SampleClassifiersSeeder extends Seeder
             Classifier::factory()->create([
                 'matter_id' => $matter->id,
                 'type_code' => 'TITEN',
-                'value' => $title.' (English Translation)',
+                'value' => $title . ' (English Translation)',
             ]);
         }
 
@@ -148,7 +148,7 @@ class SampleClassifiersSeeder extends Seeder
         // Add 1-3 IPC classifications
         $numClasses = rand(1, 3);
         $selectedClasses = array_rand(array_flip($ipcClasses), $numClasses);
-        if (! is_array($selectedClasses)) {
+        if (!is_array($selectedClasses)) {
             $selectedClasses = [$selectedClasses];
         }
 
@@ -180,7 +180,7 @@ class SampleClassifiersSeeder extends Seeder
         $classes = $niceClassGroups[$group];
         $numClasses = rand(1, min(3, count($classes)));
         $selectedClasses = array_rand(array_flip($classes), $numClasses);
-        if (! is_array($selectedClasses)) {
+        if (!is_array($selectedClasses)) {
             $selectedClasses = [$selectedClasses];
         }
 
@@ -262,6 +262,6 @@ class SampleClassifiersSeeder extends Seeder
             44 => 'Medical services; veterinary services; beauty care',
         ];
 
-        return $descriptions[$niceClass] ?? 'Various goods and services in class '.$niceClass;
+        return $descriptions[$niceClass] ?? 'Various goods and services in class ' . $niceClass;
     }
 }

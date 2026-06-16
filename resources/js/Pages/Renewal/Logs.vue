@@ -4,17 +4,27 @@
       <!-- Header -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">{{ $t('Renewal logs') }}</h1>
+          <h1 class="text-2xl font-bold tracking-tight">
+            {{ $t('Renewal logs') }}
+          </h1>
           <p class="text-muted-foreground">
             {{ $t('View history and audit trail of renewal actions') }}
           </p>
         </div>
         <div class="flex gap-2">
-          <Button @click="clearFilters" variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            @click="clearFilters"
+          >
             <RotateCcw class="mr-2 h-4 w-4" />
             {{ $t('Clear filters') }}
           </Button>
-          <Button @click="router.visit('/renewal')" variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            @click="router.visit('/renewal')"
+          >
             <ArrowLeft class="mr-2 h-4 w-4" />
             {{ $t('Back to renewals') }}
           </Button>
@@ -27,7 +37,10 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Task ID Filter -->
             <div>
-              <Label for="task-id" class="text-sm font-medium">
+              <Label
+                for="task-id"
+                class="text-sm font-medium"
+              >
                 {{ $t('Task ID') }}
               </Label>
               <Input
@@ -41,7 +54,10 @@
 
             <!-- Job ID Filter -->
             <div>
-              <Label for="job-id" class="text-sm font-medium">
+              <Label
+                for="job-id"
+                class="text-sm font-medium"
+              >
                 {{ $t('Job ID') }}
               </Label>
               <Input
@@ -55,7 +71,10 @@
 
             <!-- Creator Filter -->
             <div>
-              <Label for="creator" class="text-sm font-medium">
+              <Label
+                for="creator"
+                class="text-sm font-medium"
+              >
                 {{ $t('Creator') }}
               </Label>
               <Input
@@ -68,7 +87,10 @@
 
             <!-- Date From Filter -->
             <div>
-              <Label for="date-from" class="text-sm font-medium">
+              <Label
+                for="date-from"
+                class="text-sm font-medium"
+              >
                 {{ $t('From date') }}
               </Label>
               <Input
@@ -81,7 +103,10 @@
 
             <!-- Date To Filter -->
             <div>
-              <Label for="date-to" class="text-sm font-medium">
+              <Label
+                for="date-to"
+                class="text-sm font-medium"
+              >
                 {{ $t('To date') }}
               </Label>
               <Input
@@ -94,65 +119,129 @@
 
             <!-- From Step Filter -->
             <div>
-              <Label for="from-step" class="text-sm font-medium">
+              <Label
+                for="from-step"
+                class="text-sm font-medium"
+              >
                 {{ $t('From step') }}
               </Label>
-              <Select v-model="filters.from_step" @update:modelValue="applyFilters">
+              <Select
+                v-model="filters.from_step"
+                @update:model-value="applyFilters"
+              >
                 <SelectTrigger>
                   <SelectValue :placeholder="$t('Any step')" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{{ $t('Any step') }}</SelectItem>
-                  <SelectItem value="0">{{ $t('Open') }}</SelectItem>
-                  <SelectItem value="1">{{ $t('Instructions sent') }}</SelectItem>
-                  <SelectItem value="2">{{ $t('Reminder sent') }}</SelectItem>
-                  <SelectItem value="3">{{ $t('Payment requested') }}</SelectItem>
-                  <SelectItem value="4">{{ $t('Invoiced') }}</SelectItem>
-                  <SelectItem value="5">{{ $t('Receipts issued') }}</SelectItem>
-                  <SelectItem value="10">{{ $t('Closed') }}</SelectItem>
-                  <SelectItem value="11">{{ $t('Abandoned') }}</SelectItem>
+                  <SelectItem value="">
+                    {{ $t('Any step') }}
+                  </SelectItem>
+                  <SelectItem value="0">
+                    {{ $t('Open') }}
+                  </SelectItem>
+                  <SelectItem value="1">
+                    {{ $t('Instructions sent') }}
+                  </SelectItem>
+                  <SelectItem value="2">
+                    {{ $t('Reminder sent') }}
+                  </SelectItem>
+                  <SelectItem value="3">
+                    {{ $t('Payment requested') }}
+                  </SelectItem>
+                  <SelectItem value="4">
+                    {{ $t('Invoiced') }}
+                  </SelectItem>
+                  <SelectItem value="5">
+                    {{ $t('Receipts issued') }}
+                  </SelectItem>
+                  <SelectItem value="10">
+                    {{ $t('Closed') }}
+                  </SelectItem>
+                  <SelectItem value="11">
+                    {{ $t('Abandoned') }}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <!-- To Step Filter -->
             <div>
-              <Label for="to-step" class="text-sm font-medium">
+              <Label
+                for="to-step"
+                class="text-sm font-medium"
+              >
                 {{ $t('To step') }}
               </Label>
-              <Select v-model="filters.to_step" @update:modelValue="applyFilters">
+              <Select
+                v-model="filters.to_step"
+                @update:model-value="applyFilters"
+              >
                 <SelectTrigger>
                   <SelectValue :placeholder="$t('Any step')" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{{ $t('Any step') }}</SelectItem>
-                  <SelectItem value="0">{{ $t('Open') }}</SelectItem>
-                  <SelectItem value="1">{{ $t('Instructions sent') }}</SelectItem>
-                  <SelectItem value="2">{{ $t('Reminder sent') }}</SelectItem>
-                  <SelectItem value="3">{{ $t('Payment requested') }}</SelectItem>
-                  <SelectItem value="4">{{ $t('Invoiced') }}</SelectItem>
-                  <SelectItem value="5">{{ $t('Receipts issued') }}</SelectItem>
-                  <SelectItem value="10">{{ $t('Closed') }}</SelectItem>
-                  <SelectItem value="11">{{ $t('Abandoned') }}</SelectItem>
+                  <SelectItem value="">
+                    {{ $t('Any step') }}
+                  </SelectItem>
+                  <SelectItem value="0">
+                    {{ $t('Open') }}
+                  </SelectItem>
+                  <SelectItem value="1">
+                    {{ $t('Instructions sent') }}
+                  </SelectItem>
+                  <SelectItem value="2">
+                    {{ $t('Reminder sent') }}
+                  </SelectItem>
+                  <SelectItem value="3">
+                    {{ $t('Payment requested') }}
+                  </SelectItem>
+                  <SelectItem value="4">
+                    {{ $t('Invoiced') }}
+                  </SelectItem>
+                  <SelectItem value="5">
+                    {{ $t('Receipts issued') }}
+                  </SelectItem>
+                  <SelectItem value="10">
+                    {{ $t('Closed') }}
+                  </SelectItem>
+                  <SelectItem value="11">
+                    {{ $t('Abandoned') }}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <!-- Invoice Step Filter -->
             <div>
-              <Label for="invoice-step" class="text-sm font-medium">
+              <Label
+                for="invoice-step"
+                class="text-sm font-medium"
+              >
                 {{ $t('Invoice step') }}
               </Label>
-              <Select v-model="filters.from_invoice" @update:modelValue="applyFilters">
+              <Select
+                v-model="filters.from_invoice"
+                @update:model-value="applyFilters"
+              >
                 <SelectTrigger>
                   <SelectValue :placeholder="$t('Any invoice step')" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{{ $t('Any invoice step') }}</SelectItem>
-                  <SelectItem value="0">{{ $t('Not invoiced') }}</SelectItem>
-                  <SelectItem value="1">{{ $t('Invoice sent') }}</SelectItem>
-                  <SelectItem value="2">{{ $t('Invoiced') }}</SelectItem>
-                  <SelectItem value="3">{{ $t('Receipt issued') }}</SelectItem>
+                  <SelectItem value="">
+                    {{ $t('Any invoice step') }}
+                  </SelectItem>
+                  <SelectItem value="0">
+                    {{ $t('Not invoiced') }}
+                  </SelectItem>
+                  <SelectItem value="1">
+                    {{ $t('Invoice sent') }}
+                  </SelectItem>
+                  <SelectItem value="2">
+                    {{ $t('Invoiced') }}
+                  </SelectItem>
+                  <SelectItem value="3">
+                    {{ $t('Receipt issued') }}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -203,11 +292,16 @@
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">{{ log.job_id }}</Badge>
+                      <Badge variant="outline">
+                        {{ log.job_id }}
+                      </Badge>
                     </TableCell>
                     <TableCell>{{ log.creator }}</TableCell>
                     <TableCell>
-                      <div v-if="log.from_step !== null && log.to_step !== null" class="flex items-center gap-2">
+                      <div
+                        v-if="log.from_step !== null && log.to_step !== null"
+                        class="flex items-center gap-2"
+                      >
                         <Badge :variant="getStepVariant(log.from_step)">
                           {{ getStepName(log.from_step) }}
                         </Badge>
@@ -216,10 +310,16 @@
                           {{ getStepName(log.to_step) }}
                         </Badge>
                       </div>
-                      <span v-else class="text-muted-foreground">-</span>
+                      <span
+                        v-else
+                        class="text-muted-foreground"
+                      >-</span>
                     </TableCell>
                     <TableCell>
-                      <div v-if="log.from_invoice !== null && log.to_invoice !== null" class="flex items-center gap-2">
+                      <div
+                        v-if="log.from_invoice !== null && log.to_invoice !== null"
+                        class="flex items-center gap-2"
+                      >
                         <Badge variant="outline">
                           {{ getInvoiceStepName(log.from_invoice) }}
                         </Badge>
@@ -228,21 +328,37 @@
                           {{ getInvoiceStepName(log.to_invoice) }}
                         </Badge>
                       </div>
-                      <span v-else class="text-muted-foreground">-</span>
+                      <span
+                        v-else
+                        class="text-muted-foreground"
+                      >-</span>
                     </TableCell>
                     <TableCell>
-                      <div v-if="log.from_grace !== null && log.to_grace !== null" class="flex items-center gap-2">
-                        <Badge variant="secondary">{{ log.from_grace }}</Badge>
+                      <div
+                        v-if="log.from_grace !== null && log.to_grace !== null"
+                        class="flex items-center gap-2"
+                      >
+                        <Badge variant="secondary">
+                          {{ log.from_grace }}
+                        </Badge>
                         <ArrowRight class="h-4 w-4 text-muted-foreground" />
-                        <Badge variant="secondary">{{ log.to_grace }}</Badge>
+                        <Badge variant="secondary">
+                          {{ log.to_grace }}
+                        </Badge>
                       </div>
-                      <span v-else class="text-muted-foreground">-</span>
+                      <span
+                        v-else
+                        class="text-muted-foreground"
+                      >-</span>
                     </TableCell>
                   </TableRow>
                 </template>
                 <template v-else>
                   <TableRow>
-                    <TableCell colspan="7" class="text-center py-8 text-muted-foreground">
+                    <TableCell
+                      colspan="7"
+                      class="text-center py-8 text-muted-foreground"
+                    >
                       {{ $t('No logs found') }}
                     </TableCell>
                   </TableRow>

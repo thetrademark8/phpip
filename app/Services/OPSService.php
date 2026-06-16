@@ -17,14 +17,14 @@ class OPSService
         $key = env('OPS_APP_KEY');
         $secret = env('OPS_SECRET');
 
-        if (! $key || ! $secret) {
+        if (!$key || !$secret) {
             return;
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Basic '.base64_encode($key.':'.$secret),
-            ])->asForm()->post(self::BASE_URL.'/auth/accesstoken', [
+                'Authorization' => 'Basic ' . base64_encode($key . ':' . $secret),
+            ])->asForm()->post(self::BASE_URL . '/auth/accesstoken', [
                 'grant_type' => 'client_credentials',
             ]);
 
@@ -42,9 +42,9 @@ class OPSService
 
     public function getFamilyMembers(string $docnum): array
     {
-        if (! $this->accessToken) {
+        if (!$this->accessToken) {
             $this->authenticate();
-            if (! $this->accessToken) {
+            if (!$this->accessToken) {
                 return [
                     'errors' => ['auth' => ['OPS API credentials not configured']],
                     'message' => 'Please configure valid OPS API credentials in .env file',
@@ -52,7 +52,7 @@ class OPSService
             }
         }
 
-        $ops_biblio = self::BASE_URL."/rest-services/family/publication/docdb/$docnum/biblio.json";
+        $ops_biblio = self::BASE_URL . "/rest-services/family/publication/docdb/$docnum/biblio.json";
         $ops_response = Http::withToken($this->accessToken)
             ->asForm()
             ->get($ops_biblio);
@@ -70,7 +70,7 @@ class OPSService
             // Sort members by increasing filing date and doc-id, so that the first is the priority application
             $members = collect($members)->sortBy(
                 fn ($member) => $member['application-reference']['document-id']['date']['$']
-                    .$member['application-reference']['@doc-id']
+                    . $member['application-reference']['@doc-id']
             );
             // Group all members by doc-id, so that publications and grants appear in a same record
             $members = collect($members)->groupBy(
@@ -115,7 +115,7 @@ class OPSService
 
             if ($app['kind']['$'] == 'W') {
                 $country = 'WO';
-                $app_number = $app['country']['$'].$app['doc-number']['$'];
+                $app_number = $app['country']['$'] . $app['doc-number']['$'];
             } else {
                 $country = $app['country']['$'];
                 $app_number = $app['doc-number']['$'];
@@ -135,7 +135,7 @@ class OPSService
             $apps[$i]['app']['number'] = $app_number;
 
             // Data taken from EP or PCT case
-            if ((in_array($apps[$i]['app']['country'], ['EP', 'WO'])) && ! data_get($apps, '0.pri.title')) {
+            if ((in_array($apps[$i]['app']['country'], ['EP', 'WO'])) && !data_get($apps, '0.pri.title')) {
                 // Title (the last is the English title)
                 $apps[0]['title'] = collect($member[0]['exchange-document']['bibliographic-data']['invention-title'])
                     ->last()['$'];
@@ -151,14 +151,14 @@ class OPSService
                 $apps[0]['applicants'] = $applicants->values()->pluck('applicant-name.name.$');
 
                 $procedureSteps = $this->getProceduralSteps($app_number);
-                if (! empty($procedureSteps)) {
+                if (!empty($procedureSteps)) {
                     $apps[$i]['procedure'] = $procedureSteps;
                 }
             }
 
             if (in_array($apps[$i]['app']['country'], ['FR', 'US'])) {
                 $legalStatus = $this->getLegalStatus($apps[$i]['app']['country'], $app_number);
-                if (! empty($legalStatus)) {
+                if (!empty($legalStatus)) {
                     $apps[$i]['procedure'] = $legalStatus;
                 }
             }
@@ -190,7 +190,7 @@ class OPSService
 
             // PCT origin
             if ($pct_nat = collect($member[0]['priority-claim'])->where('priority-linkage-type.$', 'W')->first()) {
-                $apps[$i]['pct'] = $pct_nat['document-id']['country']['$'].$pct_nat['document-id']['doc-number']['$'];
+                $apps[$i]['pct'] = $pct_nat['document-id']['country']['$'] . $pct_nat['document-id']['doc-number']['$'];
             } else {
                 $apps[$i]['pct'] = null;
             }
@@ -236,12 +236,12 @@ class OPSService
 
     private function getProceduralSteps(string $appNumber): array
     {
-        $ops_procedure = self::BASE_URL."/rest-services/register/application/epodoc/EP$appNumber/procedural-steps";
+        $ops_procedure = self::BASE_URL . "/rest-services/register/application/epodoc/EP$appNumber/procedural-steps";
         $response = Http::withToken($this->accessToken)
             ->asForm()
             ->get($ops_procedure);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             return [];
         }
 
@@ -277,12 +277,12 @@ class OPSService
 
     private function getLegalStatus(string $country, string $appNumber): array
     {
-        $ops_procedure = self::BASE_URL."/rest-services/legal/application/docdb/{$country}$appNumber";
+        $ops_procedure = self::BASE_URL . "/rest-services/legal/application/docdb/{$country}$appNumber";
         $response = Http::withToken($this->accessToken)
             ->asForm()
             ->get($ops_procedure);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             return [];
         }
 

@@ -1,5 +1,8 @@
 <template>
-  <Select v-model="internalValue" :disabled="disabled">
+  <Select
+    v-model="internalValue"
+    :disabled="disabled"
+  >
     <SelectTrigger class="w-full">
       <SelectValue :placeholder="placeholder" />
     </SelectTrigger>

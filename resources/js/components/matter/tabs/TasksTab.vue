@@ -1,25 +1,25 @@
 <template>
   <DataTable
-      :data="tasks"
-      :columns="columns"
-      :loading="false"
-      :show-pagination="tasks.length > 5"
-      :page-size="5"
-      :empty-message="$t('No tasks found')"
+    :data="tasks"
+    :columns="columns"
+    :loading="false"
+    :show-pagination="tasks.length > 5"
+    :page-size="5"
+    :empty-message="$t('No tasks found')"
   />
 
   <TaskDialog
-      v-model:open="showEditTaskDialog"
-      :matter-id="matterId"
-      :task="selectedTask"
-      operation="edit"
-      @success="handleTaskUpdate"
+    v-model:open="showEditTaskDialog"
+    :matter-id="matterId"
+    :task="selectedTask"
+    operation="edit"
+    @success="handleTaskUpdate"
   />
 
   <TaskCompletionDialog
-      v-model:open="showCompletionDialog"
-      :task="selectedTask"
-      @success="handleTaskUpdate"
+    v-model:open="showCompletionDialog"
+    :task="selectedTask"
+    @success="handleTaskUpdate"
   />
 </template>
 

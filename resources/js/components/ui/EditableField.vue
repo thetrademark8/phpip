@@ -13,13 +13,19 @@
       :save-on-blur="saveOnBlur"
       @save="handleSave"
     >
-      <template v-if="$slots.default" #default="{ value }">
+      <template
+        v-if="$slots.default"
+        #default="{ value }"
+      >
         <slot :value="value" />
       </template>
     </InlineEdit>
     
     <!-- Error message -->
-    <p v-if="form.errors[field]" class="text-xs text-destructive mt-0.5">
+    <p
+      v-if="form.errors[field]"
+      class="text-xs text-destructive mt-0.5"
+    >
       {{ form.errors[field] }}
     </p>
   </div>

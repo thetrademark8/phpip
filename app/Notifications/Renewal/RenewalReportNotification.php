@@ -23,7 +23,7 @@ class RenewalReportNotification extends BaseRenewalNotification
         $this->renewals = $renewals;
         $this->recipient = $recipient;
         $this->language = app()->getLocale(); // Default to app locale for reports
-        $this->subject = 'Renewal Report - '.$renewals->count().' renewals';
+        $this->subject = 'Renewal Report - ' . $renewals->count() . ' renewals';
 
         // Prepare report data
         $this->reportData = [

@@ -11,7 +11,10 @@
       >
         <div class="flex items-center gap-3">
           <Avatar class="h-8 w-8">
-            <AvatarImage :src="getAvatarUrl(task.login)" :alt="task.login" />
+            <AvatarImage
+              :src="getAvatarUrl(task.login)"
+              :alt="task.login"
+            />
             <AvatarFallback>{{ getInitials(task.login) }}</AvatarFallback>
           </Avatar>
           <div>
@@ -38,7 +41,10 @@
           </p>
         </div>
       </div>
-      <div v-if="tasksCount.filter(t => t.no_of_tasks > 0).length === 0" class="text-center py-8 text-muted-foreground">
+      <div
+        v-if="tasksCount.filter(t => t.no_of_tasks > 0).length === 0"
+        class="text-center py-8 text-muted-foreground"
+      >
         {{ $t('dashboard.users_tasks.no_tasks') }}
       </div>
     </CardContent>

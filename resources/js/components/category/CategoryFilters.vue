@@ -1,22 +1,28 @@
 <template>
   <div class="flex flex-wrap gap-4 items-end">
     <div class="flex-1 min-w-[200px]">
-      <Label for="code" class="mb-2">{{ $t('categories.fields.code') }}</Label>
+      <Label
+        for="code"
+        class="mb-2"
+      >{{ $t('categories.fields.code') }}</Label>
       <Input
-          id="code"
-          :model-value="filters.Code"
-          @update:model-value="debouncedUpdate('Code', $event)"
-          :placeholder="$t('categories.placeholders.code')"
+        id="code"
+        :model-value="filters.Code"
+        :placeholder="$t('categories.placeholders.code')"
+        @update:model-value="debouncedUpdate('Code', $event)"
       />
     </div>
 
     <div class="flex-1 min-w-[200px]">
-      <Label for="category" class="mb-2">{{ $t('categories.fields.category') }}</Label>
+      <Label
+        for="category"
+        class="mb-2"
+      >{{ $t('categories.fields.category') }}</Label>
       <Input
-          id="category"
-          :model-value="filters.Category"
-          @update:model-value="debouncedUpdate('Category', $event)"
-          :placeholder="$t('categories.placeholders.category')"
+        id="category"
+        :model-value="filters.Category"
+        :placeholder="$t('categories.placeholders.category')"
+        @update:model-value="debouncedUpdate('Category', $event)"
       />
     </div>
   </div>

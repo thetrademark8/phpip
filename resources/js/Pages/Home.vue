@@ -6,12 +6,20 @@
     </div>
 
     <!-- User Dashboard Alert -->
-    <Alert v-if="filters.user_dashboard" class="mb-6">
+    <Alert
+      v-if="filters.user_dashboard"
+      class="mb-6"
+    >
       <User class="h-4 w-4" />
       <AlertTitle>{{ $t('dashboard.viewing_user_dashboard') }}</AlertTitle>
       <AlertDescription class="flex items-center justify-between">
         <span>{{ $t('dashboard.viewing_dashboard_of', { user: filters.user_dashboard }) }}</span>
-        <Button @click="clearUserFilter" variant="link" size="sm" class="p-0 h-auto">
+        <Button
+          variant="link"
+          size="sm"
+          class="p-0 h-auto"
+          @click="clearUserFilter"
+        >
           {{ $t('dashboard.back_to_general') }}
         </Button>
       </AlertDescription>
@@ -24,7 +32,7 @@
         <CategoryStats 
           :categories="categories" 
           :permissions="permissions" 
-          @openCreateMatter="handleOpenCreateMatter"
+          @open-create-matter="handleOpenCreateMatter"
         />
         
         <!-- Users Tasks Card -->
@@ -44,24 +52,48 @@
                 <RadioGroup
                   v-model="taskFilter"
                   class="flex flex-row gap-2"
-                  @update:modelValue="updateFilters"
+                  @update:model-value="updateFilters"
                 >
                   <div class="flex items-center">
-                    <RadioGroupItem value="0" id="alltasks" />
-                    <Label for="alltasks" class="ml-2 cursor-pointer">{{ $t('Everyone') }}</Label>
+                    <RadioGroupItem
+                      id="alltasks"
+                      value="0"
+                    />
+                    <Label
+                      for="alltasks"
+                      class="ml-2 cursor-pointer"
+                    >{{ $t('Everyone') }}</Label>
                   </div>
-                  <div v-if="!filters.user_dashboard" class="flex items-center">
-                    <RadioGroupItem value="1" id="mytasks" />
-                    <Label for="mytasks" class="ml-2 cursor-pointer">{{ $page.props.auth.user.login }}</Label>
+                  <div
+                    v-if="!filters.user_dashboard"
+                    class="flex items-center"
+                  >
+                    <RadioGroupItem
+                      id="mytasks"
+                      value="1"
+                    />
+                    <Label
+                      for="mytasks"
+                      class="ml-2 cursor-pointer"
+                    >{{ $page.props.auth.user.login }}</Label>
                   </div>
                   <div class="flex items-center">
-                    <RadioGroupItem value="2" id="clientTasks" />
-                    <Label for="clientTasks" class="ml-2 cursor-pointer">{{ $t('Client') }}</Label>
+                    <RadioGroupItem
+                      id="clientTasks"
+                      value="2"
+                    />
+                    <Label
+                      for="clientTasks"
+                      class="ml-2 cursor-pointer"
+                    >{{ $t('Client') }}</Label>
                   </div>
                 </RadioGroup>
 
                 <!-- Client Autocomplete -->
-                <div v-if="taskFilter === '2'" class="w-64">
+                <div
+                  v-if="taskFilter === '2'"
+                  class="w-64"
+                >
                   <AutocompleteInput
                     v-model="selectedClientId"
                     v-model:display-model-value="selectedClientName"
@@ -72,12 +104,15 @@
                 </div>
 
                 <!-- Clear Tasks Button -->
-                <div v-if="permissions.canWrite" class="flex items-center gap-2">
+                <div
+                  v-if="permissions.canWrite"
+                  class="flex items-center gap-2"
+                >
                   <Button
                     variant="secondary"
                     size="sm"
-                    @click="showTaskConfirmation"
                     :disabled="selectedTaskIds.length === 0"
+                    @click="showTaskConfirmation"
                   >
                     {{ $t('Clear selected on') }}
                   </Button>
@@ -106,12 +141,15 @@
               <CardTitle>{{ $t('Open renewals') }}</CardTitle>
               
               <!-- Clear Renewals Button -->
-              <div v-if="permissions.canWrite" class="flex items-center gap-2">
+              <div
+                v-if="permissions.canWrite"
+                class="flex items-center gap-2"
+              >
                 <Button
                   variant="secondary"
                   size="sm"
-                  @click="showRenewalConfirmation"
                   :disabled="selectedRenewalIds.length === 0"
+                  @click="showRenewalConfirmation"
                 >
                   {{ $t('Clear selected on') }}
                 </Button>
@@ -137,26 +175,26 @@
     <!-- Task Confirmation Dialog -->
     <ConfirmDialog
       :open="showTaskConfirmDialog"
-      @update:open="showTaskConfirmDialog = $event"
       :title="$t('Confirm Task Completion')"
       :description="$t('This action will mark the selected tasks as completed.')"
       :message="$t('Are you sure you want to mark {count} task(s) as completed on {date}?', { count: selectedTaskIds.length, date: taskClearDate })"
       :confirm-text="$t('Complete Tasks')"
       :cancel-text="$t('Cancel')"
       type="default"
+      @update:open="showTaskConfirmDialog = $event"
       @confirm="clearSelectedTasks"
     />
 
     <!-- Renewal Confirmation Dialog -->
     <ConfirmDialog
       :open="showRenewalConfirmDialog"
-      @update:open="showRenewalConfirmDialog = $event"
       :title="$t('Confirm Renewal Completion')"
       :description="$t('This action will mark the selected renewals as completed.')"
       :message="$t('Are you sure you want to mark {count} renewal(s) as completed on {date}?', { count: selectedRenewalIds.length, date: renewalClearDate })"
       :confirm-text="$t('Complete Renewals')"
       :cancel-text="$t('Cancel')"
       type="default"
+      @update:open="showRenewalConfirmDialog = $event"
       @confirm="clearSelectedRenewals"
     />
   </MainLayout>

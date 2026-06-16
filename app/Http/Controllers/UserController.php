@@ -29,23 +29,23 @@ class UserController extends Controller
         $query = User::query()->with(['company:id,name', 'roleInfo:code,name']);
 
         // Apply filters
-        if (! empty($Name)) {
-            $query->whereLike('name', $Name.'%');
+        if (!empty($Name)) {
+            $query->whereLike('name', $Name . '%');
         }
 
-        if (! empty($Role)) {
+        if (!empty($Role)) {
             $query->whereHas('roleInfo', function ($q) use ($Role) {
                 $q->whereJsonLike('name', $Role);
             });
         }
 
-        if (! empty($Username)) {
-            $query->whereLike('login', $Username.'%');
+        if (!empty($Username)) {
+            $query->whereLike('login', $Username . '%');
         }
 
-        if (! empty($Company)) {
+        if (!empty($Company)) {
             $query->whereHas('company', function ($q) use ($Company) {
-                $q->whereLike('name', $Company.'%');
+                $q->whereLike('name', $Company . '%');
             });
         }
 
@@ -132,7 +132,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|max:100',
-            'login' => 'required|unique:users,login,'.$user->id,
+            'login' => 'required|unique:users,login,' . $user->id,
             'password' => 'nullable|confirmed|min:8|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[^a-zA-Z0-9]/',
             'email' => 'required|email',
             'default_role' => 'required',

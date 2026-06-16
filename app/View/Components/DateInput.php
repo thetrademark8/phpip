@@ -38,7 +38,7 @@ class DateInput extends Component
         $this->inputAttributes = $inputAttributes;
 
         // Generate unique ID if not provided
-        $this->id = $inputAttributes['id'] ?? 'date-input-'.uniqid();
+        $this->id = $inputAttributes['id'] ?? 'date-input-' . uniqid();
 
         // Convert value to display format
         $this->displayValue = $this->convertValueForDisplay($value);
@@ -90,7 +90,7 @@ class DateInput extends Component
         $baseClasses = 'form-control date-picker-input';
 
         if ($this->class) {
-            return $baseClasses.' '.$this->class;
+            return $baseClasses . ' ' . $this->class;
         }
 
         return $baseClasses;

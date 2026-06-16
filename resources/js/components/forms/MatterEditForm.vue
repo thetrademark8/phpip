@@ -116,20 +116,31 @@
         v-if="canDelete"
         type="button"
         variant="destructive"
-        @click="showDeleteDialog = true"
         :disabled="form.processing || isDeleting"
+        @click="showDeleteDialog = true"
       >
         <Trash2 class="mr-2 h-4 w-4" />
         {{ t('Delete') }}
       </Button>
-      <div v-else></div>
+      <div v-else />
 
       <div class="flex gap-3">
-        <Button type="button" variant="outline" @click="handleCancel" :disabled="form.processing || isDeleting">
+        <Button
+          type="button"
+          variant="outline"
+          :disabled="form.processing || isDeleting"
+          @click="handleCancel"
+        >
           {{ t('Cancel') }}
         </Button>
-        <Button type="submit" :disabled="form.processing || isDeleting">
-          <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+        <Button
+          type="submit"
+          :disabled="form.processing || isDeleting"
+        >
+          <Loader2
+            v-if="form.processing"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ form.processing ? t('Saving...') : t('Save Changes') }}
         </Button>
       </div>

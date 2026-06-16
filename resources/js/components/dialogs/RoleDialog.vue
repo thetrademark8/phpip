@@ -1,5 +1,8 @@
 <template>
-  <Dialog v-model:open="dialogOpen" :max-width="maxWidth">
+  <Dialog
+    v-model:open="dialogOpen"
+    :max-width="maxWidth"
+  >
     <DialogScrollContent>
       <DialogHeader>
         <DialogTitle>
@@ -15,21 +18,27 @@
       </DialogHeader>
       
       <!-- Loading state -->
-      <div v-if="loading" class="flex items-center justify-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-8"
+      >
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
       
-      <div v-else class="space-y-6">
+      <div
+        v-else
+        class="space-y-6"
+      >
         <!-- Mode Toggle -->
         <div class="flex items-center justify-between border-b pb-4">
           <Badge variant="secondary">
             {{ t('roles.badge') }}
           </Badge>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canWrite && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canWrite && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.viewMode') : t('actions.editMode') }}
@@ -37,166 +46,203 @@
         </div>
 
         <!-- Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-        <!-- Code (only for create) -->
-        <div v-if="operation === 'create'" class="space-y-2">
-          <Label for="role-code" class="mb-2">{{ t('roles.fields.code') }}</Label>
-          <Input
-            id="role-code"
-            v-model="form.code"
-            :placeholder="t('roles.placeholders.code')"
-            maxlength="5"
-            class="uppercase"
-            required
-          />
-          <p class="text-sm text-muted-foreground">{{ t('roles.hints.code') }}</p>
-        </div>
+        <form
+          class="space-y-4"
+          @submit.prevent="handleSubmit"
+        >
+          <!-- Code (only for create) -->
+          <div
+            v-if="operation === 'create'"
+            class="space-y-2"
+          >
+            <Label
+              for="role-code"
+              class="mb-2"
+            >{{ t('roles.fields.code') }}</Label>
+            <Input
+              id="role-code"
+              v-model="form.code"
+              :placeholder="t('roles.placeholders.code')"
+              maxlength="5"
+              class="uppercase"
+              required
+            />
+            <p class="text-sm text-muted-foreground">
+              {{ t('roles.hints.code') }}
+            </p>
+          </div>
         
-        <!-- Name -->
-        <div class="space-y-2">
-          <Label for="role-name" class="mb-2">{{ t('roles.fields.name') }}</Label>
-          <Input
-            id="role-name"
-            v-model="form.name"
-            :disabled="!isEditMode && operation !== 'create'"
-            :placeholder="t('roles.placeholders.name')"
-            required
-          />
-        </div>
+          <!-- Name -->
+          <div class="space-y-2">
+            <Label
+              for="role-name"
+              class="mb-2"
+            >{{ t('roles.fields.name') }}</Label>
+            <Input
+              id="role-name"
+              v-model="form.name"
+              :disabled="!isEditMode && operation !== 'create'"
+              :placeholder="t('roles.placeholders.name')"
+              required
+            />
+          </div>
         
-        <!-- Display Order -->
-        <div class="space-y-2">
-          <Label for="role-display-order" class="mb-2">{{ t('roles.fields.displayOrder') }}</Label>
-          <Input
-            id="role-display-order"
-            v-model.number="form.display_order"
-            type="number"
-            :disabled="!isEditMode && operation !== 'create'"
-            :placeholder="t('roles.placeholders.displayOrder')"
-          />
-          <p class="text-sm text-muted-foreground">{{ t('roles.hints.displayOrder') }}</p>
-        </div>
+          <!-- Display Order -->
+          <div class="space-y-2">
+            <Label
+              for="role-display-order"
+              class="mb-2"
+            >{{ t('roles.fields.displayOrder') }}</Label>
+            <Input
+              id="role-display-order"
+              v-model.number="form.display_order"
+              type="number"
+              :disabled="!isEditMode && operation !== 'create'"
+              :placeholder="t('roles.placeholders.displayOrder')"
+            />
+            <p class="text-sm text-muted-foreground">
+              {{ t('roles.hints.displayOrder') }}
+            </p>
+          </div>
         
-        <!-- Notes -->
-        <div class="space-y-2">
-          <Label for="role-notes" class="mb-2">{{ t('roles.fields.notes') }}</Label>
-          <Textarea
-            id="role-notes"
-            v-model="form.notes"
-            :disabled="!isEditMode && operation !== 'create'"
-            :placeholder="t('roles.placeholders.notes')"
-            rows="3"
-          />
-        </div>
+          <!-- Notes -->
+          <div class="space-y-2">
+            <Label
+              for="role-notes"
+              class="mb-2"
+            >{{ t('roles.fields.notes') }}</Label>
+            <Textarea
+              id="role-notes"
+              v-model="form.notes"
+              :disabled="!isEditMode && operation !== 'create'"
+              :placeholder="t('roles.placeholders.notes')"
+              rows="3"
+            />
+          </div>
         
-        <!-- Checkboxes Grid -->
-        <div class="space-y-4">
-          <Label class="text-base font-semibold">{{ t('roles.sections.displayOptions') }}</Label>
-          <div class="grid grid-cols-2 gap-4">
-            <!-- Shareable -->
-            <div class="flex items-center space-x-2">
-              <Checkbox
-                id="role-shareable"
-                v-model="form.shareable"
-                :disabled="!isEditMode && operation !== 'create'"
-              />
-              <Label for="role-shareable" class="cursor-pointer">
-                {{ t('roles.fields.shareable') }}
-              </Label>
-            </div>
+          <!-- Checkboxes Grid -->
+          <div class="space-y-4">
+            <Label class="text-base font-semibold">{{ t('roles.sections.displayOptions') }}</Label>
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Shareable -->
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="role-shareable"
+                  v-model="form.shareable"
+                  :disabled="!isEditMode && operation !== 'create'"
+                />
+                <Label
+                  for="role-shareable"
+                  class="cursor-pointer"
+                >
+                  {{ t('roles.fields.shareable') }}
+                </Label>
+              </div>
             
-            <!-- Show Reference -->
-            <div class="flex items-center space-x-2">
-              <Checkbox
-                id="role-show-ref"
-                v-model="form.show_ref"
-                :disabled="!isEditMode && operation !== 'create'"
-              />
-              <Label for="role-show-ref" class="cursor-pointer">
-                {{ t('roles.fields.showRef') }}
-              </Label>
-            </div>
+              <!-- Show Reference -->
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="role-show-ref"
+                  v-model="form.show_ref"
+                  :disabled="!isEditMode && operation !== 'create'"
+                />
+                <Label
+                  for="role-show-ref"
+                  class="cursor-pointer"
+                >
+                  {{ t('roles.fields.showRef') }}
+                </Label>
+              </div>
             
-            <!-- Show Company -->
-            <div class="flex items-center space-x-2">
-              <Checkbox
-                id="role-show-company"
-                v-model="form.show_company"
-                :disabled="!isEditMode && operation !== 'create'"
-              />
-              <Label for="role-show-company" class="cursor-pointer">
-                {{ t('roles.fields.showCompany') }}
-              </Label>
-            </div>
+              <!-- Show Company -->
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="role-show-company"
+                  v-model="form.show_company"
+                  :disabled="!isEditMode && operation !== 'create'"
+                />
+                <Label
+                  for="role-show-company"
+                  class="cursor-pointer"
+                >
+                  {{ t('roles.fields.showCompany') }}
+                </Label>
+              </div>
             
-            <!-- Show Rate -->
-            <div class="flex items-center space-x-2">
-              <Checkbox
-                id="role-show-rate"
-                v-model="form.show_rate"
-                :disabled="!isEditMode && operation !== 'create'"
-              />
-              <Label for="role-show-rate" class="cursor-pointer">
-                {{ t('roles.fields.showRate') }}
-              </Label>
-            </div>
+              <!-- Show Rate -->
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="role-show-rate"
+                  v-model="form.show_rate"
+                  :disabled="!isEditMode && operation !== 'create'"
+                />
+                <Label
+                  for="role-show-rate"
+                  class="cursor-pointer"
+                >
+                  {{ t('roles.fields.showRate') }}
+                </Label>
+              </div>
             
-            <!-- Show Date -->
-            <div class="flex items-center space-x-2">
-              <Checkbox
-                id="role-show-date"
-                v-model="form.show_date"
-                :disabled="!isEditMode && operation !== 'create'"
-              />
-              <Label for="role-show-date" class="cursor-pointer">
-                {{ t('roles.fields.showDate') }}
-              </Label>
+              <!-- Show Date -->
+              <div class="flex items-center space-x-2">
+                <Checkbox
+                  id="role-show-date"
+                  v-model="form.show_date"
+                  :disabled="!isEditMode && operation !== 'create'"
+                />
+                <Label
+                  for="role-show-date"
+                  class="cursor-pointer"
+                >
+                  {{ t('roles.fields.showDate') }}
+                </Label>
+              </div>
             </div>
           </div>
-        </div>
         
-        <!-- Footer Actions -->
-        <DialogFooter>
-          <div class="flex justify-between w-full">
-            <!-- Left side actions -->
-            <div>
-              <Button
-                v-if="isEditMode"
-                @click="confirmDelete"
-                type="button"
-                variant="destructive"
-              >
-                <Trash2 class="mr-2 h-4 w-4" />
-                {{ t('actions.delete') }}
-              </Button>
-            </div>
+          <!-- Footer Actions -->
+          <DialogFooter>
+            <div class="flex justify-between w-full">
+              <!-- Left side actions -->
+              <div>
+                <Button
+                  v-if="isEditMode"
+                  type="button"
+                  variant="destructive"
+                  @click="confirmDelete"
+                >
+                  <Trash2 class="mr-2 h-4 w-4" />
+                  {{ t('actions.delete') }}
+                </Button>
+              </div>
             
-            <!-- Right side actions -->
-            <div class="flex gap-2">
-              <Button
-                @click="dialogOpen = false"
-                type="button"
-                variant="outline"
-              >
-                {{ t('actions.cancel') }}
-              </Button>
+              <!-- Right side actions -->
+              <div class="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  @click="dialogOpen = false"
+                >
+                  {{ t('actions.cancel') }}
+                </Button>
               
-              <Button
-                v-if="isEditMode || operation === 'create'"
-                type="submit"
-                :disabled="form.processing"
-              >
-                <template v-if="form.processing">
-                  <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  {{ t('common.saving') }}
-                </template>
-                <template v-else>
-                  {{ t('actions.save') }}
-                </template>
-              </Button>
+                <Button
+                  v-if="isEditMode || operation === 'create'"
+                  type="submit"
+                  :disabled="form.processing"
+                >
+                  <template v-if="form.processing">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                    {{ t('common.saving') }}
+                  </template>
+                  <template v-else>
+                    {{ t('actions.save') }}
+                  </template>
+                </Button>
+              </div>
             </div>
-          </div>
-        </DialogFooter>
+          </DialogFooter>
         </form>
       </div>
     </DialogScrollContent>

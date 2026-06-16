@@ -152,9 +152,9 @@ class TaskReminderNotification extends Notification implements ShouldQueue
             $daysOverdue = abs($daysUntilDue);
 
             return match ($this->language) {
-                'fr' => "{$icon} Cette tâche est en retard de {$daysOverdue} jour".($daysOverdue > 1 ? 's' : '').' et nécessite votre attention immédiate.',
-                'de' => "{$icon} Diese Aufgabe ist {$daysOverdue} Tag".($daysOverdue > 1 ? 'e' : '').' überfällig und erfordert Ihre sofortige Aufmerksamkeit.',
-                default => "{$icon} This task is {$daysOverdue} day".($daysOverdue > 1 ? 's' : '').' overdue and requires your immediate attention.',
+                'fr' => "{$icon} Cette tâche est en retard de {$daysOverdue} jour" . ($daysOverdue > 1 ? 's' : '') . ' et nécessite votre attention immédiate.',
+                'de' => "{$icon} Diese Aufgabe ist {$daysOverdue} Tag" . ($daysOverdue > 1 ? 'e' : '') . ' überfällig und erfordert Ihre sofortige Aufmerksamkeit.',
+                default => "{$icon} This task is {$daysOverdue} day" . ($daysOverdue > 1 ? 's' : '') . ' overdue and requires your immediate attention.',
             };
         } elseif ($daysUntilDue === 0) {
             return match ($this->language) {
@@ -210,12 +210,12 @@ class TaskReminderNotification extends Notification implements ShouldQueue
             $details[] = "**Alt. Ref:** {$this->task->matter->alt_ref}";
         }
 
-        $details[] = "**{$labels['task']}:** ".($this->task->info->name ?? $this->task->code);
+        $details[] = "**{$labels['task']}:** " . ($this->task->info->name ?? $this->task->code);
         if ($this->task->detail) {
             $details[] = "**Details:** {$this->task->detail}";
         }
 
-        $details[] = "**{$labels['due_date']}:** ".\Carbon\Carbon::parse($this->task->due_date)->format('d/m/Y');
+        $details[] = "**{$labels['due_date']}:** " . \Carbon\Carbon::parse($this->task->due_date)->format('d/m/Y');
 
         if ($this->task->matter->client) {
             $details[] = "**{$labels['client']}:** {$this->task->matter->client->name}";

@@ -1,5 +1,8 @@
 <template>
-  <Dialog v-model:open="dialogOpen" :max-width="maxWidth">
+  <Dialog
+    v-model:open="dialogOpen"
+    :max-width="maxWidth"
+  >
     <DialogScrollContent>
       <DialogHeader>
         <DialogTitle>
@@ -15,21 +18,27 @@
       </DialogHeader>
       
       <!-- Loading state -->
-      <div v-if="loading" class="flex items-center justify-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-8"
+      >
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
       
-      <div v-else class="space-y-6">
+      <div
+        v-else
+        class="space-y-6"
+      >
         <!-- Mode Toggle -->
         <div class="flex items-center justify-between border-b pb-4">
           <Badge variant="secondary">
             {{ t('defaultActors.badge') }}
           </Badge>
           <Button 
-            @click="toggleEditMode" 
+            v-if="canWrite && operation !== 'create'" 
             variant="outline" 
             size="sm"
-            v-if="canWrite && operation !== 'create'"
+            @click="toggleEditMode"
           >
             <Edit class="mr-2 h-4 w-4" />
             {{ isEditMode ? t('actions.viewMode') : t('actions.editMode') }}
@@ -37,10 +46,16 @@
         </div>
 
         <!-- Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+        <form
+          class="space-y-4"
+          @submit.prevent="handleSubmit"
+        >
           <!-- Actor -->
           <div class="space-y-2">
-            <Label for="default-actor-actor" class="mb-2">{{ t('defaultActors.fields.actor') }} *</Label>
+            <Label
+              for="default-actor-actor"
+              class="mb-2"
+            >{{ t('defaultActors.fields.actor') }} *</Label>
             <AutocompleteInput
               id="default-actor-actor"
               v-model="form.actor_id"
@@ -50,14 +65,20 @@
               :placeholder="t('defaultActors.placeholders.actor')"
               required
             />
-            <p v-if="form.errors.actor_id" class="text-sm text-destructive">
+            <p
+              v-if="form.errors.actor_id"
+              class="text-sm text-destructive"
+            >
               {{ form.errors.actor_id }}
             </p>
           </div>
           
           <!-- Role -->
           <div class="space-y-2">
-            <Label for="default-actor-role" class="mb-2">{{ t('defaultActors.fields.role') }} *</Label>
+            <Label
+              for="default-actor-role"
+              class="mb-2"
+            >{{ t('defaultActors.fields.role') }} *</Label>
             <AutocompleteInput
               id="default-actor-role"
               v-model="form.role"
@@ -67,14 +88,20 @@
               :placeholder="t('defaultActors.placeholders.role')"
               required
             />
-            <p v-if="form.errors.role" class="text-sm text-destructive">
+            <p
+              v-if="form.errors.role"
+              class="text-sm text-destructive"
+            >
               {{ form.errors.role }}
             </p>
           </div>
           
           <!-- Country -->
           <div class="space-y-2">
-            <Label for="default-actor-country" class="mb-2">{{ t('defaultActors.fields.country') }}</Label>
+            <Label
+              for="default-actor-country"
+              class="mb-2"
+            >{{ t('defaultActors.fields.country') }}</Label>
             <AutocompleteInput
               id="default-actor-country"
               v-model="form.for_country"
@@ -87,7 +114,10 @@
           
           <!-- Category -->
           <div class="space-y-2">
-            <Label for="default-actor-category" class="mb-2">{{ t('defaultActors.fields.category') }}</Label>
+            <Label
+              for="default-actor-category"
+              class="mb-2"
+            >{{ t('defaultActors.fields.category') }}</Label>
             <AutocompleteInput
               id="default-actor-category"
               v-model="form.for_category"
@@ -100,7 +130,10 @@
           
           <!-- Client -->
           <div class="space-y-2">
-            <Label for="default-actor-client" class="mb-2">{{ t('defaultActors.fields.client') }}</Label>
+            <Label
+              for="default-actor-client"
+              class="mb-2"
+            >{{ t('defaultActors.fields.client') }}</Label>
             <AutocompleteInput
               id="default-actor-client"
               v-model="form.for_client"
@@ -118,9 +151,9 @@
               <div>
                 <Button
                   v-if="isEditMode && operation !== 'create'"
-                  @click="confirmDelete"
                   type="button"
                   variant="destructive"
+                  @click="confirmDelete"
                 >
                   <Trash2 class="mr-2 h-4 w-4" />
                   {{ t('actions.delete') }}
@@ -130,9 +163,9 @@
               <!-- Right side actions -->
               <div class="flex gap-2">
                 <Button
-                  @click="dialogOpen = false"
                   type="button"
                   variant="outline"
+                  @click="dialogOpen = false"
                 >
                   {{ t('actions.cancel') }}
                 </Button>
@@ -143,7 +176,7 @@
                   :disabled="form.processing"
                 >
                   <template v-if="form.processing">
-                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
                     {{ t('common.saving') }}
                   </template>
                   <template v-else>

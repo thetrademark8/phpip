@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-4xl">
       <DialogHeader>
         <DialogTitle>
@@ -10,37 +13,55 @@
         </DialogDescription>
       </DialogHeader>
       
-      <DialogSkeleton v-if="loading" :fields="6" />
+      <DialogSkeleton
+        v-if="loading"
+        :fields="6"
+      />
       
-      <div v-else-if="eventName || operation === 'create'" class="space-y-6">
+      <div
+        v-else-if="eventName || operation === 'create'"
+        class="space-y-6"
+      >
         <!-- Mode Toggle -->
         <div class="flex items-center justify-between border-b pb-4">
           <div class="flex items-center gap-2">
-            <Badge v-if="eventName?.is_task" variant="default" class="text-xs">
+            <Badge
+              v-if="eventName?.is_task"
+              variant="default"
+              class="text-xs"
+            >
               {{ $t('Task') }}
             </Badge>
-            <Badge v-if="eventName?.status_event" variant="secondary" class="text-xs">
+            <Badge
+              v-if="eventName?.status_event"
+              variant="secondary"
+              class="text-xs"
+            >
               {{ $t('Status') }}
             </Badge>
-            <Badge v-if="eventName?.killer" variant="destructive" class="text-xs">
+            <Badge
+              v-if="eventName?.killer"
+              variant="destructive"
+              class="text-xs"
+            >
               {{ $t('Killer') }}
             </Badge>
           </div>
           <div class="flex items-center gap-2">
             <Button 
-              @click="toggleEditMode" 
+              v-if="canEdit && operation !== 'create'" 
               variant="outline" 
               size="sm"
-              v-if="canEdit && operation !== 'create'"
+              @click="toggleEditMode"
             >
               <Edit class="mr-2 h-4 w-4" />
               {{ isEditMode ? $t('View Mode') : $t('Edit Mode') }}
             </Button>
             <Button 
               v-if="canEdit && isEditMode && operation !== 'create'" 
-              @click="confirmDelete" 
-              variant="destructive"
+              variant="destructive" 
               size="sm"
+              @click="confirmDelete"
             >
               <Trash2 class="mr-2 h-4 w-4" />
               {{ $t('Delete') }}
@@ -49,18 +70,33 @@
         </div>
 
         <!-- Tabbed Content -->
-        <Tabs default-value="main" class="w-full">
+        <Tabs
+          default-value="main"
+          class="w-full"
+        >
           <TabsList class="grid w-full grid-cols-3">
-            <TabsTrigger value="main">{{ $t('Main') }}</TabsTrigger>
-            <TabsTrigger value="properties">{{ $t('Properties') }}</TabsTrigger>
-            <TabsTrigger value="templates">{{ $t('Templates') }}</TabsTrigger>
+            <TabsTrigger value="main">
+              {{ $t('Main') }}
+            </TabsTrigger>
+            <TabsTrigger value="properties">
+              {{ $t('Properties') }}
+            </TabsTrigger>
+            <TabsTrigger value="templates">
+              {{ $t('Templates') }}
+            </TabsTrigger>
           </TabsList>
 
           <!-- Main Tab -->
-          <TabsContent value="main" class="space-y-4 mt-4">
+          <TabsContent
+            value="main"
+            class="space-y-4 mt-4"
+          >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label for="code" class="mb-2">{{ $t('Code') }} *</Label>
+                <Label
+                  for="code"
+                  class="mb-2"
+                >{{ $t('Code') }} *</Label>
                 <Input
                   id="code"
                   v-model="form.code"
@@ -69,13 +105,19 @@
                   :disabled="(!isEditMode && operation !== 'create') || form.processing"
                   :class="{ 'border-destructive': form.errors.code }"
                 />
-                <p v-if="form.errors.code" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.code"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.code }}
                 </p>
               </div>
               
               <div>
-                <Label for="name" class="mb-2">{{ $t('Name') }} *</Label>
+                <Label
+                  for="name"
+                  class="mb-2"
+                >{{ $t('Name') }} *</Label>
                 <Input
                   id="name"
                   v-model="form.name"
@@ -84,14 +126,20 @@
                   :disabled="(!isEditMode && operation !== 'create') || form.processing"
                   :class="{ 'border-destructive': form.errors.name }"
                 />
-                <p v-if="form.errors.name" class="text-sm text-destructive mt-1">
+                <p
+                  v-if="form.errors.name"
+                  class="text-sm text-destructive mt-1"
+                >
                   {{ form.errors.name }}
                 </p>
               </div>
             </div>
 
             <div>
-              <Label for="notes" class="mb-2">{{ $t('Notes') }}</Label>
+              <Label
+                for="notes"
+                class="mb-2"
+              >{{ $t('Notes') }}</Label>
               <Textarea
                 id="notes"
                 v-model="form.notes"
@@ -101,14 +149,20 @@
                 :disabled="(!isEditMode && operation !== 'create') || form.processing"
                 :class="{ 'border-destructive': form.errors.notes }"
               />
-              <p v-if="form.errors.notes" class="text-sm text-destructive mt-1">
+              <p
+                v-if="form.errors.notes"
+                class="text-sm text-destructive mt-1"
+              >
                 {{ form.errors.notes }}
               </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label for="country" class="mb-2">{{ $t('Country') }}</Label>
+                <Label
+                  for="country"
+                  class="mb-2"
+                >{{ $t('Country') }}</Label>
                 <AutocompleteInput
                   id="country"
                   v-model="form.country"
@@ -120,7 +174,10 @@
               </div>
               
               <div>
-                <Label for="category" class="mb-2">{{ $t('Category') }}</Label>
+                <Label
+                  for="category"
+                  class="mb-2"
+                >{{ $t('Category') }}</Label>
                 <AutocompleteInput
                   id="category"
                   v-model="form.category"
@@ -133,7 +190,10 @@
             </div>
 
             <div>
-              <Label for="default_responsible" class="mb-2">{{ $t('Default Responsible') }}</Label>
+              <Label
+                for="default_responsible"
+                class="mb-2"
+              >{{ $t('Default Responsible') }}</Label>
               <AutocompleteInput
                 id="default_responsible"
                 v-model="form.default_responsible"
@@ -146,7 +206,10 @@
           </TabsContent>
 
           <!-- Properties Tab -->
-          <TabsContent value="properties" class="space-y-4 mt-4">
+          <TabsContent
+            value="properties"
+            class="space-y-4 mt-4"
+          >
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="flex items-center space-x-2">
                 <Checkbox
@@ -155,13 +218,25 @@
                   v-model="form.is_task"
                   :disabled="form.processing"
                 />
-                <Badge v-else-if="eventName?.is_task" variant="default" class="text-xs">
+                <Badge
+                  v-else-if="eventName?.is_task"
+                  variant="default"
+                  class="text-xs"
+                >
                   ✓ {{ $t('Is Task Event') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ $t('Is Task Event') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="is_task" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="is_task"
+                  class="font-normal"
+                >
                   {{ $t('This is a task event') }}
                 </Label>
               </div>
@@ -173,13 +248,25 @@
                   v-model="form.status_event"
                   :disabled="form.processing"
                 />
-                <Badge v-else-if="eventName?.status_event" variant="default" class="text-xs">
+                <Badge
+                  v-else-if="eventName?.status_event"
+                  variant="default"
+                  class="text-xs"
+                >
                   ✓ {{ $t('Is Status Event') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ $t('Is Status Event') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="status_event" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="status_event"
+                  class="font-normal"
+                >
                   {{ $t('This is a status event') }}
                 </Label>
               </div>
@@ -191,13 +278,25 @@
                   v-model="form.killer"
                   :disabled="form.processing"
                 />
-                <Badge v-else-if="eventName?.killer" variant="destructive" class="text-xs">
+                <Badge
+                  v-else-if="eventName?.killer"
+                  variant="destructive"
+                  class="text-xs"
+                >
                   ✓ {{ $t('Is Killer Event') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ $t('Is Killer Event') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="killer" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="killer"
+                  class="font-normal"
+                >
                   {{ $t('This is a killer event') }}
                 </Label>
               </div>
@@ -209,13 +308,25 @@
                   v-model="form.use_matter_resp"
                   :disabled="form.processing"
                 />
-                <Badge v-else-if="eventName?.use_matter_resp" variant="secondary" class="text-xs">
+                <Badge
+                  v-else-if="eventName?.use_matter_resp"
+                  variant="secondary"
+                  class="text-xs"
+                >
                   ✓ {{ $t('Use Matter Responsible') }}
                 </Badge>
-                <Badge v-else variant="outline" class="text-xs text-muted-foreground">
+                <Badge
+                  v-else
+                  variant="outline"
+                  class="text-xs text-muted-foreground"
+                >
                   ✗ {{ $t('Use Matter Responsible') }}
                 </Badge>
-                <Label v-if="isEditMode || operation === 'create'" htmlFor="use_matter_resp" class="font-normal">
+                <Label
+                  v-if="isEditMode || operation === 'create'"
+                  html-for="use_matter_resp"
+                  class="font-normal"
+                >
                   {{ $t('Use matter responsible instead of default') }}
                 </Label>
               </div>
@@ -223,7 +334,10 @@
           </TabsContent>
 
           <!-- Templates Tab -->
-          <TabsContent value="templates" class="mt-4">
+          <TabsContent
+            value="templates"
+            class="mt-4"
+          >
             <TemplateLinks
               v-if="eventName"
               :event-name="eventName"
@@ -231,7 +345,10 @@
               :can-edit="canEdit && isEditMode"
               @updated="handleTemplateUpdate"
             />
-            <div v-else class="text-center py-8 text-muted-foreground">
+            <div
+              v-else
+              class="text-center py-8 text-muted-foreground"
+            >
               {{ $t('Template management is available after creating the event name') }}
             </div>
           </TabsContent>
@@ -239,15 +356,22 @@
       </div>
         
       <DialogFooter>
-        <Button @click="$emit('update:open', false)" variant="outline" :disabled="form.processing">
+        <Button
+          variant="outline"
+          :disabled="form.processing"
+          @click="$emit('update:open', false)"
+        >
           {{ $t('Cancel') }}
         </Button>
         <Button
           v-if="isEditMode || operation === 'create'"
-          @click="handleSubmit"
           :disabled="form.processing || !canSubmit"
+          @click="handleSubmit"
         >
-          <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+          <Loader2
+            v-if="form.processing"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ operation === 'create' ? $t('Create') : $t('Save') }}
         </Button>
       </DialogFooter>

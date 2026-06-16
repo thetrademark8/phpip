@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>{{ $t('Manage Status Information') }}</DialogTitle>
@@ -8,14 +11,23 @@
         </DialogDescription>
       </DialogHeader>
       
-      <form @submit.prevent="handleSubmit" class="space-y-6">
+      <form
+        class="space-y-6"
+        @submit.prevent="handleSubmit"
+      >
         <!-- Status Events Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ $t('Status Events') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ $t('Status Events') }}
+            </CardTitle>
           </CardHeader>
           <CardContent class="space-y-4">
-            <div v-for="event in statusEvents" :key="event.id" class="flex items-center gap-4">
+            <div
+              v-for="event in statusEvents"
+              :key="event.id"
+              class="flex items-center gap-4"
+            >
               <div class="flex-1">
                 <Label :for="`event-${event.id}`">{{ event.event_name }}</Label>
               </div>
@@ -27,7 +39,10 @@
                 />
               </div>
             </div>
-            <div v-if="statusEvents.length === 0" class="text-muted-foreground text-sm">
+            <div
+              v-if="statusEvents.length === 0"
+              class="text-muted-foreground text-sm"
+            >
               {{ $t('No status events configured for this matter type') }}
             </div>
           </CardContent>
@@ -36,7 +51,9 @@
         <!-- Status Numbers Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ $t('Status Numbers') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ $t('Status Numbers') }}
+            </CardTitle>
           </CardHeader>
           <CardContent class="space-y-4">
             <FormField
@@ -74,7 +91,9 @@
         <!-- Additional Information -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ $t('Additional Information') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ $t('Additional Information') }}
+            </CardTitle>
           </CardHeader>
           <CardContent class="space-y-4">
             <FormField
@@ -105,7 +124,10 @@
                   id="dead"
                   v-model="form.dead"
                 />
-                <Label htmlFor="dead" class="font-normal">
+                <Label
+                  html-for="dead"
+                  class="font-normal"
+                >
                   {{ $t('Mark as inactive/dead') }}
                 </Label>
               </div>
@@ -114,11 +136,21 @@
         </Card>
 
         <DialogFooter>
-          <Button type="button" variant="outline" @click="$emit('update:open', false)">
+          <Button
+            type="button"
+            variant="outline"
+            @click="$emit('update:open', false)"
+          >
             {{ $t('Cancel') }}
           </Button>
-          <Button type="submit" :disabled="form.processing">
-            <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+          <Button
+            type="submit"
+            :disabled="form.processing"
+          >
+            <Loader2
+              v-if="form.processing"
+              class="mr-2 h-4 w-4 animate-spin"
+            />
             {{ $t('Save Changes') }}
           </Button>
         </DialogFooter>

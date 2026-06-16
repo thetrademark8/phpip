@@ -3,19 +3,30 @@
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       <!-- Header -->
       <div class="space-y-2">
-        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{{ $t('teamleader.title') }}</h1>
-        <p class="text-lg text-muted-foreground">{{ $t('teamleader.description') }}</p>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {{ $t('teamleader.title') }}
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          {{ $t('teamleader.description') }}
+        </p>
       </div>
 
       <!-- Flash Messages -->
-      <Alert v-if="$page.props.flash?.success" variant="default" class="border-green-500 bg-green-50 dark:bg-green-950">
+      <Alert
+        v-if="$page.props.flash?.success"
+        variant="default"
+        class="border-green-500 bg-green-50 dark:bg-green-950"
+      >
         <CheckCircle2 class="h-4 w-4 text-green-600" />
         <AlertDescription class="text-green-800 dark:text-green-200">
           {{ $page.props.flash.success }}
         </AlertDescription>
       </Alert>
 
-      <Alert v-if="$page.props.flash?.error" variant="destructive">
+      <Alert
+        v-if="$page.props.flash?.error"
+        variant="destructive"
+      >
         <AlertCircle class="h-4 w-4" />
         <AlertDescription>
           {{ $page.props.flash.error }}
@@ -23,7 +34,11 @@
       </Alert>
 
       <!-- Not Enabled Warning -->
-      <Alert v-if="!enabled" variant="default" class="border-amber-500 bg-amber-50 dark:bg-amber-950">
+      <Alert
+        v-if="!enabled"
+        variant="default"
+        class="border-amber-500 bg-amber-50 dark:bg-amber-950"
+      >
         <AlertTriangle class="h-4 w-4 text-amber-600" />
         <AlertDescription class="text-amber-800 dark:text-amber-200">
           {{ $t('teamleader.not_enabled') }}
@@ -40,10 +55,22 @@
         </CardHeader>
         <CardContent class="pt-0 space-y-6">
           <!-- Status Indicator -->
-          <div class="flex items-center gap-4 p-4 rounded-lg" :class="statusBackgroundClass">
-            <div class="p-3 rounded-full" :class="statusIconClass">
-              <CheckCircle2 v-if="status.connected" class="h-6 w-6" />
-              <XCircle v-else class="h-6 w-6" />
+          <div
+            class="flex items-center gap-4 p-4 rounded-lg"
+            :class="statusBackgroundClass"
+          >
+            <div
+              class="p-3 rounded-full"
+              :class="statusIconClass"
+            >
+              <CheckCircle2
+                v-if="status.connected"
+                class="h-6 w-6"
+              />
+              <XCircle
+                v-else
+                class="h-6 w-6"
+              />
             </div>
             <div>
               <p class="font-medium text-lg">
@@ -56,7 +83,10 @@
           </div>
 
           <!-- Connection Details (when connected) -->
-          <div v-if="status.connected" class="space-y-4">
+          <div
+            v-if="status.connected"
+            class="space-y-4"
+          >
             <Separator />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -71,7 +101,10 @@
                     {{ status.token_valid ? $t('teamleader.token.valid') : $t('teamleader.token.expired') }}
                   </Badge>
                 </div>
-                <p v-if="status.expires_at" class="text-xs text-muted-foreground">
+                <p
+                  v-if="status.expires_at"
+                  class="text-xs text-muted-foreground"
+                >
                   {{ $t('teamleader.token.expires_at') }}: {{ formatDate(status.expires_at) }}
                 </p>
               </div>
@@ -91,7 +124,10 @@
             </div>
 
             <!-- Last Updated -->
-            <p v-if="status.updated_at" class="text-sm text-muted-foreground text-center">
+            <p
+              v-if="status.updated_at"
+              class="text-sm text-muted-foreground text-center"
+            >
               {{ $t('teamleader.last_updated') }}: {{ formatDate(status.updated_at) }}
             </p>
           </div>
@@ -106,8 +142,14 @@
               :disabled="isLoading"
               @click="runDiagnostics"
             >
-              <RefreshCw v-if="isDiagnosticsLoading" class="mr-2 h-4 w-4 animate-spin" />
-              <Stethoscope v-else class="mr-2 h-4 w-4" />
+              <RefreshCw
+                v-if="isDiagnosticsLoading"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
+              <Stethoscope
+                v-else
+                class="mr-2 h-4 w-4"
+              />
               {{ $t('teamleader.actions.diagnostics') }}
             </Button>
 
@@ -117,8 +159,14 @@
               :disabled="isLoading"
               @click="testConnection"
             >
-              <RefreshCw v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-              <Plug v-else class="mr-2 h-4 w-4" />
+              <RefreshCw
+                v-if="isLoading"
+                class="mr-2 h-4 w-4 animate-spin"
+              />
+              <Plug
+                v-else
+                class="mr-2 h-4 w-4"
+              />
               {{ $t('teamleader.actions.test') }}
             </Button>
 
@@ -153,7 +201,6 @@
           </CardTitle>
         </CardHeader>
         <CardContent class="pt-0 space-y-6">
-
           <!-- Token Diagnostics -->
           <div class="space-y-2">
             <h3 class="text-sm font-semibold flex items-center gap-2">
@@ -165,15 +212,27 @@
                 <Badge :variant="tokenDiagVariant">
                   {{ diagnostics.token.status }}
                 </Badge>
-                <span v-if="diagnostics.token.message" class="text-sm text-muted-foreground">
+                <span
+                  v-if="diagnostics.token.message"
+                  class="text-sm text-muted-foreground"
+                >
                   {{ diagnostics.token.message }}
                 </span>
               </div>
-              <div v-if="diagnostics.token.expires_in_minutes != null" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.token.expires_in_minutes != null"
+                class="text-xs text-muted-foreground"
+              >
                 {{ $t('teamleader.diagnostics.expires_in') }}: {{ diagnostics.token.expires_in_minutes }} min
               </div>
-              <div v-if="diagnostics.token.refresh_attempted" class="text-xs">
-                <Badge :variant="diagnostics.token.refresh_success ? 'default' : 'destructive'" class="text-xs">
+              <div
+                v-if="diagnostics.token.refresh_attempted"
+                class="text-xs"
+              >
+                <Badge
+                  :variant="diagnostics.token.refresh_success ? 'default' : 'destructive'"
+                  class="text-xs"
+                >
                   {{ diagnostics.token.refresh_success ? $t('teamleader.diagnostics.refresh_ok') : $t('teamleader.diagnostics.refresh_failed') }}
                 </Badge>
               </div>
@@ -195,32 +254,58 @@
               </div>
 
               <!-- Webhook URL info -->
-              <div v-if="diagnostics.webhook.url" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.webhook.url"
+                class="text-xs text-muted-foreground"
+              >
                 URL: <code class="bg-muted px-1 py-0.5 rounded">{{ diagnostics.webhook.url }}</code>
               </div>
 
               <!-- Event types registered -->
-              <div v-if="diagnostics.webhook.types?.length" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.webhook.types?.length"
+                class="text-xs text-muted-foreground"
+              >
                 <span class="font-medium">{{ $t('teamleader.diagnostics.registered_events') }}:</span>
                 <div class="flex flex-wrap gap-1 mt-1">
-                  <Badge v-for="eventType in diagnostics.webhook.types" :key="eventType" variant="outline" class="text-xs">
+                  <Badge
+                    v-for="eventType in diagnostics.webhook.types"
+                    :key="eventType"
+                    variant="outline"
+                    class="text-xs"
+                  >
                     {{ eventType }}
                   </Badge>
                 </div>
               </div>
 
               <!-- Missing remote warning -->
-              <Alert v-if="diagnostics.webhook.status === 'missing_remote'" variant="destructive" class="mt-2">
+              <Alert
+                v-if="diagnostics.webhook.status === 'missing_remote'"
+                variant="destructive"
+                class="mt-2"
+              >
                 <AlertCircle class="h-4 w-4" />
                 <AlertDescription class="text-sm">
                   {{ $t('teamleader.diagnostics.webhook_missing_remote') }}
-                  <div v-if="diagnostics.webhook.expected_url" class="mt-1 text-xs">
+                  <div
+                    v-if="diagnostics.webhook.expected_url"
+                    class="mt-1 text-xs"
+                  >
                     {{ $t('teamleader.diagnostics.expected_url') }}: <code class="bg-muted px-1 py-0.5 rounded">{{ diagnostics.webhook.expected_url }}</code>
                   </div>
-                  <div v-if="diagnostics.webhook.registered_webhooks?.length" class="mt-1 text-xs">
+                  <div
+                    v-if="diagnostics.webhook.registered_webhooks?.length"
+                    class="mt-1 text-xs"
+                  >
                     {{ $t('teamleader.diagnostics.found_webhooks') }}:
                     <ul class="list-disc list-inside mt-1">
-                      <li v-for="url in diagnostics.webhook.registered_webhooks" :key="url">{{ url }}</li>
+                      <li
+                        v-for="url in diagnostics.webhook.registered_webhooks"
+                        :key="url"
+                      >
+                        {{ url }}
+                      </li>
                     </ul>
                   </div>
                 </AlertDescription>
@@ -234,8 +319,14 @@
                 :disabled="isLoading"
                 @click="reRegisterWebhook"
               >
-                <RefreshCw v-if="isReRegisterLoading" class="mr-2 h-3 w-3 animate-spin" />
-                <RotateCcw v-else class="mr-2 h-3 w-3" />
+                <RefreshCw
+                  v-if="isReRegisterLoading"
+                  class="mr-2 h-3 w-3 animate-spin"
+                />
+                <RotateCcw
+                  v-else
+                  class="mr-2 h-3 w-3"
+                />
                 {{ $t('teamleader.actions.re_register_webhook') }}
               </Button>
             </div>
@@ -255,31 +346,52 @@
                 <span class="text-sm text-muted-foreground">{{ diagnostics.api.message }}</span>
               </div>
 
-              <div v-if="diagnostics.api.user" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.api.user"
+                class="text-xs text-muted-foreground"
+              >
                 {{ $t('teamleader.diagnostics.authenticated_as') }}: {{ diagnostics.api.user }}
               </div>
 
-              <div v-if="diagnostics.api.rate_limit" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.api.rate_limit"
+                class="text-xs text-muted-foreground"
+              >
                 {{ $t('teamleader.diagnostics.rate_limit') }}: {{ diagnostics.api.rate_limit.remaining }}/{{ diagnostics.api.rate_limit.limit }}
               </div>
 
-              <div v-if="diagnostics.api.contacts_total_on_teamleader != null" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.api.contacts_total_on_teamleader != null"
+                class="text-xs text-muted-foreground"
+              >
                 {{ $t('teamleader.diagnostics.contacts_on_tl') }}: <strong>{{ diagnostics.api.contacts_total_on_teamleader }}</strong>
               </div>
 
-              <div v-if="diagnostics.api.contacts_accessible === false" class="mt-1">
+              <div
+                v-if="diagnostics.api.contacts_accessible === false"
+                class="mt-1"
+              >
                 <Alert variant="destructive">
                   <AlertCircle class="h-4 w-4" />
                   <AlertDescription class="text-sm">
                     {{ $t('teamleader.diagnostics.contacts_api_error') }}
-                    <code v-if="diagnostics.api.contacts_error" class="block mt-1 text-xs bg-muted p-2 rounded">{{ diagnostics.api.contacts_error }}</code>
+                    <code
+                      v-if="diagnostics.api.contacts_error"
+                      class="block mt-1 text-xs bg-muted p-2 rounded"
+                    >{{ diagnostics.api.contacts_error }}</code>
                   </AlertDescription>
                 </Alert>
               </div>
 
-              <div v-if="diagnostics.api.http_status" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.api.http_status"
+                class="text-xs text-muted-foreground"
+              >
                 HTTP {{ diagnostics.api.http_status }}
-                <code v-if="diagnostics.api.response_body" class="block mt-1 bg-muted p-2 rounded whitespace-pre-wrap">{{ diagnostics.api.response_body }}</code>
+                <code
+                  v-if="diagnostics.api.response_body"
+                  class="block mt-1 bg-muted p-2 rounded whitespace-pre-wrap"
+                >{{ diagnostics.api.response_body }}</code>
               </div>
             </div>
           </div>
@@ -293,18 +405,32 @@
             <div class="rounded-lg border p-4 space-y-2">
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-muted-foreground">{{ $t('teamleader.diagnostics.total_synced') }}</p>
-                  <p class="text-lg font-semibold">{{ diagnostics.sync_stats.total_synced_records }}</p>
+                  <p class="text-xs text-muted-foreground">
+                    {{ $t('teamleader.diagnostics.total_synced') }}
+                  </p>
+                  <p class="text-lg font-semibold">
+                    {{ diagnostics.sync_stats.total_synced_records }}
+                  </p>
                 </div>
                 <div>
-                  <p class="text-xs text-muted-foreground">{{ $t('teamleader.diagnostics.synced_7_days') }}</p>
-                  <p class="text-lg font-semibold">{{ diagnostics.sync_stats.synced_last_7_days }}</p>
+                  <p class="text-xs text-muted-foreground">
+                    {{ $t('teamleader.diagnostics.synced_7_days') }}
+                  </p>
+                  <p class="text-lg font-semibold">
+                    {{ diagnostics.sync_stats.synced_last_7_days }}
+                  </p>
                 </div>
               </div>
-              <div v-if="diagnostics.sync_stats.last_sync_at" class="text-xs text-muted-foreground">
+              <div
+                v-if="diagnostics.sync_stats.last_sync_at"
+                class="text-xs text-muted-foreground"
+              >
                 {{ $t('teamleader.diagnostics.last_sync') }}: {{ formatDate(diagnostics.sync_stats.last_sync_at) }}
               </div>
-              <div v-else class="text-xs text-muted-foreground italic">
+              <div
+                v-else
+                class="text-xs text-muted-foreground italic"
+              >
                 {{ $t('teamleader.diagnostics.never_synced') }}
               </div>
 
@@ -316,13 +442,18 @@
                 :disabled="isLoading"
                 @click="triggerSync"
               >
-                <RefreshCw v-if="isSyncLoading" class="mr-2 h-3 w-3 animate-spin" />
-                <ArrowDownToLine v-else class="mr-2 h-3 w-3" />
+                <RefreshCw
+                  v-if="isSyncLoading"
+                  class="mr-2 h-3 w-3 animate-spin"
+                />
+                <ArrowDownToLine
+                  v-else
+                  class="mr-2 h-3 w-3"
+                />
                 {{ $t('teamleader.actions.manual_sync') }}
               </Button>
             </div>
           </div>
-
         </CardContent>
       </Card>
 

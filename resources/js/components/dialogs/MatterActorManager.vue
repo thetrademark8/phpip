@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>{{ t('Manage Actors') }}</DialogTitle>
@@ -10,10 +13,12 @@
 
       <div class="space-y-6 max-h-[60vh] overflow-y-auto">
         <!-- Permission Notice -->
-        <div v-if="!canWrite"
-             class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+        <div
+          v-if="!canWrite"
+          class="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4"
+        >
           <div class="flex items-start gap-2">
-            <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5"/>
+            <AlertCircle class="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
             <div>
               <p class="font-medium text-orange-800 dark:text-orange-200 text-sm">
                 {{ t('Actor management restricted') }}
@@ -30,114 +35,131 @@
         <!-- Add Actor Section -->
         <Card v-if="canWrite">
           <CardHeader>
-            <CardTitle class="text-base">{{ t('Add Actor') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ t('Add Actor') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form @submit.prevent="handleAddActor" class="space-y-4">
+            <form
+              class="space-y-4"
+              @submit.prevent="handleAddActor"
+            >
               <div class="grid gap-4">
                 <FormField
-                    :label="t('Role')"
-                    name="role"
-                    :error="addForm.errors.role"
-                    required
+                  :label="t('Role')"
+                  name="role"
+                  :error="addForm.errors.role"
+                  required
                 >
                   <AutocompleteInput
-                      v-model="addForm.role"
-                      v-model:display-model-value="roleDisplay"
-                      endpoint="/role/autocomplete"
-                      :placeholder="t('Select role')"
-                      :min-length="0"
-                      value-key="code"
-                      label-key="name"
-                      @selected="handleRoleSelect"
+                    v-model="addForm.role"
+                    v-model:display-model-value="roleDisplay"
+                    endpoint="/role/autocomplete"
+                    :placeholder="t('Select role')"
+                    :min-length="0"
+                    value-key="code"
+                    label-key="name"
+                    @selected="handleRoleSelect"
                   />
                 </FormField>
 
                 <FormField
-                    :label="t('Actor')"
-                    name="actor_id"
-                    :error="addForm.errors.actor_id"
-                    required
+                  :label="t('Actor')"
+                  name="actor_id"
+                  :error="addForm.errors.actor_id"
+                  required
                 >
                   <AutocompleteInput
-                      v-model="addForm.actor_id"
-                      v-model:display-model-value="actorDisplay"
-                      endpoint="/actor/autocomplete/1"
-                      :placeholder="t('Search or create actor')"
-                      value-key="key"
-                      label-key="value"
+                    v-model="addForm.actor_id"
+                    v-model:display-model-value="actorDisplay"
+                    endpoint="/actor/autocomplete/1"
+                    :placeholder="t('Search or create actor')"
+                    value-key="key"
+                    label-key="value"
                   />
                 </FormField>
               </div>
 
               <div class="grid gap-4">
                 <FormField
-                    :label="t('Reference')"
-                    name="actor_ref"
-                    :error="addForm.errors.actor_ref"
+                  :label="t('Reference')"
+                  name="actor_ref"
+                  :error="addForm.errors.actor_ref"
                 >
                   <Input
-                      v-model="addForm.actor_ref"
-                      :placeholder="t('Actor reference (optional)')"
+                    v-model="addForm.actor_ref"
+                    :placeholder="t('Actor reference (optional)')"
                   />
                 </FormField>
 
                 <FormField
-                    :label="t('Date')"
-                    name="date"
-                    :error="addForm.errors.date"
+                  :label="t('Date')"
+                  name="date"
+                  :error="addForm.errors.date"
                 >
                   <DatePicker
-                      v-model="addForm.date"
-                      :placeholder="t('Select date (optional)')"
+                    v-model="addForm.date"
+                    :placeholder="t('Select date (optional)')"
                   />
                 </FormField>
               </div>
 
               <div class="grid gap-4">
                 <FormField
-                    :label="t('Ownership %')"
-                    name="rate"
-                    :error="addForm.errors.rate"
+                  :label="t('Ownership %')"
+                  name="rate"
+                  :error="addForm.errors.rate"
                 >
                   <Input
-                      v-model="addForm.rate"
-                      type="number"
-                      min="0"
-                      max="100"
-                      placeholder="100"
+                    v-model="addForm.rate"
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="100"
                   />
                 </FormField>
 
                 <FormField
-                    :label="t('Display Order')"
-                    name="display_order"
-                    :error="addForm.errors.display_order"
+                  :label="t('Display Order')"
+                  name="display_order"
+                  :error="addForm.errors.display_order"
                 >
                   <Input
-                      v-model.number="addForm.display_order"
-                      type="number"
-                      :placeholder="t('Display order (optional)')"
+                    v-model.number="addForm.display_order"
+                    type="number"
+                    :placeholder="t('Display order (optional)')"
                   />
                 </FormField>
               </div>
 
-              <div v-if="selectedRole?.shareable && matter.container_id" class="space-y-2">
+              <div
+                v-if="selectedRole?.shareable && matter.container_id"
+                class="space-y-2"
+              >
                 <Label>{{ t('Scope') }}</Label>
                 <RadioGroup v-model="addForm.matter_id">
                   <div class="flex items-center space-x-2">
-                    <RadioGroupItem :value="matter.container_id || matter.id" id="shared"/>
-                    <Label htmlFor="shared">{{ t('Add to container (shared with family)') }}</Label>
+                    <RadioGroupItem
+                      id="shared"
+                      :value="matter.container_id || matter.id"
+                    />
+                    <Label html-for="shared">{{ t('Add to container (shared with family)') }}</Label>
                   </div>
                   <div class="flex items-center space-x-2">
-                    <RadioGroupItem :value="matter.id" id="local"/>
-                    <Label htmlFor="local">{{ t('Add to this matter only') }}</Label>
+                    <RadioGroupItem
+                      id="local"
+                      :value="matter.id"
+                    />
+                    <Label html-for="local">{{ t('Add to this matter only') }}</Label>
                   </div>
                 </RadioGroup>
               </div>
 
-              <Button type="submit" :disabled="addForm.processing">
-                <UserPlus class="mr-2 h-4 w-4"/>
+              <Button
+                type="submit"
+                :disabled="addForm.processing"
+              >
+                <UserPlus class="mr-2 h-4 w-4" />
                 {{ t('Add Actor') }}
               </Button>
             </form>
@@ -147,59 +169,81 @@
         <!-- Current Actors Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ t('Current Actors') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ t('Current Actors') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div v-if="groupedActors && Object.keys(groupedActors).length > 0" class="space-y-4">
-              <div v-for="(roleData, roleKey) in groupedActors" :key="roleKey" class="space-y-2">
-                <h4 class="font-medium text-sm text-muted-foreground">{{ translated(roleData.name) || t('Other') }}</h4>
+            <div
+              v-if="groupedActors && Object.keys(groupedActors).length > 0"
+              class="space-y-4"
+            >
+              <div
+                v-for="(roleData, roleKey) in groupedActors"
+                :key="roleKey"
+                class="space-y-2"
+              >
+                <h4 class="font-medium text-sm text-muted-foreground">
+                  {{ translated(roleData.name) || t('Other') }}
+                </h4>
                 <div class="space-y-1">
                   <div
-                      v-for="actor in roleData.actors"
-                      :key="actor.id"
-                      class="flex items-center justify-between p-2 border rounded-lg"
-                      :class="{ 'opacity-60': actor.inherited }"
+                    v-for="actor in roleData.actors"
+                    :key="actor.id"
+                    class="flex items-center justify-between p-2 border rounded-lg"
+                    :class="{ 'opacity-60': actor.inherited }"
                   >
                     <div class="flex-1">
                       <div class="font-medium">
                         {{
                           actor.display_name || actor.name
                         }}{{ actor.rate && actor.rate != 100 ? ` (${actor.rate}%)` : '' }}
-                        <span v-if="actor.inherited" class="text-sm text-muted-foreground italic">
+                        <span
+                          v-if="actor.inherited"
+                          class="text-sm text-muted-foreground italic"
+                        >
                           {{ t('(inherited)') }}
                         </span>
                       </div>
-                      <div v-if="actor.company_name" class="text-sm text-muted-foreground">
+                      <div
+                        v-if="actor.company_name"
+                        class="text-sm text-muted-foreground"
+                      >
                         {{ translated(translatedactor.company_name) }}
                       </div>
                       <div class="flex gap-4 text-sm text-muted-foreground">
                         <span v-if="actor.actor_ref">{{ t('Ref') }}: {{ actor.actor_ref }}</span>
                         <span v-if="actor.date">{{ formatDate(actor.date) }}</span>
-                        <span v-if="actor.shared"
-                              class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">{{ t('Shared') }}</span>
+                        <span
+                          v-if="actor.shared"
+                          class="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded"
+                        >{{ t('Shared') }}</span>
                       </div>
                     </div>
                     <Button
-                        v-if="!actor.inherited && canWrite"
-                        variant="ghost"
-                        size="icon"
-                        @click="handleRemoveActor(actor)"
-                        :disabled="removingActorId === actor.id"
+                      v-if="!actor.inherited && canWrite"
+                      variant="ghost"
+                      size="icon"
+                      :disabled="removingActorId === actor.id"
+                      @click="handleRemoveActor(actor)"
                     >
-                      <Trash2 class="h-4 w-4"/>
+                      <Trash2 class="h-4 w-4" />
                     </Button>
                     <div
-                        v-else-if="!actor.inherited && !canWrite"
-                        class="p-2"
-                        :title="t('Removal restricted - insufficient permissions')"
+                      v-else-if="!actor.inherited && !canWrite"
+                      class="p-2"
+                      :title="t('Removal restricted - insufficient permissions')"
                     >
-                      <Lock class="h-4 w-4 text-muted-foreground"/>
+                      <Lock class="h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-muted-foreground">
+            <div
+              v-else
+              class="text-center py-8 text-muted-foreground"
+            >
               {{ t('No actors assigned to this matter') }}
             </div>
           </CardContent>
@@ -207,7 +251,10 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ t('Close') }}
         </Button>
       </DialogFooter>

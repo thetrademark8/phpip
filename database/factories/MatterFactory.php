@@ -138,7 +138,7 @@ class MatterFactory extends Factory
         static $sequence = 1;
 
         return $this->state(fn (array $attributes) => [
-            'caseref' => $prefix.str_pad($sequence++, 4, '0', STR_PAD_LEFT),
+            'caseref' => $prefix . str_pad($sequence++, 4, '0', STR_PAD_LEFT),
         ]);
     }
 }

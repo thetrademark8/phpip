@@ -20,29 +20,29 @@ class DefaultActorController extends Controller
         $Client = $request->input('Client');
         $default_actor = new DefaultActor;
 
-        if (! is_null($Actor)) {
+        if (!is_null($Actor)) {
             $default_actor = $default_actor->whereHas('actor', function ($q) use ($Actor) {
-                $q->where('name', 'like', $Actor.'%');
+                $q->where('name', 'like', $Actor . '%');
             });
         }
-        if (! is_null($Role)) {
+        if (!is_null($Role)) {
             $default_actor = $default_actor->whereHas('roleInfo', function ($q) use ($Role) {
-                $q->where('name', 'like', $Role.'%');
+                $q->where('name', 'like', $Role . '%');
             });
         }
-        if (! is_null($Country)) {
+        if (!is_null($Country)) {
             $default_actor = $default_actor->whereHas('country', function ($q) use ($Country) {
-                $q->where('name', 'like', $Country.'%');
+                $q->where('name', 'like', $Country . '%');
             });
         }
-        if (! is_null($Category)) {
+        if (!is_null($Category)) {
             $default_actor = $default_actor->whereHas('category', function ($q) use ($Category) {
-                $q->where('category', 'like', $Category.'%');
+                $q->where('category', 'like', $Category . '%');
             });
         }
-        if (! is_null($Client)) {
+        if (!is_null($Client)) {
             $default_actor = $default_actor->whereHas('client', function ($q) use ($Client) {
-                $q->where('name', 'like', $Client.'%');
+                $q->where('name', 'like', $Client . '%');
             });
         }
 
@@ -160,7 +160,7 @@ class DefaultActorController extends Controller
             ->map(function ($da) {
                 return [
                     'id' => $da->id,
-                    'name' => $da->actor->name.' ('.$da->roleInfo->name.')',
+                    'name' => $da->actor->name . ' (' . $da->roleInfo->name . ')',
                 ];
             });
 

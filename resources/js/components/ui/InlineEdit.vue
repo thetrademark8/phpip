@@ -5,7 +5,10 @@
     @mouseleave="hovering = false"
   >
     <!-- View mode -->
-    <div v-if="!isEditing" class="inline-flex items-center gap-1">
+    <div
+      v-if="!isEditing"
+      class="inline-flex items-center gap-1"
+    >
       <slot :value="displayValue">
         <span :class="cn('inline-block', valueClass)">
           {{ displayValue || placeholder }}
@@ -24,7 +27,10 @@
     </div>
 
     <!-- Edit mode -->
-    <div v-else class="inline-flex items-center gap-1">
+    <div
+      v-else
+      class="inline-flex items-center gap-1"
+    >
       <!-- Text input -->
       <Input
         v-if="type === 'text'"
@@ -41,7 +47,7 @@
       <Select
         v-else-if="type === 'select'"
         v-model="editValue"
-        @update:modelValue="save"
+        @update:model-value="save"
       >
         <SelectTrigger :class="cn('h-7', inputClass)">
           <SelectValue :placeholder="placeholder" />
@@ -63,11 +69,14 @@
         v-model="editValue"
         :placeholder="placeholder"
         :class="cn('h-7', inputClass)"
-        @update:modelValue="save"
+        @update:model-value="save"
       />
 
       <!-- Action buttons -->
-      <div v-if="type !== 'select' && type !== 'date'" class="inline-flex gap-0.5">
+      <div
+        v-if="type !== 'select' && type !== 'date'"
+        class="inline-flex gap-0.5"
+      >
         <Button
           size="icon"
           variant="ghost"
@@ -89,7 +98,10 @@
       </div>
 
       <!-- Loading indicator -->
-      <Loader2 v-if="loading" class="h-4 w-4 animate-spin" />
+      <Loader2
+        v-if="loading"
+        class="h-4 w-4 animate-spin"
+      />
     </div>
   </div>
 </template>

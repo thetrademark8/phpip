@@ -1,5 +1,9 @@
 <template>
-  <div v-for="i in count" :key="i" class="p-3 border-b">
+  <div
+    v-for="i in count"
+    :key="i"
+    class="p-3 border-b"
+  >
     <div class="space-y-2">
       <div class="flex items-center gap-2">
         <Skeleton class="h-5 w-20" />

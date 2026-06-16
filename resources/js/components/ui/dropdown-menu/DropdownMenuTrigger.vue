@@ -1,5 +1,8 @@
 <template>
-  <DropdownMenuTrigger v-bind="$attrs" :as-child="asChild">
+  <DropdownMenuTrigger
+    v-bind="$attrs"
+    :as-child="asChild"
+  >
     <slot />
   </DropdownMenuTrigger>
 </template>

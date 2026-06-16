@@ -10,7 +10,10 @@
       )"
     >
       {{ label }}
-      <span v-if="required" class="text-destructive ml-1">*</span>
+      <span
+        v-if="required"
+        class="text-destructive ml-1"
+      >*</span>
     </Label>
     
     <!-- Field slot -->

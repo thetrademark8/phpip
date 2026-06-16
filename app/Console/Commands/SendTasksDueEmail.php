@@ -48,10 +48,10 @@ class SendTasksDueEmail extends Command
 
             if ($this->taskEmailService->isSystemEmailConfigured()) {
                 $recipients = $this->taskEmailService->getSystemEmailRecipients();
-                $this->info('Sent professional summary email to '.$recipients['to']);
+                $this->info('Sent professional summary email to ' . $recipients['to']);
 
                 if ($recipients['bcc'] && $recipients['bcc'] !== $recipients['to']) {
-                    $this->info('Sent summary BCC to '.$recipients['bcc']);
+                    $this->info('Sent summary BCC to ' . $recipients['bcc']);
                 }
             } else {
                 $this->info($tasks->count() === 0
@@ -61,7 +61,7 @@ class SendTasksDueEmail extends Command
             }
 
         } catch (\Exception $e) {
-            $this->error('Failed to send summary email: '.$e->getMessage());
+            $this->error('Failed to send summary email: ' . $e->getMessage());
         }
     }
 }

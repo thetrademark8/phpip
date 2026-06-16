@@ -4,7 +4,9 @@
       <!-- Header -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">{{ $t('Manage renewals') }}</h1>
+          <h1 class="text-2xl font-bold tracking-tight">
+            {{ $t('Manage renewals') }}
+          </h1>
           <div class="flex items-center gap-2 mt-2">
             <a 
               href="https://github.com/jjdejong/phpip/wiki/Renewal-Management" 
@@ -24,7 +26,11 @@
           </div>
         </div>
         <div class="flex gap-2">
-          <Button @click="clearFilters" variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            @click="clearFilters"
+          >
             <RotateCcw class="mr-2 h-4 w-4" />
             {{ $t('Clear filters') }}
           </Button>
@@ -55,12 +61,24 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <CollapsibleTrigger as-child>
-                  <Button variant="ghost" size="sm" class="p-0 h-auto">
-                    <ChevronDown v-if="isFiltersOpen" class="h-4 w-4" />
-                    <ChevronUp v-else class="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    class="p-0 h-auto"
+                  >
+                    <ChevronDown
+                      v-if="isFiltersOpen"
+                      class="h-4 w-4"
+                    />
+                    <ChevronUp
+                      v-else
+                      class="h-4 w-4"
+                    />
                   </Button>
                 </CollapsibleTrigger>
-                <CardTitle class="text-base">{{ t('Filters') }}</CardTitle>
+                <CardTitle class="text-base">
+                  {{ t('Filters') }}
+                </CardTitle>
               </div>
               <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2">
@@ -68,15 +86,18 @@
                     id="my-renewals"
                     v-model:model-value="myRenewalsOnly"
                   />
-                  <Label for="my-renewals" class="text-sm font-normal cursor-pointer">
+                  <Label
+                    for="my-renewals"
+                    class="text-sm font-normal cursor-pointer"
+                  >
                     {{ t('My renewals') }}
                   </Label>
                 </div>
                 <Button
                   v-if="hasActiveFilters"
-                  @click="resetFilters"
                   variant="ghost"
                   size="sm"
+                  @click="resetFilters"
                 >
                   {{ t('Clear all') }}
                 </Button>
@@ -145,15 +166,27 @@
                 </tr>
               </thead>
               <tbody class="[&_tr:last-child]:border-0">
-                <tr v-if="loading" class="border-b transition-colors">
-                  <td colspan="6" class="h-24 text-center">
+                <tr
+                  v-if="loading"
+                  class="border-b transition-colors"
+                >
+                  <td
+                    colspan="6"
+                    class="h-24 text-center"
+                  >
                     <div class="flex items-center justify-center">
                       <Loader2 class="h-6 w-6 animate-spin text-muted-foreground" />
                     </div>
                   </td>
                 </tr>
-                <tr v-else-if="!renewals.data || renewals.data.length === 0" class="border-b transition-colors">
-                  <td colspan="6" class="h-24 text-center text-muted-foreground">
+                <tr
+                  v-else-if="!renewals.data || renewals.data.length === 0"
+                  class="border-b transition-colors"
+                >
+                  <td
+                    colspan="6"
+                    class="h-24 text-center text-muted-foreground"
+                  >
                     {{ t('The list is empty') }}
                   </td>
                 </tr>
@@ -183,7 +216,10 @@
                       <span class="w-12 text-center">{{ renewal.country }}</span>
                       <span class="w-12 text-center">{{ renewal.detail }}</span>
                       <span class="w-16 text-center">
-                        <Hourglass v-if="renewal.grace_period" class="h-4 w-4 mx-auto" />
+                        <Hourglass
+                          v-if="renewal.grace_period"
+                          class="h-4 w-4 mx-auto"
+                        />
                       </span>
                       <span class="w-20 text-right">{{ renewal.cost }}</span>
                       <span class="w-20 text-right">{{ renewal.fee }}</span>
@@ -479,7 +515,7 @@ function handleAction(action) {
   loading.value = true
   
   // Handle special actions that need different routes
-  let routeName = action
+  let routeName
   let params = { task_ids: selectedRenewals.value }
   
   switch (action) {

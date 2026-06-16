@@ -1,16 +1,18 @@
 <template>
   <div class="space-y-4">
-        <Textarea
-            v-if="canEdit"
-            v-model="localNotes"
-            class="min-h-[100px] font-mono"
-            :placeholder="$t('Add notes...')"
-            @blur="saveNotes"
-        />
-    <div v-else class="whitespace-pre-wrap">
+    <Textarea
+      v-if="canEdit"
+      v-model="localNotes"
+      class="min-h-[100px] font-mono"
+      :placeholder="$t('Add notes...')"
+      @blur="saveNotes"
+    />
+    <div
+      v-else
+      class="whitespace-pre-wrap"
+    >
       {{ notes || $t('No notes') }}
     </div>
-
   </div>
 </template>
 

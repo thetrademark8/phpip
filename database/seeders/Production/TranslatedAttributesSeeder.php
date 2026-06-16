@@ -290,7 +290,7 @@ class TranslatedAttributesSeeder extends Seeder
         // Filter out any null detail values that might have slipped in, if desired
         $taskRuleDetails = array_filter($taskRuleDetails, fn ($detailArray) => isset($detailArray['en']) && $detailArray['en'] !== null);
 
-        if (! empty($taskRuleDetails)) {
+        if (!empty($taskRuleDetails)) {
             $this->updateTable('task_rules', 'id', 'detail', $taskRuleDetails); // Uses 'id' as key
         } else {
             Log::info('No translatable details configured for task_rules. Skipping update for this table.');
@@ -326,14 +326,14 @@ class TranslatedAttributesSeeder extends Seeder
             foreach ($translationsData as $keyValue => $translations) {
                 try {
                     // Ensure translations is an array and not empty (safeguard against incomplete entries)
-                    if (! is_array($translations) || empty(array_filter($translations))) {
+                    if (!is_array($translations) || empty(array_filter($translations))) {
                         Log::warning("Skipping update for {$tableName}.{$keyColumn} = {$keyValue}: Invalid or empty translations array provided.");
 
                         continue;
                     }
 
                     // Ensure English translation exists if expected
-                    if (! isset($translations['en'])) {
+                    if (!isset($translations['en'])) {
                         Log::warning("Skipping update for {$tableName}.{$keyColumn} = {$keyValue}: Missing 'en' key in translations array.");
 
                         continue;
@@ -353,10 +353,10 @@ class TranslatedAttributesSeeder extends Seeder
                     }
 
                 } catch (\JsonException $e) {
-                    Log::error("JSON encoding failed for {$tableName}.{$keyColumn} = '{$keyValue}': ".$e->getMessage());
+                    Log::error("JSON encoding failed for {$tableName}.{$keyColumn} = '{$keyValue}': " . $e->getMessage());
                     $errorCount++;
                 } catch (\Exception $e) {
-                    Log::error("Database update failed for {$tableName}.{$keyColumn} = '{$keyValue}': ".$e->getMessage());
+                    Log::error("Database update failed for {$tableName}.{$keyColumn} = '{$keyValue}': " . $e->getMessage());
                     $errorCount++;
                     // Consider re-throwing to stop the whole transaction on DB errors:
                     // throw $e;

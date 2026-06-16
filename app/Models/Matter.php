@@ -561,7 +561,7 @@ class Matter extends Model
             );
         }
 
-        if (! empty($multi_filter)) {
+        if (!empty($multi_filter)) {
             // When no filters are set, sorting is done by descending matter id's to see the most recent matters first.
             // As soon as a filter is set, sorting is done by default by caseref instead of by id, ascending.
             if ($sortkey == 'id') {
@@ -611,10 +611,10 @@ class Matter extends Model
                         case 'Filed':
                             if (is_array($value)) {
                                 // Handle date range filter
-                                if (! empty($value['from'])) {
+                                if (!empty($value['from'])) {
                                     $query->where('fil.event_date', '>=', $value['from']);
                                 }
-                                if (! empty($value['to'])) {
+                                if (!empty($value['to'])) {
                                     $query->where('fil.event_date', '<=', $value['to']);
                                 }
                             } else {
@@ -627,10 +627,10 @@ class Matter extends Model
                         case 'Published':
                             if (is_array($value)) {
                                 // Handle date range filter
-                                if (! empty($value['from'])) {
+                                if (!empty($value['from'])) {
                                     $query->where('pub.event_date', '>=', $value['from']);
                                 }
-                                if (! empty($value['to'])) {
+                                if (!empty($value['to'])) {
                                     $query->where('pub.event_date', '<=', $value['to']);
                                 }
                             } else {
@@ -643,19 +643,19 @@ class Matter extends Model
                                 $query->where(function ($q) use ($value) {
                                     $q->where(function ($sub) use ($value) {
                                         $sub->whereNotNull('grt.event_date');
-                                        if (! empty($value['from'])) {
+                                        if (!empty($value['from'])) {
                                             $sub->where('grt.event_date', '>=', $value['from']);
                                         }
-                                        if (! empty($value['to'])) {
+                                        if (!empty($value['to'])) {
                                             $sub->where('grt.event_date', '<=', $value['to']);
                                         }
                                     })->orWhere(function ($sub) use ($value) {
                                         $sub->whereNull('grt.event_date')
                                             ->whereNotNull('reg.event_date');
-                                        if (! empty($value['from'])) {
+                                        if (!empty($value['from'])) {
                                             $sub->where('reg.event_date', '>=', $value['from']);
                                         }
-                                        if (! empty($value['to'])) {
+                                        if (!empty($value['to'])) {
                                             $sub->where('reg.event_date', '<=', $value['to']);
                                         }
                                     });
@@ -693,7 +693,7 @@ class Matter extends Model
         }
 
         // Do not display dead families unless desired
-        if (! $include_dead) {
+        if (!$include_dead) {
             $query->whereRaw('(select count(1) from matter m where m.caseref = matter.caseref and m.dead = 0) > 0');
         }
 

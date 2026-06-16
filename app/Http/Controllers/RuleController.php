@@ -28,27 +28,27 @@ class RuleController extends Controller
         // Normalize to the base locale (e.g., 'en' from 'en_US')
         $baseLocale = substr($locale, 0, 2);
 
-        if (! is_null($Task)) {
+        if (!is_null($Task)) {
             $rule = $rule->where('task', $Task);
         }
-        if (! is_null($Trigger)) {
+        if (!is_null($Trigger)) {
             $rule = $rule->where('trigger_event', $Trigger);
         }
-        if (! is_null($Country)) {
-            $rule = $rule->whereLike('for_country', $Country.'%');
+        if (!is_null($Country)) {
+            $rule = $rule->whereLike('for_country', $Country . '%');
         }
-        if (! is_null($Category)) {
+        if (!is_null($Category)) {
             $rule = $rule->where('for_category', $Category);
         }
 
-        if (! is_null($Detail)) {
+        if (!is_null($Detail)) {
             $rule = $rule->whereJsonLike('detail', $Detail);
         }
 
-        if (! is_null($Type)) {
+        if (!is_null($Type)) {
             $rule = $rule->where('for_type', $Type);
         }
-        if (! is_null($Origin)) {
+        if (!is_null($Origin)) {
             $rule = $rule->whereLike('for_origin', "{$Origin}%");
         }
 

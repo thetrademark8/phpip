@@ -9,14 +9,24 @@
         <FileText class="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div class="text-2xl font-bold">{{ metrics.totalActiveMatters }}</div>
+        <div class="text-2xl font-bold">
+          {{ metrics.totalActiveMatters }}
+        </div>
         <p class="text-xs text-muted-foreground">
-          <span :class="[
-            'inline-flex items-center',
-            metrics.activeMattersChange >= 0 ? 'text-green-600' : 'text-red-600'
-          ]">
-            <TrendingUp v-if="metrics.activeMattersChange >= 0" class="h-3 w-3 mr-1" />
-            <TrendingDown v-else class="h-3 w-3 mr-1" />
+          <span
+            :class="[
+              'inline-flex items-center',
+              metrics.activeMattersChange >= 0 ? 'text-green-600' : 'text-red-600'
+            ]"
+          >
+            <TrendingUp
+              v-if="metrics.activeMattersChange >= 0"
+              class="h-3 w-3 mr-1"
+            />
+            <TrendingDown
+              v-else
+              class="h-3 w-3 mr-1"
+            />
             {{ Math.abs(metrics.activeMattersChange) }}%
           </span>
           {{ $t('dashboard.metrics.from_last_month') }}
@@ -33,7 +43,9 @@
         <AlertCircle class="h-4 w-4 text-destructive" />
       </CardHeader>
       <CardContent>
-        <div class="text-2xl font-bold">{{ metrics.overdueTasks }}</div>
+        <div class="text-2xl font-bold">
+          {{ metrics.overdueTasks }}
+        </div>
         <p class="text-xs text-muted-foreground">
           {{ $t('dashboard.metrics.requires_attention') }}
         </p>
@@ -49,7 +61,9 @@
         <Calendar class="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div class="text-2xl font-bold">{{ metrics.upcomingRenewals }}</div>
+        <div class="text-2xl font-bold">
+          {{ metrics.upcomingRenewals }}
+        </div>
         <p class="text-xs text-muted-foreground">
           {{ $t('dashboard.metrics.next_30_days') }}
         </p>
@@ -65,7 +79,9 @@
         <FolderPlus class="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div class="text-2xl font-bold">{{ metrics.mattersCreatedThisYear }}</div>
+        <div class="text-2xl font-bold">
+          {{ metrics.mattersCreatedThisYear }}
+        </div>
         <p class="text-xs text-muted-foreground">
           {{ $t('dashboard.metrics.since_january') }}
         </p>

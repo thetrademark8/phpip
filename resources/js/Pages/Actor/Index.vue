@@ -4,13 +4,19 @@
       <!-- Header with actions -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">{{ t('actors.index.heading') }}</h1>
+          <h1 class="text-2xl font-bold tracking-tight">
+            {{ t('actors.index.heading') }}
+          </h1>
           <p class="text-muted-foreground">
             {{ t('actors.index.description') }}
           </p>
         </div>
         <div class="flex gap-2">
-          <Button @click="openCreateDialog" v-if="canCreateActor" size="sm">
+          <Button
+            v-if="canCreateActor"
+            size="sm"
+            @click="openCreateDialog"
+          >
             <Plus class="mr-2 h-4 w-4" />
             {{ t('actors.index.create') }}
           </Button>
@@ -18,24 +24,39 @@
       </div>
 
       <!-- Filters Card -->
-      <Collapsible v-model:open="isFiltersOpen" @update:open="saveFilterState">
+      <Collapsible
+        v-model:open="isFiltersOpen"
+        @update:open="saveFilterState"
+      >
         <Card>
           <CardHeader class="pb-3">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <CollapsibleTrigger as-child>
-                  <Button variant="ghost" size="sm" class="p-0 h-auto">
-                    <ChevronDown v-if="isFiltersOpen" class="h-4 w-4" />
-                    <ChevronUp v-else class="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    class="p-0 h-auto"
+                  >
+                    <ChevronDown
+                      v-if="isFiltersOpen"
+                      class="h-4 w-4"
+                    />
+                    <ChevronUp
+                      v-else
+                      class="h-4 w-4"
+                    />
                   </Button>
                 </CollapsibleTrigger>
-                <CardTitle class="text-base">{{ t('Filters') }}</CardTitle>
+                <CardTitle class="text-base">
+                  {{ t('Filters') }}
+                </CardTitle>
               </div>
               <Button
                 v-if="hasActiveFilters"
-                @click="clearFilters"
                 variant="ghost"
                 size="sm"
+                @click="clearFilters"
               >
                 Clear all
               </Button>
@@ -53,7 +74,10 @@
       </Collapsible>
 
       <!-- Active Filters -->
-      <div v-if="activeFilterBadges.length > 0" class="flex flex-wrap gap-2">
+      <div
+        v-if="activeFilterBadges.length > 0"
+        class="flex flex-wrap gap-2"
+      >
         <Badge
           v-for="badge in activeFilterBadges"
           :key="badge.key"

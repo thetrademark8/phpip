@@ -27,7 +27,7 @@ class ActorRepository implements ActorRepositoryInterface
     {
         $actor = Actor::with('feeStructure')->find($actorId);
 
-        if (! $actor) {
+        if (!$actor) {
             return null;
         }
 
@@ -45,7 +45,7 @@ class ActorRepository implements ActorRepositoryInterface
     {
         $actor = Actor::find($actorId);
 
-        if (! $actor) {
+        if (!$actor) {
             return collect();
         }
 
@@ -65,7 +65,7 @@ class ActorRepository implements ActorRepositoryInterface
     {
         $actor = Actor::find($actorId);
 
-        if (! $actor) {
+        if (!$actor) {
             return null;
         }
 
@@ -99,7 +99,7 @@ class ActorRepository implements ActorRepositoryInterface
     {
         $actor = Actor::find($actorId);
 
-        if (! $actor) {
+        if (!$actor) {
             return false;
         }
 
@@ -110,7 +110,7 @@ class ActorRepository implements ActorRepositoryInterface
     {
         $actor = Actor::find($actorId);
 
-        if (! $actor) {
+        if (!$actor) {
             return null;
         }
 
@@ -121,7 +121,7 @@ class ActorRepository implements ActorRepositoryInterface
     {
         $actor = Actor::find($actorId);
 
-        if (! $actor) {
+        if (!$actor) {
             return 0.2; // Default VAT rate
         }
 
@@ -145,7 +145,7 @@ class ActorRepository implements ActorRepositoryInterface
     {
         $actor = Actor::find($actorId);
 
-        if (! $actor) {
+        if (!$actor) {
             return false;
         }
 

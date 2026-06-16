@@ -6,8 +6,8 @@
       isActive && 'bg-background text-foreground shadow-sm',
       props.class
     )"
-    @click="handleClick"
     :disabled="props.disabled"
+    @click="handleClick"
   >
     <slot />
   </button>

@@ -51,7 +51,7 @@ class Actor extends Model implements HasLocalePreference
      */
     public function getLanguage()
     {
-        return ! empty($this->language) ? $this->language : config('app.locale');
+        return !empty($this->language) ? $this->language : config('app.locale');
     }
 
     /**

@@ -11,11 +11,11 @@ class CompanyHandler
 {
     public static function added(array $data, TeamLeaderService $service): ?Actor
     {
-        $response = $service->prepareRequest()->get(TeamLeaderService::BASE_URL.'companies.info', [
+        $response = $service->prepareRequest()->get(TeamLeaderService::BASE_URL . 'companies.info', [
             'id' => $data['id'],
         ]);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
             Log::error('TeamLeader: Failed to fetch company info', [
                 'id' => $data['id'],
                 'status' => $response->status(),
@@ -26,7 +26,7 @@ class CompanyHandler
 
         $companyData = $response->json()['data'] ?? null;
 
-        if (! $companyData) {
+        if (!$companyData) {
             return null;
         }
 
@@ -84,12 +84,12 @@ class CompanyHandler
         $reference = TeamleaderReference::where('teamleader_id', $teamleaderId)->first();
         $actor = $reference?->actor;
 
-        if (! $actor) {
+        if (!$actor) {
             // Search using truncated display_name (exact match for unique constraint)
             $actor = Actor::where('display_name', $displayName)->first();
 
             // If not found by display_name, try by full name
-            if (! $actor) {
+            if (!$actor) {
                 $actor = Actor::where('name', $data['name'])->first();
             }
         }
@@ -114,7 +114,7 @@ class CompanyHandler
             }
         }
 
-        if (! $reference) {
+        if (!$reference) {
             TeamleaderReference::create([
                 'teamleader_id' => $teamleaderId,
                 'actor_id' => $actor->id,
@@ -128,7 +128,7 @@ class CompanyHandler
 
     protected static function formatAddress(?array $address): ?string
     {
-        if (! $address) {
+        if (!$address) {
             return null;
         }
 

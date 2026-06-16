@@ -114,7 +114,7 @@ class NotificationService implements NotificationServiceInterface
     ): bool {
         try {
             $matter = \App\Models\Matter::find($matterId);
-            if (! $matter) {
+            if (!$matter) {
                 return false;
             }
 
@@ -124,13 +124,13 @@ class NotificationService implements NotificationServiceInterface
                         'matter' => $matter,
                         'oldStatus' => $oldStatus,
                         'newStatus' => $newStatus,
-                        'phpip_url' => config('app.url').'/matter/'.$matterId,
+                        'phpip_url' => config('app.url') . '/matter/' . $matterId,
                     ])->render(),
                     function ($message) use ($matter, $newStatus, $recipient) {
                         $message
                             ->from(config('mail.from.address'))
                             ->to($recipient)
-                            ->subject('[phpIP] - Status change: '.$matter->uid.' is now '.$newStatus);
+                            ->subject('[phpIP] - Status change: ' . $matter->uid . ' is now ' . $newStatus);
                     }
                 );
             }
@@ -237,7 +237,7 @@ class NotificationService implements NotificationServiceInterface
     {
         // For now, return a simple queue ID
         // In a full implementation, this would integrate with Laravel Queue
-        $queueId = uniqid('notification_'.$type.'_');
+        $queueId = uniqid('notification_' . $type . '_');
 
         Log::info('Notification queued', [
             'queue_id' => $queueId,
@@ -256,11 +256,11 @@ class NotificationService implements NotificationServiceInterface
         // Basic rules - can be extended with more complex logic
         switch ($type) {
             case 'urgent_tasks':
-                return ! empty($context['tasks']);
+                return !empty($context['tasks']);
             case 'status_change':
                 return isset($context['matter']) && isset($context['newStatus']);
             case 'task_reminder':
-                return isset($context['task']) && ! $context['task']->done;
+                return isset($context['task']) && !$context['task']->done;
             default:
                 return true;
         }
@@ -298,7 +298,7 @@ class NotificationService implements NotificationServiceInterface
         foreach ($tasks as $task) {
             $agentLogin = $task->matter->responsible;
 
-            if (! $agentLogin) {
+            if (!$agentLogin) {
                 Log::debug('Task has no responsible agent', ['task_id' => $task->id, 'matter_id' => $task->matter->id]);
 
                 continue;
@@ -306,19 +306,19 @@ class NotificationService implements NotificationServiceInterface
 
             // Check if agent exists and has email
             $agent = Actor::where('login', $agentLogin)->first();
-            if (! $agent) {
+            if (!$agent) {
                 Log::warning('Responsible agent not found', ['login' => $agentLogin, 'task_id' => $task->id]);
 
                 continue;
             }
 
-            if (! $agent->email) {
+            if (!$agent->email) {
                 Log::warning('Agent has no email address', ['login' => $agentLogin, 'agent_id' => $agent->id]);
 
                 continue;
             }
 
-            if (! isset($tasksByAgent[$agentLogin])) {
+            if (!isset($tasksByAgent[$agentLogin])) {
                 $tasksByAgent[$agentLogin] = [];
             }
 
@@ -339,7 +339,7 @@ class NotificationService implements NotificationServiceInterface
      */
     private function sendUrgentTasksToAgent(Actor $agent, array $tasks): bool
     {
-        if (! $agent->email) {
+        if (!$agent->email) {
             Log::warning('Agent has no email address', [
                 'agent_id' => $agent->id,
                 'agent_name' => $agent->name,

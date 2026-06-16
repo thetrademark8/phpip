@@ -53,7 +53,7 @@ class DocumentMergeService
                 ->first()
                 ?->detail,
             'Priority' => $this->matter->prioritiesFromView
-                ->map(fn ($priority) => $priority->country.$priority->detail.' - '.$priority->event_date->isoFormat('L'))->implode("\n"),
+                ->map(fn ($priority) => $priority->country . $priority->detail . ' - ' . $priority->event_date->isoFormat('L'))->implode("\n"),
             'Grant_Date' => $this->matter->events->where('code', 'GRT')
                 ->first()
                 ?->event_date->isoFormat('L'),
@@ -105,12 +105,12 @@ class DocumentMergeService
                 ->map(fn ($class) => $class->value)
                 ->implode('.'),
             'Inventors' => $this->matter->inventors
-                ->map(fn ($inventor) => $inventor->first_name ? ($inventor->name.' '.$inventor->first_name) : $inventor->name)
+                ->map(fn ($inventor) => $inventor->first_name ? ($inventor->name . ' ' . $inventor->first_name) : $inventor->name)
                 ->implode(' - '),
             'Inventor_Addresses' => $this->matter->inventors
                 ->map(function ($inventor) {
                     return collect([
-                        $inventor->first_name ? ($inventor->name.' '.$inventor->first_name) : $inventor->name,
+                        $inventor->first_name ? ($inventor->name . ' ' . $inventor->first_name) : $inventor->name,
                         $inventor->actor->address,
                         $inventor->actor->country,
                         $inventor->actor->nationality,
@@ -150,14 +150,14 @@ class DocumentMergeService
     private function getTaskRules(): \Illuminate\Support\Collection
     {
         return $this->matter->tasks->whereNotNull('rule_used')->mapWithKeys(function ($task) {
-            $name = $task->rule?->detail ? ($task->rule->taskInfo->name.' '.Str::of($task->rule->detail)->replaceMatches('/[^\w\s]/', '')) : $task->rule->taskInfo->name;
+            $name = $task->rule?->detail ? ($task->rule->taskInfo->name . ' ' . Str::of($task->rule->detail)->replaceMatches('/[^\w\s]/', '')) : $task->rule->taskInfo->name;
             $name = Str::replace(' ', '_', Str::title($name));
 
-            if (! $name) {
+            if (!$name) {
                 return [];
             }
 
-            return [$name.'_Due_Date' => $task->due_date->isoFormat('L')];
+            return [$name . '_Due_Date' => $task->due_date->isoFormat('L')];
         })->filter();
     }
 
@@ -165,7 +165,7 @@ class DocumentMergeService
     {
         $agent = $this->matter->agent();
 
-        if (! $agent) {
+        if (!$agent) {
             return collect();
         }
 
@@ -182,7 +182,7 @@ class DocumentMergeService
 
     private function getActorDetails(?MatterActors $matterActor, string $prefix): \Illuminate\Support\Collection
     {
-        if (! $matterActor) {
+        if (!$matterActor) {
             return collect();
         }
 

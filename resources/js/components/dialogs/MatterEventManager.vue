@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle>{{ t('Manage Events') }}</DialogTitle>
@@ -12,10 +15,15 @@
         <!-- Add Event Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ t('Add Event') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ t('Add Event') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form @submit.prevent="handleAddEvent" class="space-y-4">
+            <form
+              class="space-y-4"
+              @submit.prevent="handleAddEvent"
+            >
               <div class="grid grid-cols-2 gap-4">
                 <FormField
                   :label="t('Event')"
@@ -81,7 +89,10 @@
                 />
               </FormField>
 
-              <Button type="submit" :disabled="addForm.processing">
+              <Button
+                type="submit"
+                :disabled="addForm.processing"
+              >
                 <CalendarPlus class="mr-2 h-4 w-4" />
                 {{ t('Add Event') }}
               </Button>
@@ -92,10 +103,15 @@
         <!-- Current Events Section -->
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">{{ t('Current Events') }}</CardTitle>
+            <CardTitle class="text-base">
+              {{ t('Current Events') }}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div v-if="events && events.length > 0" class="space-y-2">
+            <div
+              v-if="events && events.length > 0"
+              class="space-y-2"
+            >
               <div
                 v-for="event in sortedEvents"
                 :key="event.id"
@@ -109,17 +125,26 @@
                   <div class="flex-1">
                     <div class="font-medium">
                       {{ translated(event.info?.name) || event.code }}
-                      <span v-if="event.detail" class="text-muted-foreground">
+                      <span
+                        v-if="event.detail"
+                        class="text-muted-foreground"
+                      >
                         - {{ event.detail }}
                       </span>
                     </div>
                     <div class="text-sm text-muted-foreground">
                       {{ formatDate(event.event_date) }}
-                      <span v-if="event.alt_matter_id" class="ml-2">
+                      <span
+                        v-if="event.alt_matter_id"
+                        class="ml-2"
+                      >
                         ({{ t('linked to') }} {{ event.alt_matter?.uid }})
                       </span>
                     </div>
-                    <div v-if="event.notes" class="text-sm text-muted-foreground mt-1">
+                    <div
+                      v-if="event.notes"
+                      class="text-sm text-muted-foreground mt-1"
+                    >
                       {{ event.notes }}
                     </div>
                   </div>
@@ -135,15 +160,18 @@
                   <Button
                     variant="ghost"
                     size="icon"
-                    @click="handleRemoveEvent(event)"
                     :disabled="removingEventId === event.id"
+                    @click="handleRemoveEvent(event)"
                   >
                     <Trash2 class="h-4 w-4" />
                   </Button>
                 </div>
               </div>
             </div>
-            <div v-else class="text-center py-8 text-muted-foreground">
+            <div
+              v-else
+              class="text-center py-8 text-muted-foreground"
+            >
               {{ t('No events recorded for this matter') }}
             </div>
           </CardContent>
@@ -151,7 +179,10 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:open', false)">
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
           {{ t('Close') }}
         </Button>
       </DialogFooter>
@@ -295,8 +326,7 @@ function handleAddEvent() {
     onSuccess: () => {
       // Reset form
       addForm.reset()
-      eventDisplay.value = ''
-      
+
       // Reload matter data
       emit('success')
     }

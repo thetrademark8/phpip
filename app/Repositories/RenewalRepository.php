@@ -108,19 +108,19 @@ class RenewalRepository implements RenewalRepositoryInterface
         $query = Task::where('code', 'REN')
             ->with(['matter', 'trigger', 'matter.actors']);
 
-        if (! empty($filters['step'])) {
+        if (!empty($filters['step'])) {
             $query->where('step', $filters['step']);
         }
 
-        if (! empty($filters['invoice_step'])) {
+        if (!empty($filters['invoice_step'])) {
             $query->where('invoice_step', $filters['invoice_step']);
         }
 
-        if (! empty($filters['from_date'])) {
+        if (!empty($filters['from_date'])) {
             $query->where('due_date', '>=', $filters['from_date']);
         }
 
-        if (! empty($filters['until_date'])) {
+        if (!empty($filters['until_date'])) {
             $query->where('due_date', '<=', $filters['until_date']);
         }
 
@@ -155,7 +155,7 @@ class RenewalRepository implements RenewalRepositoryInterface
         $query = Task::renewals();
 
         // Default filter for export: invoice_step = 1 (invoiced)
-        if (! $filters || ! isset($filters['invoice_step'])) {
+        if (!$filters || !isset($filters['invoice_step'])) {
             $query->where('invoice_step', 1);
         }
 

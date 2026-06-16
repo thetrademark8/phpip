@@ -4,21 +4,21 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <!-- Task -->
       <div class="space-y-2">
-        <Label htmlFor="task-filter">{{ t('rules.filters.labels.task') }}</Label>
+        <Label html-for="task-filter">{{ t('rules.filters.labels.task') }}</Label>
         <AutocompleteInput
           id="task-filter"
           :placeholder="t('rules.filters.placeholders.task')"
           :model-value="props.filters.Task"
-          @update:model-value="debouncedUpdate('Task', $event)"
           endpoint="/event-name/autocomplete/1"
           value-key="code"
           label-key="value"
+          @update:model-value="debouncedUpdate('Task', $event)"
         />
       </div>
 
       <!-- Detail -->
       <div class="space-y-2">
-        <Label htmlFor="detail-filter">{{ t('rules.filters.labels.detail') }}</Label>
+        <Label html-for="detail-filter">{{ t('rules.filters.labels.detail') }}</Label>
         <Input
           id="detail-filter"
           type="text"
@@ -30,71 +30,71 @@
 
       <!-- Trigger Event -->
       <div class="space-y-2">
-        <Label htmlFor="trigger-filter">{{ t('rules.filters.labels.trigger') }}</Label>
+        <Label html-for="trigger-filter">{{ t('rules.filters.labels.trigger') }}</Label>
         <AutocompleteInput
           id="trigger-filter"
           :placeholder="t('rules.filters.placeholders.trigger')"
           :model-value="props.filters.Trigger"
-          @update:model-value="debouncedUpdate('Trigger', $event)"
           endpoint="/event-name/autocomplete/0"
           value-key="code"
           label-key="value"
+          @update:model-value="debouncedUpdate('Trigger', $event)"
         />
       </div>
 
       <!-- Category -->
       <div class="space-y-2">
-        <Label htmlFor="category-filter">{{ t('rules.filters.labels.category') }}</Label>
+        <Label html-for="category-filter">{{ t('rules.filters.labels.category') }}</Label>
         <AutocompleteInput
           id="category-filter"
           :placeholder="t('rules.filters.placeholders.category')"
           :model-value="props.filters.Category"
-          @update:model-value="debouncedUpdate('Category', $event)"
           endpoint="/category/autocomplete"
           value-key="code"
           label-key="value"
+          @update:model-value="debouncedUpdate('Category', $event)"
         />
       </div>
 
       <!-- Country -->
       <div class="space-y-2">
-        <Label htmlFor="country-filter">{{ t('rules.filters.labels.country') }}</Label>
+        <Label html-for="country-filter">{{ t('rules.filters.labels.country') }}</Label>
         <AutocompleteInput
           id="country-filter"
           :placeholder="t('rules.filters.placeholders.country')"
           :model-value="props.filters.Country"
-          @update:model-value="debouncedUpdate('Country', $event)"
           endpoint="/country/autocomplete"
           value-key="iso"
           label-key="name"
+          @update:model-value="debouncedUpdate('Country', $event)"
         />
       </div>
 
       <!-- Origin -->
       <div class="space-y-2">
-        <Label htmlFor="origin-filter">{{ t('rules.filters.labels.origin') }}</Label>
+        <Label html-for="origin-filter">{{ t('rules.filters.labels.origin') }}</Label>
         <AutocompleteInput
           id="origin-filter"
           :placeholder="t('rules.filters.placeholders.origin')"
           :model-value="props.filters.Origin"
-          @update:model-value="debouncedUpdate('Origin', $event)"
           endpoint="/country/autocomplete"
           value-key="iso"
           label-key="name"
+          @update:model-value="debouncedUpdate('Origin', $event)"
         />
       </div>
 
       <!-- Type -->
       <div class="space-y-2">
-        <Label htmlFor="type-filter">{{ t('rules.filters.labels.type') }}</Label>
+        <Label html-for="type-filter">{{ t('rules.filters.labels.type') }}</Label>
         <AutocompleteInput
           id="type-filter"
           :placeholder="t('rules.filters.placeholders.type')"
           :model-value="props.filters.Type"
-          @update:model-value="debouncedUpdate('Type', $event)"
           endpoint="/type/autocomplete"
           value-key="code"
           label-key="value"
+          @update:model-value="debouncedUpdate('Type', $event)"
         />
       </div>
     </div>

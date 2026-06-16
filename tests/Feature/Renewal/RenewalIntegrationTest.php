@@ -217,7 +217,7 @@ describe('Performance Benchmarks', function () {
 
     it('handles 1000+ renewals with acceptable performance', function () {
         // This test is marked as slow and should only run in CI or when specifically requested
-        if (! env('RUN_SLOW_TESTS', false)) {
+        if (!env('RUN_SLOW_TESTS', false)) {
             $this->markTestSkipped('Slow test skipped. Set RUN_SLOW_TESTS=true to run.');
         }
 

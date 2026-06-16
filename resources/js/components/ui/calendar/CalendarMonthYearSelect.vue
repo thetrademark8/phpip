@@ -59,23 +59,37 @@ function onYearChange(year) {
 
 <template>
   <div class="flex items-center gap-1">
-    <Select :model-value="currentMonth" @update:model-value="onMonthChange">
+    <Select
+      :model-value="currentMonth"
+      @update:model-value="onMonthChange"
+    >
       <SelectTrigger class="h-7 w-auto gap-1 border-none p-2 font-medium hover:bg-accent focus:ring-0">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem v-for="m in monthNames" :key="m.value" :value="m.value">
+        <SelectItem
+          v-for="m in monthNames"
+          :key="m.value"
+          :value="m.value"
+        >
           {{ m.label }}
         </SelectItem>
       </SelectContent>
     </Select>
 
-    <Select :model-value="currentYear" @update:model-value="onYearChange">
+    <Select
+      :model-value="currentYear"
+      @update:model-value="onYearChange"
+    >
       <SelectTrigger class="h-7 w-auto gap-1 border-none p-2 font-medium hover:bg-accent focus:ring-0">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem v-for="y in years" :key="y" :value="y">
+        <SelectItem
+          v-for="y in years"
+          :key="y"
+          :value="y"
+        >
           {{ y }}
         </SelectItem>
       </SelectContent>

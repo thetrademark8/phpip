@@ -53,7 +53,7 @@ class TaskRulesImportSeeder extends Seeder
     {
         $filePath = database_path(self::CSV_FILE);
 
-        if (! file_exists($filePath)) {
+        if (!file_exists($filePath)) {
             $this->command?->warn('Task rules CSV file not found, skipping import...');
 
             return;

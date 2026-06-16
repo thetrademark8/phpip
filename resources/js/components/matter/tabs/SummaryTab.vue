@@ -2,16 +2,19 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Classifiers -->
     <Card
-      :class="canEdit ? 'cursor-pointer hover:shadow-md transition-shadow' : ''">
+      :class="canEdit ? 'cursor-pointer hover:shadow-md transition-shadow' : ''"
+    >
       <CardHeader class="bg-secondary text-secondary-foreground p-3">
         <div class="flex items-center justify-between">
-          <h3 class="font-semibold">{{ $t('Classifiers') }}</h3>
+          <h3 class="font-semibold">
+            {{ $t('Classifiers') }}
+          </h3>
           <Button
-              v-if="canEdit"
-              size="icon"
-              variant="ghost"
-              @click="canEdit && $emit('openClassifiers')"
-              class="h-6 w-6"
+            v-if="canEdit"
+            size="icon"
+            variant="ghost"
+            class="h-6 w-6"
+            @click="canEdit && $emit('openClassifiers')"
           >
             <Pencil class="h-4 w-4" />
           </Button>
@@ -19,11 +22,17 @@
       </CardHeader>
       <CardContent class="p-3">
         <div class="space-y-3">
-          <div v-for="(classifierGroup, typeCode) in filteredClassifiers" :key="typeCode">
+          <div
+            v-for="(classifierGroup, typeCode) in filteredClassifiers"
+            :key="typeCode"
+          >
             <div class="flex flex-wrap items-center gap-2">
               <span class="font-medium text-sm">{{ translated(classifierGroup[0].type_name) }}:</span>
               <div class="flex flex-wrap gap-1">
-                <template v-for="classifier in classifierGroup" :key="classifier.id">
+                <template
+                  v-for="classifier in classifierGroup"
+                  :key="classifier.id"
+                >
                   <a
                     v-if="classifier.url"
                     :href="classifier.url"
@@ -37,16 +46,26 @@
                     :href="`/matter/${classifier.lnk_matter_id}`"
                     class="inline-flex"
                   >
-                    <Badge variant="default">{{ classifier.linked_matter?.uid }}</Badge>
+                    <Badge variant="default">
+                      {{ classifier.linked_matter?.uid }}
+                    </Badge>
                   </Link>
-                  <Badge v-else variant="secondary">{{ classifier.value }}</Badge>
+                  <Badge
+                    v-else
+                    variant="secondary"
+                  >
+                    {{ classifier.value }}
+                  </Badge>
                 </template>
               </div>
             </div>
           </div>
 
           <!-- Linked By matters -->
-          <div v-if="matter.linked_by?.length" class="flex flex-wrap items-center gap-2">
+          <div
+            v-if="matter.linked_by?.length"
+            class="flex flex-wrap items-center gap-2"
+          >
             <span class="font-medium text-sm">{{ $t('Linked by:') }}</span>
             <div class="flex flex-wrap gap-1">
               <Link
@@ -55,13 +74,17 @@
                 :href="`/matter/${linkedBy.id}`"
                 class="inline-flex"
               >
-                <Badge variant="default">{{ linkedBy.uid }}</Badge>
+                <Badge variant="default">
+                  {{ linkedBy.uid }}
+                </Badge>
               </Link>
             </div>
           </div>
 
-          <div v-if="Object.keys(filteredClassifiers).length === 0 && !matter.linked_by?.length" 
-               class="text-muted-foreground text-center py-4">
+          <div
+            v-if="Object.keys(filteredClassifiers).length === 0 && !matter.linked_by?.length" 
+            class="text-muted-foreground text-center py-4"
+          >
             {{ $t('No classifiers') }}
           </div>
         </div>
@@ -72,14 +95,18 @@
     <Card>
       <CardHeader class="bg-secondary text-secondary-foreground p-3">
         <div class="flex items-center justify-between">
-          <h3 class="font-semibold">{{ $t('Related Matters') }}</h3>
+          <h3 class="font-semibold">
+            {{ $t('Related Matters') }}
+          </h3>
         </div>
       </CardHeader>
       <CardContent class="p-3">
         <div class="space-y-3">
           <!-- Family members -->
           <div v-if="relatedMatters.family?.length">
-            <h4 class="font-medium text-sm mb-1">{{ $t('Family') }}</h4>
+            <h4 class="font-medium text-sm mb-1">
+              {{ $t('Family') }}
+            </h4>
             <div class="flex flex-wrap gap-1">
               <Link
                 v-for="member in relatedMatters.family"
@@ -94,20 +121,31 @@
           </div>
 
           <!-- Priority claims -->
-          <div v-for="(family, caseref) in groupedPriorityTo" :key="caseref" class="space-y-1">
-            <h4 class="font-medium text-sm">{{ caseref }}</h4>
+          <div
+            v-for="(family, caseref) in groupedPriorityTo"
+            :key="caseref"
+            class="space-y-1"
+          >
+            <h4 class="font-medium text-sm">
+              {{ caseref }}
+            </h4>
             <div class="flex flex-wrap gap-1">
               <Link
                 v-for="rmatter in family"
                 :key="rmatter.id"
                 :href="`/matter/${rmatter.id}`"
               >
-                <Badge variant="default">{{ rmatter.suffix }}</Badge>
+                <Badge variant="default">
+                  {{ rmatter.suffix }}
+                </Badge>
               </Link>
             </div>
           </div>
 
-          <div v-if="!hasRelatedMatters" class="text-muted-foreground text-center py-4">
+          <div
+            v-if="!hasRelatedMatters"
+            class="text-muted-foreground text-center py-4"
+          >
             {{ $t('No related matters') }}
           </div>
         </div>
@@ -120,7 +158,11 @@
         <div class="flex items-center justify-between">
           <h3 class="font-semibold">
             {{ $t('Open Tasks') }}
-            <Badge v-if="openTasks.length" variant="warning" class="ml-2">
+            <Badge
+              v-if="openTasks.length"
+              variant="warning"
+              class="ml-2"
+            >
               {{ openTasks.length }}
             </Badge>
           </h3>
@@ -128,16 +170,26 @@
       </CardHeader>
       <CardContent class="p-3">
         <div class="space-y-2">
-          <div v-for="task in openTasks.slice(0, 5)" :key="task.id" class="flex justify-between text-sm">
+          <div
+            v-for="task in openTasks.slice(0, 5)"
+            :key="task.id"
+            class="flex justify-between text-sm"
+          >
             <span>{{ translated(task.info.name) }}: {{ translated(task.detail) }}</span>
             <span :class="getTaskDateClass(task.due_date)">
               {{ formatDate(task.due_date) }}
             </span>
           </div>
-          <div v-if="openTasks.length > 5" class="text-sm text-muted-foreground text-center">
+          <div
+            v-if="openTasks.length > 5"
+            class="text-sm text-muted-foreground text-center"
+          >
             {{ $t('And {count} more...', { count: openTasks.length - 5 }) }}
           </div>
-          <div v-if="!openTasks.length" class="text-muted-foreground text-center py-4">
+          <div
+            v-if="!openTasks.length"
+            class="text-muted-foreground text-center py-4"
+          >
             {{ $t('No open tasks') }}
           </div>
         </div>

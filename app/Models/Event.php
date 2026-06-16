@@ -60,7 +60,7 @@ class Event extends Model
 
     public function publicUrl()
     {
-        if (! in_array($this->code, ['FIL', 'PUB', 'GRT'])) {
+        if (!in_array($this->code, ['FIL', 'PUB', 'GRT'])) {
             return false;
         }
         if ($this->matter->origin == 'EP') {
@@ -75,7 +75,7 @@ class Event extends Model
         if ($this->code == 'PUB' || $this->code == 'GRT') {
             // Fix US pub number for Espacenet by keeping the last 6 digits after the year
             if ($CC == 'US' && $this->code == 'PUB') {
-                $cleanednumber = substr($cleanednumber, 0, 4).substr($cleanednumber, -6);
+                $cleanednumber = substr($cleanednumber, 0, 4) . substr($cleanednumber, -6);
             }
             $href = "http://worldwide.espacenet.com/publicationDetails/biblio?DB=EPODOC&CC=$CC&NR=$cleanednumber";
         } elseif ($this->code == 'FIL') {
@@ -96,9 +96,9 @@ class Event extends Model
                     break;
                 case 'US':
                     if (substr($cleanednumber, 0, 2) < 13) {
-                        $cleanednumber = substr($cleanednumber, 2).$this->event_date->isoFormat('YY');
+                        $cleanednumber = substr($cleanednumber, 2) . $this->event_date->isoFormat('YY');
                     } else {
-                        $cleanednumber = $this->event_date->isoFormat('YYYY').$cleanednumber;
+                        $cleanednumber = $this->event_date->isoFormat('YYYY') . $cleanednumber;
                     }
                     $href = "https://register.epo.org/ipfwretrieve?apn=US.$cleanednumber.A";
                     break;

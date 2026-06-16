@@ -1,7 +1,10 @@
 <template>
   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
     <!-- Results info on the left -->
-    <div v-if="showResultsInfo" class="text-sm text-muted-foreground">
+    <div
+      v-if="showResultsInfo"
+      class="text-sm text-muted-foreground"
+    >
       {{ $t('pagination.showingResults', { 
         from: fromResult, 
         to: toResult, 
@@ -9,10 +12,14 @@
       }) }}
     </div>
     <!-- Empty div to push pagination to the right when no results info -->
-    <div v-else></div>
+    <div v-else />
     
     <!-- Pagination controls on the right -->
-    <nav class="flex items-center space-x-2" role="navigation" aria-label="Pagination">
+    <nav
+      class="flex items-center space-x-2"
+      role="navigation"
+      aria-label="Pagination"
+    >
       <!-- Previous Button -->
       <Button
         variant="outline"
@@ -26,7 +33,10 @@
 
       <!-- Page Numbers -->
       <div class="flex items-center space-x-1">
-        <template v-for="page in visiblePages" :key="page">
+        <template
+          v-for="page in visiblePages"
+          :key="page"
+        >
           <Button
             v-if="page !== '...'"
             variant="outline"
@@ -39,7 +49,10 @@
           >
             {{ page }}
           </Button>
-          <span v-else class="px-2 py-1 text-muted-foreground">...</span>
+          <span
+            v-else
+            class="px-2 py-1 text-muted-foreground"
+          >...</span>
         </template>
       </div>
 

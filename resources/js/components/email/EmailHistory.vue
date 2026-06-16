@@ -1,6 +1,9 @@
 <template>
   <div class="email-history">
-    <div v-if="loading" class="flex items-center justify-center py-8">
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-8"
+    >
       <Loader2 class="h-6 w-6 animate-spin" />
     </div>
 
@@ -11,17 +14,24 @@
           <TableHead>{{ $t('email.recipient') }}</TableHead>
           <TableHead>{{ $t('email.subject') }}</TableHead>
           <TableHead>{{ $t('email.status') }}</TableHead>
-          <TableHead class="w-[50px]"></TableHead>
+          <TableHead class="w-[50px]" />
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="email in emails" :key="email.id">
+        <TableRow
+          v-for="email in emails"
+          :key="email.id"
+        >
           <TableCell class="text-sm">
             {{ formatDate(email.created_at) }}
           </TableCell>
           <TableCell>
-            <div class="text-sm font-medium">{{ email.recipient_name }}</div>
-            <div class="text-xs text-muted-foreground">{{ email.recipient_email }}</div>
+            <div class="text-sm font-medium">
+              {{ email.recipient_name }}
+            </div>
+            <div class="text-xs text-muted-foreground">
+              {{ email.recipient_email }}
+            </div>
           </TableCell>
           <TableCell class="max-w-[300px] truncate text-sm">
             {{ email.subject }}
@@ -45,12 +55,18 @@
       </TableBody>
     </Table>
 
-    <div v-else class="text-center py-8 text-muted-foreground">
+    <div
+      v-else
+      class="text-center py-8 text-muted-foreground"
+    >
       {{ $t('email.noHistory') }}
     </div>
 
     <!-- Pagination -->
-    <div v-if="pagination && pagination.last_page > 1" class="flex justify-center mt-4">
+    <div
+      v-if="pagination && pagination.last_page > 1"
+      class="flex justify-center mt-4"
+    >
       <Button
         variant="outline"
         size="sm"

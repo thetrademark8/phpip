@@ -15,7 +15,7 @@ class ContactHandler
     {
         $response = self::fetchContactWithRetry($data['id'], $service);
 
-        if (! $response) {
+        if (!$response) {
             return null;
         }
 
@@ -69,7 +69,7 @@ class ContactHandler
         $companies = $data['companies'] ?? [];
 
         // Truncate display_name to 30 characters (DB constraint)
-        $fullDisplayName = trim(($data['last_name'] ?? '').' '.($data['first_name'] ?? ''));
+        $fullDisplayName = trim(($data['last_name'] ?? '') . ' ' . ($data['first_name'] ?? ''));
         $displayName = mb_substr($fullDisplayName, 0, 30);
 
         $actorData = [
@@ -88,7 +88,7 @@ class ContactHandler
         $reference = TeamleaderReference::where('teamleader_id', $teamleaderId)->first();
         $actor = $reference?->actor;
 
-        if (! $actor) {
+        if (!$actor) {
             // Search using truncated display_name (exact match for unique constraint)
             $actor = Actor::where('display_name', $displayName)->first();
         }
@@ -116,14 +116,14 @@ class ContactHandler
         if (count($companies)) {
             foreach ($companies as $entry) {
                 $companyData = $entry['company'] ?? null;
-                if (! $companyData) {
+                if (!$companyData) {
                     continue;
                 }
 
                 $companyReference = TeamleaderReference::where('teamleader_id', $companyData['id'])->first();
 
-                if (! $companyReference) {
-                    $companyResponse = $service->prepareRequest()->get(TeamLeaderService::BASE_URL.'companies.info', [
+                if (!$companyReference) {
+                    $companyResponse = $service->prepareRequest()->get(TeamLeaderService::BASE_URL . 'companies.info', [
                         'id' => $companyData['id'],
                     ]);
 
@@ -144,7 +144,7 @@ class ContactHandler
             }
         }
 
-        if (! $reference) {
+        if (!$reference) {
             TeamleaderReference::create([
                 'teamleader_id' => $teamleaderId,
                 'actor_id' => $actor->id,
@@ -162,7 +162,7 @@ class ContactHandler
         $retries = 0;
 
         while ($retries < $maxRetries) {
-            $response = $service->prepareRequest()->get(TeamLeaderService::BASE_URL.'contacts.info', [
+            $response = $service->prepareRequest()->get(TeamLeaderService::BASE_URL . 'contacts.info', [
                 'id' => $id,
             ]);
 
@@ -198,7 +198,7 @@ class ContactHandler
 
     protected static function formatAddress(?array $address): ?string
     {
-        if (! $address) {
+        if (!$address) {
             return null;
         }
 

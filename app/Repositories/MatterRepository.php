@@ -234,7 +234,7 @@ class MatterRepository implements MatterRepositoryInterface
         $this->applyFilters($query, $filters);
 
         // Apply dead filter
-        if (! $includeDead) {
+        if (!$includeDead) {
             $query->whereRaw('(select count(1) from matter m where m.caseref = matter.caseref and m.dead = 0) > 0');
         }
 
@@ -355,10 +355,10 @@ class MatterRepository implements MatterRepositoryInterface
 
         // Format intervalle : { from: "2025-01-01", to: "2025-12-31" }
         if (is_array($value)) {
-            if (! empty($value['from'])) {
+            if (!empty($value['from'])) {
                 $query->where($column, '>=', $value['from']);
             }
-            if (! empty($value['to'])) {
+            if (!empty($value['to'])) {
                 $query->where($column, '<=', $value['to']);
             }
 
@@ -382,24 +382,24 @@ class MatterRepository implements MatterRepositoryInterface
         if (is_array($value)) {
             $query->where(function ($q) use ($value) {
                 $q->where(function ($sub) use ($value) {
-                    if (! empty($value['from'])) {
+                    if (!empty($value['from'])) {
                         $sub->where('grt.event_date', '>=', $value['from']);
                     }
-                    if (! empty($value['to'])) {
+                    if (!empty($value['to'])) {
                         $sub->where('grt.event_date', '<=', $value['to']);
                     }
                 })->orWhere(function ($sub) use ($value) {
-                    if (! empty($value['from'])) {
+                    if (!empty($value['from'])) {
                         $sub->where('reg.event_date', '>=', $value['from']);
                     }
-                    if (! empty($value['to'])) {
+                    if (!empty($value['to'])) {
                         $sub->where('reg.event_date', '<=', $value['to']);
                     }
                 })->orWhere(function ($sub) use ($value) {
-                    if (! empty($value['from'])) {
+                    if (!empty($value['from'])) {
                         $sub->where('regdp.event_date', '>=', $value['from']);
                     }
-                    if (! empty($value['to'])) {
+                    if (!empty($value['to'])) {
                         $sub->where('regdp.event_date', '<=', $value['to']);
                     }
                 });
@@ -572,7 +572,7 @@ class MatterRepository implements MatterRepositoryInterface
     public function getApplicants(int $matterId): Collection
     {
         $matter = Matter::find($matterId);
-        if (! $matter) {
+        if (!$matter) {
             return collect();
         }
 
@@ -587,7 +587,7 @@ class MatterRepository implements MatterRepositoryInterface
     public function getOwner(int $matterId)
     {
         $matter = Matter::find($matterId);
-        if (! $matter) {
+        if (!$matter) {
             return null;
         }
 

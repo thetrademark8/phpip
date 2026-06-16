@@ -48,7 +48,7 @@ class ActorPivotController extends Controller
             }
 
             $addedActor = Actor::find($request->actor_id);
-            if (! $addedActor) {
+            if (!$addedActor) {
                 Log::error('Actor not found', ['actor_id' => $request->actor_id]);
 
                 return response()->json(['error' => 'Actor not found'], 404);

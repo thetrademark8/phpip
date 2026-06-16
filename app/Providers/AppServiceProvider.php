@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Add query macro for case-insensitive JSON column queries
         \Illuminate\Database\Query\Builder::macro('whereJsonLike', function ($column, $value, $locale = null) {
-            if (! $locale) {
+            if (!$locale) {
                 $locale = app()->getLocale();
                 // Normalize to base locale (e.g., 'en' from 'en_US')
                 $locale = substr($locale, 0, 2);

@@ -1,5 +1,8 @@
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="sm:max-w-md">
       <DialogHeader>
         <DialogTitle>{{ title || 'Confirm Action' }}</DialogTitle>
@@ -17,17 +20,20 @@
       <DialogFooter class="flex-col sm:flex-row">
         <Button
           variant="outline"
-          @click="$emit('update:open', false)"
           :disabled="loading"
+          @click="$emit('update:open', false)"
         >
           {{ cancelText || 'Cancel' }}
         </Button>
         <Button
           :variant="type === 'destructive' ? 'destructive' : 'default'"
-          @click="handleConfirm"
           :disabled="loading"
+          @click="handleConfirm"
         >
-          <Loader2 v-if="loading" class="mr-2 h-4 w-4 animate-spin" />
+          <Loader2
+            v-if="loading"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ confirmText || 'Confirm' }}
         </Button>
       </DialogFooter>

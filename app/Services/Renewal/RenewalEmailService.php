@@ -35,7 +35,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
     public function sendFirstCall(array $ids, bool $preview = false): ActionResultDTO
     {
-        return $this->sendCalls($ids, ['first'], ! $preview, 2);
+        return $this->sendCalls($ids, ['first'], !$preview, 2);
     }
 
     public function sendReminderCall(array $ids): ActionResultDTO
@@ -65,7 +65,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
             foreach ($ids as $id) {
                 $renewal = $this->renewalRepository->findById($id);
-                if (! $renewal) {
+                if (!$renewal) {
                     $errors[] = "Renewal $id not found";
 
                     continue;
@@ -92,8 +92,8 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
             if ($processedCount > 0) {
                 $message = "Sent $processedCount invoices";
-                if (! empty($errors)) {
-                    $message .= ' (with '.count($errors).' errors)';
+                if (!empty($errors)) {
+                    $message .= ' (with ' . count($errors) . ' errors)';
                 }
 
                 return ActionResultDTO::success($processedCount, $message, ['errors' => $errors]);
@@ -103,7 +103,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to send invoices: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to send invoices: ' . $e->getMessage());
         }
     }
 
@@ -145,14 +145,14 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
             return ActionResultDTO::success(1, 'Report sent successfully');
         } catch (\Exception $e) {
-            return ActionResultDTO::error('Failed to send report: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to send report: ' . $e->getMessage());
         }
     }
 
     public function previewEmail(int $id, string $type): array
     {
         $renewal = $this->renewalRepository->findById($id);
-        if (! $renewal) {
+        if (!$renewal) {
             return ['error' => 'Renewal not found'];
         }
 
@@ -170,7 +170,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             default => null
         };
 
-        if (! $emailData) {
+        if (!$emailData) {
             return ['error' => 'Invalid email type'];
         }
 
@@ -178,7 +178,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             'subject' => $emailData['subject'],
             'recipient' => $emailData['to'],
             'cc' => $emailData['cc'] ?? null,
-            'body' => view('emails.'.$this->notifyTypes[$type]['template'], $emailData)->render(),
+            'body' => view('emails.' . $this->notifyTypes[$type]['template'], $emailData)->render(),
         ];
     }
 
@@ -220,7 +220,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
         } catch (\Exception $e) {
             DB::rollback();
 
-            return ActionResultDTO::error('Failed to process calls: '.$e->getMessage());
+            return ActionResultDTO::error('Failed to process calls: ' . $e->getMessage());
         }
     }
 
@@ -239,7 +239,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             $clientData = $this->getClientDataById($clientId);
 
             // Skip only if sending real emails and no email address
-            if ($send && ! $clientData['email']) {
+            if ($send && !$clientData['email']) {
                 continue;
             }
 
@@ -321,7 +321,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             'renewal' => $renewal,
             'client' => $clientData,
             'invoice_number' => $this->generateInvoiceNumber($renewal),
-            'subject' => 'Invoice for Patent Renewal - '.$renewal->caseref,
+            'subject' => 'Invoice for Patent Renewal - ' . $renewal->caseref,
             'to' => $clientData['invoice_email'] ?? $clientData['email'],
         ];
     }
@@ -339,7 +339,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
     private function getClientData(RenewalDTO $renewal): array
     {
-        if (! $renewal->clientId) {
+        if (!$renewal->clientId) {
             return [
                 'name' => $renewal->clientName ?? 'Unknown',
                 'email' => null,
@@ -354,7 +354,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
     {
         $client = $this->actorRepository->find((int) $clientId);
 
-        if (! $client) {
+        if (!$client) {
             return [
                 'name' => 'Unknown',
                 'email' => null,
@@ -496,7 +496,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
                 break;
             default:
                 // Log unknown notification type
-                \Log::warning('Unknown notification type in sendNotification: '.$notifyType);
+                \Log::warning('Unknown notification type in sendNotification: ' . $notifyType);
         }
     }
 
@@ -512,7 +512,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
                 $desc .= $matter->suffix;
             }
             if ($matter->alt_ref) {
-                $desc .= ' ('.$matter->alt_ref.')';
+                $desc .= ' (' . $matter->alt_ref . ')';
             }
 
             // Get country from trigger's matter

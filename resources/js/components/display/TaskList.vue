@@ -1,7 +1,10 @@
 <template>
   <div class="space-y-4">
     <!-- Filters -->
-    <div v-if="showFilters" class="flex gap-4 items-center">
+    <div
+      v-if="showFilters"
+      class="flex gap-4 items-center"
+    >
       <div class="flex-1">
         <Input
           v-model="searchQuery"
@@ -15,10 +18,18 @@
           <SelectValue placeholder="All statuses" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All statuses</SelectItem>
-          <SelectItem value="pending">Pending</SelectItem>
-          <SelectItem value="done">Done</SelectItem>
-          <SelectItem value="overdue">Overdue</SelectItem>
+          <SelectItem value="all">
+            All statuses
+          </SelectItem>
+          <SelectItem value="pending">
+            Pending
+          </SelectItem>
+          <SelectItem value="done">
+            Done
+          </SelectItem>
+          <SelectItem value="overdue">
+            Overdue
+          </SelectItem>
         </SelectContent>
       </Select>
       
@@ -46,8 +57,8 @@
           <Checkbox
             v-if="editable"
             :checked="task.done"
-            @update:checked="handleTaskToggle(task, $event)"
             class="mt-1"
+            @update:checked="handleTaskToggle(task, $event)"
           />
           
           <div class="flex-1 space-y-1">
@@ -76,12 +87,18 @@
                   )"
                   @saved="emit('update', { ...task, due_date: $event })"
                 />
-                <span v-else :class="cn(
-                  'font-medium',
-                  isOverdue(task) && !task.done ? 'text-red-600' : 'text-foreground'
-                )">{{ formatDate(task.due_date) }}</span>
+                <span
+                  v-else
+                  :class="cn(
+                    'font-medium',
+                    isOverdue(task) && !task.done ? 'text-red-600' : 'text-foreground'
+                  )"
+                >{{ formatDate(task.due_date) }}</span>
               </div>
-              <div v-if="task.assigned_to || enableInlineEdit" class="flex items-center gap-1">
+              <div
+                v-if="task.assigned_to || enableInlineEdit"
+                class="flex items-center gap-1"
+              >
                 <User class="h-3 w-3 text-muted-foreground" />
                 <span class="text-muted-foreground">Assigned:</span>
                 <EditableField
@@ -93,16 +110,25 @@
                   value-class="font-medium text-foreground"
                   @saved="emit('update', { ...task, assigned_to: $event })"
                 />
-                <span v-else class="font-medium">{{ task.assigned_to || 'Unassigned' }}</span>
+                <span
+                  v-else
+                  class="font-medium"
+                >{{ task.assigned_to || 'Unassigned' }}</span>
               </div>
-              <div v-if="task.cost" class="flex items-center gap-1">
+              <div
+                v-if="task.cost"
+                class="flex items-center gap-1"
+              >
                 <DollarSign class="h-3 w-3 text-muted-foreground" />
                 <span class="text-muted-foreground">Cost:</span>
                 <span class="font-medium">{{ formatCurrency(task.cost) }}</span>
               </div>
             </div>
             
-            <p v-if="task.detail || enableInlineEdit" class="text-sm mt-2">
+            <p
+              v-if="task.detail || enableInlineEdit"
+              class="text-sm mt-2"
+            >
               <EditableField
                 v-if="enableInlineEdit"
                 :model-value="task.detail || ''"
@@ -115,12 +141,18 @@
               <span v-else>{{ task.detail }}</span>
             </p>
             
-            <div v-if="task.done && task.done_date" class="text-sm text-muted-foreground">
+            <div
+              v-if="task.done && task.done_date"
+              class="text-sm text-muted-foreground"
+            >
               Completed: {{ formatDate(task.done_date) }}
             </div>
           </div>
           
-          <div v-if="editable" class="flex items-center gap-2">
+          <div
+            v-if="editable"
+            class="flex items-center gap-2"
+          >
             <Button
               size="icon"
               variant="ghost"
@@ -139,7 +171,10 @@
         </div>
       </div>
       
-      <div v-if="filteredTasks.length === 0" class="p-8 text-center text-muted-foreground">
+      <div
+        v-if="filteredTasks.length === 0"
+        class="p-8 text-center text-muted-foreground"
+      >
         No tasks found
       </div>
     </div>

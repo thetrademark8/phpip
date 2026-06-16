@@ -124,15 +124,24 @@
       </FormField>
 
       <!-- Priority selection (child mode only) -->
-      <div v-if="operation === 'child'" class="space-y-2">
+      <div
+        v-if="operation === 'child'"
+        class="space-y-2"
+      >
         <Label>{{ t('Use original matter as') }}</Label>
         <RadioGroup v-model="priorityValue">
           <div class="flex items-center space-x-2">
-            <RadioGroupItem value="1" id="priority-1" />
+            <RadioGroupItem
+              id="priority-1"
+              value="1"
+            />
             <Label for="priority-1">{{ t('Priority application') }}</Label>
           </div>
           <div class="flex items-center space-x-2">
-            <RadioGroupItem value="0" id="priority-0" />
+            <RadioGroupItem
+              id="priority-0"
+              value="0"
+            />
             <Label for="priority-0">{{ t('Parent application') }}</Label>
           </div>
         </RadioGroup>
@@ -144,8 +153,8 @@
           v-if="onCancel"
           type="button"
           variant="outline"
-          @click="onCancel"
           :disabled="form.processing"
+          @click="onCancel"
         >
           {{ t('Cancel') }}
         </Button>
@@ -153,7 +162,10 @@
           type="submit"
           :disabled="form.processing"
         >
-          <Loader2 v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" />
+          <Loader2
+            v-if="form.processing"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
           {{ submitLabel }}
         </Button>
       </div>

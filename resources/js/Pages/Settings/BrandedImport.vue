@@ -3,12 +3,20 @@
     <div class="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       <!-- Header -->
       <div class="space-y-2">
-        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{{ t('Branded Data Import') }}</h1>
-        <p class="text-lg text-muted-foreground">{{ t('Import actors and matters from CSV files') }}</p>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {{ t('Branded Data Import') }}
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          {{ t('Import actors and matters from CSV files') }}
+        </p>
       </div>
 
       <!-- Success Message -->
-      <Alert v-if="successMessage" variant="default" class="border-green-500 bg-green-50 dark:bg-green-950">
+      <Alert
+        v-if="successMessage"
+        variant="default"
+        class="border-green-500 bg-green-50 dark:bg-green-950"
+      >
         <CheckCircle2 class="h-4 w-4 text-green-600" />
         <AlertDescription class="text-green-800 dark:text-green-200">
           {{ successMessage }}
@@ -16,7 +24,10 @@
       </Alert>
 
       <!-- Error Message -->
-      <Alert v-if="errorMessage" variant="destructive">
+      <Alert
+        v-if="errorMessage"
+        variant="destructive"
+      >
         <AlertTriangle class="h-4 w-4" />
         <AlertDescription>
           {{ errorMessage }}
@@ -35,14 +46,24 @@
           </CardDescription>
         </CardHeader>
         <CardContent class="pt-0">
-          <Tabs v-model="actorMode" class="w-full">
+          <Tabs
+            v-model="actorMode"
+            class="w-full"
+          >
             <TabsList class="grid w-full grid-cols-2">
-              <TabsTrigger value="existing">{{ t('Select existing user') }}</TabsTrigger>
-              <TabsTrigger value="create">{{ t('Create new actor') }}</TabsTrigger>
+              <TabsTrigger value="existing">
+                {{ t('Select existing user') }}
+              </TabsTrigger>
+              <TabsTrigger value="create">
+                {{ t('Create new actor') }}
+              </TabsTrigger>
             </TabsList>
 
             <!-- Existing user -->
-            <TabsContent value="existing" class="space-y-4 mt-6">
+            <TabsContent
+              value="existing"
+              class="space-y-4 mt-6"
+            >
               <div class="space-y-2">
                 <label class="text-sm font-medium">{{ t('User') }}</label>
                 <AutocompleteInput
@@ -57,18 +78,30 @@
             </TabsContent>
 
             <!-- Create new actor -->
-            <TabsContent value="create" class="space-y-4 mt-6">
+            <TabsContent
+              value="create"
+              class="space-y-4 mt-6"
+            >
               <div class="space-y-2">
                 <label class="text-sm font-medium">{{ t('Name') }}</label>
-                <Input v-model="newActorName" :placeholder="t('e.g. Gestion Ines-PI')" />
+                <Input
+                  v-model="newActorName"
+                  :placeholder="t('e.g. Gestion Ines-PI')"
+                />
               </div>
               <div class="space-y-2">
                 <label class="text-sm font-medium">{{ t('Login') }}</label>
-                <Input v-model="newActorLogin" :placeholder="t('e.g. gestion.ines-pi')" />
+                <Input
+                  v-model="newActorLogin"
+                  :placeholder="t('e.g. gestion.ines-pi')"
+                />
               </div>
               <div class="space-y-2">
                 <label class="text-sm font-medium">{{ t('Password') }}</label>
-                <Input v-model="newActorPassword" type="password" />
+                <Input
+                  v-model="newActorPassword"
+                  type="password"
+                />
               </div>
             </TabsContent>
           </Tabs>
@@ -117,16 +150,28 @@
           :disabled="!canPreview || isPreviewing"
           @click="runPreview"
         >
-          <Eye v-if="!isPreviewing" class="mr-2 h-4 w-4" />
-          <span v-else class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+          <Eye
+            v-if="!isPreviewing"
+            class="mr-2 h-4 w-4"
+          />
+          <span
+            v-else
+            class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full"
+          />
           {{ isPreviewing ? t('Previewing...') : t('Preview') }}
         </Button>
         <Button
           :disabled="!canImport || isImporting"
           @click="runImport"
         >
-          <FileUp v-if="!isImporting" class="mr-2 h-4 w-4" />
-          <span v-else class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full" />
+          <FileUp
+            v-if="!isImporting"
+            class="mr-2 h-4 w-4"
+          />
+          <span
+            v-else
+            class="mr-2 h-4 w-4 animate-spin inline-block border-2 border-current border-t-transparent rounded-full"
+          />
           {{ isImporting ? t('Importing...') : t('Import') }}
         </Button>
       </div>
@@ -139,7 +184,11 @@
               <Eye class="h-5 w-5 text-primary" />
               {{ t('Preview Results') }}
             </CardTitle>
-            <Button variant="ghost" size="sm" @click="previewData = null">
+            <Button
+              variant="ghost"
+              size="sm"
+              @click="previewData = null"
+            >
               &times;
             </Button>
           </div>
@@ -147,31 +196,60 @@
         <CardContent class="pt-0 space-y-6">
           <div class="grid grid-cols-2 gap-4">
             <div class="rounded-lg border p-4 text-center">
-              <p class="text-2xl font-bold">{{ previewData.actors_count }}</p>
-              <p class="text-sm text-muted-foreground">{{ t('Actors') }}</p>
+              <p class="text-2xl font-bold">
+                {{ previewData.actors_count }}
+              </p>
+              <p class="text-sm text-muted-foreground">
+                {{ t('Actors') }}
+              </p>
             </div>
             <div class="rounded-lg border p-4 text-center">
-              <p class="text-2xl font-bold">{{ previewData.matters_count }}</p>
-              <p class="text-sm text-muted-foreground">{{ t('Matters') }}</p>
+              <p class="text-2xl font-bold">
+                {{ previewData.matters_count }}
+              </p>
+              <p class="text-sm text-muted-foreground">
+                {{ t('Matters') }}
+              </p>
             </div>
           </div>
 
           <!-- Actors preview -->
-          <div v-if="previewData.actors_preview?.length" class="space-y-2">
-            <h3 class="text-sm font-semibold">{{ t('First actors') }}</h3>
+          <div
+            v-if="previewData.actors_preview?.length"
+            class="space-y-2"
+          >
+            <h3 class="text-sm font-semibold">
+              {{ t('First actors') }}
+            </h3>
             <ul class="space-y-1 text-sm">
-              <li v-for="(actor, i) in previewData.actors_preview" :key="'actor-' + i" class="rounded border px-3 py-2">
+              <li
+                v-for="(actor, i) in previewData.actors_preview"
+                :key="'actor-' + i"
+                class="rounded border px-3 py-2"
+              >
                 <span class="font-medium">{{ actor.name }}</span>
-                <span v-if="actor.display_name" class="text-muted-foreground"> - {{ actor.display_name }}</span>
+                <span
+                  v-if="actor.display_name"
+                  class="text-muted-foreground"
+                > - {{ actor.display_name }}</span>
               </li>
             </ul>
           </div>
 
           <!-- Matters preview -->
-          <div v-if="previewData.matters_preview?.length" class="space-y-2">
-            <h3 class="text-sm font-semibold">{{ t('First matters') }}</h3>
+          <div
+            v-if="previewData.matters_preview?.length"
+            class="space-y-2"
+          >
+            <h3 class="text-sm font-semibold">
+              {{ t('First matters') }}
+            </h3>
             <ul class="space-y-1 text-sm">
-              <li v-for="(matter, i) in previewData.matters_preview" :key="'matter-' + i" class="rounded border px-3 py-2">
+              <li
+                v-for="(matter, i) in previewData.matters_preview"
+                :key="'matter-' + i"
+                class="rounded border px-3 py-2"
+              >
                 {{ matter.caseref }}
               </li>
             </ul>
@@ -187,55 +265,93 @@
               <CheckCircle2 class="h-5 w-5 text-green-600" />
               {{ t('Import Results') }}
             </CardTitle>
-            <Button variant="ghost" size="sm" @click="importResult = null">
+            <Button
+              variant="ghost"
+              size="sm"
+              @click="importResult = null"
+            >
               &times;
             </Button>
           </div>
         </CardHeader>
         <CardContent class="pt-0 space-y-4">
-          <ul v-if="importResult.stats" class="space-y-2 text-sm">
-            <li v-if="importResult.stats.actors_created != null" class="flex justify-between rounded border px-3 py-2">
+          <ul
+            v-if="importResult.stats"
+            class="space-y-2 text-sm"
+          >
+            <li
+              v-if="importResult.stats.actors_created != null"
+              class="flex justify-between rounded border px-3 py-2"
+            >
               <span>{{ t('Actors created') }}</span>
               <span class="font-medium">{{ importResult.stats.actors_created }}</span>
             </li>
-            <li v-if="importResult.stats.actors_updated != null" class="flex justify-between rounded border px-3 py-2">
+            <li
+              v-if="importResult.stats.actors_updated != null"
+              class="flex justify-between rounded border px-3 py-2"
+            >
               <span>{{ t('Actors updated') }}</span>
               <span class="font-medium">{{ importResult.stats.actors_updated }}</span>
             </li>
-            <li v-if="importResult.stats.matters_created != null" class="flex justify-between rounded border px-3 py-2">
+            <li
+              v-if="importResult.stats.matters_created != null"
+              class="flex justify-between rounded border px-3 py-2"
+            >
               <span>{{ t('Matters created') }}</span>
               <span class="font-medium">{{ importResult.stats.matters_created }}</span>
             </li>
-            <li v-if="importResult.stats.matters_updated != null" class="flex justify-between rounded border px-3 py-2">
+            <li
+              v-if="importResult.stats.matters_updated != null"
+              class="flex justify-between rounded border px-3 py-2"
+            >
               <span>{{ t('Matters updated') }}</span>
               <span class="font-medium">{{ importResult.stats.matters_updated }}</span>
             </li>
-            <li v-if="importResult.stats.events_upserted != null" class="flex justify-between rounded border px-3 py-2">
+            <li
+              v-if="importResult.stats.events_upserted != null"
+              class="flex justify-between rounded border px-3 py-2"
+            >
               <span>{{ t('Events upserted') }}</span>
               <span class="font-medium">{{ importResult.stats.events_upserted }}</span>
             </li>
-            <li v-if="importResult.stats.classifiers_upserted != null" class="flex justify-between rounded border px-3 py-2">
+            <li
+              v-if="importResult.stats.classifiers_upserted != null"
+              class="flex justify-between rounded border px-3 py-2"
+            >
               <span>{{ t('Classifiers upserted') }}</span>
               <span class="font-medium">{{ importResult.stats.classifiers_upserted }}</span>
             </li>
-            <li v-if="importResult.stats.actor_links_upserted != null" class="flex justify-between rounded border px-3 py-2">
+            <li
+              v-if="importResult.stats.actor_links_upserted != null"
+              class="flex justify-between rounded border px-3 py-2"
+            >
               <span>{{ t('Actor links upserted') }}</span>
               <span class="font-medium">{{ importResult.stats.actor_links_upserted }}</span>
             </li>
-            <li v-if="importResult.stats.renewals_cleaned" class="flex justify-between rounded border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950 px-3 py-2">
+            <li
+              v-if="importResult.stats.renewals_cleaned"
+              class="flex justify-between rounded border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950 px-3 py-2"
+            >
               <span>{{ t('Past renewals cleaned') }}</span>
               <span class="font-medium">{{ importResult.stats.renewals_cleaned }}</span>
             </li>
           </ul>
 
           <!-- Warnings -->
-          <div v-if="importResult.warnings?.length" class="space-y-2">
+          <div
+            v-if="importResult.warnings?.length"
+            class="space-y-2"
+          >
             <h3 class="text-sm font-semibold flex items-center gap-2 text-amber-600">
               <AlertTriangle class="h-4 w-4" />
               {{ t('Warnings') }} ({{ importResult.warnings.length }})
             </h3>
             <ul class="space-y-1 text-sm">
-              <li v-for="(warning, i) in importResult.warnings" :key="'warn-' + i" class="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+              <li
+                v-for="(warning, i) in importResult.warnings"
+                :key="'warn-' + i"
+                class="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200"
+              >
                 {{ warning }}
               </li>
             </ul>

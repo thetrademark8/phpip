@@ -100,7 +100,7 @@ class RenewalLogService implements RenewalLogServiceInterface
             ];
         }
 
-        if (! empty($logs)) {
+        if (!empty($logs)) {
             RenewalsLog::insert($logs);
         }
     }
@@ -168,13 +168,13 @@ class RenewalLogService implements RenewalLogServiceInterface
                 'to_step' => $toStep,
                 'from_grace' => $fromGrace,
                 'to_grace' => $toGrace,
-                'action' => 'email_'.$emailType,
+                'action' => 'email_' . $emailType,
                 'creator' => Auth::user()->login ?? 'system',
                 'created_at' => now(),
             ];
         }
 
-        if (! empty($logs)) {
+        if (!empty($logs)) {
             RenewalsLog::insert($logs);
         }
     }
