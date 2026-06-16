@@ -4,13 +4,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-[... existing content remains unchanged ...]
+phpIP is a web application for managing intellectual property portfolios
+(patents, trademarks, designs). This repository is a modernized fork that
+migrates the original Blade application to a Vue 3 + Inertia SPA while keeping
+the existing MySQL data model.
+
+Core domain concepts:
+- **Matter** ("Dossier" in French) — an IP file (patent, trademark, design)
+  and the central entity of the application.
+- **Actor** — any party tied to a matter (client, agent, inventor, applicant),
+  linked through roles.
+- **Event / Task** — events recorded on a matter and the deadline-bearing tasks
+  derived from them (notably renewals).
+- **Rule** — configurable logic that generates tasks and due dates from events.
+- **Renewal** — the annuity/renewal management workflow, with email steps.
+
+Backend code is organized in layers under `app/`: Controllers → Services
+(business logic) → Repositories (data access) → Eloquent Models. The frontend
+lives in `resources/js/` with Inertia pages under `resources/js/Pages/` and
+shadcn-vue based UI components under `resources/js/components/`.
+
+## Development Commands
+
+```bash
+# Frontend
+npm run dev            # Vite dev server
+npm run build          # Production build
+
+# Backend / database
+composer install
+php artisan migrate --seed          # Fresh schema + base data
+composer fresh                      # migrate:fresh --seed + clear caches
+
+# Tests (Pest)
+composer test                       # Full suite
+composer test:unit                  # Unit group
+composer test:feature               # Feature group
+composer test:arch                  # Architecture group
+composer test:coverage              # With coverage
+
+# Code quality
+composer format                     # Laravel Pint (fix)
+composer format:test                # Pint (check only)
+composer analyse                    # PHPStan
+```
 
 ## Documentation
 
-All project documentation is located in the `docs/` directory:
-- `docs/TABLE_INTEGRATION.md` - Complete guide for implementing tables
-- `docs/TRANSLATIONS.md` - Comprehensive translation handling guide
+All project documentation is located in the `docs/` directory. Start with
+[`docs/README.md`](docs/README.md) for the full index. Key references:
+
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — Code organization (backend layers, Inertia/Vue, domain model)
+- [`docs/TABLE_INTEGRATION.md`](docs/TABLE_INTEGRATION.md) — Complete guide for implementing tables
+- [`docs/TRANSLATIONS.md`](docs/TRANSLATIONS.md) — Comprehensive translation handling guide
+- [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — Application localization (languages, date formats)
+- [`docs/AUTOMATIC_STATUS_MANAGEMENT.md`](docs/AUTOMATIC_STATUS_MANAGEMENT.md) — Automatic renewal cancellation on terminal status
+- [`docs/TASK_REMINDERS.md`](docs/TASK_REMINDERS.md) — Weekly reminder email setup (SMTP + cron)
+
+Server installation instructions live in the [`doc/`](doc/) directory.
 
 Always reference these documents when working on related features.
 
