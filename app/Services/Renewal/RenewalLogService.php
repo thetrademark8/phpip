@@ -14,7 +14,7 @@ class RenewalLogService implements RenewalLogServiceInterface
     public function getLogs(?array $filters = null, int $perPage = 25): LengthAwarePaginator
     {
         $query = RenewalsLog::query()
-            ->with(['task', 'creator'])
+            ->with(['task', 'creatorInfo'])
             ->orderByDesc('created_at');
 
         if ($filters) {
@@ -27,7 +27,7 @@ class RenewalLogService implements RenewalLogServiceInterface
     public function getLogsByTaskId(int $taskId, int $perPage = 25): LengthAwarePaginator
     {
         return RenewalsLog::query()
-            ->with(['creator'])
+            ->with(['creatorInfo'])
             ->where('task_id', $taskId)
             ->orderByDesc('created_at')
             ->paginate($perPage);
@@ -36,7 +36,7 @@ class RenewalLogService implements RenewalLogServiceInterface
     public function getLogsByJobId(int $jobId): \Illuminate\Database\Eloquent\Collection
     {
         return RenewalsLog::query()
-            ->with(['task', 'creator'])
+            ->with(['task', 'creatorInfo'])
             ->where('job_id', $jobId)
             ->orderByDesc('created_at')
             ->get();

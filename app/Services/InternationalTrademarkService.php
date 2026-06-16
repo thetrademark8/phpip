@@ -109,7 +109,7 @@ class InternationalTrademarkService
             'category_code' => $internationalMatter->category_code, // Keep TM category
             'type_code' => $internationalMatter->type_code,
             'responsible' => $internationalMatter->responsible,
-            'creator' => Auth::user()?->login ?? 'system',
+            'creator' => Auth::user()->login ?? 'system',
             'expire_date' => $internationalMatter->expire_date,
             'parent_id' => $internationalMatter->id,
             'container_id' => $containerId,
@@ -207,10 +207,9 @@ class InternationalTrademarkService
                 'shared' => $actorLink->shared,
                 'display_order' => $actorLink->display_order,
                 'actor_ref' => $actorLink->actor_ref,
-                'date_start' => $actorLink->date_start,
-                'date_end' => $actorLink->date_end,
+                'date' => $actorLink->date,
                 'rate' => $actorLink->rate,
-                'creator' => Auth::user()?->login ?? 'system',
+                'creator' => Auth::user()->login ?? 'system',
             ]);
         }
     }
@@ -256,7 +255,7 @@ class InternationalTrademarkService
                 'value_id' => $classifier->value_id,
                 'display_order' => $classifier->display_order,
                 'lnk_matter_id' => $classifier->lnk_matter_id,
-                'creator' => Auth::user()?->login ?? 'system',
+                'creator' => Auth::user()->login ?? 'system',
             ]);
         }
     }

@@ -1,6 +1,5 @@
 includes:
     - ./vendor/larastan/larastan/extension.neon
-    - phpstan-baseline.neon
 
 parameters:
     level: 5
@@ -11,11 +10,11 @@ parameters:
         - database
         - routes
 
-    # Pre-existing issues are captured in phpstan-baseline.neon so the build
-    # stays green. New code must satisfy level 5; regressions fail the check.
-    # Regenerate the baseline with:
+    # The codebase is clean at level 5 with no baseline. New code must satisfy
+    # level 5; any regression fails the check. If a temporary baseline is ever
+    # needed again, regenerate it with:
     #   composer analyse -- --generate-baseline
-    reportUnmatchedIgnoredErrors: false
+    # and add it back to the includes above.
 
     # Eloquent magic columns aren't statically known.
     checkModelProperties: false

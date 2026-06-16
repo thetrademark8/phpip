@@ -26,4 +26,11 @@ interface RenewalExportServiceInterface
      * Validate renewals for XML export (single jurisdiction)
      */
     public function validateForXmlExport(Collection $renewals): bool;
+
+    /**
+     * Generate XML payment order content for the given renewal task IDs
+     *
+     * @param  array<int>  $ids
+     */
+    public function generatePaymentXml(array $ids): string;
 }

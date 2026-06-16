@@ -123,7 +123,7 @@ class EventNameController extends Controller
         $tableComments = $eventname->getTableComments();
         $eventname->load(['countryInfo:iso,name', 'categoryInfo:code,category', 'default_responsibleInfo:id,name']);
         $links = EventClassLnk::where('event_name_code', '=', $eventname->code)
-            ->with('templateClass:code,name')
+            ->with('class:id,name')
             ->get();
 
         // Return JSON for modal/detail panel usage

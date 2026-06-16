@@ -118,12 +118,12 @@ class PlaceholderService
         if ($this->matter) {
             $values['{{matter.reference}}'] = $this->matter->uid;
             $values['{{matter.title}}'] = $this->matter->titles->first()?->value;
-            $values['{{matter.filing_date}}'] = $this->matter->filing?->event_date?->isoFormat('L');
-            $values['{{matter.filing_number}}'] = $this->matter->filing?->detail;
+            $values['{{matter.filing_date}}'] = $this->matter->filing->event_date?->isoFormat('L');
+            $values['{{matter.filing_number}}'] = $this->matter->filing->detail;
             $values['{{matter.priority_date}}'] = $this->matter->priority()->first()?->event_date?->isoFormat('L');
-            $values['{{matter.registration_date}}'] = ($this->matter->grant ?? $this->matter->registration)?->event_date?->isoFormat('L');
-            $values['{{matter.registration_number}}'] = ($this->matter->grant ?? $this->matter->registration)?->detail;
-            $values['{{matter.publication_date}}'] = $this->matter->publication?->event_date?->isoFormat('L');
+            $values['{{matter.registration_date}}'] = ($this->matter->grant ?? $this->matter->registration)->event_date?->isoFormat('L');
+            $values['{{matter.registration_number}}'] = ($this->matter->grant ?? $this->matter->registration)->detail;
+            $values['{{matter.publication_date}}'] = $this->matter->publication->event_date?->isoFormat('L');
             $values['{{matter.opposition_deadline}}'] = $this->getTaskDueDate('FOP')
                 ?? $this->getTaskDueDate('WAT', triggerEventCode: 'PUB');
             $values['{{matter.priority_deadline}}'] = $this->getTaskDueDate('PRID');
@@ -146,8 +146,9 @@ class PlaceholderService
             // Owner placeholders
             $values['{{owner.name}}'] = $this->matter->getOwnerName();
             $owner = $this->matter->owners()->first();
-            $values['{{owner.first_name}}'] = $owner?->actor?->phy_person ? $owner?->actor?->first_name : null;
-            $values['{{owner.address}}'] = $owner?->actor?->address;
+            $ownerActor = $owner instanceof \App\Models\MatterActors ? $owner->actor : null;
+            $values['{{owner.first_name}}'] = $ownerActor?->phy_person ? $ownerActor->first_name : null;
+            $values['{{owner.address}}'] = $ownerActor?->address;
 
             // Agent placeholders
             $agent = $this->matter->agent();

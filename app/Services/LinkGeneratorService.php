@@ -178,7 +178,7 @@ class LinkGeneratorService
         }
 
         // Check if this office requires a country prefix
-        if (!empty($pattern['requires_country_prefix']) && $pattern['requires_country_prefix']) {
+        if (!empty($pattern['requires_country_prefix'])) {
             if (empty($countryCode)) {
                 Log::warning('Country code required for office but not provided', [
                     'office' => $office,

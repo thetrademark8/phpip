@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actor;
 use App\Policies\ActorPolicy;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -434,5 +435,17 @@ class ActorController extends Controller
                 'error' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }
+    }
+
+    /**
+     * Filter actor data based on the current user's permissions.
+     *
+     * Authorization is enforced by ActorPolicy before this point, so the
+     * actor is returned as-is. This hook centralises any future per-role
+     * field redaction without changing the controller call sites.
+     */
+    protected function filterActorData(?Actor $actor, ?Authenticatable $user): ?Actor
+    {
+        return $actor;
     }
 }

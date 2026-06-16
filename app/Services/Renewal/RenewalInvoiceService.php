@@ -60,7 +60,7 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
         $url = config('renewal.api.dolibarr_url') . '/thirdparties?' . http_build_query($data);
 
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $httpheader);
 
         $result = curl_exec($curl);
@@ -90,10 +90,10 @@ class RenewalInvoiceService implements RenewalInvoiceServiceInterface
             'Content-Type: application/json',
         ];
 
-        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($invoiceData));
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $httpheader);
 
         $result = curl_exec($curl);

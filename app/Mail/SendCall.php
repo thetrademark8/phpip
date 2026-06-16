@@ -21,8 +21,12 @@ class SendCall extends Mailable
 
     protected $language;
 
-    public function __construct(public $step, $renewals, public $validity_date, public $instruction_date, public $total, public $total_ht, public $subject, public $dest)
+    /** @var string */
+    public $subject;
+
+    public function __construct(public $step, $renewals, public $validity_date, public $instruction_date, public $total, public $total_ht, string $subject, public $dest)
     {
+        $this->subject = $subject;
         $this->renewals = collect($renewals)->sortBy([
             ['caseref', 'asc'],
             ['country', 'asc'],
@@ -42,6 +46,7 @@ class SendCall extends Mailable
         $templates = \App\Models\TemplateMember::whereHas('class', function (Builder $q) {
             $q->where('name', 'sys_renewals');
         })->where('language', $this->language);
+        $template = $templates;
         if ($this->step == 'first') {
             $template = $templates->where('category', 'firstcall');
         }

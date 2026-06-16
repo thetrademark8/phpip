@@ -164,7 +164,7 @@ class RenewalController extends Controller
                 ->withErrors(['error' => 'No renewals selected']);
         }
 
-        $result = $this->emailService->sendFormalCall($ids);
+        $result = $this->emailService->sendReminderCall($ids);
 
         if ($result->success) {
             return to_route('renewal.index', ['step' => 2])

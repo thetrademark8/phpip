@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property int $id
+ * @property ?string $key
+ * @property ?string $value
+ * @property ?string $type
+ * @property ?string $group
+ * @property ?string $description
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class EmailSetting extends Model
 {
     protected $guarded = ['id'];
@@ -25,7 +35,7 @@ class EmailSetting extends Model
     /**
      * Set a setting value.
      */
-    public static function set(string $key, mixed $value, string $type = 'text', string $group = 'general'): static
+    public static function set(string $key, mixed $value, string $type = 'text', string $group = 'general'): self
     {
         $setting = static::updateOrCreate(
             ['key' => $key],

@@ -6,9 +6,40 @@ use App\Traits\HasTranslationsExtended;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property int $id
+ * @property ?int $trigger_id
+ * @property ?string $code
+ * @property ?\Illuminate\Support\Carbon $due_date
+ * @property ?string $assigned_to
+ * @property ?string $detail
+ * @property bool $done
+ * @property ?\Illuminate\Support\Carbon $done_date
+ * @property ?int $rule_used
+ * @property ?float $time_spent
+ * @property ?string $notes
+ * @property ?float $cost
+ * @property ?float $fee
+ * @property ?string $currency
+ * @property ?int $step
+ * @property ?int $invoice_step
+ * @property ?int $grace_period
+ * @property ?string $creator
+ * @property ?string $updater
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property-read \App\Models\EventName|null $info
+ * @property-read \App\Models\Event|null $trigger
+ * @property-read \App\Models\Matter|null $matter
+ * @property-read \App\Models\Rule|null $rule
+ * @property-read \App\Models\MatterActors|null $client
+ * @property-read int|null $client_id
+ */
 class Task extends Model
 {
     use HasFactory, HasTranslationsExtended;
@@ -29,17 +60,26 @@ class Task extends Model
     // Define which attributes are translatable
     public $translatable = ['detail'];
 
-    public function info()
+    /**
+     * @return BelongsTo<EventName, $this>
+     */
+    public function info(): BelongsTo
     {
         return $this->belongsTo(EventName::class, 'code');
     }
 
-    public function trigger()
+    /**
+     * @return BelongsTo<Event, $this>
+     */
+    public function trigger(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'trigger_id');
     }
 
-    public function matter()
+    /**
+     * @return HasOneThrough<Matter, Event, $this>
+     */
+    public function matter(): HasOneThrough
     {
         return $this->hasOneThrough(Matter::class, Event::class, 'id', 'id', 'trigger_id', 'matter_id');
     }

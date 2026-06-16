@@ -69,8 +69,8 @@ return new class extends Migration
 
             Schema::table($tableName, function (Blueprint $table) use ($tableName, $columnName) {
                 try {
-                    $indexes = Schema::getConnection()->getDoctrineSchemaManager()->listTableIndexes($tableName);
-                    if (isset($indexes[$columnName])) {
+                    $indexNames = array_column(Schema::getIndexes($tableName), 'name');
+                    if (in_array($columnName, $indexNames, true)) {
                         Log::info("Dropping index on {$tableName}.{$columnName}");
                         $table->dropIndex($columnName);
                     }
@@ -226,8 +226,8 @@ return new class extends Migration
             // Restore index
             Schema::table($tableName, function (Blueprint $table) use ($columnName) {
                 try {
-                    $indexes = Schema::getConnection()->getDoctrineSchemaManager()->listTableIndexes($table->getTable());
-                    if (!isset($indexes[$columnName])) {
+                    $indexNames = array_column(Schema::getIndexes($table->getTable()), 'name');
+                    if (!in_array($columnName, $indexNames, true)) {
                         Log::info("Restoring index on {$columnName}");
                         $table->index($columnName);
                     }

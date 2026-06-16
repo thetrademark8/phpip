@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actor;
 use App\Models\Matter;
+use App\Models\MatterActors;
 use App\Services\Email\EmailService;
 use App\Services\Email\PlaceholderService;
 use Illuminate\Http\JsonResponse;
@@ -27,7 +28,7 @@ class MatterEmailController extends Controller
 
         // Get recipients from matter actors (only those with email)
         $recipients = $matter->actors
-            ->filter(fn ($a) => $a->actor?->email)
+            ->filter(fn (MatterActors $a) => (bool) $a->actor?->email)
             ->map(fn ($a) => [
                 'id' => $a->actor_id,
                 'name' => $a->name,
@@ -38,7 +39,7 @@ class MatterEmailController extends Controller
             ->values();
 
         // Get the client's language to pre-select templates, but load all templates
-        $clientLanguage = $matter->client?->language ?: app()->getLocale();
+        $clientLanguage = $matter->client->actor?->language ?: app()->getLocale();
         $templates = $this->emailService->getTemplatesForMatter($matter);
         $placeholders = $this->placeholderService->getAvailablePlaceholders();
 
