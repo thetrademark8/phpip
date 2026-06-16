@@ -13,7 +13,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 
-class sendCall extends Mailable
+class SendCall extends Mailable
 {
     use Queueable, SerializesModels;
 
