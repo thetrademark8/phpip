@@ -20,10 +20,11 @@ use App\Services\MatterExportService;
 use App\Services\OPSService;
 use App\Services\SharePointService;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class MatterController extends Controller
@@ -177,7 +178,7 @@ class MatterController extends Controller
      * Return a JSON array with info of a matter. For use with API REST.
      *
      * @param  int  $id
-     * @return Json
+     * @return \App\Models\Matter|null
      **/
     public function info($id)
     {
@@ -290,7 +291,7 @@ class MatterController extends Controller
                 });
                 $actors->each(function ($item) use ($new_matter_id) {
                     $item->matter_id = $new_matter_id;
-                    $item->id = null;
+                    unset($item->id);
                 });
                 ActorPivot::insertOrIgnore($actors->toArray());
                 // Copy classifiers from container or parent
@@ -318,7 +319,7 @@ class MatterController extends Controller
                 });
                 $actors->each(function ($item) use ($new_matter_id) {
                     $item->matter_id = $new_matter_id;
-                    $item->id = null;
+                    unset($item->id);
                 });
                 ActorPivot::insertOrIgnore($actors->toArray());
                 if ($parent_matter->container_id) {
@@ -759,11 +760,12 @@ class MatterController extends Controller
                             break;
                         case 'IGRA':
                             // Intention to grant
+                            $grt = null;
                             if (array_key_exists('dispatched', $step)) {
                                 // Sometimes the dispatch and the payment are in different steps
                                 $grt = $new_matter->events()->create(['code' => 'ALL', 'event_date' => $step['dispatched']]);
                             }
-                            if (array_key_exists('grt_paid', $step) && $grt->event_date < now()->subMonths(4)) {
+                            if ($grt && array_key_exists('grt_paid', $step) && $grt->event_date < now()->subMonths(4)) {
                                 $grt->tasks()->create(
                                     [
                                         'code' => 'PAY',
@@ -948,7 +950,7 @@ class MatterController extends Controller
     public function tasks(Matter $matter)
     {
         // All events and their tasks, excepting renewals
-        $events = $matter->events()->with(['tasks' => function (HasMany $query) {
+        $events = $matter->events()->with(['tasks' => function (Relation $query) {
             $query->where('code', '!=', 'REN');
         }, 'info:code,name', 'tasks.info:code,name'])->get();
         $is_renewals = 0;
@@ -961,7 +963,7 @@ class MatterController extends Controller
         // The renewal trigger event and its renewals
         $events = $matter->events()->whereHas('tasks', function (Builder $query) {
             $query->where('code', 'REN');
-        })->with(['tasks' => function (HasMany $query) {
+        })->with(['tasks' => function (Relation $query) {
             $query->where('code', 'REN');
         }, 'info:code,name', 'tasks.info:code,name'])->get();
         $is_renewals = 1;
@@ -1026,7 +1028,7 @@ class MatterController extends Controller
                     $query->where('dead', 1);
                     break;
                 case 'pending':
-                    $query->whereHas('status', function ($q) {
+                    $query->whereHas('events', function ($q) {
                         $q->where('code', 'Pending');
                     });
                     break;
@@ -1050,12 +1052,12 @@ class MatterController extends Controller
             ->get();
 
         return response()->json([
-            'data' => $matters->map(function ($matter) {
+            'data' => $matters->map(function (Matter $matter) {
                 return [
                     'id' => $matter->id,
                     'uid' => $matter->uid,
-                    'title' => $matter->title,
-                    'category' => $matter->category?->category ?? $matter->category_code,
+                    'title' => $matter->getAttribute('title'),
+                    'category' => $matter->category->category ?? $matter->category_code,
                     'status' => $matter->dead ? 'inactive' : 'active',
                     'client' => [
                         'name' => $matter->actors->where('role_code', 'CLI')->first()?->name,

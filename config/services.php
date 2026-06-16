@@ -57,4 +57,9 @@ return [
         'client_secret' => env('TEAMLEADER_CLIENT_SECRET'),
     ],
 
+    'ops' => [
+        'app_key' => env('OPS_APP_KEY'),
+        'secret' => env('OPS_SECRET'),
+    ],
+
 ];

@@ -34,7 +34,7 @@ class ClassifierFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'type_code' => 'TIT',
-            'value' => $this->faker->catchPhrase,
+            'value' => $this->faker->sentence(),
         ]);
     }
 
@@ -45,7 +45,7 @@ class ClassifierFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'type_code' => 'TITOF',
-            'value' => $this->faker->catchPhrase,
+            'value' => $this->faker->sentence(),
         ]);
     }
 

@@ -86,6 +86,7 @@ class ContactHandler
         ];
 
         $reference = TeamleaderReference::where('teamleader_id', $teamleaderId)->first();
+        /** @var \App\Models\Actor|null $actor */
         $actor = $reference?->actor;
 
         if (!$actor) {
@@ -137,8 +138,10 @@ class ContactHandler
                 }
 
                 if ($companyReference && $companyReference->actor) {
+                    /** @var \App\Models\Actor $companyActor */
+                    $companyActor = $companyReference->actor;
                     $actor->function = $entry['position'] ?? null;
-                    $actor->company_id = $companyReference->actor->id;
+                    $actor->company_id = $companyActor->id;
                     $actor->save();
                 }
             }
@@ -182,7 +185,7 @@ class ContactHandler
 
                 if ($waitSeconds > 0 && $waitSeconds < 120) {
                     Log::info("TeamLeader: Rate limited, waiting {$waitSeconds} seconds");
-                    sleep($waitSeconds);
+                    sleep((int) $waitSeconds);
                 }
 
                 $service->refreshAccessToken();

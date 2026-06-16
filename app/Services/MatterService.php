@@ -152,8 +152,10 @@ class MatterService implements MatterServiceInterface
         }
 
         // Clone actors with their pivot data
-        foreach ($original->actors as $actor) {
-            $clone->actors()->attach($actor->id, $actor->pivot->toArray());
+        foreach ($original->actorPivot as $actorLink) {
+            $newActorLink = $actorLink->replicate();
+            $newActorLink->matter_id = $clone->id;
+            $newActorLink->save();
         }
     }
 }

@@ -47,13 +47,9 @@ class DatePickerService implements DatePickerServiceInterface
                 return $isoDate->format(self::DISPLAY_FORMAT);
             }
 
-            if (is_string($isoDate)) {
-                $carbon = $this->dateService->parseIso($isoDate);
+            $carbon = $this->dateService->parseIso($isoDate);
 
-                return $carbon ? $carbon->format(self::DISPLAY_FORMAT) : null;
-            }
-
-            return null;
+            return $carbon ? $carbon->format(self::DISPLAY_FORMAT) : null;
         } catch (\Exception $e) {
             return null;
         }

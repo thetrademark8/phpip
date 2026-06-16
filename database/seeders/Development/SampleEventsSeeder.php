@@ -55,7 +55,7 @@ class SampleEventsSeeder extends Seeder
         // Priority claim for national phases
         if ($matter->parent_id && $matter->type_code === 'NAT') {
             $parentFiling = $matter->parent->filing;
-            if ($parentFiling) {
+            if ($parentFiling->event_date) {
                 Event::factory()->create([
                     'matter_id' => $matter->id,
                     'code' => 'PRI',
@@ -110,6 +110,7 @@ class SampleEventsSeeder extends Seeder
         $baseDate = Carbon::now()->subMonths(rand(6, 24));
 
         // Filing
+        /** @var Event $filing */
         $filing = Event::factory()->filing()->create([
             'matter_id' => $matter->id,
             'event_date' => $baseDate->format('Y-m-d'),
@@ -156,6 +157,7 @@ class SampleEventsSeeder extends Seeder
         $baseDate = Carbon::now()->subMonths(rand(6, 18));
 
         // Filing
+        /** @var Event $filing */
         $filing = Event::factory()->filing()->create([
             'matter_id' => $matter->id,
             'event_date' => $baseDate->format('Y-m-d'),
@@ -188,7 +190,7 @@ class SampleEventsSeeder extends Seeder
             case 'EP':
                 return substr($year, -2) . $number;
             case 'WO':
-                return $year . '/' . str_pad(rand(1, 99999), 6, '0', STR_PAD_LEFT);
+                return $year . '/' . str_pad((string) rand(1, 99999), 6, '0', STR_PAD_LEFT);
             default:
                 return $year . '-' . $number;
         }
@@ -204,7 +206,7 @@ class SampleEventsSeeder extends Seeder
 
         switch ($country) {
             case 'EM':
-                return str_pad($number * 100 + rand(10, 99), 9, '0', STR_PAD_LEFT);
+                return str_pad((string) ($number * 100 + rand(10, 99)), 9, '0', STR_PAD_LEFT);
             case 'US':
                 return rand(86, 90) . '/' . rand(100000, 999999);
             default:

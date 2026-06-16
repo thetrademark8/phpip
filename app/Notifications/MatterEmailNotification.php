@@ -89,7 +89,7 @@ class MatterEmailNotification extends Notification implements ShouldQueue
             foreach ($attachments as $attachment) {
                 $contents = Storage::disk($attachment->disk)->get($attachment->path);
 
-                if ($contents !== null && $contents !== false) {
+                if ($contents !== null) {
                     $message->attachData(
                         $contents,
                         $attachment->original_name,

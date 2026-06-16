@@ -3,9 +3,31 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id
+ * @property ?string $name
+ * @property ?string $login
+ * @property ?string $password
+ * @property ?string $default_role
+ * @property ?int $company_id
+ * @property ?string $email
+ * @property ?string $phone
+ * @property ?string $notes
+ * @property ?string $creator
+ * @property ?string $updater
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?string $remember_token
+ * @property-read \App\Models\Role|null $roleInfo
+ * @property-read \App\Models\Actor|null $company
+ * @property-read \App\Models\Actor|null $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Matter> $matters
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -21,22 +43,34 @@ class User extends Authenticatable
         'warn' => 'boolean',
     ];
 
-    public function roleInfo()
+    /**
+     * @return BelongsTo<Role, $this>
+     */
+    public function roleInfo(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'default_role');
     }
 
-    public function company()
+    /**
+     * @return BelongsTo<Actor, $this>
+     */
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Actor::class, 'company_id');
     }
 
-    public function parent()
+    /**
+     * @return BelongsTo<Actor, $this>
+     */
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Actor::class, 'parent_id');
     }
 
-    public function matters()
+    /**
+     * @return HasMany<Matter, $this>
+     */
+    public function matters(): HasMany
     {
         return $this->hasMany(Matter::class, 'responsible', 'login');
     }

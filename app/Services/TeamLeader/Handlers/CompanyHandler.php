@@ -82,6 +82,7 @@ class CompanyHandler
         ];
 
         $reference = TeamleaderReference::where('teamleader_id', $teamleaderId)->first();
+        /** @var \App\Models\Actor|null $actor */
         $actor = $reference?->actor;
 
         if (!$actor) {

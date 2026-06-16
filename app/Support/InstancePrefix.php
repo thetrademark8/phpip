@@ -6,14 +6,19 @@ use Illuminate\Support\Str;
 
 class InstancePrefix
 {
-    public static function resolve(): ?string
+    /**
+     * Resolve the storage prefix for the current instance.
+     *
+     * Values are passed in from the configuration files so that no
+     * environment variable is read outside of the config directory.
+     */
+    public static function resolve(?string $explicit = null, ?string $appUrl = null): ?string
     {
-        $explicit = env('AWS_BUCKET_PREFIX');
         if ($explicit) {
             return trim($explicit, '/');
         }
 
-        $host = parse_url((string) env('APP_URL'), PHP_URL_HOST);
+        $host = parse_url((string) $appUrl, PHP_URL_HOST);
 
         return $host ? Str::slug($host) : null;
     }

@@ -5,10 +5,99 @@ namespace App\Models;
 use App\Traits\HasActorsFromRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property int $id
+ * @property ?string $category_code
+ * @property ?string $caseref
+ * @property ?string $country
+ * @property ?string $origin
+ * @property ?string $type_code
+ * @property ?int $idx
+ * @property ?string $suffix
+ * @property ?string $uid
+ * @property ?int $parent_id
+ * @property ?int $container_id
+ * @property ?string $responsible
+ * @property bool $dead
+ * @property ?string $notes
+ * @property ?\Illuminate\Support\Carbon $expire_date
+ * @property ?int $term_adjust
+ * @property ?string $alt_ref
+ * @property ?string $creator
+ * @property ?string $updater
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property-read string $applicant_name
+ * @property-read string $owner_name
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Matter> $family
+ * @property-read \App\Models\Matter $container
+ * @property-read \App\Models\Matter $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Matter> $children
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Matter> $priorityTo
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterActors> $actors
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ActorPivot> $actorPivot
+ * @property-read \App\Models\MatterActors $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterActors> $delegate
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterActors> $contact
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterActors> $applicants
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterActors> $owners
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterActors> $inventors
+ * @property-read \App\Models\Actor|null $responsibleActor
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Event> $events
+ * @property-read \App\Models\Event $filing
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Event> $parentFiling
+ * @property-read \App\Models\Event $publication
+ * @property-read \App\Models\Event $grant
+ * @property-read \App\Models\Event $registration
+ * @property-read \App\Models\Event $entered
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Event> $priority
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventLnkList> $prioritiesFromView
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasksPending
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasksDone
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $renewalsPending
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterClassifiers> $classifiers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Classifier> $classifiersNative
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterClassifiers> $titles
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Matter> $linkedBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterAttachment> $attachments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EmailLog> $emailLogs
+ * @property-read \App\Models\Country|null $countryInfo
+ * @property-read \App\Models\Country $originInfo
+ * @property-read \App\Models\Category|null $category
+ * @property-read \App\Models\MatterType $type
+ * @property-read ?string $Ref
+ * @property-read ?string $country_name
+ * @property-read ?string $Cat
+ * @property-read ?string $Status
+ * @property-read ?string $Status_date
+ * @property-read ?string $Client
+ * @property-read ?string $ClRef
+ * @property-read ?string $Applicant
+ * @property-read ?string $Owner
+ * @property-read ?string $Agent
+ * @property-read ?string $Title
+ * @property-read ?string $Title2
+ * @property-read ?string $Title3
+ * @property-read ?string $Filed
+ * @property-read ?string $FilNo
+ * @property-read ?string $Published
+ * @property-read ?string $PubNo
+ * @property-read ?string $registration_date
+ * @property-read ?string $registration_number
+ * @property-read ?string $classes
+ * @property-read ?string $renewal_due
+ * @property-read ?int $Ctnr
+ * @property-read ?string $Alt_Ref
+ */
 class Matter extends Model
 {
     use HasActorsFromRole, HasFactory;
@@ -23,6 +112,9 @@ class Matter extends Model
         'expire_date' => 'date:Y-m-d'
     ];*/
 
+    /**
+     * @return HasMany<Matter, $this>
+     */
     public function family()
     {
         // Gets family members
@@ -33,16 +125,25 @@ class Matter extends Model
             ->orderBy('idx');
     }
 
+    /**
+     * @return BelongsTo<Matter, $this>
+     */
     public function container()
     {
         return $this->belongsTo(Matter::class, 'container_id')->withDefault();
     }
 
+    /**
+     * @return BelongsTo<Matter, $this>
+     */
     public function parent()
     {
         return $this->belongsTo(Matter::class, 'parent_id')->withDefault();
     }
 
+    /**
+     * @return HasMany<Matter, $this>
+     */
     public function children()
     {
         return $this->hasMany(Matter::class, 'parent_id')
@@ -52,6 +153,9 @@ class Matter extends Model
             ->orderBy('idx');
     }
 
+    /**
+     * @return BelongsToMany<Matter, $this>
+     */
     public function priorityTo()
     {
         // Gets external matters claiming priority on this one (where clause is ignored by eager loading)
@@ -64,6 +168,9 @@ class Matter extends Model
             ->orderBy('idx');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MatterActors, $this>
+     */
     public function actors(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         // MatterActors refers to a view that also includes the actors inherited from the container. Can only be used to display data
@@ -75,11 +182,17 @@ class Matter extends Model
      * It doesn't replace the belongs to many relation, but allow us to return a relation with only one item instead of an Actor
      * By doing that, we can eager-load the relation
      */
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<ActorPivot, $this>
+     */
     public function actorPivot(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ActorPivot::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<MatterActors, $this>
+     */
     public function client()
     {
         // Used in Policies - do not change without checking MatterPolicy
@@ -89,8 +202,6 @@ class Matter extends Model
     /**
      * We check for the client using our pivot table.
      * We use the HasActorsFromRole trait to avoid repeating the same code
-     *
-     * @return \App\Models\Actor|null
      */
     public function clientFromLnk(): ?MatterActors
     {
@@ -100,24 +211,31 @@ class Matter extends Model
     /**
      * We check for the payor using our pivot table.
      * We use the HasActorsFromRole trait to avoid repeating the same code
-     *
-     * @return \App\Models\Actor|null
      */
     public function payor(): ?MatterActors
     {
         return $this->getActorFromRole('PAY');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MatterActors, $this>
+     */
     public function delegate()
     {
         return $this->actors()->whereRoleCode('DEL');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MatterActors, $this>
+     */
     public function contact()
     {
         return $this->actors()->whereRoleCode('CNT');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MatterActors, $this>
+     */
     public function applicants()
     {
         return $this->actors()->whereRoleCode('APP');
@@ -169,6 +287,9 @@ class Matter extends Model
         return implode('; ', $names);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MatterActors, $this>
+     */
     public function inventors()
     {
         return $this->hasMany(MatterActors::class)
@@ -178,8 +299,6 @@ class Matter extends Model
     /**
      * We check for the agent using our pivot table. Also known as Primary Agent
      * We use the HasActorsFromRole trait to avoid repeating the same code
-     *
-     * @return \App\Models\Actor|null
      */
     public function agent(): ?MatterActors
     {
@@ -189,8 +308,6 @@ class Matter extends Model
     /**
      * We check for the secondary agent using our pivot table.
      * We use the HasActorsFromRole trait to avoid repeating the same code
-     *
-     * @return \App\Models\Actor|null
      */
     public function secondaryAgent(): ?MatterActors
     {
@@ -200,8 +317,6 @@ class Matter extends Model
     /**
      * We check for the writer using our pivot table.
      * We use the HasActorsFromRole trait to avoid repeating the same code
-     *
-     * @return \App\Models\Actor|null
      */
     public function writer(): ?MatterActors
     {
@@ -211,8 +326,6 @@ class Matter extends Model
     /**
      * Here, we check for the annuityAgent using our pivot table
      * We use the HasActorsFromRole trait to avoid repeating the same code
-     *
-     * @return \App\Models\Actor|null
      */
     public function annuityAgent(): ?MatterActors
     {
@@ -223,59 +336,89 @@ class Matter extends Model
      * Get the responsible actor for the matter.
      * We must name the method "responsibleActor" to avoid conflicts with the "responsible" attribute.
      */
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Actor, $this>
+     */
     public function responsibleActor(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Actor::class, 'login', 'responsible');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Event, $this>
+     */
     public function events()
     {
         return $this->hasMany(Event::class)
             ->orderBy('event_date');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Event, $this>
+     */
     public function filing()
     {
         return $this->hasOne(Event::class)
             ->whereCode('FIL')->withDefault();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Event, $this>
+     */
     public function parentFiling()
     {
         return $this->hasMany(Event::class)
-            ->whereCode('PFIL')->withDefault();
+            ->whereCode('PFIL');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Event, $this>
+     */
     public function publication()
     {
         return $this->hasOne(Event::class)
             ->whereCode('PUB')->withDefault();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Event, $this>
+     */
     public function grant()
     {
         return $this->hasOne(Event::class)
             ->whereIn('code', ['GRT', 'REG', 'REGDM'])->withDefault();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Event, $this>
+     */
     public function registration()
     {
         return $this->hasOne(Event::class)
             ->whereIn('code', ['REG', 'REGDM'])->withDefault();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<Event, $this>
+     */
     public function entered()
     {
         return $this->hasOne(Event::class)
             ->whereCode('ENT')->withDefault();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Event, $this>
+     */
     public function priority()
     {
         return $this->hasMany(Event::class)
             ->whereCode('PRI');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<EventLnkList, $this>
+     */
     public function prioritiesFromView()
     {
         return $this->hasMany(EventLnkList::class, 'matter_id', 'id')
@@ -283,12 +426,18 @@ class Matter extends Model
     }
 
     // All tasks, including renewals and done
+    /**
+     * @return HasManyThrough<Task, Event, $this>
+     */
     public function tasks()
     {
         return $this->hasManyThrough(Task::class, Event::class, 'matter_id', 'trigger_id', 'id');
     }
 
     // Pending excluding renewals
+    /**
+     * @return HasManyThrough<Task, Event, $this>
+     */
     public function tasksPending()
     {
         return $this->tasks()
@@ -298,6 +447,9 @@ class Matter extends Model
     }
 
     // Completed tasks excluding renewals
+    /**
+     * @return HasManyThrough<Task, Event, $this>
+     */
     public function tasksDone()
     {
         return $this->tasks()
@@ -307,6 +459,9 @@ class Matter extends Model
     }
 
     // Pending renewals
+    /**
+     * @return HasManyThrough<Task, Event, $this>
+     */
     public function renewalsPending()
     {
         return $this->tasks()
@@ -316,6 +471,9 @@ class Matter extends Model
     }
 
     // Returns all classifiers outside the "main display", including those inherited from the container (MatterClassifiers is a model referring to db view matter_classifiers)
+    /**
+     * @return HasMany<MatterClassifiers, $this>
+     */
     public function classifiers()
     {
         return $this->hasMany(MatterClassifiers::class)
@@ -323,48 +481,75 @@ class Matter extends Model
     }
 
     // Returns the classifiers native to the matter (only applies to a container, normally)
+    /**
+     * @return HasMany<Classifier, $this>
+     */
     public function classifiersNative()
     {
         return $this->hasMany(Classifier::class);
     }
 
     // Returns all classifiers of the "main display", including those inherited from the container (MatterClassifiers is a model referring to db view matter_classifiers)
+    /**
+     * @return HasMany<MatterClassifiers, $this>
+     */
     public function titles()
     {
         return $this->hasMany(MatterClassifiers::class)
             ->whereMainDisplay(1);
     }
 
+    /**
+     * @return BelongsToMany<Matter, $this>
+     */
     public function linkedBy()
     {
         return $this->belongsToMany(Matter::class, 'classifier', 'lnk_matter_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MatterAttachment, $this>
+     */
     public function attachments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(MatterAttachment::class)->orderBy('created_at', 'desc');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<EmailLog, $this>
+     */
     public function emailLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(EmailLog::class)->orderBy('created_at', 'desc');
     }
 
+    /**
+     * @return BelongsTo<Country, $this>
+     */
     public function countryInfo()
     {
         return $this->belongsTo(Country::class, 'country');
     }
 
+    /**
+     * @return BelongsTo<Country, $this>
+     */
     public function originInfo()
     {
         return $this->belongsTo(Country::class, 'origin')->withDefault();
     }
 
+    /**
+     * @return BelongsTo<Category, $this>
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * @return BelongsTo<MatterType, $this>
+     */
     public function type()
     {
         return $this->belongsTo(MatterType::class)->withDefault();
@@ -764,8 +949,8 @@ class Matter extends Model
         // $matter = Matter::find($id);
         $filed_date = Carbon::parse($this->filing->event_date);
         // "grant" includes registration (for trademarks)
-        $granted_date = Carbon::parse($this->grant->event_date);
-        $published_date = Carbon::parse($this->publication->event_date);
+        $granted_date = $this->grant->event_date ? Carbon::parse($this->grant->event_date) : null;
+        $published_date = $this->publication->event_date ? Carbon::parse($this->publication->event_date) : null;
         $title = $this->titles->where('type_code', 'TITOF')->first()->value
             ?? $this->titles->first()->value
             ?? '';
@@ -861,8 +1046,8 @@ class Matter extends Model
             $payor?->actor?->address,
             $payor?->actor?->country,
             $client?->name,
-            $client?->actor?->address_billing ?? $client?->actor?->address,
-            $client?->actor?->country_billing ?? $client?->actor?->country,
+            $client?->actor->address_billing ?? $client?->actor->address,
+            $client?->actor->country_billing ?? $client?->actor->country,
         ])->filter()->unique();
 
         // Concatenate the address parts into a single string separated by newline characters.

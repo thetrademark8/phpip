@@ -26,4 +26,11 @@ interface RenewalQueryServiceInterface
      * Apply sorting to the query
      */
     public function applySorting(Builder $query, ?int $step, ?int $invoiceStep): Builder;
+
+    /**
+     * Get aggregate statistics for renewals
+     *
+     * @return array<string, mixed>
+     */
+    public function getRenewalStats(): array;
 }

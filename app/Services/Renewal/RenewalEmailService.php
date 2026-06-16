@@ -13,7 +13,6 @@ use App\Notifications\Renewal\RenewalLastCallNotification;
 use App\Notifications\Renewal\RenewalReminderCallNotification;
 use App\Notifications\Renewal\RenewalReportNotification;
 use App\Repositories\Contracts\ActorRepositoryInterface;
-use App\Repositories\Contracts\MatterRepositoryInterface;
 use App\Repositories\Contracts\RenewalRepositoryInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -29,8 +28,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
 
     public function __construct(
         private RenewalRepositoryInterface $renewalRepository,
-        private ActorRepositoryInterface $actorRepository,
-        private MatterRepositoryInterface $matterRepository
+        private ActorRepositoryInterface $actorRepository
     ) {}
 
     public function sendFirstCall(array $ids, bool $preview = false): ActionResultDTO
@@ -246,7 +244,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             // Prepare email data
             $emailData = $this->prepareCallData($clientRenewals, $clientData, $gracePeriod, $notifyType);
 
-            if ($send && $clientData['email']) {
+            if ($send) {
                 // Send notification only if we have an email
                 $client = Actor::find((int) $clientId);
                 if ($client) {
@@ -369,9 +367,9 @@ class RenewalEmailService implements RenewalEmailServiceInterface
             'name' => $client->name,
             'email' => $client->email,
             'invoice_email' => $invoiceAddress['email'] ?? $client->email,
-            'ref' => $client->ref,
+            'ref' => null,
             'address' => $invoiceAddress ?? $client->address,
-            'vat_number' => $client->vat_number,
+            'vat_number' => $client->VAT_number,
         ];
     }
 
@@ -415,7 +413,7 @@ class RenewalEmailService implements RenewalEmailServiceInterface
         return sprintf(
             '%s-%s-%s',
             date('Y'),
-            str_pad($renewal->id, 6, '0', STR_PAD_LEFT),
+            str_pad((string) $renewal->id, 6, '0', STR_PAD_LEFT),
             $renewal->caseref
         );
     }

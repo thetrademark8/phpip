@@ -287,14 +287,10 @@ class TranslatedAttributesSeeder extends Seeder
             1328 => ['en' => 'CompuMark Analysis', 'fr' => 'Analyse CompuMark', 'de' => 'CompuMark Analyse'],
             1329 => ['en' => 'Products & Services', 'fr' => 'Produits & Services', 'de' => 'Produkte & Dienstleistungen'],
         ];
-        // Filter out any null detail values that might have slipped in, if desired
-        $taskRuleDetails = array_filter($taskRuleDetails, fn ($detailArray) => isset($detailArray['en']) && $detailArray['en'] !== null);
+        // Filter out any entries missing an English value, if desired
+        $taskRuleDetails = array_filter($taskRuleDetails, fn ($detailArray) => isset($detailArray['en']));
 
-        if (!empty($taskRuleDetails)) {
-            $this->updateTable('task_rules', 'id', 'detail', $taskRuleDetails); // Uses 'id' as key
-        } else {
-            Log::info('No translatable details configured for task_rules. Skipping update for this table.');
-        }
+        $this->updateTable('task_rules', 'id', 'detail', $taskRuleDetails); // Uses 'id' as key
 
         Log::info('TranslatedAttributesSeeder finished.');
     }
