@@ -700,25 +700,25 @@ parameters:
 			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
 			identifier: property.notFound
 			count: 2
-			path: app/Mail/sendCall.php
+			path: app/Mail/SendCall.php
 
 		-
-			message: '#^PHPDoc type mixed of property App\\Mail\\sendCall\:\:\$subject is not covariant with PHPDoc type string of overridden property Illuminate\\Mail\\Mailable\:\:\$subject\.$#'
+			message: '#^PHPDoc type mixed of property App\\Mail\\SendCall\:\:\$subject is not covariant with PHPDoc type string of overridden property Illuminate\\Mail\\Mailable\:\:\$subject\.$#'
 			identifier: property.phpDocType
 			count: 1
-			path: app/Mail/sendCall.php
+			path: app/Mail/SendCall.php
 
 		-
 			message: '#^Relation ''class'' is not found in App\\Models\\TemplateMember model\.$#'
 			identifier: larastan.relationExistence
 			count: 1
-			path: app/Mail/sendCall.php
+			path: app/Mail/SendCall.php
 
 		-
 			message: '#^Variable \$template might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: app/Mail/sendCall.php
+			path: app/Mail/SendCall.php
 
 		-
 			message: '#^PHPDoc type array of property App\\Models\\Actor\:\:\$casts is not covariant with PHPDoc type array\<string, string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$casts\.$#'
