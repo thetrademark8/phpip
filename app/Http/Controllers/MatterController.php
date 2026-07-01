@@ -845,6 +845,18 @@ class MatterController extends Controller
         Gate::authorize('readwrite');
 
         $uid = $matter->uid;
+
+        // The parent_id and container_id foreign keys use ON DELETE RESTRICT, so
+        // deleting a matter still referenced by other matters raises a database
+        // error (Sentry PHPIP-THETRADEMARK8-G). Check these links first and return
+        // a friendly message instead of letting the query fail with a 500.
+        $linkedCount = $matter->children()->count()
+            + Matter::where('container_id', $matter->id)->count();
+
+        if ($linkedCount > 0) {
+            return to_route('matter.index')->with('error', __('Cannot delete matter :uid because other matters still depend on it (child or contained matters). Please reassign or delete them first.', ['uid' => $uid]));
+        }
+
         $matter->delete();
 
         return to_route('matter.index')->with('success', __('Matter :uid deleted successfully', ['uid' => $uid]));

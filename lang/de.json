@@ -205,6 +205,7 @@
   "Delete Matter": "Akte löschen",
   "Are you sure you want to delete matter {uid}? This action cannot be undone and will delete all associated events, tasks, and documents.": "Sind Sie sicher, dass Sie die Akte {uid} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden und löscht alle zugehörigen Ereignisse, Aufgaben und Dokumente.",
   "Matter :uid deleted successfully": "Akte :uid wurde erfolgreich gelöscht",
+  "Cannot delete matter :uid because other matters still depend on it (child or contained matters). Please reassign or delete them first.": "Die Akte :uid kann nicht gelöscht werden, da andere Akten noch von ihr abhängen (untergeordnete oder zugeordnete Akten). Bitte weisen Sie diese zuerst neu zu oder löschen Sie sie.",
   "Create matter": "Akte erstellen",
   "Count": "Anzahl",
   "New": "Neu",
