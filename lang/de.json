@@ -663,6 +663,8 @@
   "Add Classifier": "Klassifikator hinzufügen",
   "Enter value": "Wert eingeben",
   "Image": "Bild",
+  "The image may not be larger than 8 MB.": "Das Bild darf nicht größer als 8 MB sein.",
+  "The image could not be uploaded.": "Das Bild konnte nicht hochgeladen werden.",
   "Linked Matter": "Verknüpfte Akte",
   "Enter linked matter ID": "Verknüpfte Akten-ID eingeben",
   "Display Order": "Anzeigereihenfolge",
