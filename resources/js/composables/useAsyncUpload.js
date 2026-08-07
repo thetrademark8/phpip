@@ -1,6 +1,12 @@
 import { ref } from 'vue'
 import axios from 'axios'
 
+// Reads the CSRF token from the meta tag (Laravel's default location).
+// bootstrap.js has the global axios setup commented out, so we attach the
+// token explicitly here to each upload request.
+const csrfToken = () =>
+  document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? ''
+
 /**
  * Composable for handling async file uploads with proper progress tracking
  * Fixes the bug where uploading flag was set to false immediately
@@ -32,6 +38,16 @@ export function useAsyncUpload(matterId) {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+            // Tell Laravel we expect a JSON response. Without this, an
+            // unauthenticated/expired session returns a 302 redirect to the
+            // login page (which the browser follows), instead of a JSON 401.
+            'Accept': 'application/json',
+            // Mark the request as AJAX so Laravel's auth middleware returns
+            // JSON instead of a full-page redirect.
+            'X-Requested-With': 'XMLHttpRequest',
+            // CSRF token is required for POST requests. bootstrap.js has the
+            // global setup commented out, so send it explicitly.
+            'X-CSRF-TOKEN': csrfToken(),
           },
           onUploadProgress: (progressEvent) => {
             if (progressEvent.total) {
