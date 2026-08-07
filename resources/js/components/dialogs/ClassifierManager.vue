@@ -58,7 +58,7 @@
                   v-if="isImageType"
                   :label="$t('Image')"
                   name="image"
-                  :error="addForm.errors.image"
+                  :error="imageError || addForm.errors.image"
                   required
                 >
                   <Input
@@ -270,6 +270,10 @@ const editingClassifierId = ref(null)
 const selectedType = ref(null)
 const isImageType = ref(false)
 const showLinkedMatter = ref(false)
+const imageError = ref('')
+
+// Keep in sync with the backend validation cap (ClassifierController@store: max:8192 KB).
+const MAX_IMAGE_SIZE = 8 * 1024 * 1024
 
 // Compute the correct matter_id (use container if exists, otherwise use matter itself)
 const targetMatterId = computed(() => props.matter.container_id ?? props.matter.id)
@@ -319,34 +323,53 @@ function handleTypeSelect(typeCode) {
   selectedType.value = type
   isImageType.value = typeCode === 'IMG'
   showLinkedMatter.value = typeCode === 'LINK'
+  imageError.value = ''
 }
 
 function handleImageSelect(event) {
+  imageError.value = ''
   const file = event.target.files[0]
   if (file) {
+    if (file.size > MAX_IMAGE_SIZE) {
+      addForm.image = null
+      event.target.value = ''
+      imageError.value = t('The image may not be larger than 8 MB.')
+      return
+    }
     addForm.image = file
   }
 }
 
 function handleAddClassifier() {
   if (isImageType.value && addForm.image) {
+    // Guard client-side so an oversized file shows a clear message instead of
+    // being rejected server-side and bouncing the user to the login page.
+    if (addForm.image.size > MAX_IMAGE_SIZE) {
+      imageError.value = t('The image may not be larger than 8 MB.')
+      return
+    }
+
     // For image upload, use FormData
     const formData = new FormData()
     formData.append('matter_id', addForm.matter_id)
     formData.append('type_code', addForm.type_code)
     formData.append('image', addForm.image)
     formData.append('display_order', addForm.display_order)
-    
+
     router.post(route('matter.classifiers.store', {
       matter: props.matter.id,
     }), formData, {
       forceFormData: true,
       onSuccess: () => {
+        imageError.value = ''
         addForm.reset()
         selectedType.value = null
         isImageType.value = false
         showLinkedMatter.value = false
         emit('success')
+      },
+      onError: (errors) => {
+        imageError.value = errors.image || t('The image could not be uploaded.')
       }
     })
   } else {

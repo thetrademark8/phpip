@@ -663,6 +663,8 @@
   "Add Classifier": "Add Classifier",
   "Enter value": "Enter value",
   "Image": "Image",
+  "The image may not be larger than 8 MB.": "The image may not be larger than 8 MB.",
+  "The image could not be uploaded.": "The image could not be uploaded.",
   "Linked Matter": "Linked Matter",
   "Enter linked matter ID": "Enter linked matter ID",
   "Display Order": "Display Order",

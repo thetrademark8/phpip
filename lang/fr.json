@@ -662,6 +662,8 @@
   "Add Classifier": "Ajouter un attribut",
   "Enter value": "Saisir la valeur",
   "Image": "Image",
+  "The image may not be larger than 8 MB.": "L'image ne doit pas dépasser 8 Mo.",
+  "The image could not be uploaded.": "L'image n'a pas pu être téléversée.",
   "Linked Matter": "Dossier lié",
   "Enter linked matter ID": "Saisir l'ID du dossier lié",
   "Display Order": "Ordre d'affichage",

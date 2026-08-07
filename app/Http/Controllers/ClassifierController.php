@@ -52,7 +52,10 @@ class ClassifierController extends Controller
                         ->where('type_code', $request->input('type_code'))
                     ),
             ],
-            'image' => 'image|nullable|max:1024|required_if:type_code,IMG',
+            // Trademark logos (especially PNG) routinely exceed 1 MB, which
+            // previously triggered a rejected upload surfaced as a login redirect.
+            // The `img` column is a MEDIUMBLOB (16 MB), so 8 MB is a safe cap.
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:8192|required_if:type_code,IMG',
         ], [
             'lnk_matter_id.unique' => __('A classifier linked to this matter already exists for this type.'),
         ]);
