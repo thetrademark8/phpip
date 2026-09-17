@@ -42,14 +42,14 @@ class RenewalExportService implements RenewalExportServiceInterface
                 $item->addChild('due_date', $renewal->due_date);
 
                 $feeDTO = $this->feeCalculator->calculate(RenewalDTO::fromModel($renewal));
-                $item->addChild('cost', $feeDTO->cost);
-                $item->addChild('fee', $feeDTO->fee);
-                $item->addChild('total', $feeDTO->total);
+                $item->addChild('cost', (string) $feeDTO->cost);
+                $item->addChild('fee', (string) $feeDTO->fee);
+                $item->addChild('total', (string) $feeDTO->total);
 
                 $total += $feeDTO->total;
             }
 
-            $payment->addChild('total_amount', $total);
+            $payment->addChild('total_amount', (string) $total);
         }
 
         return $xml->asXML();
@@ -125,14 +125,14 @@ class RenewalExportService implements RenewalExportServiceInterface
                 $renewalDTO = RenewalDTO::fromModel($renewal);
                 $feeDTO = $this->feeCalculator->calculate($renewalDTO);
 
-                $item->addChild('cost', $feeDTO->cost);
-                $item->addChild('fee', $feeDTO->fee);
-                $item->addChild('total', $feeDTO->total);
+                $item->addChild('cost', (string) $feeDTO->cost);
+                $item->addChild('fee', (string) $feeDTO->fee);
+                $item->addChild('total', (string) $feeDTO->total);
 
                 $total += $feeDTO->total;
             }
 
-            $payment->addChild('total_amount', $total);
+            $payment->addChild('total_amount', (string) $total);
         }
 
         if ($markAsDone) {

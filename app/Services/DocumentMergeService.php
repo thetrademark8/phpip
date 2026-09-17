@@ -82,17 +82,17 @@ class DocumentMergeService
             'Billing_Address' => $this->matter->getBillingAddress(),
             'Client_Ref' => $this->matter->client->actor_ref,
             'Email' => $this->matter->client->email,
-            'VAT' => $this->matter->client->VAT_number,
+            'VAT' => $this->matter->client->actor?->VAT_number,
             'Official_Title' => $this->matter->titles->where('type_code', 'TITOF')
                 ->first()
-                ?->value ??
-                $this->matter->titles->where('type_code', 'TIT')
+                ->value
+                ?? $this->matter->titles->where('type_code', 'TIT')
                     ->first()
                     ?->value,
             'English_Title' => $this->matter->titles->where('type_code', 'TITEN')
                 ->first()
-                ?->value ??
-                $this->matter->titles->where('type_code', 'TITOF')
+                ->value
+                ?? $this->matter->titles->where('type_code', 'TITOF')
                     ->first()
                     ?->value,
             'Title' => $this->matter->titles->where('type_code', 'TIT')

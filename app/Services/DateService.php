@@ -106,23 +106,23 @@ class DateService implements DateServiceInterface
 
             // If first part > 12, it must be day (European format)
             if ($part1 > 12) {
-                $day = str_pad($part1, 2, '0', STR_PAD_LEFT);
-                $month = str_pad($part2, 2, '0', STR_PAD_LEFT);
+                $day = str_pad((string) $part1, 2, '0', STR_PAD_LEFT);
+                $month = str_pad((string) $part2, 2, '0', STR_PAD_LEFT);
 
                 return "$year-$month-$day";
             }
 
             // If second part > 12, it must be day (American format)
             if ($part2 > 12) {
-                $month = str_pad($part1, 2, '0', STR_PAD_LEFT);
-                $day = str_pad($part2, 2, '0', STR_PAD_LEFT);
+                $month = str_pad((string) $part1, 2, '0', STR_PAD_LEFT);
+                $day = str_pad((string) $part2, 2, '0', STR_PAD_LEFT);
 
                 return "$year-$month-$day";
             }
 
             // For ambiguous dates, prefer European format (d/m/Y) as per project locale
-            $day = str_pad($part1, 2, '0', STR_PAD_LEFT);
-            $month = str_pad($part2, 2, '0', STR_PAD_LEFT);
+            $day = str_pad((string) $part1, 2, '0', STR_PAD_LEFT);
+            $month = str_pad((string) $part2, 2, '0', STR_PAD_LEFT);
 
             // Validate the date
             if (checkdate((int) $month, (int) $day, (int) $year)) {

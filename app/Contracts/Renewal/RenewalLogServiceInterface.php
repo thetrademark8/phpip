@@ -2,10 +2,18 @@
 
 namespace App\Contracts\Renewal;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 interface RenewalLogServiceInterface
 {
+    /**
+     * Get paginated renewal logs, optionally filtered
+     *
+     * @param  array<string, mixed>|null  $filters
+     */
+    public function getLogs(?array $filters = null, int $perPage = 25): LengthAwarePaginator;
+
     /**
      * Log a single renewal action
      */

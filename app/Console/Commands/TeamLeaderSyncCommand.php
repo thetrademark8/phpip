@@ -250,7 +250,7 @@ class TeamLeaderSyncCommand extends Command
 
                 if ($waitSeconds > 0 && $waitSeconds < 120) {
                     $this->warn("Rate limited. Waiting {$waitSeconds} seconds...");
-                    sleep($waitSeconds);
+                    sleep((int) $waitSeconds);
                 }
 
                 $this->service->refreshAccessToken();

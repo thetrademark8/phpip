@@ -14,8 +14,8 @@ class OPSService
 
     public function authenticate(): void
     {
-        $key = env('OPS_APP_KEY');
-        $secret = env('OPS_SECRET');
+        $key = config('services.ops.app_key');
+        $secret = config('services.ops.secret');
 
         if (!$key || !$secret) {
             return;

@@ -17,6 +17,7 @@ trait HasActorsFromRole
      * with the container actors that are shared.
      *
      * @param  string  $role  The role to filter the actors by.
+     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\MatterActors>
      */
     public function getActorsFromRole(string $role): \Illuminate\Database\Eloquent\Collection
     {
@@ -36,7 +37,6 @@ trait HasActorsFromRole
      * with the container actors that are shared.
      *
      * @param  string  $role  The role to filter the relationship by.
-     * @return \App\Models\Actor|null The hasOneThrough relationship.
      */
     public function getActorFromRole(string $role): ?MatterActors
     {

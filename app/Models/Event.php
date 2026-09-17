@@ -4,7 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int $id
+ * @property ?string $code
+ * @property ?int $matter_id
+ * @property ?\Illuminate\Support\Carbon $event_date
+ * @property ?int $alt_matter_id
+ * @property ?string $detail
+ * @property ?string $notes
+ * @property ?string $creator
+ * @property ?string $updater
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property-read \App\Models\EventName|null $info
+ * @property-read \App\Models\Matter|null $matter
+ * @property-read \App\Models\Matter|null $altMatter
+ * @property-read \App\Models\Event|null $link
+ * @property-read \App\Models\Event|null $retroLink
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
+ */
 class Event extends Model
 {
     use HasFactory;
@@ -21,32 +43,50 @@ class Event extends Model
         'event_date' => 'date:Y-m-d',
     ];
 
-    public function info()
+    /**
+     * @return BelongsTo<EventName, $this>
+     */
+    public function info(): BelongsTo
     {
         return $this->belongsTo(EventName::class, 'code', 'code');
     }
 
-    public function matter()
+    /**
+     * @return BelongsTo<Matter, $this>
+     */
+    public function matter(): BelongsTo
     {
         return $this->belongsTo(Matter::class);
     }
 
-    public function altMatter()
+    /**
+     * @return BelongsTo<Matter, $this>
+     */
+    public function altMatter(): BelongsTo
     {
         return $this->belongsTo(Matter::class, 'alt_matter_id')->withDefault();
     }
 
-    public function link()
+    /**
+     * @return HasOne<Event, $this>
+     */
+    public function link(): HasOne
     {
         return $this->hasOne(Event::class, 'matter_id', 'alt_matter_id')->whereCode('FIL')->withDefault();
     }
 
-    public function retroLink()
+    /**
+     * @return BelongsTo<Event, $this>
+     */
+    public function retroLink(): BelongsTo
     {
         return $this->belongsTo(Event::class, 'matter_id', 'alt_matter_id')->withDefault();
     }
 
-    public function tasks()
+    /**
+     * @return HasMany<Task, $this>
+     */
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class, 'trigger_id')->orderBy('due_date');
     }

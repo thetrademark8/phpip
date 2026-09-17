@@ -25,19 +25,19 @@ class ActorRepository implements ActorRepositoryInterface
 
     public function getFeeStructure(int $actorId)
     {
-        $actor = Actor::with('feeStructure')->find($actorId);
+        $actor = Actor::find($actorId);
 
         if (!$actor) {
             return null;
         }
 
-        return $actor->feeStructure;
+        return $actor->ren_discount;
     }
 
     public function getByRole(string $role): Collection
     {
-        return Actor::whereHas('roles', function ($query) use ($role) {
-            $query->where('role_code', $role);
+        return Actor::whereHas('mattersWithLnk', function ($query) use ($role) {
+            $query->where('role', $role);
         })->get();
     }
 
@@ -50,12 +50,12 @@ class ActorRepository implements ActorRepositoryInterface
         }
 
         // Get matters where this actor is the agent
-        return Actor::whereHas('linkedMatters', function ($query) use ($actorId) {
+        return Actor::whereHas('mattersWithLnk', function ($query) use ($actorId) {
             $query->where('actor_id', $actorId)
-                ->where('role_code', 'AGT');
+                ->where('role', 'AGT');
         })
-            ->whereHas('linkedMatters', function ($query) {
-                $query->where('role_code', 'CLI');
+            ->whereHas('mattersWithLnk', function ($query) {
+                $query->where('role', 'CLI');
             })
             ->distinct()
             ->get();
@@ -75,11 +75,8 @@ class ActorRepository implements ActorRepositoryInterface
             if ($parent) {
                 return [
                     'email' => $parent->email,
-                    'address' => $parent->address,
-                    'address2' => $parent->address2,
-                    'city' => $parent->city,
-                    'postal_code' => $parent->postal_code,
-                    'country' => $parent->country,
+                    'address' => $parent->address_billing ?? $parent->address,
+                    'country' => $parent->country_billing ?? $parent->country,
                 ];
             }
         }
@@ -87,11 +84,8 @@ class ActorRepository implements ActorRepositoryInterface
         // Return actor's own address
         return [
             'email' => $actor->email,
-            'address' => $actor->address,
-            'address2' => $actor->address2,
-            'city' => $actor->city,
-            'postal_code' => $actor->postal_code,
-            'country' => $actor->country,
+            'address' => $actor->address_billing ?? $actor->address,
+            'country' => $actor->country_billing ?? $actor->country,
         ];
     }
 
@@ -103,7 +97,7 @@ class ActorRepository implements ActorRepositoryInterface
             return false;
         }
 
-        return $actor->discount !== null && $actor->discount > 0;
+        return $actor->ren_discount !== null && $actor->ren_discount > 0;
     }
 
     public function getDiscount(int $actorId): ?float
@@ -114,7 +108,7 @@ class ActorRepository implements ActorRepositoryInterface
             return null;
         }
 
-        return $actor->discount;
+        return $actor->ren_discount;
     }
 
     public function getVatRate(int $actorId): float
@@ -123,11 +117,6 @@ class ActorRepository implements ActorRepositoryInterface
 
         if (!$actor) {
             return 0.2; // Default VAT rate
-        }
-
-        // Check if actor has specific VAT rate
-        if ($actor->vat_rate !== null) {
-            return $actor->vat_rate;
         }
 
         // Check country-specific VAT rates

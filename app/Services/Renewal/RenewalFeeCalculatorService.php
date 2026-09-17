@@ -115,10 +115,7 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
 
         // Check if client has specific VAT rate
         if ($renewal->clientId) {
-            $clientVatRate = $this->actorRepository->getVatRate($renewal->clientId);
-            if ($clientVatRate !== null) {
-                $vatRate = $clientVatRate;
-            }
+            $vatRate = $this->actorRepository->getVatRate($renewal->clientId);
         }
 
         return $vatRate;

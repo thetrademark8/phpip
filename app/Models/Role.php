@@ -6,6 +6,21 @@ use App\Traits\HasTableComments;
 use App\Traits\HasTranslationsExtended;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $code
+ * @property ?string $name
+ * @property ?int $display_order
+ * @property bool $shareable
+ * @property bool $show_ref
+ * @property bool $show_company
+ * @property bool $show_rate
+ * @property bool $show_date
+ * @property ?string $notes
+ * @property ?string $creator
+ * @property ?string $updater
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ */
 class Role extends Model
 {
     use HasTableComments;

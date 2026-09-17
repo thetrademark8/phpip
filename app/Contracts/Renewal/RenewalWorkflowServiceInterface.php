@@ -45,4 +45,19 @@ interface RenewalWorkflowServiceInterface
      * Mark renewals as lapsing
      */
     public function markAsLapsing(array $ids): ActionResultDTO;
+
+    /**
+     * Create payment orders for renewals
+     */
+    public function createOrders(array $ids): ActionResultDTO;
+
+    /**
+     * Mark renewals as invoiced
+     */
+    public function markInvoiced(array $ids): ActionResultDTO;
+
+    /**
+     * Mark renewals as paid
+     */
+    public function markPaid(array $ids): ActionResultDTO;
 }

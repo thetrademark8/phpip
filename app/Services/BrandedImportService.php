@@ -9,8 +9,6 @@ class BrandedImportService
 {
     private array $actorCache = [];
 
-    private array $matterCache = [];
-
     private array $warnings = [];
 
     private array $importedMatterIds = [];
@@ -40,7 +38,6 @@ class BrandedImportService
     public function __construct()
     {
         $this->actorCache = [];
-        $this->matterCache = [];
         $this->warnings = [];
         $this->generatedCaserefCache = [];
         $this->caserefMatterMap = [];
@@ -262,10 +259,6 @@ class BrandedImportService
 
             if ($matterId === null) {
                 continue;
-            }
-
-            if ($importRef !== null) {
-                $this->matterCache[$importRef] = $matterId;
             }
 
             $this->caserefMatterMap[$originalCaseref] = $matterId;

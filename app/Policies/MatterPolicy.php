@@ -20,7 +20,7 @@ class MatterPolicy
     {
         if (PermissionHelper::isClient($user)) {
             if ($matter->client->count()) {
-                return $matter->client->where('id', $user->id)->notEmpty();
+                return $matter->client->where('id', $user->id)->exists();
             }
 
             return false;

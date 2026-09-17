@@ -204,11 +204,13 @@ class SampleMattersSeeder extends Seeder
         $patsToCreate = max(0, 5 - $existingPatentCount);
         for ($i = 0; $i < $patsToCreate; $i++) {
             $patNum = $existingPatentCount + $i + 1;
+            /** @var Matter $matter */
             $matter = Matter::factory()->patent()->create([
-                'caseref' => 'PAT-' . str_pad($patNum, 3, '0', STR_PAD_LEFT),
+                'caseref' => 'PAT-' . str_pad((string) $patNum, 3, '0', STR_PAD_LEFT),
             ]);
 
             // Add random client
+            /** @var Actor $client */
             $client = Actor::where('phy_person', 0)->inRandomOrder()->first()
                 ?? Actor::factory()->company()->create();
             ActorPivot::updateOrCreate(
@@ -240,10 +242,12 @@ class SampleMattersSeeder extends Seeder
         $desToCreate = max(0, 3 - $existingDesignCount);
         for ($i = 0; $i < $desToCreate; $i++) {
             $desNum = $existingDesignCount + $i + 1;
+            /** @var Matter $matter */
             $matter = Matter::factory()->design()->create([
-                'caseref' => 'DES-' . str_pad($desNum, 3, '0', STR_PAD_LEFT),
+                'caseref' => 'DES-' . str_pad((string) $desNum, 3, '0', STR_PAD_LEFT),
             ]);
 
+            /** @var Actor $client */
             $client = Actor::where('phy_person', 0)->inRandomOrder()->first()
                 ?? Actor::factory()->company()->create();
             ActorPivot::updateOrCreate(

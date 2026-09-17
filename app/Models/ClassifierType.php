@@ -5,7 +5,21 @@ namespace App\Models;
 use App\Traits\HasTableComments;
 use App\Traits\HasTranslationsExtended;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $code
+ * @property ?string $type
+ * @property bool $main_display
+ * @property ?string $for_category
+ * @property int $display_order
+ * @property ?string $notes
+ * @property ?string $creator
+ * @property ?string $updater
+ * @property ?\Illuminate\Support\Carbon $created_at
+ * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property-read \App\Models\Category|null $category
+ */
 class ClassifierType extends Model
 {
     use HasTableComments;
@@ -30,7 +44,10 @@ class ClassifierType extends Model
 
     public $translatable = ['type'];
 
-    public function category()
+    /**
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'for_category', 'code');
     }

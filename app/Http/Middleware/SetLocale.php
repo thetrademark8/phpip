@@ -19,8 +19,9 @@ class SetLocale
         // Check if the session has started
         if ($request->hasSession()) {
             // If user is authenticated and has a language preference, use it
-            if (Auth::check() && Auth::user()->language) {
-                $userLocale = Auth::user()->language;
+            $user = Auth::user();
+            if ($user && $user->getAttribute('language')) {
+                $userLocale = $user->getAttribute('language');
 
                 // Set the application locale to the full locale (e.g., 'en_US', 'fr')
                 // Laravel will automatically extract the primary language for translations

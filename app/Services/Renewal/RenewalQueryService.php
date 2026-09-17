@@ -135,6 +135,8 @@ class RenewalQueryService implements RenewalQueryServiceInterface
 
     private function applyStepFilters(Builder $query, RenewalFilterDTO $filters): Builder
     {
+        $step = $filters->step ?? 0;
+
         // Apply step OR invoice_step filter, not both
         if ($filters->invoiceStep !== null) {
             // When filtering by invoice_step, don't apply step filter
@@ -144,7 +146,6 @@ class RenewalQueryService implements RenewalQueryServiceInterface
             $query->where('matter.dead', 0);
         } else {
             // Only apply step filter if not filtering by invoice_step
-            $step = $filters->step ?? 0;
             $query->where('step', $step);
 
             // Only add matter.dead = 0 when explicitly filtering by step=0

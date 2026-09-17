@@ -54,12 +54,12 @@ class TaskRulesImportSeeder extends Seeder
         $filePath = database_path(self::CSV_FILE);
 
         if (!file_exists($filePath)) {
-            $this->command?->warn('Task rules CSV file not found, skipping import...');
+            $this->command->warn('Task rules CSV file not found, skipping import...');
 
             return;
         }
 
-        $this->command?->info('Importing task rules from CSV...');
+        $this->command->info('Importing task rules from CSV...');
 
         $result = $this->importService->importFromCsv(
             filePath: $filePath,
@@ -69,7 +69,7 @@ class TaskRulesImportSeeder extends Seeder
             translatableColumns: self::TRANSLATABLE_COLUMNS
         );
 
-        $this->command?->info(sprintf(
+        $this->command->info(sprintf(
             'Task rules import complete: %d inserted, %d skipped, %d errors',
             $result['inserted'],
             $result['skipped'],

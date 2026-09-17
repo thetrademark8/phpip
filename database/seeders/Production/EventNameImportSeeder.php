@@ -29,12 +29,12 @@ class EventNameImportSeeder extends Seeder
         $filePath = database_path(self::CSV_FILE);
 
         if (!file_exists($filePath)) {
-            $this->command?->warn('Event name CSV file not found, skipping import...');
+            $this->command->warn('Event name CSV file not found, skipping import...');
 
             return;
         }
 
-        $this->command?->info('Importing event names from CSV...');
+        $this->command->info('Importing event names from CSV...');
 
         $result = $this->importService->importFromCsv(
             filePath: $filePath,
@@ -44,7 +44,7 @@ class EventNameImportSeeder extends Seeder
             translatableColumns: self::TRANSLATABLE_COLUMNS
         );
 
-        $this->command?->info(sprintf(
+        $this->command->info(sprintf(
             'Event names import complete: %d inserted, %d skipped, %d errors',
             $result['inserted'],
             $result['skipped'],

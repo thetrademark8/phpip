@@ -109,6 +109,7 @@ class AutocompleteController extends Controller
             ->get();
 
         if ($list->count() < 5 && $create_option) {
+            /** @var \Illuminate\Support\Collection<int, mixed> $list */
             $list->push(['label' => "Create {$request->term}?", 'key' => 'create', 'value' => $request->term]);
         }
 
@@ -211,6 +212,7 @@ class AutocompleteController extends Controller
             ->get();
 
         if ($list->count() == 0) {
+            /** @var \Illuminate\Support\Collection<int, mixed> $list */
             $list->push(['label' => "Create {$request->term}", 'key' => $request->term, 'value' => $request->term]);
         }
 
@@ -236,6 +238,7 @@ class AutocompleteController extends Controller
             ->get();
 
         if ($list->count() == 0) {
+            /** @var \Illuminate\Support\Collection<int, mixed> $list */
             $list->push(['label' => "Create {$request->term}", 'key' => $request->term, 'value' => $request->term]);
         }
 

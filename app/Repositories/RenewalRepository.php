@@ -57,7 +57,7 @@ class RenewalRepository implements RenewalRepositoryInterface
             $query->where('due_date', '<=', $filters->untilDate);
         }
 
-        return $query->with(['matter', 'event'])->get();
+        return $query->with(['matter', 'trigger'])->get();
     }
 
     public function updateStep(array $ids, int $step): int

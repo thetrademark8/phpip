@@ -34,6 +34,7 @@ class StorageMigrateToPrefix extends Command
         $this->info(sprintf('Bucket: %s | Prefix: %s | Dry-run: %s', $bucket, $prefix, $dryRun ? 'yes' : 'no'));
 
         $legacy = Storage::disk('s3_legacy');
+        /** @var \Illuminate\Filesystem\AwsS3V3Adapter $prefixed */
         $prefixed = Storage::disk('s3');
         $client = $prefixed->getClient();
         $prefixClean = trim($prefix, '/');

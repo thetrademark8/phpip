@@ -28,16 +28,6 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            \App\Services\Renewal\Contracts\RenewalOrderServiceInterface::class,
-            \App\Services\Renewal\RenewalOrderService::class
-        );
-
-        $this->app->bind(
-            \App\Services\Renewal\Contracts\RenewalPaymentServiceInterface::class,
-            \App\Services\Renewal\RenewalPaymentService::class
-        );
-
-        $this->app->bind(
             \App\Contracts\Renewal\RenewalLogServiceInterface::class,
             \App\Services\Renewal\RenewalLogService::class
         );

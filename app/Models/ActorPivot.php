@@ -17,17 +17,17 @@ class ActorPivot extends Pivot
     protected $table = 'matter_actor_lnk';
 
     /**
-     * @var array The attributes that should be hidden for arrays.
+     * @var list<string> The attributes that should be hidden for arrays.
      */
     protected $hidden = ['creator', 'created_at', 'updated_at', 'updater'];
 
     /**
-     * @var array The attributes that aren't mass assignable.
+     * @var array<string>|bool The attributes that aren't mass assignable.
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
-     * @var array The relationships that should be touched on save.
+     * @var list<string> The relationships that should be touched on save.
      */
     protected $touches = ['matter'];
 

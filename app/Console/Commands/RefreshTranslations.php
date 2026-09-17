@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Database\Seeders\TranslatedAttributesSeeder;
+use Database\Seeders\Production\TranslatedAttributesSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

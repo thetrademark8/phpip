@@ -5,9 +5,29 @@ namespace App\Models;
 use App\Traits\HasTranslationsExtended;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property ?int $numcode
+ * @property string $iso
+ * @property ?string $iso3
+ * @property ?string $name_DE
+ * @property ?string $name
+ * @property ?string $name_FR
+ * @property ?int $ep
+ * @property ?int $wo
+ * @property ?int $em
+ * @property ?int $oa
+ * @property ?int $renewal_first
+ * @property ?string $renewal_base
+ * @property ?string $renewal_start
+ * @property ?\Illuminate\Support\Carbon $checked_on
+ * @property-read bool $goesnational
+ * @property-read \Illuminate\Support\Collection<string, mixed>|null $natcountries
+ */
 class Country extends Model
 {
-    use HasTranslationsExtended;
+    use HasTranslationsExtended {
+        getTranslations as baseGetTranslations;
+    }
 
     protected $table = 'country';
 
@@ -48,7 +68,7 @@ class Country extends Model
             ], fn ($value) => $value !== null && $value !== '');
         }
 
-        return parent::getTranslations($key, $allowedLocales);
+        return $this->baseGetTranslations($key, $allowedLocales);
     }
 
     public function getGoesnationalAttribute() // Defines "goesnational" as an attribute
