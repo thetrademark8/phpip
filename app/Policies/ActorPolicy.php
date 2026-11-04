@@ -41,6 +41,14 @@ class ActorPolicy
     }
 
     /**
+     * Updating an external accounting-system link requires read/write access.
+     */
+    public function updateDolibarrLink(User $user, Actor $actor): bool
+    {
+        return PermissionHelper::canReadWrite($user);
+    }
+
+    /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Actor $actor): bool

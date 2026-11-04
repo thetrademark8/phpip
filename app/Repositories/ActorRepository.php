@@ -120,25 +120,18 @@ class ActorRepository implements ActorRepositoryInterface
     public function getVatRate(int $actorId): float
     {
         $actor = Actor::find($actorId);
+        $defaultRate = (float) config('renewal.invoice.vat_rate', 0.2);
+        $foreignRate = (float) config('renewal.invoice.foreign_vat_rate', 0.0);
 
         if (!$actor) {
-            return 0.2; // Default VAT rate
+            return $defaultRate;
         }
 
-        // Check if actor has specific VAT rate
-        if ($actor->vat_rate !== null) {
-            return $actor->vat_rate;
-        }
+        $vatNumber = strtoupper(trim((string) $actor->VAT_number));
 
-        // Check country-specific VAT rates
-        if ($actor->country) {
-            $countryVatRates = config('renewal.vat_rates', []);
-            if (isset($countryVatRates[$actor->country])) {
-                return $countryVatRates[$actor->country];
-            }
-        }
-
-        return 0.2; // Default VAT rate
+        return $vatNumber === '' || str_starts_with($vatNumber, 'FR')
+            ? $defaultRate
+            : $foreignRate;
     }
 
     public function isSmallEntity(int $actorId): bool

@@ -161,6 +161,7 @@
         {{ $t('Export all') }}
       </Button>
       <Button
+        v-if="config.invoice_backend !== 'dolibarr'"
         :disabled="selectedCount === 0"
         variant="default"
         @click="() => emit('action', 'renewalsInvoiced')"

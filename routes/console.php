@@ -27,3 +27,8 @@ Schedule::command('teamleader:refresh-token')
     ->everyFifteenMinutes()
     ->onOneServer()
     ->withoutOverlapping();
+
+Schedule::command('dolibarr:sync --apply')
+    ->everyFifteenMinutes()
+    ->when(fn () => config('dolibarr.sync.enabled') && config('dolibarr.sync.scheduled'))
+    ->withoutOverlapping(60);

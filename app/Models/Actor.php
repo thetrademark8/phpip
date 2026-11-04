@@ -42,6 +42,7 @@ class Actor extends Model implements HasLocalePreference
      */
     protected $casts = [
         'language' => 'string',
+        'dolibarr_socid' => 'integer',
     ];
 
     /**
@@ -86,6 +87,11 @@ class Actor extends Model implements HasLocalePreference
     public function mattersWithLnk()
     {
         return $this->hasMany(ActorPivot::class, 'actor_id');
+    }
+
+    public function renewalInvoiceBatches()
+    {
+        return $this->hasMany(RenewalInvoiceBatch::class, 'actor_id');
     }
 
     public function droleInfo()

@@ -15,6 +15,7 @@ use App\Http\Controllers\AutocompleteController;
 use App\Http\Controllers\BrandedImportController;
 use App\Http\Controllers\ClassifierController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DolibarrThirdPartyController;
 use App\Http\Controllers\EmailSettingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatterAttachmentController;
@@ -111,6 +112,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Protected autocomplete routes - require readwrite permission
     Route::middleware('can:readwrite')->group(function () {
+        Route::get('dolibarr/third-parties/autocomplete', [DolibarrThirdPartyController::class, 'autocomplete'])
+            ->name('dolibarr.third-parties.autocomplete');
         Route::get('event-name/autocomplete/{is_task}', [AutocompleteController::class, 'eventName']);
         Route::get('classifier-type/autocomplete/{main_display}', [AutocompleteController::class, 'classifierType']);
         Route::get('user/autocomplete', [AutocompleteController::class, 'user']);
@@ -142,8 +145,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('order', 'renewalOrder')->name('order');
         Route::post('call/{send}', 'firstcall')->name('firstcall');
         Route::post('reminder', 'remindercall')->name('reminder');
-        Route::post('invoice/{toinvoice}', 'invoice')->name('invoice');
-        Route::post('renewalsInvoiced', 'renewalsInvoiced')->name('renewalsInvoiced');
+        Route::post('invoice/{toinvoice}', 'invoice')
+            ->whereIn('toinvoice', ['0', '1'])
+            ->middleware('can:readwrite')
+            ->name('invoice');
+        Route::post('renewalsInvoiced', 'renewalsInvoiced')
+            ->middleware('can:readwrite')
+            ->name('renewalsInvoiced');
         Route::post('topay', 'topay')->name('topay');
         Route::post('paid', 'paid')->name('paid');
         Route::post('done', 'done')->name('done');

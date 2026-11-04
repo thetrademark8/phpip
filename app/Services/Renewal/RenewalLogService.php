@@ -75,7 +75,7 @@ class RenewalLogService implements RenewalLogServiceInterface
             'task_id' => $taskId,
             'job_id' => $this->getNextJobId(),
             'action' => $action,
-            'data' => json_encode($data),
+            'data' => $data === [] ? null : $data,
             'creator' => Auth::user()->login ?? 'system',
             'created_at' => now(),
         ]);
@@ -133,6 +133,32 @@ class RenewalLogService implements RenewalLogServiceInterface
             'creator' => Auth::user()->login ?? 'system',
             'created_at' => now(),
         ]);
+    }
+
+    public function logInvoiceAction(
+        array $taskIds,
+        int $fromStep,
+        int $toStep,
+        string $action,
+        array $data = []
+    ): void {
+        $jobId = $this->getNextJobId();
+        $createdAt = now();
+
+        $logs = array_map(static fn (int $taskId): array => [
+            'task_id' => $taskId,
+            'job_id' => $jobId,
+            'from_invoice' => $fromStep,
+            'to_invoice' => $toStep,
+            'action' => $action,
+            'data' => $data === [] ? null : json_encode($data, JSON_THROW_ON_ERROR),
+            'creator' => Auth::user()->login ?? 'system',
+            'created_at' => $createdAt,
+        ], $taskIds);
+
+        if ($logs !== []) {
+            RenewalsLog::insert($logs);
+        }
     }
 
     /**

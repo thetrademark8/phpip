@@ -62,28 +62,21 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
         // Create fee DTO
         $feeDTO = RenewalFeeDTO::create($cost, $fee, $vatRate);
 
-        // Apply discount if any
-        if ($renewal->discount) {
-            $feeDTO->applyDiscount($renewal->discount);
-        }
-
-        // Apply grace period factor if applicable
-        if ($renewal->isInGracePeriod() && $feeFactor !== 1.0) {
-            $feeDTO->applyGracePeriodFactor($feeFactor);
-        }
+        // adjustTableFees()/adjustTaskFees() and the multiplication above already
+        // applied these modifiers. Keep the metadata without mutating totals twice.
+        $feeDTO->discount = (float) ($renewal->discount ?? 0);
+        $feeDTO->feeFactor = $feeFactor;
+        $feeDTO->gracePeriodApplied = $renewal->isInGracePeriod() && $feeFactor !== 1.0;
 
         return $feeDTO;
     }
 
     public function calculateWithDiscount(RenewalDTO $renewal, float $discount): RenewalFeeDTO
     {
-        $feeDTO = $this->calculate($renewal);
+        $renewalWithDiscount = clone $renewal;
+        $renewalWithDiscount->discount = $discount;
 
-        if ($discount > 0) {
-            $feeDTO->applyDiscount($discount);
-        }
-
-        return $feeDTO;
+        return $this->calculate($renewalWithDiscount);
     }
 
     public function calculateForClient(int $clientId, array $renewalIds): array
@@ -110,23 +103,17 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
 
     public function getVatRate(RenewalDTO $renewal): float
     {
-        // Default VAT rate
-        $vatRate = config('renewal.invoice.default_vat_rate', 0.2);
-
-        // Check if client has specific VAT rate
         if ($renewal->clientId) {
-            $clientVatRate = $this->actorRepository->getVatRate($renewal->clientId);
-            if ($clientVatRate !== null) {
-                $vatRate = $clientVatRate;
-            }
+            return $this->actorRepository->getVatRate($renewal->clientId);
         }
 
-        return $vatRate;
+        return (float) config('renewal.invoice.vat_rate', 0.2);
     }
 
     private function calculateFeeFactor(RenewalDTO $renewal): float
     {
-        if ($renewal->isInGracePeriod() && $renewal->doneDate && Carbon::parse($renewal->doneDate)->lt($renewal->dueDate)) {
+        if ($renewal->isInGracePeriod()
+            && (!$renewal->doneDate || Carbon::parse($renewal->doneDate)->lt($renewal->dueDate))) {
             return config('renewal.validity.fee_factor', 1.0);
         }
 
@@ -158,14 +145,12 @@ class RenewalFeeCalculatorService implements RenewalFeeCalculatorInterface
         $defaultFee = config('renewal.invoice.default_fee', 145);
         $cost = $renewal->cost;
         $fee = $renewal->fee - $defaultFee;
+        $discount = (float) ($renewal->discount ?? 0);
 
-        // Apply discount
-        if ($renewal->discount) {
-            if ($renewal->discount > 1) {
-                $fee += $renewal->discount;
-            } else {
-                $fee += (1.0 - $renewal->discount) * $defaultFee;
-            }
+        if ($discount > 1) {
+            $fee += $discount;
+        } else {
+            $fee += (1.0 - $discount) * $defaultFee;
         }
     }
 }

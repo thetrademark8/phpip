@@ -49,6 +49,21 @@ class Task extends Model
         return $this->belongsTo(Rule::class, 'rule_used', 'id');
     }
 
+    public function renewalInvoiceBatchTasks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RenewalInvoiceBatchTask::class, 'task_id');
+    }
+
+    public function renewalInvoiceBatches(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            RenewalInvoiceBatch::class,
+            'renewal_invoice_batch_tasks',
+            'task_id',
+            'batch_id'
+        )->withTimestamps();
+    }
+
     /**
      * Get the client associated with this task through matter
      */
@@ -140,7 +155,7 @@ class Task extends Model
             'matter.uid',
             'matter.country',
             'mcountry.name_FR AS country_FR',
-            'mcountry.name AS country_EN',
+            DB::raw("CASE WHEN JSON_VALID(mcountry.name) = 1 THEN JSON_UNQUOTE(JSON_EXTRACT(mcountry.name, '$.\"en\"')) ELSE mcountry.name END AS country_EN"),
             'mcountry.name_DE AS country_DE',
             'matter.origin',
             DB::raw('COALESCE(MIN(own.small_entity), MIN(ownc.small_entity), MIN(appl.small_entity), MIN(applc.small_entity)) AS small_entity'),
@@ -162,6 +177,8 @@ class Task extends Model
             DB::raw('COALESCE(pmal_cli.actor_ref, cliclnk.actor_ref) AS client_ref'),
             DB::raw('COALESCE(pa_cli.email, clic.email) AS email'),
             DB::raw('COALESCE(pa_cli.language, clic.language) AS language'),
+            DB::raw('COALESCE(pa_cli.VAT_number, clic.VAT_number) AS client_vat_number'),
+            DB::raw('COALESCE(pa_cli.dolibarr_socid, clic.dolibarr_socid) AS dolibarr_socid'),
             'matter.responsible',
             'tit.value AS short_title',
             'titof.value AS title',

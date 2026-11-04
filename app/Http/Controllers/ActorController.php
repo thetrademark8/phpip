@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Renewal\DolibarrClientInterface;
+use App\Exceptions\Dolibarr\DolibarrException;
 use App\Models\Actor;
 use App\Policies\ActorPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -21,7 +24,7 @@ class ActorController extends Controller
     {
         $ignoreId = $actor?->id ?? 'NULL';
 
-        return [
+        $rules = [
             'name' => ($actor ? 'sometimes|' : '') . 'required|string|max:100',
             'first_name' => 'nullable|string|max:60',
             'display_name' => 'nullable|string|max:30|unique:actor,display_name,' . $ignoreId,
@@ -49,6 +52,17 @@ class ActorController extends Controller
             'small_entity' => 'boolean',
             'warn' => 'boolean',
         ];
+
+        if ($actor !== null) {
+            $rules['dolibarr_socid'] = [
+                'nullable',
+                'integer',
+                'min:1',
+                Rule::unique('actor', 'dolibarr_socid')->ignore($actor->id),
+            ];
+        }
+
+        return $rules;
     }
 
     public function index(Request $request)
@@ -287,17 +301,21 @@ class ActorController extends Controller
 
         $actorInfo = $actor->load(['company:id,name', 'parent:id,name', 'site:id,name', 'droleInfo', 'countryInfo:iso,name', 'country_mailingInfo:iso,name', 'country_billingInfo:iso,name', 'nationalityInfo:iso,name']);
         $actorComments = $actor->getTableComments();
+        $dolibarrEnabled = (bool) config('dolibarr.sync.enabled', false)
+            || config('renewal.invoice.backend') === 'dolibarr';
 
         if (request()->wantsJson()) {
             return response()->json([
                 'actor' => $actorInfo,
                 'comments' => $actorComments,
+                'dolibarr_enabled' => $dolibarrEnabled,
             ]);
         }
 
         return Inertia::render('Actor/Show', [
             'actor' => $actorInfo,
             'comments' => $actorComments,
+            'dolibarr_enabled' => $dolibarrEnabled,
         ]);
     }
 
@@ -319,10 +337,32 @@ class ActorController extends Controller
         // Use ActorPolicy for update authorization
         Gate::forUser($user)->authorize('update', $actor);
 
+        if ($request->exists('dolibarr_socid')) {
+            Gate::forUser($user)->authorize('updateDolibarrLink', $actor);
+        }
+
         // Only validate the fields actually sent, so single-field inline edits work
         $validatedData = $request->validate(
             array_intersect_key($this->actorRules($actor), $request->all())
         );
+
+        if (isset($validatedData['dolibarr_socid'])
+            && (int) $validatedData['dolibarr_socid'] !== $actor->dolibarr_socid) {
+            try {
+                $thirdParty = app(DolibarrClientInterface::class)
+                    ->getThirdParty((int) $validatedData['dolibarr_socid']);
+            } catch (DolibarrException) {
+                throw ValidationException::withMessages([
+                    'dolibarr_socid' => __('dolibarr.errors.third_party_verification_failed'),
+                ]);
+            }
+
+            if ($thirdParty === null || !in_array($thirdParty['client'] ?? null, [1, 3, '1', '3'], true)) {
+                throw ValidationException::withMessages([
+                    'dolibarr_socid' => __('dolibarr.errors.third_party_not_customer'),
+                ]);
+            }
+        }
 
         $updateData = $validatedData;
 

@@ -45,6 +45,8 @@ class RenewalDTO
         public ?string $filNum,
         public ?string $origin,
         public ?int $clientId,
+        public ?string $clientVatNumber,
+        public ?int $dolibarrSocid,
     ) {}
 
     public static function fromModel($model): self
@@ -75,7 +77,9 @@ class RenewalDTO
             eventDate: $model->event_date ? Carbon::parse($model->event_date) : null,
             language: $model->language ?? 'fr',
             discount: $model->discount ?? null,
-            smeStatus: $model->sme_status ?? null,
+            smeStatus: isset($model->small_entity)
+                ? (bool) $model->small_entity
+                : (isset($model->sme_status) ? (bool) $model->sme_status : null),
             tableFee: $model->table_fee ?? null,
             costSupReduced: $model->cost_sup_reduced ?? null,
             costSup: $model->cost_sup ?? null,
@@ -88,6 +92,8 @@ class RenewalDTO
             filNum: $model->fil_num ?? null,
             origin: $model->origin ?? null,
             clientId: $model->client_id ?? null,
+            clientVatNumber: $model->client_vat_number ?? null,
+            dolibarrSocid: isset($model->dolibarr_socid) ? (int) $model->dolibarr_socid : null,
         );
     }
 
@@ -114,6 +120,8 @@ class RenewalDTO
             'client_ref' => $this->clientRef,
             'short_title' => $this->shortTitle,
             'title' => $this->title,
+            'client_vat_number' => $this->clientVatNumber,
+            'dolibarr_socid' => $this->dolibarrSocid,
         ];
     }
 

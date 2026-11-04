@@ -19,6 +19,7 @@ de développement.
 |----------|-------------|
 | [AUTOMATIC_STATUS_MANAGEMENT.md](AUTOMATIC_STATUS_MANAGEMENT.md) | Annulation automatique des renouvellements sur statut terminal. |
 | [TASK_REMINDERS.md](TASK_REMINDERS.md) | Configuration des e-mails de rappel hebdomadaires (SMTP + cron). |
+| [DOLIBARR_INVOICING.md](DOLIBARR_INVOICING.md) | Synchronisation des clients, rapprochement initial et facturation Dolibarr. |
 
 ## Installation
 

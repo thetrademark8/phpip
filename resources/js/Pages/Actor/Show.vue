@@ -483,6 +483,25 @@
                   />
                 </div>
 
+                <div v-if="dolibarr_enabled">
+                  <Label html-for="dolibarr_socid">{{ t('actors.fields.dolibarrThirdParty') }}</Label>
+                  <EditableField
+                    id="dolibarr_socid"
+                    :model-value="actor.dolibarr_socid"
+                    :display-value="actor.dolibarr_socid ? t('actors.values.dolibarrThirdPartyId', { id: actor.dolibarr_socid }) : ''"
+                    field="dolibarr_socid"
+                    :url="`/actor/${actor.id}`"
+                    type="autocomplete"
+                    autocomplete-endpoint="/dolibarr/third-parties/autocomplete"
+                    :placeholder="t('actors.placeholders.dolibarrThirdParty')"
+                    :editable="isFieldEditable('dolibarr_socid')"
+                    @saved="handleUpdate"
+                  />
+                  <p class="mt-1 text-xs text-muted-foreground">
+                    {{ t('actors.help.dolibarrThirdParty') }}
+                  </p>
+                </div>
+
                 <div>
                   <Label html-for="parent_id">{{ t('actors.fields.parentCompany') }}</Label>
                   <EditableField
@@ -672,6 +691,10 @@ import {
 const props = defineProps({
   actor: Object,
   comments: Object,
+  dolibarr_enabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { t } = useI18n()

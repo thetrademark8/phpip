@@ -42,6 +42,7 @@ class ActorFactory extends Factory
             'ren_discount' => 0.00,
             'notes' => null,
             'VAT_number' => $isCompany ? $this->faker->optional(0.7)->numerify('##########') : null,
+            'dolibarr_socid' => null,
         ];
     }
 

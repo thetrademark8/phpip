@@ -204,6 +204,10 @@ const handleInput = (event) => {
     if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {
       selectedItem.value = null
       emit('update:modelValue', '')
+    } else if (!selectedItem.value && displayValue.value === '') {
+      // Existing values may only have an initial label, without a selectedItem.
+      // Clearing that label must still clear the underlying foreign key.
+      emit('update:modelValue', '')
     }
   }
 
@@ -254,6 +258,9 @@ const handleBlur = () => {
       if (selectedItem.value && displayValue.value !== getItemLabel(selectedItem.value)) {
         displayValue.value = getItemLabel(selectedItem.value)
         emit('update:displayModelValue', displayValue.value)
+      } else if (!selectedItem.value && displayValue.value === '') {
+        emit('update:displayModelValue', '')
+        emit('update:modelValue', '')
       } else if (!selectedItem.value && displayValue.value && !props.modelValue) {
         // Clear if no valid selection and no initial value
         displayValue.value = ''

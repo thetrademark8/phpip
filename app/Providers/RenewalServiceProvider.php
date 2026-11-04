@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\Renewal\DolibarrClientInterface;
 use App\Contracts\Renewal\RenewalEmailServiceInterface;
 use App\Contracts\Renewal\RenewalExportServiceInterface;
 use App\Contracts\Renewal\RenewalFeeCalculatorInterface;
@@ -17,6 +18,7 @@ use App\Repositories\Contracts\RenewalRepositoryInterface;
 use App\Repositories\EventRepository;
 use App\Repositories\MatterRepository;
 use App\Repositories\RenewalRepository;
+use App\Services\Renewal\DolibarrClient;
 use App\Services\Renewal\RenewalEmailService;
 use App\Services\Renewal\RenewalExportService;
 use App\Services\Renewal\RenewalFeeCalculatorService;
@@ -40,6 +42,7 @@ class RenewalServiceProvider extends ServiceProvider
         $this->app->bind(EventRepositoryInterface::class, EventRepository::class);
 
         // Register service bindings
+        $this->app->bind(DolibarrClientInterface::class, DolibarrClient::class);
         $this->app->bind(RenewalQueryServiceInterface::class, RenewalQueryService::class);
         $this->app->bind(RenewalFeeCalculatorInterface::class, RenewalFeeCalculatorService::class);
         $this->app->bind(RenewalWorkflowServiceInterface::class, RenewalWorkflowService::class);

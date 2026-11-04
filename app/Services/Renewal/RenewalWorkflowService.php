@@ -5,6 +5,7 @@ namespace App\Services\Renewal;
 use App\Contracts\Renewal\RenewalWorkflowServiceInterface;
 use App\DataTransferObjects\Renewal\ActionResultDTO;
 use App\Models\RenewalsLog;
+use App\Models\Task;
 use App\Repositories\Contracts\EventRepositoryInterface;
 use App\Repositories\Contracts\RenewalRepositoryInterface;
 use Carbon\Carbon;
@@ -99,28 +100,48 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
     public function updateInvoiceStep(array $ids, int $invoiceStep): ActionResultDTO
     {
         try {
-            DB::beginTransaction();
-
-            // Validate invoice step
             if (!$this->isValidInvoiceStep($invoiceStep)) {
-                DB::rollback();
-
                 return ActionResultDTO::error('Invalid invoice step value');
             }
 
-            $count = $this->renewalRepository->updateInvoiceStep($ids, $invoiceStep);
+            $count = DB::transaction(function () use ($ids, $invoiceStep): int {
+                $renewals = Task::query()
+                    ->whereIn('id', $ids)
+                    ->where('code', 'REN')
+                    ->lockForUpdate()
+                    ->get(['id', 'invoice_step'])
+                    ->filter(
+                        static fn (Task $renewal): bool => (int) $renewal->invoice_step !== $invoiceStep
+                    )
+                    ->values();
 
-            // Log the action if needed
-            if ($count > 0) {
-                $this->logAction($ids, "Updated to invoice step $invoiceStep", 'invoice_step_update');
-            }
+                if ($renewals->isEmpty()) {
+                    return 0;
+                }
 
-            DB::commit();
+                $changedIds = $renewals->pluck('id')->map(static fn ($id): int => (int) $id)->all();
+                Task::query()->whereIn('id', $changedIds)->update(['invoice_step' => $invoiceStep]);
+
+                $jobId = RenewalsLog::max('job_id') + 1;
+                $createdAt = now();
+                $logs = $renewals->map(static fn ($renewal): array => [
+                    'task_id' => $renewal->id,
+                    'job_id' => $jobId,
+                    'from_invoice' => (int) $renewal->invoice_step,
+                    'to_invoice' => $invoiceStep,
+                    'action' => 'invoice_step_update',
+                    'data' => json_encode(['target' => $invoiceStep], JSON_THROW_ON_ERROR),
+                    'creator' => auth()->user()->login ?? 'system',
+                    'created_at' => $createdAt,
+                ])->all();
+
+                RenewalsLog::insert($logs);
+
+                return count($changedIds);
+            });
 
             return ActionResultDTO::success($count, "Updated $count renewals to invoice step $invoiceStep");
         } catch (\Exception $e) {
-            DB::rollback();
-
             return ActionResultDTO::error('Failed to update invoice step: ' . $e->getMessage());
         }
     }
@@ -520,7 +541,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         $result = $this->updateStepAndInvoiceStep($ids, 4, 1);
 
         if ($result->success) {
-            return ActionResultDTO::success($result->affectedCount ?? count($ids), 'Renewal orders created successfully');
+            return ActionResultDTO::success($result->count, 'Renewal orders created successfully');
         }
 
         return $result;
@@ -545,7 +566,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         $result = $this->updateInvoiceStep($ids, 2);
 
         if ($result->success) {
-            return ActionResultDTO::success($result->affectedCount ?? count($ids), 'Renewals marked as invoiced');
+            return ActionResultDTO::success($result->count, 'Renewals marked as invoiced');
         }
 
         return $result;
@@ -570,7 +591,7 @@ class RenewalWorkflowService implements RenewalWorkflowServiceInterface
         $result = $this->updateInvoiceStep($ids, 3);
 
         if ($result->success) {
-            $count = $result->affectedCount ?? count($ids);
+            $count = $result->count;
 
             return ActionResultDTO::success($count, "$count invoices paid");
         }

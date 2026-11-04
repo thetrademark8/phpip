@@ -27,6 +27,19 @@ interface RenewalLogServiceInterface
     public function logInvoiceStepTransition(int $taskId, int $fromStep, int $toStep): void;
 
     /**
+     * Log a batch invoice transition with integration context.
+     *
+     * @param  array<int>  $taskIds
+     */
+    public function logInvoiceAction(
+        array $taskIds,
+        int $fromStep,
+        int $toStep,
+        string $action,
+        array $data = []
+    ): void;
+
+    /**
      * Get the next job ID for batch operations
      */
     public function getNextJobId(): int;

@@ -280,21 +280,23 @@ class RenewalController extends Controller
      */
     public function invoice(Request $request, int $toinvoice)
     {
-        $ids = $request->input('task_ids', []);
-
-        if (empty($ids)) {
-            return to_route('renewal.index', ['step' => 3])
-                ->withErrors(['error' => 'No renewals selected']);
-        }
+        $validated = $request->validate([
+            'task_ids' => ['required', 'array', 'min:1'],
+            'task_ids.*' => ['required', 'integer', 'min:1'],
+        ]);
+        $ids = $validated['task_ids'];
 
         $result = $this->invoiceService->createInvoices($ids, $toinvoice === 1);
 
         if ($result->success) {
-            return to_route('renewal.index', ['invoice_step' => 2])
-                ->with('success', $result->message);
+            $hasPartialFailure = ($result->data['failed'] ?? 0) > 0
+                || ($result->data['uncertain'] ?? 0) > 0;
+
+            return to_route('renewal.index', ['invoice_step' => $hasPartialFailure ? 1 : 2])
+                ->with($hasPartialFailure ? 'warning' : 'success', $result->message);
         }
 
-        return to_route('renewal.index', ['step' => 3])
+        return to_route('renewal.index', ['invoice_step' => 1])
             ->withErrors(['error' => $result->error]);
     }
 
@@ -424,21 +426,18 @@ class RenewalController extends Controller
      */
     public function renewalsInvoiced(Request $request)
     {
-        $ids = $request->input('task_ids', []);
-
-        if (empty($ids)) {
-            return to_route('renewal.index')
-                ->withErrors(['error' => 'No renewals selected']);
-        }
-
-        $result = $this->workflowService->markInvoiced($ids);
+        $validated = $request->validate([
+            'task_ids' => ['required', 'array', 'min:1'],
+            'task_ids.*' => ['required', 'integer', 'min:1'],
+        ]);
+        $result = $this->invoiceService->createInvoices($validated['task_ids'], false);
 
         if ($result->success) {
             return to_route('renewal.index', ['invoice_step' => 2])
                 ->with('success', $result->message);
         }
 
-        return to_route('renewal.index')
+        return to_route('renewal.index', ['invoice_step' => 1])
             ->withErrors(['error' => $result->error]);
     }
 

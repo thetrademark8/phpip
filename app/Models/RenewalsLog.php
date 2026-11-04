@@ -8,6 +8,10 @@ class RenewalsLog extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'data' => 'array',
+    ];
+
     /**
      * Get the matter of the log line.
      */
